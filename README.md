@@ -22,3 +22,9 @@
    - backend: php artisan serve
    - frontend: npm run dev
   
+
+
+# Entity Relationship Diagram
+
+  ![Diagrama Relações](https://github.com/user-attachments/assets/bb5a845b-911d-4d83-a18a-29d034b35503)
+
