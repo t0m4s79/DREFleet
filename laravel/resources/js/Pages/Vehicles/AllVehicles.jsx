@@ -5,13 +5,11 @@ import { Head } from '@inertiajs/react';
 export default function AllVehicles( {auth, vehicles }) {
 
     console.log('vehicles', vehicles)
+    let cols;
 
-
-    if(!vehicles){
-        const cols = Object.keys(vehicles[0]);
+    if(vehicles.length > 0){
+        cols = Object.keys(vehicles[0]);
     }
-
-    //console.log('cols', cols)
 
     return (
         <AuthenticatedLayout
@@ -43,7 +41,7 @@ export default function AllVehicles( {auth, vehicles }) {
                 
             </div> */}
 
-            {!vehicles && !cols && <Table data={vehicles} columns={cols}/>}
+            {vehicles && cols && <Table data={vehicles} columns={cols}/>}
 
         </AuthenticatedLayout>
     )

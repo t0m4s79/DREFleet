@@ -8,7 +8,7 @@ const Table = ({data, columns}) => {
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className='p-6'>
                         <table  className='items-center bg-transparent w-full border-collapse'>
-                            <thead>
+                            <thead className='border-b-2'>
                                 <tr>
                                     {columns.map((col,index) => ( 
                                         <td key={index}>{col}</td>
