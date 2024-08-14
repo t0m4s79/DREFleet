@@ -25,6 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+    Route::post('/vehicles/create', [VehicleController::class, 'createVehicle'])->name('vehicles.create');
+    Route::put('/vehicles/edit/{id}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
+    Route::delete('/vehicles/delete/{id}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
+
 });
 
 require __DIR__.'/auth.php';

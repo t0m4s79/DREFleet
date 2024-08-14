@@ -16,4 +16,16 @@ class VehicleController extends Controller
 
         return Inertia::render('Vehicles/AllVehicles',['vehicles'=> $vehicles]);
     }
+
+    public function createVehicle() {
+
+    }
+
+    public function editVehicle() {
+
+    }
+
+    public function deleteVehicle() {
+        
+    }
 }
