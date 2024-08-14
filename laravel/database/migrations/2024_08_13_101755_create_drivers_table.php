@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('drivers', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');                      //TODO: Need to establish one-to-one relation between user and driver on models
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('user_id')->primary();                      //TODO: Need to establish one-to-one relation between user and driver on models
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('heavy_license')->default(false);
         });
     }
