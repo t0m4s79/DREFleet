@@ -2,8 +2,6 @@ import React from 'react'
 
 const Table = ({data, columns}) => {
 
-    
-
     return (
         <div className='py-12'>
             <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

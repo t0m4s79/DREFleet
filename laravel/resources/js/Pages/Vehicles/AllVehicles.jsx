@@ -6,9 +6,12 @@ export default function AllVehicles( {auth, vehicles }) {
 
     console.log('vehicles', vehicles)
 
-    const cols = Object.keys(vehicles[0]);
 
-    console.log('cols', cols)
+    if(!vehicles){
+        const cols = Object.keys(vehicles[0]);
+    }
+
+    //console.log('cols', cols)
 
     return (
         <AuthenticatedLayout
@@ -40,7 +43,7 @@ export default function AllVehicles( {auth, vehicles }) {
                 
             </div> */}
 
-            <Table data={vehicles} columns={cols}/>
+            {!vehicles && !cols && <Table data={vehicles} columns={cols}/>}
 
         </AuthenticatedLayout>
     )
