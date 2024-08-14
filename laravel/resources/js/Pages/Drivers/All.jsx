@@ -1,8 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function All( {auth } ) {
+export default function All( {auth, users, csrfToken} ) {
 
+    const user = users.map((user)=>(
+        <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
+    ));
+    
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -53,6 +57,23 @@ export default function All( {auth } ) {
 
                 </table>
             </div>
+
+            <h2>Criar condutor a partir de utilizador existente</h2>            
+            <form action="/drivers/create" method='POST'>
+                <input type="hidden" name="_token" value={csrfToken} />
+                    <p>Selecione o utilizador</p>
+                    <select name="user_id" id="">
+                        {user}
+                    </select>
+
+                    <p>Carta de Pesados</p>
+                    <input type="radio" name="heavy_license" value="0"/>
+                    <label>Não</label><br/>
+                    <input type="radio" name="heavy_license" value="1"/>
+                    <label>Sim</label><br/>
+                    <p><button type="submit" value="Submit">Submeter</button></p>
+            </form>
+
 
         </AuthenticatedLayout>
     );
