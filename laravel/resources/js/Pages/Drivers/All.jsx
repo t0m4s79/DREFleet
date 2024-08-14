@@ -1,11 +1,22 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
 
-export default function All( {auth, users, csrfToken} ) {
+
+export default function All( {auth, users, drivers, csrfToken} ) {
 
     const user = users.map((user)=>(
         <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
     ));
+
+    const driver = drivers.map((driver)=>(
+        <div>
+            <p key={driver.id}>{driver.name}</p>
+        </div>
+    ));
+
+    console.log(drivers)
+
     
     return (
         <AuthenticatedLayout
@@ -14,7 +25,7 @@ export default function All( {auth, users, csrfToken} ) {
         >
 
             <Head title="Condutores" />
-
+            
             <li>
                 <ul>
                     Condutor 1
@@ -73,7 +84,10 @@ export default function All( {auth, users, csrfToken} ) {
                     <label>Sim</label><br/>
                     <p><button type="submit" value="Submit">Submeter</button></p>
             </form>
-
+            
+            <br />
+            <strong>Condutores</strong>
+            {driver}
 
         </AuthenticatedLayout>
     );
