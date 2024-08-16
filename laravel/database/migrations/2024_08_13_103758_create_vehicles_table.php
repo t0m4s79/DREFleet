@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('heavy_vehicle');
             $table->boolean('wheelchair_adapted');
             $table->integer('capacity');
-            $table->decimal('fuel_consuption', 6, 3);
+            $table->decimal('fuel_consumption', 6, 3);
             $table->integer('status_code');
             $table->tinyInteger('current_month_fuel_requests');
         });
