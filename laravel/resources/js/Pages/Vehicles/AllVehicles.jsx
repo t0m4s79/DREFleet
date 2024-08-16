@@ -11,6 +11,9 @@ export default function AllVehicles( {auth, vehicles }) {
         cols = Object.keys(vehicles[0]);
     }
 
+
+
+    //TODO: form license plate should only take numbers and letters
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -43,6 +46,48 @@ export default function AllVehicles( {auth, vehicles }) {
 
             {vehicles && cols && <Table data={vehicles} columns={cols}/>}
 
+            <h2>Criar veículo</h2>
+            <form action="/vehicles/create" method='POST'>
+                <p>Preencha todos os campos necessários</p>
+                <label for="make">Marca</label><br/>
+                <input type="text" id="make" name="make"/><br/>
+
+                <label for="model">Modelo</label><br/>
+                <input type="text" id="model" name="model"/><br/>
+
+                <label for="license_plate">Matrícula (sem "-")</label><br/>
+                <input type="text" maxLength="6" id="license_plate" name="license_plate" placeholder='AAXXBB'/>
+
+                <p>Veículo Pesado?</p>
+                <input type="radio" name="heavy_license" value="0"/>
+                <label>Não</label><br/>
+                <input type="radio" name="heavy_license" value="1"/>
+                <label>Sim</label><br/>
+
+                <p>Adaptado a cadeira de rodas?</p>
+                <input type="radio" name="wheelchair_adapted" value="0"/>
+                <label>Não</label><br/>
+                <input type="radio" name="wheelchair_adapted" value="1"/>
+                <label>Sim</label><br/>
+
+                <label for="capacity">Capacidade (pessoas):</label><br/>
+                <input type="number" id="capacity" name="capacity" min="1" max="100"></input><br/>
+
+                <label for="fuel_consumption">Consumo de combustível (Km/L)</label><br/>
+                <input type="number" step=".001" id="fuel_consumption" name="fuel_consumption" placeholder="0.000"></input><br/>
+
+                <p>Mostrar veículo imediatamente como disponível</p>
+                <input type="radio" name="wheelchair" value="0"/>
+                <label>Não</label><br/>
+                <input type="radio" name="wheelchair" value="1"/>
+                <label>Sim</label><br/>
+
+                <label for="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
+                <input type="number" id="current_month_fuel_requests" name="current_month_fuel_requests" min="0" max="100"></input><br/>
+
+                <p><button type="submit" value="Submit">Submeter</button></p>
+
+            </form>
         </AuthenticatedLayout>
     )
 }
