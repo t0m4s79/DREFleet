@@ -2,7 +2,7 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function AllVehicles( {auth, vehicles }) {
+export default function AllVehicles( {auth, vehicles,  csrfToken}) {
 
     console.log('vehicles', vehicles)
     let cols;
@@ -12,8 +12,6 @@ export default function AllVehicles( {auth, vehicles }) {
     }
 
 
-
-    //TODO: form license plate should only take numbers and letters
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -47,8 +45,9 @@ export default function AllVehicles( {auth, vehicles }) {
             {vehicles && cols && <Table data={vehicles} columns={cols}/>}
 
             <h2>Criar veículo</h2>
-            <form action="/vehicles/create" method='POST'>
-                <p>Preencha todos os campos necessários</p>
+            <form action="/vehicles/create" method='POST' id="newVehicleForm">
+                <input type="hidden" name="_token" value={csrfToken} />
+
                 <label for="make">Marca</label><br/>
                 <input type="text" id="make" name="make"/><br/>
 
@@ -56,12 +55,13 @@ export default function AllVehicles( {auth, vehicles }) {
                 <input type="text" id="model" name="model"/><br/>
 
                 <label for="license_plate">Matrícula (sem "-")</label><br/>
-                <input type="text" maxLength="6" id="license_plate" name="license_plate" placeholder='AAXXBB'/>
+                <input type="text" minLength="6" maxLength="6" id="license_plate" name="license_plate" placeholder='AAXXBB'
+                    pattern="[A-Za-z0-9]+" title="Só são permitidos números e letras" />
 
                 <p>Veículo Pesado?</p>
-                <input type="radio" name="heavy_license" value="0"/>
+                <input type="radio" name="heavy_vehicle" value="0"/>
                 <label>Não</label><br/>
-                <input type="radio" name="heavy_license" value="1"/>
+                <input type="radio" name="heavy_vehicle" value="1"/>
                 <label>Sim</label><br/>
 
                 <p>Adaptado a cadeira de rodas?</p>
@@ -76,10 +76,10 @@ export default function AllVehicles( {auth, vehicles }) {
                 <label for="fuel_consumption">Consumo de combustível (Km/L)</label><br/>
                 <input type="number" step=".001" id="fuel_consumption" name="fuel_consumption" placeholder="0.000"></input><br/>
 
-                <p>Mostrar veículo imediatamente como disponível</p>
-                <input type="radio" name="wheelchair" value="0"/>
+                <p>Mostrar veículo imediatamente como disponível?</p>
+                <input type="radio" name="status_code" value="0"/>
                 <label>Não</label><br/>
-                <input type="radio" name="wheelchair" value="1"/>
+                <input type="radio" name="status_code" value="1"/>
                 <label>Sim</label><br/>
 
                 <label for="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
