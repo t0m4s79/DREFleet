@@ -42,7 +42,7 @@ export default function AllVehicles( {auth, vehicles,  csrfToken}) {
                 
             </div> */}
 
-            {vehicles && cols && <Table data={vehicles} columns={cols} editAction="vehicles.edit"/>}
+            {vehicles && cols && <Table data={vehicles} columns={cols} editAction="vehicles.showEdit"/>}
 
             <h2>Criar veículo</h2>
             <form action="/vehicles/create" method='POST' id="newVehicleForm">
