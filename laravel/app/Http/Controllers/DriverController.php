@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Driver;
 use Inertia\Inertia;
+use Inertia\Response;
 use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
                 ->whereNull('drivers.user_id')
@@ -20,7 +21,7 @@ class DriverController extends Controller
                 ->select('drivers.*', 'users.*')
                 ->get();
 
-        return Inertia::render('Drivers/All',['users' => $users, 'drivers' => $drivers, 'csrfToken' => csrf_token()]);
+        return Inertia::render('Drivers/AllDrivers',['users' => $users, 'drivers' => $drivers, 'csrfToken' => csrf_token()]);
     }
 
     public function createDriver(Request $request) {
@@ -34,5 +35,17 @@ class DriverController extends Controller
         
         Driver::create($incomingFields);
         return redirect('/drivers')->with('message', 'Condutor criado com sucesso!');
+    }
+
+    public function editDriver(Driver $driver): Response
+    {
+        return Inertia::render('Drivers/Edit', [
+            'driver' => $driver,
+        ]);
+    }
+
+    public function update(Driver $driver, Request $request): void
+    {
+        //
     }
 }
