@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function Edit({ auth, vehicle, csrfToken }) {
+export default function Edit({ auth, vehicle}) {
     // Initialize state with vehicle data
     const [formData, setFormData] = useState({
         make: vehicle.make,
@@ -15,8 +15,8 @@ export default function Edit({ auth, vehicle, csrfToken }) {
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
     });
 
-    console.log(formData.status_code)
-
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
     // Handle input changes
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;

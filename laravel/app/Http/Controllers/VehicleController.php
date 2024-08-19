@@ -14,7 +14,7 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::All();
 
-        return Inertia::render('Vehicles/AllVehicles',['vehicles'=> $vehicles, 'csrfToken' => csrf_token()]);
+        return Inertia::render('Vehicles/AllVehicles',['vehicles'=> $vehicles]);
     }
 
     //TODO: verification
@@ -45,6 +45,10 @@ class VehicleController extends Controller
         return redirect('/vehicles');
     }
 
+    public function showEditScreen(Vehicle $vehicle) {
+        return Inertia::render('Vehicles/Edit',['vehicle'=> $vehicle]);
+    }
+
     public function editVehicle(Vehicle $vehicle, Request $request) {
         $incomingFields = $request->validate([
             'make' => 'required', 
@@ -72,11 +76,10 @@ class VehicleController extends Controller
         return redirect('/vehicles');
     }
 
-    public function deleteVehicle() {
+    public function deleteVehicle($id) {
+        $model = Model::findOrFail($id);
+        $model->delete();
         
-    }
-
-    public function showEditScreen(Vehicle $vehicle) {
-        return Inertia::render('Vehicles/Edit',['vehicle'=> $vehicle, 'csrfToken' => csrf_token()]);
+        return redirect('/vehicles');
     }
 }

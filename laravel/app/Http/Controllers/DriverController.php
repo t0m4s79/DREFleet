@@ -21,7 +21,7 @@ class DriverController extends Controller
                 ->select('drivers.*', 'users.*')
                 ->get();
 
-        return Inertia::render('Drivers/AllDrivers',['users' => $users, 'drivers' => $drivers, 'csrfToken' => csrf_token()]);
+        return Inertia::render('Drivers/AllDrivers',['users' => $users, 'drivers' => $drivers]);
     }
 
     public function createDriver(Request $request) {
