@@ -11,6 +11,8 @@ class Driver extends Model
 
     public $timestamps = false;
 
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
         'user_id',
         'heavy_license'
