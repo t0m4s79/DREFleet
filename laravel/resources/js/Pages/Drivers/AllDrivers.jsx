@@ -27,6 +27,15 @@ export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
     if(drivers.length > 0){
         cols = Object.keys(driverInfo[0])
     }
+
+    const driverColumnLabels = {
+        id: 'ID',
+        name: 'Nome',
+        email: 'Email',
+        phone: 'Numero de Telefone',
+        heavy_license: 'Carta de pesados',
+        status: 'Estado'
+    };
     
     return (
         <AuthenticatedLayout
@@ -36,7 +45,7 @@ export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
 
             <Head title="Condutores" />
 
-            {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.edit" dataId="user_id"/> }
+            {drivers && cols && <Table data={driverInfo} columns={cols} columnsLabel={driverColumnLabels} editAction="drivers.edit" dataId="user_id"/> }
             
             <h2>Criar condutor a partir de utilizador existente</h2>            
             <form action="/drivers/create" method='POST'>
