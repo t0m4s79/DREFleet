@@ -52,4 +52,8 @@ class VehicleController extends Controller
     public function deleteVehicle() {
         
     }
+
+    public function showEditScreen(Vehicle $vehicle) {
+        return Inertia::render('Vehicles/Edit',['vehicle'=> $vehicle, 'csrfToken' => csrf_token()]);
+    }
 }
