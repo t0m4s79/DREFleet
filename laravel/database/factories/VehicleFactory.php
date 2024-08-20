@@ -28,7 +28,7 @@ class VehicleFactory extends Factory
             'wheelchair_adapted' => rand(0,1),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
-            'status_code' => rand(1111,4444),
+            'status_code' => rand(0,1),
             'current_month_fuel_requests' => rand(0,6)
         ];
     }
