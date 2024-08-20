@@ -23,7 +23,7 @@ export default function AllDrivers( {auth, drivers} ) {
     //Deconstruct data to send to table component
     let cols;
     let driverInfo = drivers.map((driver) => (
-        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status_code } 
+        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status }
     ))
 
     if(drivers.length > 0){
@@ -38,7 +38,7 @@ export default function AllDrivers( {auth, drivers} ) {
 
             <Head title="Condutores" />
 
-            {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.edit" dataId="user_id"/> }
+            {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" dataId="user_id"/> }
             
             {/* <h2>Criar condutor a partir de utilizador existente</h2>            TO DO: move form to new page
             <form action="/drivers/create" method='POST'>

@@ -17,7 +17,7 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/AllVehicles',['vehicles'=> $vehicles]);
     }
 
-    //TODO: verification
+    //TODO: more verification in each field
     public function createVehicle(Request $request) {
         $incomingFields = $request->validate([
             'make' => 'required', 

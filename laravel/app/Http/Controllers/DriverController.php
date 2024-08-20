@@ -36,14 +36,45 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         
         Driver::create($incomingFields);
-        return redirect('/drivers')->with('message', 'Condutor criado com sucesso!');
+        return redirect('/drivers');
     }
 
-    public function editDriver(Driver $driver): Response
+    public function showEditScreen(Driver $driver): Response
     {
         return Inertia::render('Drivers/Edit', [
             'driver' => $driver,
         ]);
+    }
+
+    public function editDriver(Driver $driver, Request $request) {
+        $incomingFields = $request->validate([
+            'user_id' => 'required',
+            'heavy_license' => 'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'status' => 'required',
+        ]);
+
+        $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
+        $incomingFields['name'] = strip_tags($incomingFields['name']);
+        $incomingFields['email'] = strip_tags($incomingFields['email']);
+        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
+        $incomingFields['status'] = strip_tags($incomingFields['status']);
+        
+        $driver->update([
+            'heavy_license' => $incomingFields['heavy_license'],
+        ]);
+    
+        $user = User::findOrFail($incomingFields['user_id']);
+        $user->update([
+            'name' => $incomingFields['name'],
+            'email' => $incomingFields['email'],
+            'phone' => $incomingFields['phone'],
+            'status_code' => $incomingFields['status'],
+        ]);
+
+        return redirect('/drivers');
     }
 
     public function update(Driver $driver, Request $request): void
