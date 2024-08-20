@@ -4,13 +4,13 @@ import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
 
-export default function AllDrivers( {auth, users, drivers} ) {
+export default function AllDrivers( {auth, drivers} ) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    const user = users.map((user)=>(
-        <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
-    ));
+    // const user = users.map((user)=>(
+    //     <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
+    // ));
 
     const driver = drivers.map((driver)=>(
         <div>
@@ -22,8 +22,8 @@ export default function AllDrivers( {auth, users, drivers} ) {
     
     //Deconstruct data to send to table component
     let cols;
-    let driverInfo = drivers.map((user) => (
-        {id: user.id, name: user.name, email: user.email, phone: user.phone, heavy_license: user.heavy_license , status: user.status_code } 
+    let driverInfo = drivers.map((driver) => (
+        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status_code } 
     ))
 
     if(drivers.length > 0){
@@ -40,7 +40,7 @@ export default function AllDrivers( {auth, users, drivers} ) {
 
             {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.edit" dataId="user_id"/> }
             
-            <h2>Criar condutor a partir de utilizador existente</h2>            
+            {/* <h2>Criar condutor a partir de utilizador existente</h2>            TO DO: move form to new page
             <form action="/drivers/create" method='POST'>
                 <input type="hidden" name="_token" value={csrfToken} />
                     <p>Selecione o utilizador</p>
@@ -58,7 +58,7 @@ export default function AllDrivers( {auth, users, drivers} ) {
             
             <br />
             <strong>Condutores</strong>
-            {driver}
+            {driver} */}
 
         </AuthenticatedLayout>
     );
