@@ -21,10 +21,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
-    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');
-    Route::get('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');
-    //Route::patch('/drivers/delete/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');
+    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET
+    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE
+    Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditScreen'])->name('drivers.showEdit');    //GET
+    Route::post('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');           //EDIT
+    Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');     //DELETE
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
