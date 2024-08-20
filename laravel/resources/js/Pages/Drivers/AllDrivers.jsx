@@ -1,6 +1,6 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 
 
@@ -39,6 +39,10 @@ export default function AllDrivers( {auth, drivers} ) {
             <Head title="Condutores" />
 
             {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
+
+            <a href={route('drivers.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Novo Condutor
+            </a>
             
             {/* <h2>Criar condutor a partir de utilizador existente</h2>            TO DO: move form to new page
             <form action="/drivers/create" method='POST'>
