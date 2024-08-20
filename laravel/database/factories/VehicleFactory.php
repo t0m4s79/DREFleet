@@ -2,11 +2,8 @@
 
 namespace Database\Factories;
 
-use Faker\Guesser\Name;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
-use Nette\Utils\Strings;
-use PharIo\Manifest\License;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vehicle>
