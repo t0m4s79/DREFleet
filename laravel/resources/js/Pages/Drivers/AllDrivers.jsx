@@ -4,7 +4,9 @@ import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
 
-export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
+export default function AllDrivers( {auth, users, drivers} ) {
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const user = users.map((user)=>(
         <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
