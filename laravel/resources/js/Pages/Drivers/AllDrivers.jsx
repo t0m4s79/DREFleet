@@ -38,7 +38,7 @@ export default function AllDrivers( {auth, drivers} ) {
 
             <Head title="Condutores" />
 
-            {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" dataId="user_id"/> }
+            {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
             
             {/* <h2>Criar condutor a partir de utilizador existente</h2>            TO DO: move form to new page
             <form action="/drivers/create" method='POST'>

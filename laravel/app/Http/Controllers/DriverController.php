@@ -36,6 +36,11 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         
         Driver::create($incomingFields);
+
+        $user->update([                             //USER TYPES-> 1 -> DRIVER (TODO)
+            'type_of_user_code' => 1,
+        ]);
+
         return redirect('/drivers');
     }
 
@@ -77,8 +82,16 @@ class DriverController extends Controller
         return redirect('/drivers');
     }
 
-    public function update(Driver $driver, Request $request): void
+    public function deleteDriver($id)
     {
-        //
+        $driver = Driver::findOrFail($id);
+        $driver->delete();
+
+        $user = User::findOrFail($id);
+        $user->update([                             //USER TYPES-> 0 -> Nan (TODO)
+            'type_of_user_code' => "0",
+        ]);
+        
+        return redirect('/drivers');
     }
 }
