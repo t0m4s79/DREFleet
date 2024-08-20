@@ -77,8 +77,8 @@ class VehicleController extends Controller
     }
 
     public function deleteVehicle($id) {
-        $model = Model::findOrFail($id);
-        $model->delete();
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->delete();
         
         return redirect('/vehicles');
     }
