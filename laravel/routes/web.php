@@ -22,6 +22,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET
+    Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.create');
     Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE
     Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditScreen'])->name('drivers.showEdit');    //GET
     Route::post('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');           //EDIT

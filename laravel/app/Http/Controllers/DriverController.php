@@ -26,6 +26,16 @@ class DriverController extends Controller
         return Inertia::render('Drivers/AllDrivers',['drivers' => $drivers]);
     }
 
+    public function showCreateDriverForm()
+    {
+        $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
+                ->whereNull('drivers.user_id')
+                ->select('users.*')
+                ->get();
+                
+        return Inertia::render('Drivers/NewDriver', ['users' => $users]);
+    }
+
     public function createDriver(Request $request) {
         $incomingFields = $request->validate([
             'user_id' => ['required', 'unique:drivers,user_id'],
@@ -36,6 +46,8 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         
         Driver::create($incomingFields);
+
+        $user = User::findOrFail($incomingFields['user_id']);
 
         $user->update([                             //USER TYPES-> 1 -> DRIVER (TODO)
             'type_of_user_code' => 1,
