@@ -10,18 +10,20 @@ use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
-    public function index(): Response
+    public function index()//: Response
     {
-        $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
-                ->whereNull('drivers.user_id')
-                ->select('users.*')
-                ->get();
+        // $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
+        //         ->whereNull('drivers.user_id')
+        //         ->select('users.*')
+        //         ->get();
 
-        $drivers = Driver::join('users', 'users.id', '=', 'drivers.user_id')
-                ->select('drivers.*', 'users.*')
-                ->get();
+        // $drivers = Driver::join('users', 'users.id', '=', 'drivers.user_id')
+        //         ->select('drivers.*', 'users.*')
+        //         ->get();
 
-        return Inertia::render('Drivers/AllDrivers',['users' => $users, 'drivers' => $drivers]);
+        $drivers = Driver::all();
+
+        return Inertia::render('Drivers/AllDrivers',['drivers' => $drivers]);
     }
 
     public function createDriver(Request $request) {
