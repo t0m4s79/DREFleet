@@ -21,10 +21,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
-    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');
-    Route::get('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');
-    //Route::patch('/drivers/delete/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');
+    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET
+    Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.create');
+    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE
+    Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditScreen'])->name('drivers.showEdit');    //GET
+    Route::post('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');           //EDIT
+    Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');     //DELETE
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -32,8 +34,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
     Route::post('/vehicles/create', [VehicleController::class, 'createVehicle'])->name('vehicles.create');
-    Route::put('/vehicles/edit/{id}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
-    Route::delete('/vehicles/delete/{id}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
+    Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditScreen'])->name('vehicles.showEdit');
+    Route::post('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
+    Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
 
 });
 

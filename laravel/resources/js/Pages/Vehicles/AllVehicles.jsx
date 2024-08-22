@@ -2,7 +2,9 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function AllVehicles( {auth, vehicles,  csrfToken}) {
+export default function AllVehicles( {auth, vehicles}) {
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     console.log('vehicles', vehicles)
     let cols;
@@ -54,7 +56,7 @@ export default function AllVehicles( {auth, vehicles,  csrfToken}) {
                 
             </div> */}
 
-            {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.edit"/>}
+            {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
 
             <h2>Criar veículo</h2>
             <form action="/vehicles/create" method='POST' id="newVehicleForm">

@@ -10,18 +10,30 @@ use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
-    public function index(): Response
+    public function index()//: Response
+    {
+        // $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
+        //         ->whereNull('drivers.user_id')
+        //         ->select('users.*')
+        //         ->get();
+
+        // $drivers = Driver::join('users', 'users.id', '=', 'drivers.user_id')
+        //         ->select('drivers.*', 'users.*')
+        //         ->get();
+
+        $drivers = Driver::all();
+
+        return Inertia::render('Drivers/AllDrivers',['drivers' => $drivers]);
+    }
+
+    public function showCreateDriverForm()
     {
         $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
                 ->whereNull('drivers.user_id')
                 ->select('users.*')
                 ->get();
-
-        $drivers = Driver::join('users', 'users.id', '=', 'drivers.user_id')
-                ->select('drivers.*', 'users.*')
-                ->get();
-
-        return Inertia::render('Drivers/AllDrivers',['users' => $users, 'drivers' => $drivers, 'csrfToken' => csrf_token()]);
+                
+        return Inertia::render('Drivers/NewDriver', ['users' => $users]);
     }
 
     public function createDriver(Request $request) {
@@ -34,18 +46,64 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         
         Driver::create($incomingFields);
-        return redirect('/drivers')->with('message', 'Condutor criado com sucesso!');
+
+        $user = User::findOrFail($incomingFields['user_id']);
+
+        $user->update([                             //USER TYPES-> 1 -> DRIVER (TODO)
+            'type_of_user_code' => 1,
+        ]);
+
+        return redirect('/drivers');
     }
 
-    public function editDriver(Driver $driver): Response
+    public function showEditScreen(Driver $driver): Response
     {
         return Inertia::render('Drivers/Edit', [
             'driver' => $driver,
         ]);
     }
 
-    public function update(Driver $driver, Request $request): void
+    public function editDriver(Driver $driver, Request $request) {
+        $incomingFields = $request->validate([
+            'user_id' => 'required',
+            'heavy_license' => 'required',
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'status' => 'required',
+        ]);
+
+        $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
+        $incomingFields['name'] = strip_tags($incomingFields['name']);
+        $incomingFields['email'] = strip_tags($incomingFields['email']);
+        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
+        $incomingFields['status'] = strip_tags($incomingFields['status']);
+        
+        $driver->update([
+            'heavy_license' => $incomingFields['heavy_license'],
+        ]);
+    
+        $user = User::findOrFail($incomingFields['user_id']);
+        $user->update([
+            'name' => $incomingFields['name'],
+            'email' => $incomingFields['email'],
+            'phone' => $incomingFields['phone'],
+            'status_code' => $incomingFields['status'],
+        ]);
+
+        return redirect('/drivers');
+    }
+
+    public function deleteDriver($id)
     {
-        //
+        $driver = Driver::findOrFail($id);
+        $driver->delete();
+
+        $user = User::findOrFail($id);
+        $user->update([                             //USER TYPES-> 0 -> Nan (TODO)
+            'type_of_user_code' => "0",
+        ]);
+        
+        return redirect('/drivers');
     }
 }

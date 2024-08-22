@@ -1,14 +1,16 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 
 
-export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
+export default function AllDrivers( {auth, drivers} ) {
 
-    const user = users.map((user)=>(
-        <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
-    ));
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // const user = users.map((user)=>(
+    //     <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
+    // ));
 
     const driver = drivers.map((driver)=>(
         <div>
@@ -20,8 +22,8 @@ export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
     
     //Deconstruct data to send to table component
     let cols;
-    let driverInfo = drivers.map((user) => (
-        {id: user.id, name: user.name, email: user.email, phone: user.phone, heavy_license: user.heavy_license , status: user.status_code } 
+    let driverInfo = drivers.map((driver) => (
+        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status }
     ))
 
     if(drivers.length > 0){
@@ -44,28 +46,17 @@ export default function AllDrivers( {auth, users, drivers, csrfToken} ) {
         >
 
             <Head title="Condutores" />
+        
 
-            {drivers && cols && <Table data={driverInfo} columns={cols} columnsLabel={driverColumnLabels} editAction="drivers.edit" dataId="user_id"/> }
-            
-            <h2>Criar condutor a partir de utilizador existente</h2>            
-            <form action="/drivers/create" method='POST'>
-                <input type="hidden" name="_token" value={csrfToken} />
-                    <p>Selecione o utilizador</p>
-                    <select name="user_id" id="">
-                        {user}
-                    </select>
+            <div className='m-2 p-6'>
 
-                    <p>Carta de Pesados</p>
-                    <input type="radio" name="heavy_license" value="0"/>
-                    <label>Não</label><br/>
-                    <input type="radio" name="heavy_license" value="1"/>
-                    <label>Sim</label><br/>
-                    <p><button type="submit" value="Submit">Submeter</button></p>
-            </form>
-            
-            <br />
-            <strong>Condutores</strong>
-            {driver}
+                <a href={route('drivers.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                    Novo Condutor
+                </a>
+
+                {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
+
+            </div>
 
         </AuthenticatedLayout>
     );
