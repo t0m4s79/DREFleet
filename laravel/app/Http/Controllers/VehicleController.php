@@ -27,7 +27,7 @@ class VehicleController extends Controller
             'wheelchair_adapted' => 'required',
             'capacity' => 'required',
             'fuel_consumption' => 'required',
-            'status_code' => 'required',
+            'status' => 'required',
             'current_month_fuel_requests' => 'required'
         ]);
 
@@ -38,7 +38,7 @@ class VehicleController extends Controller
         $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
         $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
-        $incomingFields['status_code'] = strip_tags($incomingFields['status_code']);
+        $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
 
         Vehicle::create($incomingFields);
@@ -58,7 +58,7 @@ class VehicleController extends Controller
             'wheelchair_adapted' => 'required',
             'capacity' => 'required',
             'fuel_consumption' => 'required',
-            'status_code' => 'required',
+            'status' => 'required',
             'current_month_fuel_requests' => 'required'
         ]);
 
@@ -69,7 +69,7 @@ class VehicleController extends Controller
         $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
         $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
-        $incomingFields['status_code'] = strip_tags($incomingFields['status_code']);
+        $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
 
         $vehicle->update($incomingFields);

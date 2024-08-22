@@ -22,7 +22,7 @@ export default function AllVehicles( {auth, vehicles}) {
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
-        status_code: 'Estado',
+        status: 'Estado',
         current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mes)'
     };
 
@@ -33,28 +33,6 @@ export default function AllVehicles( {auth, vehicles}) {
         >
 
             <Head title="Veículos" />
-
-            {/* <div className='py-12'>
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className='p-6'>
-
-                            <table className='items-center bg-transparent w-full border-collapse '>
-                                <tbody>
-                                {vehicles.map( (vehicle) => (
-                                    <tr key={vehicle.id}>
-                                        {(Object.values(vehicle)).map((value,index)=>(
-                                            <td key={index}>{value}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                                </tbody>                                
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-            </div> */}
 
             {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
 
@@ -91,10 +69,14 @@ export default function AllVehicles( {auth, vehicles}) {
                 <input type="number" step=".001" id="fuel_consumption" name="fuel_consumption" placeholder="0.000"></input><br/>
 
                 <p>Mostrar veículo imediatamente como disponível?</p>
-                <input type="radio" name="status_code" value="0"/>
-                <label>Não</label><br/>
-                <input type="radio" name="status_code" value="1"/>
-                <label>Sim</label><br/>
+                <input type="radio" name="status" value="Disponível"/>
+                <label>Disponível</label><br/>
+                <input type="radio" name="status" value="Indisponível"/>
+                <label>Indisponível</label><br/>
+                <input type="radio" name="status" value="Em manutenção"/>
+                <label>Em manutenção</label><br/>
+                <input type="radio" name="status" value="Escondido"/>
+                <label>Escondido</label><br/>
 
                 <label for="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
                 <input type="number" id="current_month_fuel_requests" name="current_month_fuel_requests" min="0" max="100"></input><br/>

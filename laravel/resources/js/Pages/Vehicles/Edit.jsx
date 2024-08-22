@@ -11,9 +11,11 @@ export default function Edit({ auth, vehicle}) {
         wheelchair_adapted: vehicle.wheelchair_adapted,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
-        status_code: vehicle.status_code,
+        status: vehicle.status,
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
     });
+
+    console.log("aa" + formData.status)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
@@ -140,25 +142,43 @@ export default function Edit({ auth, vehicle}) {
                                 className="mt-1 block w-full"
                             /><br/>
 
-                            <p>Mostrar veículo imediatamente como disponível?</p>
+                            <p>Estado</p>
                             <input 
                                 type="radio" 
-                                id="status_code_no" 
-                                name="status_code" 
-                                value="0" 
-                                checked={formData.status_code == "0"} 
+                                id="status_available" 
+                                name="status" 
+                                value="Disponível" 
+                                checked={formData.status == "Disponível"} 
                                 onChange={handleChange}
                             />
-                            <label htmlFor="status_code_no">Não</label><br/>
+                            <label htmlFor="status_available">Disponível</label><br/>
                             <input 
                                 type="radio" 
-                                id="status_code_yes" 
-                                name="status_code" 
-                                value="1" 
-                                checked={formData.status_code == "1"} 
+                                id="status_unavailable" 
+                                name="status" 
+                                value="Indisponível" 
+                                checked={formData.status == "Indisponível"} 
                                 onChange={handleChange}
                             />
-                            <label htmlFor="status_code_yes">Sim</label><br/>
+                            <label htmlFor="status_unavailable">Indisponível</label><br/>
+                            <input 
+                                type="radio" 
+                                id="status_maintenance" 
+                                name="status" 
+                                value="Em manutenção" 
+                                checked={formData.status == "Em manutenção"} 
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="status_maintenance">Em manutenção</label><br/>
+                            <input 
+                                type="radio" 
+                                id="status_hidden" 
+                                name="status" 
+                                value="Escondido" 
+                                checked={formData.status == "Escondido"} 
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="status_hidden">Escondido</label><br/>
 
                             <label htmlFor="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
                             <input 
