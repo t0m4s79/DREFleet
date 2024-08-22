@@ -22,6 +22,16 @@ class Vehicle extends Model
         'status',
         'current_month_fuel_requests'
     ];
+
+    public function getHeavyVehicleAttribute($value)
+    {
+        return $value ? 'Sim' : 'Não';
+    }
+
+    public function getWheelchairAdaptedAttribute($value)
+    {
+        return $value ? 'Sim' : 'Não';
+    }
 }
 
 
