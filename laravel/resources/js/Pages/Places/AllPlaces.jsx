@@ -52,16 +52,16 @@ export default function AllPlaces( {auth, places, kids} ) { //falta kids sem pla
             <form action="places/create" method='POST' id="newPlaceForm">
                 <input type="hidden" name="_token" value={csrfToken} />
 
-                <label for="name">Morada</label><br/>
+                <label htmlFor="name">Morada</label><br/>
                 <input type="text" id="address" name="address"/><br/>
 
-                <label for="known_as">Conhecido como</label><br/>
+                <label htmlFor="known_as">Conhecido como</label><br/>
                 <input type="text" id="known_as" name="known_as"/><br/>
 
-                <label for="latitude">Latitude</label><br/>
+                <label htmlFor="latitude">Latitude</label><br/>
                 <input type="number" step=".00001" id="latitude" name="latitude" placeholder="0.00000" min="-90" max="90"></input><br/>
 
-                <label for="latitude">Longitude</label><br/>
+                <label htmlFor="latitude">Longitude</label><br/>
                 <input type="number" step=".00001" id="longitude" name="longitude" placeholder="0.00000" min="-180" max="180"></input><br/>
 
                 <p>Selecione a criança</p>

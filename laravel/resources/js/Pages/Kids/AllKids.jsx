@@ -5,14 +5,6 @@ import { Head, Link } from '@inertiajs/react';
 export default function AllKids( {auth, kids} ) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    const kid = kids.map((kid)=>(
-        <div>
-            <p key={kid.id}>{kid.name}</p>
-        </div>
-    ));
-
-    console.log(kids)
     
     //Deconstruct data to send to table component
     let cols;

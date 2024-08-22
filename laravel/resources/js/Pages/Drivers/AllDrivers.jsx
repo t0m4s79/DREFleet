@@ -5,18 +5,6 @@ import { Head, Link } from '@inertiajs/react';
 export default function AllDrivers( {auth, drivers} ) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    // const user = users.map((user)=>(
-    //     <option key={user.id} value={user.id}>{user.id} - {user.name}</option>
-    // ));
-
-    const driver = drivers.map((driver)=>(
-        <div>
-            <p key={driver.id}>{driver.name}</p>
-        </div>
-    ));
-
-    console.log(drivers)
     
     //Deconstruct data to send to table component
     let cols;

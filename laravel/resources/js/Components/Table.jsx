@@ -5,7 +5,7 @@ const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId
     //Delete model instance through hidden form
     const handleDelete = async (id) => {
 
-        if (window.confirm('Tem a certeza que pretende eliminar a entidade com id ' + id + '?')) {
+        if (window.confirm('Tem a certeza que pretende eliminar o elemento com id ' + id + '?')) {
 
             const form = document.createElement('form');
             form.action = route(deleteAction, id);
