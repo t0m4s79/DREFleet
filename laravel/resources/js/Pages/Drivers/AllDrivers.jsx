@@ -54,7 +54,7 @@ export default function AllDrivers( {auth, drivers} ) {
                     Novo Condutor
                 </a>
 
-                {drivers && cols && <Table data={driverInfo} columns={cols} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
+                {drivers && cols && <Table data={driverInfo} columns={cols} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
 
             </div>
 
