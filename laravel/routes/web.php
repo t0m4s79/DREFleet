@@ -3,8 +3,9 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Http\Controllers\DriverController;
 use App\Http\Controllers\KidController;
+use App\Http\Controllers\DriverController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 
@@ -48,6 +49,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditScreen'])->name('kids.showEdit');
     Route::post('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
+
+    //PLACES
+    Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
+    Route::post('/places/create', [PlaceController::class, 'createPlace'])->name('places.create');
+    Route::get('/places/edit/{place}', [PlaceController::class, 'showEditScreen'])->name('places.showEdit');
+    Route::post('/places/edit/{place}', [PlaceController::class, 'editPlace'])->name('places.edit');
+    Route::delete('/places/delete/{place}', [PlaceController::class, 'deletePlace'])->name('places.delete');
 
 });
 

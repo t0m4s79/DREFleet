@@ -4,7 +4,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, TextField } from '@mui/material';
 import { useState } from 'react';
 
-export default function NewDriver( {auth, users, drivers} ) {
+export default function NewDriver( {auth, users} ) {
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
@@ -75,7 +75,7 @@ export default function NewDriver( {auth, users, drivers} ) {
                                     onChange={(e) => setData('heavy_license', e.target.value)}
                                 />
                                 <label>Sim</label><br/>
-                                
+
                                 <p><button type="submit" value="Submit">Submeter</button></p>
 
                                 <Transition
