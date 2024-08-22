@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('wheelchair_adapted');
             $table->integer('capacity');
             $table->decimal('fuel_consumption', 6, 3);
-            $table->integer('status_code');
+            $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido']);
             $table->tinyInteger('current_month_fuel_requests');
         });
     }

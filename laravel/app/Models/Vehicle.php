@@ -19,7 +19,7 @@ class Vehicle extends Model
         'wheelchair_adapted',
         'capacity',
         'fuel_consumption',
-        'status_code',
+        'status',
         'current_month_fuel_requests'
     ];
 }

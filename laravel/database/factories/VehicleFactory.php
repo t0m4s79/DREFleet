@@ -25,7 +25,7 @@ class VehicleFactory extends Factory
             'wheelchair_adapted' => rand(0,1),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
-            'status_code' => rand(0,1),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0,6)
         ];
     }
