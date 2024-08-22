@@ -75,6 +75,7 @@ export default function NewDriver( {auth, users, drivers} ) {
                                     onChange={(e) => setData('heavy_license', e.target.value)}
                                 />
                                 <label>Sim</label><br/>
+                                
                                 <p><button type="submit" value="Submit">Submeter</button></p>
 
                                 <Transition
