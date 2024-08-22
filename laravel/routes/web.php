@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
+    Route::get('/vehicles/create', [VehicleController::class, 'showCreateVehicleForm'])->name('vehicles.create');
     Route::post('/vehicles/create', [VehicleController::class, 'createVehicle'])->name('vehicles.create');
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditScreen'])->name('vehicles.showEdit');
     Route::post('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');

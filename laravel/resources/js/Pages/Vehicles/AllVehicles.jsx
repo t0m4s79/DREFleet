@@ -34,9 +34,13 @@ export default function AllVehicles( {auth, vehicles}) {
 
             <Head title="Veículos" />
 
+            <a href={route('vehicles.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Novo Veículo
+            </a>
+
             {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
 
-            <h2>Criar veículo</h2>
+            {/* <h2>Criar veículo</h2>
             <form action="/vehicles/create" method='POST' id="newVehicleForm">
                 <input type="hidden" name="_token" value={csrfToken} />
 
@@ -83,7 +87,7 @@ export default function AllVehicles( {auth, vehicles}) {
 
                 <p><button type="submit" value="Submit">Submeter</button></p>
 
-            </form>
+            </form> */}
         </AuthenticatedLayout>
     )
 }
