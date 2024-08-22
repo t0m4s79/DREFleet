@@ -29,6 +29,15 @@ export default function AllDrivers( {auth, drivers} ) {
     if(drivers.length > 0){
         cols = Object.keys(driverInfo[0])
     }
+
+    const driverColumnLabels = {
+        id: 'ID',
+        name: 'Nome',
+        email: 'Email',
+        phone: 'Numero de Telefone',
+        heavy_license: 'Carta de pesados',
+        status: 'Estado'
+    };
     
     return (
         <AuthenticatedLayout
@@ -37,6 +46,7 @@ export default function AllDrivers( {auth, drivers} ) {
         >
 
             <Head title="Condutores" />
+        
 
             <div className='m-2 p-6'>
 

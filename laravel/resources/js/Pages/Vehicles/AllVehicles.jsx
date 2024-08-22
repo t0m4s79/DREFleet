@@ -13,6 +13,18 @@ export default function AllVehicles( {auth, vehicles}) {
         cols = Object.keys(vehicles[0]);
     }
 
+    const VehicleColumnLabels = {
+        id: 'ID',
+        make: 'Marca',
+        model: 'Modelo',
+        license_plate: 'Matricula',
+        heavy_vehicle: 'Veiculo Pesado',
+        wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
+        capacity: 'Capacidade',
+        fuel_consumption: 'Consumo',
+        status_code: 'Estado',
+        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mes)'
+    };
 
     return (
         <AuthenticatedLayout
@@ -44,7 +56,7 @@ export default function AllVehicles( {auth, vehicles}) {
                 
             </div> */}
 
-            {vehicles && cols && <Table data={vehicles} columns={cols} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
+            {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
 
             <h2>Criar veículo</h2>
             <form action="/vehicles/create" method='POST' id="newVehicleForm">

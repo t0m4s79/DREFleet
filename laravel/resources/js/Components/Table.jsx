@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Table = ({data, columns, editAction, deleteAction, dataId}) => {
+const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId}) => {
 
     //Delete model instance through hidden form
     const handleDelete = async (id) => {
@@ -30,6 +30,8 @@ const Table = ({data, columns, editAction, deleteAction, dataId}) => {
         }
     };
 
+    //console.log('data', data)
+    //console.log('columnsLabel', columnsLabel)
     return (
         <div className='py-12'>
             <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
@@ -39,7 +41,7 @@ const Table = ({data, columns, editAction, deleteAction, dataId}) => {
                             <thead className='border-b-2 overflow-scroll'>
                                 <tr>
                                     {columns.map((col,index) => ( 
-                                        <td key={index}>{col}</td>
+                                        <td key={index}>{columnsLabel[col] || col}</td>
                                     ))}
                                     <td>Ações</td>
                                 </tr>
