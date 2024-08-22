@@ -16,7 +16,7 @@ export default function NewDriver( {auth, users, drivers} ) {
     //console.log('users', users)
 
     const userList = users.map((user) => {
-        return {value: user.id, label: user.name, }
+        return {value: user.id, label: `#${user.id} - ${user.name}`, }
     })
 
     // Handle Autocomplete selection
