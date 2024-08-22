@@ -34,6 +34,8 @@ export default function AllVehicles( {auth, vehicles}) {
 
             <Head title="Veículos" />
 
+            {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
+
             <h2>Criar veículo</h2>
             <form action="/vehicles/create" method='POST' id="newVehicleForm">
                 <input type="hidden" name="_token" value={csrfToken} />
