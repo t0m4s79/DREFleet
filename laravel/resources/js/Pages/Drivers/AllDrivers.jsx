@@ -1,8 +1,6 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
-
 
 export default function AllDrivers( {auth, drivers} ) {
 

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('known_as');
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->decimal('latitude', total: 8, places: 5);
+            $table->decimal('longitude', total: 8, places: 5);
             $table->unsignedBigInteger('kid_id');
             $table->foreign('kid_id')->references('id')->on('kids')->onDelete('cascade');
         });
