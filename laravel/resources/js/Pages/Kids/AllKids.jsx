@@ -1,18 +1,26 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
+import { Button } from '@mui/material';
 
 export default function AllKids( {auth, kids} ) {
 
-    console.log(kids)
+    //console.log('kids', kids)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;
-    let kidInfo = kids.map((kid) => (
-        {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kid.place_ids }
-    ))
+
+    let kidPlacesIds;
+
+    let kidInfo = kids.map((kid) => {
+
+        kidPlacesIds = kid.place_ids.map((place) => (
+            <Button variant='outlined' href={route('places.showEdit', place)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{place}</Button>
+        ))
+        return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
+    })
 
     if(kids.length > 0){
         cols = Object.keys(kidInfo[0])
