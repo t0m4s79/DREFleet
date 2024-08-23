@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kids', function (Blueprint $table) {              //TODO: kids and places model relation and timestamps
+        Schema::create('kids', function (Blueprint $table) {              //TODO: kids and places model relation
             $table->id();
             $table->boolean('wheelchair');
             $table->string('name');
             $table->string('phone');
             $table->string('email');
+            $table->timestamps();
         });
     }
 

@@ -10,8 +10,6 @@ class Kid extends Model                 //TODO: relations with places
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'id',
         'wheelchair',
