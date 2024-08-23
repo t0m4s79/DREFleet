@@ -11,10 +11,15 @@ class PlaceController extends Controller
 {
     public function index()//: Response
     {
-        $places = Place::all();
-        $kids = Kid::all();
+        $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
-        return Inertia::render('Places/AllPlaces',['places' => $places, 'kids' => $kids]);
+        // Add a new attribute for place IDs
+        $places->transform(function ($place) {
+            $place->kid_ids = $place->kids->pluck('id')->toArray(); // Collect place IDs
+            return $place;
+        });
+
+        return Inertia::render('Places/AllPlaces',['places' => $places]);
     }
 
     //TODO: more verification in each field and frontend verification messages!!!

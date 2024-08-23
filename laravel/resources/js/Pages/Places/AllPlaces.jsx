@@ -2,14 +2,16 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function AllPlaces( {auth, places} ) { //falta kids sem places para formulario de inserção
+export default function AllPlaces( {auth, places} ) {
+
+    console.log(places)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;
     let placeInfo = places.map((place) => (
-        {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude}
+        {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids.length, kids_ids: place.kid_ids}
     ))
 
     if(places.length > 0){
@@ -22,6 +24,8 @@ export default function AllPlaces( {auth, places} ) { //falta kids sem places pa
         known_as: 'Conhecido como',
         latitude: 'Latitude',
         longitude: 'Longitude',
+        kids_count: 'Número de Crianças',
+        kids_ids: 'Ids das Crianças',
     };
     
     return (

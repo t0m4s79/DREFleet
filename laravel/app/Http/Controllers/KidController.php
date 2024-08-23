@@ -11,13 +11,14 @@ class KidController extends Controller
 {
     public function index()//: Response
     {
-        $kids = Kid::with(['places:id'])->get(); // Load places with only the id column
+        $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
         // Add a new attribute for place IDs
         $kids->transform(function ($kid) {
             $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
             return $kid;
         });
+
         return Inertia::render('Kids/AllKids',['kids' => $kids]);
     }
 
