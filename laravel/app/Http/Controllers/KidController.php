@@ -60,9 +60,7 @@ class KidController extends Controller
         return Inertia::render('Kids/Edit',['kid'=> $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
     }
 
-    public function editKid(Kid $kid, Request $request) {
-        dd($request);
-        
+    public function editKid(Kid $kid, Request $request) {        
         $incomingFields = $request->validate([
             'name' => 'required', 
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
