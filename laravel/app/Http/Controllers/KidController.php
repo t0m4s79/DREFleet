@@ -39,14 +39,14 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['places'])) {
-            $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
+        if (isset($incomingFields['addPlaces'])) {
+            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
         } else {
-            $incomingFields['places'] = []; // If no places were selected, pass an empty array
+            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
         }
 
         $kid = Kid::create($incomingFields);
-        $kid->places()->attach($incomingFields['places']);
+        $kid->places()->attach($incomingFields['addPlaces']);
         return redirect('/kids');
     }
 
@@ -61,12 +61,15 @@ class KidController extends Controller
     }
 
     public function editKid(Kid $kid, Request $request) {
+        dd($request);
+        
         $incomingFields = $request->validate([
             'name' => 'required', 
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
             'wheelchair' => 'required',
-            'places' => 'array',
+            'addPlaces' => 'array',
+            'removePlaces' => 'array',
         ]);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -74,14 +77,21 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['places'])) {
-            $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
+        if (isset($incomingFields['addPlaces'])) {
+            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
         } else {
-            $incomingFields['places'] = []; // If no places were selected, pass an empty array
+            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
+        }
+
+        if (isset($incomingFields['removePlaces'])) {
+            $incomingFields['removePlaces'] = array_map('strip_tags', $incomingFields['removePlaces']);
+        } else {
+            $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
         }
         
         $kid->update($incomingFields);
-        $kid->places()->attach($incomingFields['places']);
+        $kid->places()->attach($incomingFields['addPlaces']);
+        $kid->places()->detach($incomingFields['removePlaces']);
         return redirect('/kids');
     }
 
