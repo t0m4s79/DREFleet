@@ -34,7 +34,7 @@ class PlaceController extends Controller
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
         $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
-        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);~
+        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
         Place::create($incomingFields);
         return redirect('/places');
