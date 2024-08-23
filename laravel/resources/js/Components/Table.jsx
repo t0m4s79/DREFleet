@@ -67,7 +67,7 @@ const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId
 
     const options = [5, 10, 25]; // Options for records per page
 
-    //console.log('data', data)
+    console.log('data', data)
     //console.log('columnsLabel', columnsLabel)
     return (
         <div className='py-12'>
@@ -117,7 +117,7 @@ const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId
                                     currentData.map((elem, i) => (
                                         <tr key={elem[dataId]}>
                                             {columns.map((col, index) => (
-                                                <td key={index}>{elem[col]}</td>
+                                                <td key={index}>{elem[col] !== undefined ? elem[col]: '-'}</td>
                                             ))}
                                             <td className="px-6 py-4">
                                                 <a href={route(editAction, elem.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
