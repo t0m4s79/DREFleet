@@ -84,7 +84,7 @@ export default function Edit({ auth, vehicle}) {
                                 id="heavy_vehicle_no" 
                                 name="heavy_vehicle" 
                                 value="0" 
-                                checked={formData.heavy_vehicle == "0"} 
+                                checked={formData.heavy_vehicle == "Não"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="heavy_vehicle_no">Não</label><br/>
@@ -93,7 +93,7 @@ export default function Edit({ auth, vehicle}) {
                                 id="heavy_vehicle_yes" 
                                 name="heavy_vehicle" 
                                 value="1" 
-                                checked={formData.heavy_vehicle == "1"} 
+                                checked={formData.heavy_vehicle == "Sim"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="heavy_vehicle_yes">Sim</label><br/>
@@ -104,7 +104,7 @@ export default function Edit({ auth, vehicle}) {
                                 id="wheelchair_no" 
                                 name="wheelchair_adapted" 
                                 value="0" 
-                                checked={formData.wheelchair_adapted == "0"} 
+                                checked={formData.wheelchair_adapted == "Não"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="wheelchair_no">Não</label><br/>
@@ -113,7 +113,7 @@ export default function Edit({ auth, vehicle}) {
                                 id="wheelchair_yes" 
                                 name="wheelchair_adapted" 
                                 value="1" 
-                                checked={formData.wheelchair_adapted == "1"} 
+                                checked={formData.wheelchair_adapted == "Sim"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="wheelchair_yes">Sim</label><br/>

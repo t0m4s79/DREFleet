@@ -77,7 +77,7 @@ export default function Edit({ auth, driver }) {
                                 id="heavy_license_no" 
                                 name="heavy_license" 
                                 value="0" 
-                                checked={formData.heavy_license == "0"} 
+                                checked={formData.heavy_license == "Não"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="heavy_vehicle_no">Não</label><br/>
@@ -86,7 +86,7 @@ export default function Edit({ auth, driver }) {
                                 id="heavy_license_yes" 
                                 name="heavy_license" 
                                 value="1" 
-                                checked={formData.heavy_license == "1"} 
+                                checked={formData.heavy_license == "Sim"} 
                                 onChange={handleChange}
                             />
                             <label htmlFor="heavy_license_yes">Sim</label><br/>
