@@ -38,7 +38,7 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
 
                                 <NavLink href={route('places.index')} active={route().current('places.index')}>
-                                    Lugares
+                                    Moradas
                                 </NavLink>
                             </div>
                         </div>

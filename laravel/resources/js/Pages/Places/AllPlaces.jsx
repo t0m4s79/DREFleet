@@ -27,10 +27,10 @@ export default function AllPlaces( {auth, places} ) { //falta kids sem places pa
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Lugares</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Moradas</h2>}
         >
 
-            <Head title="Lugares" />
+            <Head title="Moradas" />
         
 
             <div className='m-2 p-6'>
@@ -43,7 +43,7 @@ export default function AllPlaces( {auth, places} ) { //falta kids sem places pa
 
             </div>
 
-            <h2>Criar lugar</h2>
+            <h2>Criar morada</h2>
             <form action="places/create" method='POST' id="newPlaceForm">
                 <input type="hidden" name="_token" value={csrfToken} />
 

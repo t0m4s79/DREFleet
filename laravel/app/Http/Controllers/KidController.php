@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Kid;
 use Inertia\Inertia;
+use App\Models\Place;
 use Illuminate\Http\Request;
 
 class KidController extends Controller
 {
     public function index()//: Response
     {
-        $kids = Kid::all();
+        $kids = Kid::with(['places:id'])->get(); // Load places with only the id column
 
+        // Add a new attribute for place IDs
+        $kids->transform(function ($kid) {
+            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
+            return $kid;
+        });
         return Inertia::render('Kids/AllKids',['kids' => $kids]);
     }
 

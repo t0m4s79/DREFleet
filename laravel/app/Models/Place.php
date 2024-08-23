@@ -20,7 +20,7 @@ class Place extends Model
         'longitude'
     ];
 
-    public function kid(): BelongsToMany
+    public function kids(): BelongsToMany
     {
         return $this->belongsToMany(Kid::class, 'kid_place', 'place_id', 'kid_id')->withTimestamps();
     }
