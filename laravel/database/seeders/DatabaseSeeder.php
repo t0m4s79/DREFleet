@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         $places = Place::all();
 
         $kids->each(function ($kid) use ($places) {
-            $kid->places()->attach(
+            $kid->places()->sync(
                 $places->random(rand(1,3))->pluck('id')->toArray()
             );
         });
