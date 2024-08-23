@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Place;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Kid extends Model                 //TODO: relations with places
 {
@@ -18,8 +19,8 @@ class Kid extends Model                 //TODO: relations with places
         'email'
     ];
 
-    public function places(): HasMany 
+    public function places(): BelongsToMany 
     {
-        return $this->hasMany(Place::class);
+        return $this->belongSToMany(Place::class, 'kid_place', 'kid_id', 'place_id')->withTimestamps();
     }
 }

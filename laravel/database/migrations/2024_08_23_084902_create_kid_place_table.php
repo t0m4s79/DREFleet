@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('places', function (Blueprint $table) {              //TODO: kids and places model relation and timestamps
-            $table->id();
-            $table->string('address');
-            $table->string('known_as');
-            $table->decimal('latitude', total: 8, places: 5);
-            $table->decimal('longitude', total: 8, places: 5);
+        Schema::create('kid_place', function (Blueprint $table) {
+            $table->foreignId('kid_id')->constrained()->onDelete('cascade');
+            $table->foreignId('place_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+        
+            $table->primary(['kid_id', 'place_id']); // Composite primary key            
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('places');
+        Schema::dropIfExists('kid_place');
     }
 };

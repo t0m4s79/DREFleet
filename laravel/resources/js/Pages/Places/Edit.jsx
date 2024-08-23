@@ -9,7 +9,6 @@ export default function Edit({auth, place, kids}) {
         known_as: place.known_as,
         latitude: place.latitude,
         longitude: place.longitude,
-        kid_id: place.kid_id,
     });
 
     
@@ -82,11 +81,6 @@ export default function Edit({auth, place, kids}) {
                                 onChange={handleChange}
                                 className="mt-1 block w-full"
                             /><br/>
-
-                            <p>Selecione a criança</p>
-                            <select name="kid_id" id="">
-                                {kid}
-                            </select>
 
                             <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
                         </form>
