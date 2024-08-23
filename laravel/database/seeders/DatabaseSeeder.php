@@ -22,5 +22,14 @@ class DatabaseSeeder extends Seeder
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();
         Place::factory(15)->create();
+
+        $kids = Kid::all();
+        $places = Place::all();
+
+        $kids->each(function ($kid) use ($places) {
+            $kid->places()->attach(
+                $places->random(rand(1,3))->pluck('id')->toArray()
+            );
+        });
     }
 }

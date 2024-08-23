@@ -4,40 +4,24 @@ namespace App\Models;
 
 use App\Models\Kid;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 //TODO: check if a place should always belong to a kid
 class Place extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'id',
         'address',
         'known_as',
         'latitude',
-        'longitude',
-        'kid_id'
+        'longitude'
     ];
 
-    protected $appends = [
-        'name',
-    ];
-
-    protected $hidden = [
-        'kid',
-    ];
-
-    public function kid(): BelongsTo
+    public function kids(): BelongsToMany
     {
-        return $this->belongsTo(Kid::class, 'kid_id');
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->kid->name;
+        return $this->belongsToMany(Kid::class, 'kid_place', 'place_id', 'kid_id')->withTimestamps();
     }
 }

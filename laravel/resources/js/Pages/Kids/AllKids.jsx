@@ -4,12 +4,14 @@ import { Head, Link } from '@inertiajs/react';
 
 export default function AllKids( {auth, kids} ) {
 
+    console.log(kids)
+
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;
     let kidInfo = kids.map((kid) => (
-        {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair }
+        {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kid.place_ids }
     ))
 
     if(kids.length > 0){
@@ -21,16 +23,18 @@ export default function AllKids( {auth, kids} ) {
         name: 'Nome',
         email: 'Email',
         phone: 'Numero de Telefone',
-        wheelchair: 'Cadeira de Rodas'
+        wheelchair: 'Cadeira de Rodas',
+        places_count: 'Número de Moradas',
+        place_ids: 'Ids das Moradas'
     };
     
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Condutores</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Crianças</h2>}
         >
 
-            <Head title="Condutores" />
+            <Head title="Crianças" />
         
 
             <div className='m-2 p-6'>

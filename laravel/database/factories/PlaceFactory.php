@@ -23,7 +23,6 @@ class PlaceFactory extends Factory
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
-            'kid_id' => Kid::factory(),
         ];
     }
 }
