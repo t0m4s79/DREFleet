@@ -1,18 +1,27 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
+import { Button } from '@mui/material';
 
 export default function AllPlaces( {auth, places} ) {
 
-    console.log(places)
+    //console.log('places', places)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;
-    let placeInfo = places.map((place) => (
-        {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids.length, kids_ids: place.kid_ids}
-    ))
+    let kidPlacesIds;
+    let placeInfo = places.map((place) => {
+        if(place.kids.length){
+            kidPlacesIds = place.kids.map((kid) => (
+                <Button variant='outlined' href={route('kids.showEdit', kid)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{kid.id}</Button>
+            ))
+        }
+        else kidPlacesIds = '-'
+
+        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
+    })
 
     if(places.length > 0){
         cols = Object.keys(placeInfo[0])
