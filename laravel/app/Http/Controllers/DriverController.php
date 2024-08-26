@@ -49,8 +49,8 @@ class DriverController extends Controller
 
         $user = User::findOrFail($incomingFields['user_id']);
 
-        $user->update([                             //USER TYPES-> 1 -> DRIVER (TODO)
-            'type_of_user_code' => 1,
+        $user->update([
+            'user_type' => "Condutor",
         ]);
 
         return redirect('/drivers');
@@ -100,8 +100,8 @@ class DriverController extends Controller
         $driver->delete();
 
         $user = User::findOrFail($id);
-        $user->update([                             //USER TYPES-> 0 -> Nan (TODO)
-            'type_of_user_code' => "0",
+        $user->update([
+            'user_type' => "Nenhum",
         ]);
         
         return redirect('/drivers');

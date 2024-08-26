@@ -18,8 +18,9 @@ class DriverFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'heavy_license' => rand(0,1),
-        ];
-    }
+            'user_id' => User::factory()->state([
+                'user_type' => 'Condutor',
+            ]),
+            'heavy_license' => rand(0, 1),
+        ];    }
 }

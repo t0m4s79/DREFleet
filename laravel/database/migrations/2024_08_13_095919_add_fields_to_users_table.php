@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone')->default('0');              //TODO: Take off defaults
-            $table->integer('type_of_user_code')->default(0);
+            $table->enum('user_type',['Nenhum','Condutor','Gestor','Técnico','Admin'])->default('Nenhum');
             $table->integer('status_code')->default(0);         
         });
     }
