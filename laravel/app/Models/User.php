@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'status_code',
-        'type_of_user_code',
+        'user_type',
     ];
 
     /**
