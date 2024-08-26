@@ -26,5 +26,6 @@
 
 # Entity Relationship Diagram
 
-  ![Diagrama Relações](https://github.com/user-attachments/assets/bb5a845b-911d-4d83-a18a-29d034b35503)
+![Diagrama Relações](https://github.com/user-attachments/assets/c6c15152-f48e-4fbd-943c-e86f6a96cb76)
+
 
