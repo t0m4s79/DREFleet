@@ -3,8 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 
 export default function AllDrivers( {auth, drivers} ) {
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;

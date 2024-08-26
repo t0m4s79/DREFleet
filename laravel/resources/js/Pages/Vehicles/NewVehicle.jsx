@@ -145,7 +145,7 @@ export default function NewDriver( {auth,vehicle} ) {
                                 {errors.fuel_consumption && <InputError message={errors.fuel_consumption}/>}
                                 <br/>
 
-                                <p>Mostrar veículo imediatamente como:</p>
+                                <p>Estado do Veículo:</p>
                                 <input 
                                     type="radio" 
                                     name="status" 
