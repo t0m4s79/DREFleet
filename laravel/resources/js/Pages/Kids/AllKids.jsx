@@ -54,41 +54,14 @@ export default function AllKids( {auth, kids, places} ) {
 
             <div className='m-2 p-6'>
 
-                {/* <a href={route('kids.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Condutor
-                </a> */}
+                <a href={route('kids.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                    Nova Criança
+                </a>
 
                 {kids && cols && <Table data={kidInfo} columns={cols} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/> }
 
             </div>
 
-            <h2>Criar criança</h2>
-            <form action="kids/create" method='POST' id="newKidForm">
-                <input type="hidden" name="_token" value={csrfToken} />
-
-                <label htmlFor="name">Nome</label><br/>
-                <input type="text" id="name" name="name"/><br/>
-
-                <label htmlFor="email">Email do encarregado de educação</label><br/>
-                <input type="email" id="email" name="email"/><br/>
-
-                <label htmlFor="phone">Número de telefone do encarregado de educação</label><br/>
-                <input type="tel" id="phone" name="phone"/><br/>
-                
-                <p>Utiliza cadeira de rodas?</p>
-                <input type="radio" name="wheelchair" value="1"/>
-                <label>Sim</label><br/>
-                <input type="radio" name="wheelchair" value="0"/>
-                <label>Não</label><br/>
-
-                <p>Adicionar Morada</p>
-                <select name="places[]" id="places" multiple>
-                    <option value="">-- Nenhuma Selecionada --</option>
-                        {place}
-                </select>
-
-                <p><button type="submit" value="Submit">Submeter</button></p>
-            </form>
 
         </AuthenticatedLayout>
     );
