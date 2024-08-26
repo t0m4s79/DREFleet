@@ -23,7 +23,12 @@ class DriverController extends Controller
 
         $drivers = Driver::all();
 
-        return Inertia::render('Drivers/AllDrivers',['drivers' => $drivers]);
+        return Inertia::render('Drivers/AllDrivers',[
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'drivers' => $drivers]);
     }
 
     public function showCreateDriverForm()
@@ -45,15 +50,16 @@ class DriverController extends Controller
         $incomingFields['user_id'] = strip_tags($incomingFields['user_id']);
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         
-        Driver::create($incomingFields);
-
-        $user = User::findOrFail($incomingFields['user_id']);
-
-        $user->update([
-            'user_type' => "Condutor",
-        ]);
-
-        return redirect('/drivers');
+        try{
+            Driver::create($incomingFields);
+            $user = User::findOrFail($incomingFields['user_id']);
+            $user->update([
+                'user_type' => "Condutor",
+            ]);
+            return redirect('/drivers')->with('message', 'Condutor/a criado/a com sucesso!');;
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao criar o condutor. Tente novamente.');
+        }
     }
 
     public function showEditScreen(Driver $driver): Response
