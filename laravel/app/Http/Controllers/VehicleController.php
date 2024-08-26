@@ -14,7 +14,12 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::All();
 
-        return Inertia::render('Vehicles/AllVehicles',['vehicles'=> $vehicles]);
+        return Inertia::render('Vehicles/AllVehicles',[
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'vehicles'=> $vehicles]);
     }
 
     public function showCreateVehicleForm() {
@@ -45,8 +50,12 @@ class VehicleController extends Controller
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
 
-        Vehicle::create($incomingFields);
-        return redirect('/vehicles');
+        try{
+            Vehicle::create($incomingFields);
+            return redirect('/vehicles')->with('message', 'Veículo criado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+        }
     }
 
     public function showEditScreen(Vehicle $vehicle) {
