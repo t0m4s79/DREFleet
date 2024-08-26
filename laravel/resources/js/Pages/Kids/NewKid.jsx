@@ -1,3 +1,4 @@
+import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material';
@@ -18,12 +19,9 @@ export default function NewKid({auth, places}) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    console.log('places', places)
-
     const placesList = places.map((place) => {
         return {value: place.id, label: `#${place.id} - ${place.address}`}
     })
-    console.log('placesList', placesList)
 
     const handleChange = (event) => {
         const {
@@ -35,8 +33,6 @@ export default function NewKid({auth, places}) {
         setKidPlaces(selectedPlaces);
         setData('places', selectedPlaces);
     };
-
-    console.log('kidPlaces', kidPlaces)
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -64,7 +60,9 @@ export default function NewKid({auth, places}) {
                                 name="name"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
-                            /><br/>
+                            />
+                            {errors.name && <InputError message={errors.name} />}
+                            <br/>
 
                             <label htmlFor="email">Email do encarregado de educação</label><br/>
                             <input 
@@ -73,7 +71,9 @@ export default function NewKid({auth, places}) {
                                 name="email"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}    
-                            /><br/>
+                            />
+                            {errors.email && <InputError message={errors.email} />}
+                            <br/>
 
                             <label htmlFor="phone">Número de telefone do encarregado de educação</label><br/>
                             <input 
@@ -82,7 +82,9 @@ export default function NewKid({auth, places}) {
                                 name="phone"
                                 value={data.phone}
                                 onChange={(e) => setData('phone', e.target.value)}    
-                            /><br/>
+                            />
+                            {errors.phone && <InputError message={errors.phone} />}
+                            <br/>
                             
                             <p>Utiliza cadeira de rodas?</p>
                             <input 
@@ -101,6 +103,7 @@ export default function NewKid({auth, places}) {
                                 onChange={(e) => setData('wheelchair', e.target.value)}
                             />
                             <label>Não</label><br/>
+                            {errors.wheelchair && <InputError message={errors.wheelchair} />}
 
                             <p>Adicionar Morada</p>
                             <Select 
@@ -118,10 +121,6 @@ export default function NewKid({auth, places}) {
                                   </MenuItem>
                                 ))}
                             </Select>
-                            {/* <select name="places[]" id="places" multiple>
-                                <option value="">-- Nenhuma Selecionada --</option>
-                                    {}
-                            </select> */}
 
                             <p><Button type="submit" value="Submit">Submeter</Button></p>
                         </form>
@@ -129,6 +128,7 @@ export default function NewKid({auth, places}) {
                     </div>
                 </div>
             </div>
+            
         </AuthenticatedLayout>
     )
 }

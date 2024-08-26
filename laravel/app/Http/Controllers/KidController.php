@@ -21,7 +21,12 @@ class KidController extends Controller
 
         $places = Place::all();
 
-        return Inertia::render('Kids/AllKids',['kids' => $kids, 'places' => $places]);
+        return Inertia::render('Kids/AllKids',[
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'kids' => $kids, 'places' => $places]);
     }
 
     //TODO: more verification in each field and frontend verification messages!!!
@@ -45,9 +50,13 @@ class KidController extends Controller
             $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
         }
 
-        $kid = Kid::create($incomingFields);
-        $kid->places()->attach($incomingFields['addPlaces']);
-        return redirect('/kids');
+        try {
+            $kid = Kid::create($incomingFields);
+            $kid->places()->attach($incomingFields['addPlaces']);
+            return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
+        }
     }
 
     public function showCreateKidForm() {

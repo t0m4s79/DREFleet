@@ -1,3 +1,4 @@
+import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
@@ -28,7 +29,7 @@ export default function NewDriver( {auth,vehicle} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Condutor</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Veículo</h2>}
         >
 
             <div className='py-12'>
@@ -47,7 +48,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     name="make" 
                                     value={data.make} 
                                     onChange={(e) => setData('make', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.make && <InputError message={errors.make}/>}
+                                <br/>
 
                                 <label htmlFor="model">Modelo</label><br/>
                                 <input 
@@ -56,7 +59,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     name="model" 
                                     value={data.model} 
                                     onChange={(e) => setData('model', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.model && <InputError message={errors.model}/>}
+                                <br/>
 
                                 <label htmlFor="license_plate">Matrícula (sem "-")</label><br/>
                                 <input 
@@ -70,7 +75,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     title="Só são permitidos números e letras"
                                     value={data.license_plate} 
                                     onChange={(e) => setData('license_plate', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.license_plate && <InputError message={errors.license_plate}/>}
+                                <br/>
 
                                 <p>Veículo Pesado?</p>
                                 <input 
@@ -88,7 +95,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     checked={data.heavy_vehicle === '1'} 
                                     onChange={(e) => setData('heavy_vehicle', e.target.value)} 
                                 />
-                                <label>Sim</label><br/>
+                                <label>Sim</label>
+                                {errors.heavy_vehicle && <InputError message={errors.heavy_vehicle}/>}
+                                <br/>
 
                                 <p>Adaptado a cadeira de rodas?</p>
                                 <input 
@@ -106,7 +115,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     checked={data.wheelchair_adapted === '1'} 
                                     onChange={(e) => setData('wheelchair_adapted', e.target.value)} 
                                 />
-                                <label>Sim</label><br/>
+                                <label>Sim</label>
+                                {errors.wheelchair_adapted && <InputError message={errors.wheelchair_adapted}/>}
+                                <br/>
 
                                 <label htmlFor="capacity">Capacidade (pessoas):</label><br/>
                                 <input 
@@ -117,9 +128,11 @@ export default function NewDriver( {auth,vehicle} ) {
                                     max="100"
                                     value={data.capacity}
                                     onChange={(e) => setData('capacity', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.capacity && <InputError message={errors.capacity}/>}
+                                <br/>
 
-                                <label htmlFor="fuel_consumption">Consumo de combustível (Km/L)</label><br/>
+                                <label htmlFor="fuel_consumption">Consumo de combustível (L/100Km)</label><br/>
                                 <input 
                                     type="number" 
                                     step=".001" 
@@ -128,7 +141,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     placeholder="0.000"
                                     value={data.fuel_consumption}
                                     onChange={(e) => setData('fuel_consumption', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.fuel_consumption && <InputError message={errors.fuel_consumption}/>}
+                                <br/>
 
                                 <p>Estado do Veículo:</p>
                                 <input 
@@ -162,7 +177,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     checked={data.status === 'Escondido'} 
                                     onChange={(e) => setData('status', e.target.value)} 
                                 />
-                                <label>Escondido</label><br/>
+                                <label>Escondido</label>
+                                {errors.status && <InputError message={errors.status}/>}
+                                <br/>
 
                                 <label htmlFor="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
                                 <input 
@@ -173,7 +190,9 @@ export default function NewDriver( {auth,vehicle} ) {
                                     max="100"
                                     value={data.current_month_fuel_requests}
                                     onChange={(e) => setData('current_month_fuel_requests', e.target.value)} 
-                                /><br/>
+                                />
+                                {errors.current_month_fuel_requests && <InputError message={errors.current_month_fuel_requests}/>}
+                                <br/>
 
                                 <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
 

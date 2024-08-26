@@ -1,11 +1,23 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, Snackbar, Alert } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
-export default function AllKids( {auth, kids, places} ) {
+export default function AllKids( {auth, kids, places, flash} ) {
 
-    console.log('kids', places)
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
     
     //Deconstruct data to send to table component
     let cols;
@@ -22,10 +34,6 @@ export default function AllKids( {auth, kids, places} ) {
 
         return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
     })
-
-    const place = places.map((place)=>(
-        <option key={place.id} value={place.id}>{place.id} - {place.address}</option>
-    ));
 
     if(kids.length > 0){
         cols = Object.keys(kidInfo[0])
@@ -52,14 +60,27 @@ export default function AllKids( {auth, kids, places} ) {
 
             <div className='m-2 p-6'>
 
-                <a href={route('kids.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Nova Criança
-                </a>
+                <Button href={route('kids.create')}>
+                    <AddIcon />
+                    <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        Nova Criança
+                    </a>
+                </Button>
 
                 {kids && cols && <Table data={kidInfo} columns={cols} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/> }
 
             </div>
 
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
         </AuthenticatedLayout>
     );
