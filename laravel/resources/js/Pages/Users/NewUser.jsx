@@ -33,7 +33,7 @@ export default function Register({auth}) {
                         <div className='p-6'>
                             <form onSubmit={submit}>
                                 <div>
-                                    <InputLabel htmlFor="name" value="Name" />
+                                    <InputLabel htmlFor="name" value="Nome" />
 
                                     <TextInput
                                         id="name"
@@ -67,7 +67,7 @@ export default function Register({auth}) {
                                 </div>
 
                                 <div className="mt-4">
-                                    <InputLabel htmlFor="phone" value="Phone" />
+                                    <InputLabel htmlFor="phone" value="Número de Telemóvel" />
 
                                     <TextInput
                                         id="phone"
@@ -102,7 +102,7 @@ export default function Register({auth}) {
                                 </div>
 
                                 <div className="mt-4">
-                                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                                    <InputLabel htmlFor="password_confirmation" value="Confirmar Password" />
 
                                     <TextInput
                                         id="password_confirmation"
