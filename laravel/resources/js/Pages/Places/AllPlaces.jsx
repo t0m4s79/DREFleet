@@ -60,7 +60,7 @@ export default function AllPlaces( {auth, places} ) {
             <form action="places/create" method='POST' id="newPlaceForm">
                 <input type="hidden" name="_token" value={csrfToken} />
 
-                <label htmlFor="name">Morada</label><br/>
+                <label htmlFor="address">Morada</label><br/>
                 <input type="text" id="address" name="address"/><br/>
 
                 <label htmlFor="known_as">Conhecido como</label><br/>

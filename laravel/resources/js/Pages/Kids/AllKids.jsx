@@ -6,8 +6,6 @@ import { Button } from '@mui/material';
 export default function AllKids( {auth, kids, places} ) {
 
     console.log('kids', places)
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let cols;

@@ -4,8 +4,6 @@ import { Head } from '@inertiajs/react';
 
 export default function AllVehicles( {auth, vehicles}) {
 
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
     console.log('vehicles', vehicles)
     let cols;
 
