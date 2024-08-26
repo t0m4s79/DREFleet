@@ -4,10 +4,12 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\KidController;
-use App\Http\Controllers\DriverController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -23,6 +25,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    //USERS
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');                              //GET
+    Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.create');
+    Route::post('/users/create', [UserController::class, 'createUser'])->name('users.create');              //CREATE
+    Route::get('/users/edit/{user}', [UserController::class, 'showEditScreen'])->name('users.showEdit');    //GET
+    Route::post('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');           //EDIT
+    Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');     //DELETE
+
     //DRIVERS
     Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET
     Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.create');

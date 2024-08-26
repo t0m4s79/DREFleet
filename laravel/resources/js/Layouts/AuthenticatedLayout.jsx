@@ -58,9 +58,9 @@ export default function Authenticated({ user, header, children }) {
                                             </Dropdown.Trigger>
 
                                             <Dropdown.Content>
+                                                <Dropdown.Link  href={route('users.index')} active={route().current('users.index')}>Todos os Utilizadores</Dropdown.Link>
                                                 <Dropdown.Link  href={route('drivers.index')} active={route().current('drivers.index')}>Condutores</Dropdown.Link>
                                                 {/* TODO: Links para: */}
-                                                {/* 1º) TODOS OS UTILIZADORES (SO PARTES DA TABELA USERS) */}
                                                 {/* 2º) ADMINISTRADORES */}
                                                 {/* 3º) GESTORES */}
                                                 {/* 4º) TECNICOS */}
@@ -108,9 +108,9 @@ export default function Authenticated({ user, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                                        <Dropdown.Link href={route('profile.edit')}>Meu Perfil</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
+                                            Terminar Sessão
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -157,9 +157,9 @@ export default function Authenticated({ user, header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('profile.edit')}>Meu Perfil</ResponsiveNavLink>
                             <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Log Out
+                                Terminar Sessão
                             </ResponsiveNavLink>
                         </div>
                     </div>
