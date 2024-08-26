@@ -19,7 +19,12 @@ class PlaceController extends Controller
             return $place;
         });
 
-        return Inertia::render('Places/AllPlaces',['places' => $places]);
+        return Inertia::render('Places/AllPlaces',[
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'places' => $places]);
     }
 
     //TODO: more verification in each field and frontend verification messages!!!
@@ -36,8 +41,16 @@ class PlaceController extends Controller
         $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
         $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
-        Place::create($incomingFields);
-        return redirect('/places');
+        try{
+            Place::create($incomingFields);
+            return redirect('/places')->with('message', 'Morada criada com sucesso!');;
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
+        }
+    }
+
+    public function showCreatePlaceForm() {
+        return Inertia::render('Places/NewPlace');
     }
 
     public function showEditScreen(Place $place) {
