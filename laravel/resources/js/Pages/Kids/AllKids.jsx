@@ -3,9 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@mui/material';
 
-export default function AllKids( {auth, kids} ) {
+export default function AllKids( {auth, kids, places} ) {
 
-    //console.log('kids', kids)
+    console.log('kids', places)
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
@@ -24,6 +24,10 @@ export default function AllKids( {auth, kids} ) {
 
         return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
     })
+
+    const place = places.map((place)=>(
+        <option key={place.id} value={place.id}>{place.id} - {place.address}</option>
+    ));
 
     if(kids.length > 0){
         cols = Object.keys(kidInfo[0])
@@ -50,35 +54,14 @@ export default function AllKids( {auth, kids} ) {
 
             <div className='m-2 p-6'>
 
-                {/* <a href={route('kids.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Condutor
-                </a> */}
+                <a href={route('kids.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                    Nova Criança
+                </a>
 
                 {kids && cols && <Table data={kidInfo} columns={cols} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/> }
 
             </div>
 
-            <h2>Criar criança</h2>
-            <form action="kids/create" method='POST' id="newKidForm">
-                <input type="hidden" name="_token" value={csrfToken} />
-
-                <label for="name">Nome</label><br/>
-                <input type="text" id="name" name="name"/><br/>
-
-                <label for="email">Email do encarregado de educação</label><br/>
-                <input type="email" id="email" name="email"/><br/>
-
-                <label for="phone">Número de telefone do encarregado de educação</label><br/>
-                <input type="tel" id="phone" name="phone"/><br/>
-                
-                <p>Utiliza cadeira de rodas?</p>
-                <input type="radio" name="wheelchair" value="1"/>
-                <label>Sim</label><br/>
-                <input type="radio" name="wheelchair" value="0"/>
-                <label>Não</label><br/>
-
-                <p><button type="submit" value="Submit">Submeter</button></p>
-            </form>
 
         </AuthenticatedLayout>
     );

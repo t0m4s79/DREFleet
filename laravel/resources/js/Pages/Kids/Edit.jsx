@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function Edit({ auth, kid }) {
+export default function Edit({auth, kid, availablePlaces}) {
 
     console.log(kid)
 
@@ -23,7 +23,14 @@ export default function Edit({ auth, kid }) {
             [name]: type === 'radio' ? (checked ? value : prevState[name]) : value,
         }));
     };
-    
+
+    const addPlaces = availablePlaces.map((availablePlace)=>(
+        <option key={availablePlace.id} value={availablePlace.id}>{availablePlace.id} - {availablePlace.address}</option>
+    ));
+
+    const removePlaces = kid.places.map((availablePlace)=>(
+        <option key={availablePlace.id} value={availablePlace.id}>{availablePlace.id} - {availablePlace.address}</option>
+    ));    
 
     return(
         <AuthenticatedLayout
@@ -89,9 +96,19 @@ export default function Edit({ auth, kid }) {
                             />
                             <label htmlFor="wheelchair_yes">Sim</label><br/>
 
+                            <p>Adicionar Morada</p>
+                            <select name="addPlaces[]" id="addPlaces" multiple>
+                                <option value="">-- Nenhuma Selecionada --</option>
+                                {addPlaces}
+                            </select>
+
+                            <p>Retirar Morada</p>    
+                            <select name="removePlaces[]" id="removePlaces" multiple>
+                                <option>-- Nenhuma Selecionada --</option>
+                                {removePlaces}
+                            </select>                    
+
                             <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
-
-
                         </form>
                     </div>
                 </div>

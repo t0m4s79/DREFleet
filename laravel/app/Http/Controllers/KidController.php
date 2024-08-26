@@ -19,7 +19,9 @@ class KidController extends Controller
             return $kid;
         });
 
-        return Inertia::render('Kids/AllKids',['kids' => $kids]);
+        $places = Place::all();
+
+        return Inertia::render('Kids/AllKids',['kids' => $kids, 'places' => $places]);
     }
 
     //TODO: more verification in each field and frontend verification messages!!!
@@ -29,6 +31,7 @@ class KidController extends Controller
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
             'wheelchair' => 'required',
+            'places' => 'array',
         ]);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -36,20 +39,50 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        Kid::create($incomingFields);
+        if (isset($incomingFields['addPlaces'])) {
+            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
+        } else {
+            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
+        }
+
+        $kid = Kid::create($incomingFields);
+        $kid->places()->attach($incomingFields['addPlaces']);
         return redirect('/kids');
     }
 
-    public function showEditScreen(Kid $kid) {
-        return Inertia::render('Kids/Edit',['kid'=> $kid]);
+    public function showCreateKidForm() {
+
+        $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
+
+        // Add a new attribute for place IDs
+        $kids->transform(function ($kid) {
+            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
+            return $kid;
+        });
+
+        $places = Place::all();
+
+        return Inertia::render('Kids/NewKid',['kids' => $kids, 'places' => $places]);
     }
 
-    public function editKid(Kid $kid, Request $request) {
+    public function showEditScreen(Kid $kid) {
+        
+        $kidPlaces = $kid->places;                                                  //Given kid places
+
+        $associatedPlaceIds = $kid->places->pluck('id');
+        $availablePlaces = Place::whereNotIn('id', $associatedPlaceIds)->get();     //Places that dont belong to given kid
+
+        return Inertia::render('Kids/Edit',['kid'=> $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
+    }
+
+    public function editKid(Kid $kid, Request $request) {        
         $incomingFields = $request->validate([
             'name' => 'required', 
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
             'wheelchair' => 'required',
+            'addPlaces' => 'array',
+            'removePlaces' => 'array',
         ]);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -57,7 +90,21 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
+        if (isset($incomingFields['addPlaces'])) {
+            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
+        } else {
+            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
+        }
+
+        if (isset($incomingFields['removePlaces'])) {
+            $incomingFields['removePlaces'] = array_map('strip_tags', $incomingFields['removePlaces']);
+        } else {
+            $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
+        }
+        
         $kid->update($incomingFields);
+        $kid->places()->attach($incomingFields['addPlaces']);
+        $kid->places()->detach($incomingFields['removePlaces']);
         return redirect('/kids');
     }
 
