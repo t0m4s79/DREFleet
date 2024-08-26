@@ -1,7 +1,8 @@
+import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import { useState } from 'react';
 
 export default function NewDriver( {auth, users} ) {
@@ -54,6 +55,7 @@ export default function NewDriver( {auth, users} ) {
                                     renderInput={(params) => <TextField {...params} label="Utilizador" />}
                                     sx={{ width: 500 }}
                                 />
+                                {errors.user_id && <InputError message={errors.user_id} />}
                                 {/* <select name="user_id" id="">
                                     {user}
                                 </select> */}
@@ -75,8 +77,9 @@ export default function NewDriver( {auth, users} ) {
                                     onChange={(e) => setData('heavy_license', e.target.value)}
                                 />
                                 <label>Sim</label><br/>
+                                {errors.heavy_license && <InputError message={errors.heavy_license} />}
 
-                                <p><button type="submit" value="Submit">Submeter</button></p>
+                                <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
 
                                 <Transition
                                     show={recentlySuccessful}
