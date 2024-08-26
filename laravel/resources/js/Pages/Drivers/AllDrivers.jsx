@@ -1,9 +1,24 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
+import { Alert, Button, Snackbar } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
-export default function AllDrivers( {auth, drivers} ) {
+export default function AllDrivers( {auth, drivers, flash} ) {
     
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
+
     //Deconstruct data to send to table component
     let cols;
     let driverInfo = drivers.map((driver) => (
@@ -34,13 +49,27 @@ export default function AllDrivers( {auth, drivers} ) {
 
             <div className='m-2 p-6'>
 
-                <a href={route('drivers.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Condutor
-                </a>
+                <Button href={route('drivers.create')}>
+                    <AddIcon />
+                    <a  className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        Novo Condutor
+                    </a>
+                </Button>
 
                 {drivers && cols && <Table data={driverInfo} columns={cols} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
 
             </div>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
         </AuthenticatedLayout>
     );
