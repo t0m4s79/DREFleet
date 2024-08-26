@@ -16,9 +16,12 @@ export default function AllKids( {auth, kids, places} ) {
 
     let kidInfo = kids.map((kid) => {
 
-        kidPlacesIds = kid.place_ids.map((place) => (
-            <Button variant='outlined' href={route('places.showEdit', place)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{place}</Button>
-        ))
+        if(kid.place_ids.length) {
+            kidPlacesIds = kid.place_ids.map((place) => (
+                <Button variant='outlined' href={route('places.showEdit', place)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{place}</Button>
+            ))
+        } else kidPlacesIds = '-'
+
         return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
     })
 

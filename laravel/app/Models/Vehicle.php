@@ -20,6 +20,11 @@ class Vehicle extends Model
         'status',
         'current_month_fuel_requests'
     ];
+    
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     public function getHeavyVehicleAttribute($value)
     {
