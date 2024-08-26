@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
 
     //KIDS
     Route::get('/kids', [KidController::class, 'index'])->name('kids.index');
+    Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.create');
     Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.create');
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditScreen'])->name('kids.showEdit');
     Route::post('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');

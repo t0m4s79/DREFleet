@@ -50,6 +50,21 @@ class KidController extends Controller
         return redirect('/kids');
     }
 
+    public function showCreateKidForm() {
+
+        $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
+
+        // Add a new attribute for place IDs
+        $kids->transform(function ($kid) {
+            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
+            return $kid;
+        });
+
+        $places = Place::all();
+
+        return Inertia::render('Kids/NewKid',['kids' => $kids, 'places' => $places]);
+    }
+
     public function showEditScreen(Kid $kid) {
         
         $kidPlaces = $kid->places;                                                  //Given kid places
