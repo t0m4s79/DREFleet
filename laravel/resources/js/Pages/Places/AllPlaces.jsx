@@ -1,11 +1,24 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Alert, Button, Snackbar } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
-export default function AllPlaces( {auth, places} ) {
 
-    //console.log('places', places)
+export default function AllPlaces( {auth, places, flash} ) {
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
@@ -48,32 +61,27 @@ export default function AllPlaces( {auth, places} ) {
 
             <div className='m-2 p-6'>
 
-                {/* <a href={route('places.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Condutor
-                </a> */}
+                <Button href={route('places.create')}>
+                    <AddIcon />
+                    <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        Nova Morada
+                    </a>
+                </Button>
 
                 {places && cols && <Table data={placeInfo} columns={cols} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/> }
 
             </div>
 
-            <h2>Criar morada</h2>
-            <form action="places/create" method='POST' id="newPlaceForm">
-                <input type="hidden" name="_token" value={csrfToken} />
-
-                <label htmlFor="name">Morada</label><br/>
-                <input type="text" id="address" name="address"/><br/>
-
-                <label htmlFor="known_as">Conhecido como</label><br/>
-                <input type="text" id="known_as" name="known_as"/><br/>
-
-                <label htmlFor="latitude">Latitude</label><br/>
-                <input type="number" step=".00001" id="latitude" name="latitude" placeholder="0.00000" min="-90" max="90"></input><br/>
-
-                <label htmlFor="latitude">Longitude</label><br/>
-                <input type="number" step=".00001" id="longitude" name="longitude" placeholder="0.00000" min="-180" max="180"></input><br/>
-
-                <p><button type="submit" value="Submit">Submeter</button></p>
-            </form>
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
         </AuthenticatedLayout>
     );
