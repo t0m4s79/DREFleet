@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
+    Route::get('/places/create', [PlaceController::class, 'showCreatePlaceForm'])->name('places.create');
     Route::post('/places/create', [PlaceController::class, 'createPlace'])->name('places.create');
     Route::get('/places/edit/{place}', [PlaceController::class, 'showEditScreen'])->name('places.showEdit');
     Route::post('/places/edit/{place}', [PlaceController::class, 'editPlace'])->name('places.edit');
