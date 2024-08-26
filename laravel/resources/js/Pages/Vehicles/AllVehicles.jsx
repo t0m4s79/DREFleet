@@ -1,10 +1,23 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { Button, Alert, Snackbar } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
-export default function AllVehicles( {auth, vehicles}) {
+export default function AllVehicles( {auth, vehicles, flash}) {
 
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
 
     console.log('vehicles', vehicles)
     let cols;
@@ -34,60 +47,26 @@ export default function AllVehicles( {auth, vehicles}) {
 
             <Head title="Veículos" />
 
-            <a href={route('vehicles.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                Novo Veículo
-            </a>
+            <Button href={route('vehicles.create')}>
+                <AddIcon />
+                <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                    Novo Veículo
+                </a>
+            </Button>
 
             {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
 
-            {/* <h2>Criar veículo</h2>
-            <form action="/vehicles/create" method='POST' id="newVehicleForm">
-                <input type="hidden" name="_token" value={csrfToken} />
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
-                <label for="make">Marca</label><br/>
-                <input type="text" id="make" name="make"/><br/>
-
-                <label for="model">Modelo</label><br/>
-                <input type="text" id="model" name="model"/><br/>
-
-                <label for="license_plate">Matrícula (sem "-")</label><br/>
-                <input type="text" minLength="6" maxLength="6" id="license_plate" name="license_plate" placeholder='AAXXBB'
-                    pattern="[A-Za-z0-9]+" title="Só são permitidos números e letras" />
-
-                <p>Veículo Pesado?</p>
-                <input type="radio" name="heavy_vehicle" value="0"/>
-                <label>Não</label><br/>
-                <input type="radio" name="heavy_vehicle" value="1"/>
-                <label>Sim</label><br/>
-
-                <p>Adaptado a cadeira de rodas?</p>
-                <input type="radio" name="wheelchair_adapted" value="0"/>
-                <label>Não</label><br/>
-                <input type="radio" name="wheelchair_adapted" value="1"/>
-                <label>Sim</label><br/>
-
-                <label for="capacity">Capacidade (pessoas):</label><br/>
-                <input type="number" id="capacity" name="capacity" min="1" max="100"></input><br/>
-
-                <label for="fuel_consumption">Consumo de combustível (Km/L)</label><br/>
-                <input type="number" step=".001" id="fuel_consumption" name="fuel_consumption" placeholder="0.000"></input><br/>
-
-                <p>Mostrar veículo imediatamente como disponível?</p>
-                <input type="radio" name="status" value="Disponível"/>
-                <label>Disponível</label><br/>
-                <input type="radio" name="status" value="Indisponível"/>
-                <label>Indisponível</label><br/>
-                <input type="radio" name="status" value="Em manutenção"/>
-                <label>Em manutenção</label><br/>
-                <input type="radio" name="status" value="Escondido"/>
-                <label>Escondido</label><br/>
-
-                <label for="current_month_fuel_requests">Pedidos de combustível efetuados este mês</label><br/>
-                <input type="number" id="current_month_fuel_requests" name="current_month_fuel_requests" min="0" max="100"></input><br/>
-
-                <p><button type="submit" value="Submit">Submeter</button></p>
-
-            </form> */}
         </AuthenticatedLayout>
     )
 }
