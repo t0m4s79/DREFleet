@@ -42,4 +42,15 @@ class UserController extends Controller
 
         return redirect('/users');
     }
+
+    public function showEditScreen(User $user) {
+        return Inertia::render('Users/Edit',['user'=> $user]);
+    }
+
+    public function deleteUser($id) {
+        $user = User::findOrFail($id);
+        $user->delete();
+        
+        return redirect('/users');
+    }
 }

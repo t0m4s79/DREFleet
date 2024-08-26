@@ -22,7 +22,7 @@ export default function AllDrivers( {auth, users} ) {
         email: 'Email',
         phone: 'Numero de Telefone',
         user_type: 'Tipo de Utilizador',
-        status: 'Estado'
+        status_code: 'Estado'
     };
     
     return (
