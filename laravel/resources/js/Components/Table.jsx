@@ -7,7 +7,7 @@ const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId
 
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(5); // You can adjust the number of records per page here
+    const [recordsPerPage, setRecordsPerPage] = useState(10); // Set default number of records per page here
 
     //Delete model instance through hidden form
     const handleDelete = async (id) => {
