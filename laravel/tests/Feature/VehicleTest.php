@@ -114,7 +114,7 @@ class VehicleTest extends TestCase
         
         $response = $this
         ->actingAs($user)
-        ->post("/vehicles/edit/{$vehicle->id}", $updatedData);
+        ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
