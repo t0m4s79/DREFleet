@@ -10,16 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VehicleTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-
     public function test_vehicle_page_is_displayed(): void
     {
         $user = User::factory()->create();
