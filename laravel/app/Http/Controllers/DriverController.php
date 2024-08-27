@@ -84,6 +84,13 @@ class DriverController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
+
+        if($incomingFields['heavy_license'] == 'Sim'){              //These if's can be taken out if heavy attribute method is taken out of the driver model
+            $incomingFields['heavy_license'] = '1';                 //but the the table will show heavy license as 0 or 1 instead of Sim ou Não
+        }
+        else if($incomingFields['heavy_license'] == 'Não') {
+            $incomingFields['heavy_license'] = '0';
+        } 
         
         $driver->update([
             'heavy_license' => $incomingFields['heavy_license'],

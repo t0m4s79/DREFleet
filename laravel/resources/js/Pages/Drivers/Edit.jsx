@@ -39,7 +39,8 @@ export default function Edit({ auth, driver }) {
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <form action={`/drivers/edit/${driver.user_id}`} method="POST">
                             <input type="hidden" name="_token" value={csrfToken} />
-                            <input type="hidden" name="user_id" value={driver.user_id} />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="user_id" value={driver.user_id} />     
 
                             <label htmlFor="name">Nome</label><br/>
                             <input 
@@ -76,7 +77,7 @@ export default function Edit({ auth, driver }) {
                                 type="radio" 
                                 id="heavy_license_no" 
                                 name="heavy_license" 
-                                value="0" 
+                                value="Não" 
                                 checked={formData.heavy_license == "Não"} 
                                 onChange={handleChange}
                             />
@@ -85,7 +86,7 @@ export default function Edit({ auth, driver }) {
                                 type="radio" 
                                 id="heavy_license_yes" 
                                 name="heavy_license" 
-                                value="1" 
+                                value="Sim" 
                                 checked={formData.heavy_license == "Sim"} 
                                 onChange={handleChange}
                             />
