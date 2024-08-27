@@ -44,15 +44,13 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['addPlaces'])) {
-            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
-        } else {
-            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
+        if (count($incomingFields['places'])>0) {
+            $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
         }
 
         try {
             $kid = Kid::create($incomingFields);
-            $kid->places()->attach($incomingFields['addPlaces']);
+            $kid->places()->attach($incomingFields['places']);
             return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
@@ -84,7 +82,7 @@ class KidController extends Controller
         return Inertia::render('Kids/Edit',['kid'=> $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
     }
 
-    public function editKid(Kid $kid, Request $request) {        
+    public function editKid(Kid $kid, Request $request) { 
         $incomingFields = $request->validate([
             'name' => 'required', 
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
