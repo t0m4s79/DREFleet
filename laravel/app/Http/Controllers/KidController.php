@@ -110,11 +110,14 @@ class KidController extends Controller
         } else {
             $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
         }
-        
-        $kid->update($incomingFields);
-        $kid->places()->attach($incomingFields['addPlaces']);
-        $kid->places()->detach($incomingFields['removePlaces']);
-        return redirect('/kids');
+        try {
+            $kid->update($incomingFields);
+            $kid->places()->attach($incomingFields['addPlaces']);
+            $kid->places()->detach($incomingFields['removePlaces']);
+            return redirect('/kids')->with('message', 'Dados da criança atualizados com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
+        }
     }
 
     public function deleteKid($id) {
