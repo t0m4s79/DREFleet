@@ -80,7 +80,7 @@ export default function Edit({ auth, vehicle}) {
                                         <FormLabel component="legend">Veículo Pesado?</FormLabel>
                                         <RadioGroup
                                             name="heavy_vehicle"
-                                            value={data.heavy_vehicle}
+                                            value={data.heavy_vehicle == "Sim" ? 1 : 0}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
@@ -94,7 +94,7 @@ export default function Edit({ auth, vehicle}) {
                                         <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
-                                            value={data.wheelchair_adapted}
+                                            value={data.wheelchair_adapted == "Sim" ? 1 : 0}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
