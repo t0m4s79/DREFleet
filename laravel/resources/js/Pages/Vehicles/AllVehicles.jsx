@@ -19,24 +19,19 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         }
     }, [flash]);
 
-    console.log('vehicles', vehicles)
-    let cols;
-
-    if(vehicles.length > 0){
-        cols = Object.keys(vehicles[0]);
-    }
+    //console.log('vehicles', vehicles)
 
     const VehicleColumnLabels = {
         id: 'ID',
         make: 'Marca',
         model: 'Modelo',
-        license_plate: 'Matricula',
-        heavy_vehicle: 'Veiculo Pesado',
+        license_plate: 'Matrícula',
+        heavy_vehicle: 'Veículo Pesado',
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
-        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mes)'
+        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)'
     };
 
     return (
@@ -54,7 +49,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                 </a>
             </Button>
 
-            {vehicles && cols && <Table data={vehicles} columns={cols} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>}
+            <Table data={vehicles} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>
 
             <Snackbar 
                 open={openSnackbar} 

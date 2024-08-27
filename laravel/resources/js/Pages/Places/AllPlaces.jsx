@@ -23,7 +23,6 @@ export default function AllPlaces( {auth, places, flash} ) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
-    let cols;
     let kidPlacesIds;
     let placeInfo = places.map((place) => {
         if(place.kids.length){
@@ -35,10 +34,6 @@ export default function AllPlaces( {auth, places, flash} ) {
 
         return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
     })
-
-    if(places.length > 0){
-        cols = Object.keys(placeInfo[0])
-    }
 
     const placeColumnLabels = {
         id: 'ID',
@@ -68,7 +63,7 @@ export default function AllPlaces( {auth, places, flash} ) {
                     </a>
                 </Button>
 
-                {places && cols && <Table data={placeInfo} columns={cols} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/> }
+                <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
 
             </div>
 
