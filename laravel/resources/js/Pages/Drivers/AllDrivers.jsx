@@ -20,14 +20,9 @@ export default function AllDrivers( {auth, drivers, flash} ) {
     }, [flash]);
 
     //Deconstruct data to send to table component
-    let cols;
     let driverInfo = drivers.map((driver) => (
         {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status }
     ))
-
-    if(drivers.length > 0){
-        cols = Object.keys(driverInfo[0])
-    }
 
     const driverColumnLabels = {
         id: 'ID',
@@ -56,7 +51,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
                     </a>
                 </Button>
 
-                {drivers && cols && <Table data={driverInfo} columns={cols} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> }
+                <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/>
 
             </div>
 
