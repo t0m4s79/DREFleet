@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.create');
     Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.create');
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditScreen'])->name('kids.showEdit');
-    Route::post('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
+    Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
 
     //PLACES
