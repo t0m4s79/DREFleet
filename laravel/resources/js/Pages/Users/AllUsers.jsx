@@ -12,10 +12,6 @@ export default function AllDrivers( {auth, users} ) {
         {id: user.id, name: user.name, email: user.email, phone: user.phone, user_type: user.user_type , status_code: user.status_code }
     ))
 
-    if(users.length > 0){
-        cols = Object.keys(userInfo[0])
-    }
-
     const userColumnLabels = {
         id: 'ID',
         name: 'Nome',
@@ -38,7 +34,7 @@ export default function AllDrivers( {auth, users} ) {
                     Novo Utilizador
                 </a>
 
-                {users && cols && <Table data={userInfo} columns={cols} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/> }
+                <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
             </div>
         </AuthenticatedLayout>
     );

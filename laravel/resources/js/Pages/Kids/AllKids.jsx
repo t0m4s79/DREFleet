@@ -20,8 +20,6 @@ export default function AllKids( {auth, kids, places, flash} ) {
     }, [flash]);
     
     //Deconstruct data to send to table component
-    let cols;
-
     let kidPlacesIds;
 
     let kidInfo = kids.map((kid) => {
@@ -34,10 +32,6 @@ export default function AllKids( {auth, kids, places, flash} ) {
 
         return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
     })
-
-    if(kids.length > 0){
-        cols = Object.keys(kidInfo[0])
-    }
 
     const kidColumnLabels = {
         id: 'ID',
@@ -67,7 +61,7 @@ export default function AllKids( {auth, kids, places, flash} ) {
                     </a>
                 </Button>
 
-                {kids && cols && <Table data={kidInfo} columns={cols} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/> }
+                <Table data={kidInfo} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/>
 
             </div>
 

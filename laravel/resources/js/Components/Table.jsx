@@ -3,11 +3,13 @@ import React from 'react'
 import { useState } from 'react';
 import TextInput from './TextInput';
 
-const Table = ({data, columns, columnsLabel={}, editAction, deleteAction, dataId }) => {
+const Table = ({data, columnsLabel={}, editAction, deleteAction, dataId }) => {
 
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10); // Set default number of records per page here
+
+    const columns = Object.keys(columnsLabel);
 
     //Delete model instance through hidden form
     const handleDelete = async (id) => {
