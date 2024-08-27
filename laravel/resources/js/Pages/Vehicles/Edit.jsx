@@ -15,8 +15,6 @@ export default function Edit({ auth, vehicle}) {
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
     });
 
-    console.log("aa" + formData.status)
-
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     // Handle input changes
@@ -42,6 +40,7 @@ export default function Edit({ auth, vehicle}) {
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <form action={`/vehicles/edit/${vehicle.id}`} method="POST">
                             <input type="hidden" name="_token" value={csrfToken} />
+                            <input type="hidden" name="_method" value="PUT" />
 
                             <label htmlFor="make">Marca</label><br/>
                             <input 
