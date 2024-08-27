@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.create');
     Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE
     Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditScreen'])->name('drivers.showEdit');    //GET
-    Route::post('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');           //EDIT
+    Route::put('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');           //EDIT
     Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');     //DELETE
     
     //PROFILE
