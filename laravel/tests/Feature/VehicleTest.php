@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VehicleTest extends TestCase
 {
-    public function test_vehicle_page_is_displayed(): void
+    public function test_vehicles_page_is_displayed(): void
     {
         $user = User::factory()->create();
 
@@ -74,7 +74,7 @@ class VehicleTest extends TestCase
         $this->assertDatabaseHas('vehicles', $vehicleData);
     }
 
-    public function test_user_can_edit_a_vehicle(): void              //TODO: change from post to put/patch
+    public function test_user_can_edit_a_vehicle(): void
     {
         $user = User::factory()->create();
 
@@ -103,8 +103,8 @@ class VehicleTest extends TestCase
         ]; 
         
         $response = $this
-        ->actingAs($user)
-        ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
+            ->actingAs($user)
+            ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors()

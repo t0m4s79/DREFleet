@@ -22,5 +22,6 @@ class DriverFactory extends Factory
                 'user_type' => 'Condutor',
             ]),
             'heavy_license' => rand(0, 1),
-        ];    }
+        ];    
+    }
 }
