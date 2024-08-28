@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Place;
+use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -51,10 +52,10 @@ class PlaceTest extends TestCase
     public function test_user_can_create_a_place(): void
     {
         $placeData = [
-            'address' => 'Casa do Ronaldo',
-            'known_as' => 'House of the Best',
-            'latitude' => '77.7',
-            'longitude' => '9.11',
+            'address' => fake()->address(),
+            'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'latitude' => '29.76',
+            'longitude' => '51.00',
         ];
 
         $response = $this
@@ -71,18 +72,13 @@ class PlaceTest extends TestCase
 
     public function test_user_can_edit_a_place(): void
     {
-        $place = Place::factory()->create([
-            'address' => 'Casa do Ronaldo',
-            'known_as' => 'House of the Best',
-            'latitude' => '77.7',
-            'longitude' => '9.11',
-        ]);
+        $place = Place::factory()->create();
     
         $updatedData = [
-            'address' => 'Casa do Messi',
-            'known_as' => 'Casa do segundo melhor',
-            'latitude' => '10.01',
-            'longitude' => '1.11',
+            'address' => fake()->address(),
+            'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'latitude' => '13.41',
+            'longitude' => '11.2',
         ];
         
         $response = $this
@@ -93,22 +89,12 @@ class PlaceTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/places');
 
-        $this->assertDatabaseHas('places', [
-            'address' => 'Casa do Messi',
-            'known_as' => 'Casa do segundo melhor',
-            'latitude' => '10.01',
-            'longitude' => '1.11',
-        ]); 
+        $this->assertDatabaseHas('places', $updatedData); 
     }
 
     public function test_user_can_delete_a_place(): void
     {
-        $place = Place::factory()->create([
-            'address' => 'Casa do Messi',
-            'known_as' => 'Casa do segundo melhor',
-            'latitude' => '10.01',
-            'longitude' => '1.11',
-        ]);
+        $place = Place::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
@@ -126,10 +112,10 @@ class PlaceTest extends TestCase
     public function test_place_creation_handles_exception()
     {
         $incomingFields = [
-            'address' => 'Casa do Messi',
-            'known_as' => 'Casa do segundo melhor',
-            'latitude' => '10.01',
-            'longitude' => '1.11',
+            'address' => fake()->address(),
+            'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
         ];
 
         // Mock the Vehicle model to throw an exception

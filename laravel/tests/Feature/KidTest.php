@@ -52,10 +52,10 @@ class KidTest extends TestCase
     public function test_user_can_create_a_kid(): void
     {
         $kidData = [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
         ];
 
         $response = $this
@@ -72,18 +72,13 @@ class KidTest extends TestCase
 
     public function test_user_can_edit_a_kid(): void
     {
-        $kid = Kid::factory()->create([
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
-        ]);
+        $kid = Kid::factory()->create();
     
         $updatedData = [
-            'wheelchair' => '1',
-            'name' => 'Leo Messi',
-            'phone' => '1010101010',
-            'email' => 'messi@ankara.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
         ];
         
         $response = $this
@@ -94,22 +89,12 @@ class KidTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/kids');
 
-        $this->assertDatabaseHas('kids', [
-            'wheelchair' => '1',
-            'name' => 'Leo Messi',
-            'phone' => '1010101010',
-            'email' => 'messi@ankara.com',
-        ]); 
+        $this->assertDatabaseHas('kids', $updatedData); 
     }
 
     public function test_user_can_delete_a_kid(): void
     {
-        $kid = Kid::factory()->create([
-            'wheelchair' => '1',
-            'name' => 'Leo Messi',
-            'phone' => '1010101010',
-            'email' => 'messis@ankara.com',
-        ]);
+        $kid = Kid::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
@@ -130,10 +115,10 @@ class KidTest extends TestCase
         $place_2 = Place::factory()->create();
 
         $kidData = [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id, $place_2->id],
         ];
 
@@ -146,13 +131,13 @@ class KidTest extends TestCase
             ->assertRedirect('/kids');
 
         $this->assertDatabaseHas('kids', [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'name' => $kidData['name'],
+            'phone' => $kidData['phone'],
+            'email' => $kidData['email'],
+            'wheelchair' => $kidData['wheelchair'],
         ]);
 
-        $kid = Kid::where('email', 'cris@siu.com')->orderBy('id', 'desc')->first();
+        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
 
         $this->assertDatabaseHas('kid_place', [
             'kid_id' => $kid->id,
@@ -172,10 +157,10 @@ class KidTest extends TestCase
         $place_3 = Place::factory()->create();
 
         $kidData = [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id, $place_2->id],
         ];
 
@@ -183,13 +168,13 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
-        $kid = Kid::where('email', 'cris@siu.com')->orderBy('id', 'desc')->first();
+        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
 
         $updatedData = [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
             'addPlaces' => [$place_3->id],
             'removePlaces' => [$place_1->id, $place_2->id],
         ];
@@ -222,10 +207,10 @@ class KidTest extends TestCase
     public function test_kid_creation_handles_exception()
     {
         $incomingFields = [
-            'wheelchair' => '0',
-            'name' => 'Cristiano Ronaldo',
-            'phone' => '777777777',
-            'email' => 'cris@siu.com',
+            'wheelchair' => rand(0,1),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
         ];
 
         // Mock the Vehicle model to throw an exception

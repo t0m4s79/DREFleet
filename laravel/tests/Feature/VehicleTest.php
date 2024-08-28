@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
+
 
 class VehicleTest extends TestCase
 {
@@ -52,15 +54,15 @@ class VehicleTest extends TestCase
     public function test_user_can_create_a_vehicle(): void
     {
         $vehicleData = [
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => '11XX11',
-            'heavy_vehicle' => '1',
-            'wheelchair_adapted' => '1',
-            'capacity' => '9',
-            'fuel_consumption' => '8.23',
-            'status' => 'Disponível',
-            'current_month_fuel_requests' => '2',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ];
 
         $response = $this
@@ -78,27 +80,27 @@ class VehicleTest extends TestCase
     public function test_user_can_edit_a_vehicle(): void
     {
         $vehicle = Vehicle::factory()->create([
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => '11XX11',
-            'heavy_vehicle' => '1',
-            'wheelchair_adapted' => '1',
-            'capacity' => '9',
-            'fuel_consumption' => '8.23',
-            'status' => 'Disponível',
-            'current_month_fuel_requests' => '2',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ]);
     
         $updatedData = [
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ]; 
         
         $response = $this
@@ -109,34 +111,13 @@ class VehicleTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/vehicles');
 
-        $this->assertDatabaseHas('vehicles', [
-            'id' => $vehicle->id,
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
-        ]);
+        $this->assertDatabaseHas('vehicles', $updatedData);
         
     }
 
     public function test_user_can_delete_a_vehicle(): void
     {
-        $vehicle = Vehicle::factory()->create([
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
-        ]);
+        $vehicle = Vehicle::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
@@ -155,15 +136,15 @@ class VehicleTest extends TestCase
     {        
         // Prepare the incoming fields
         $incomingFields = [
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => 'XYZ123',
-            'heavy_vehicle' => 0,
-            'wheelchair_adapted' => 0,
-            'capacity' => 4,
-            'fuel_consumption' => 8.5,
-            'status' => 'active',
-            'current_month_fuel_requests' => 2,
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ];
 
         // Mock the Vehicle model to throw an exception
