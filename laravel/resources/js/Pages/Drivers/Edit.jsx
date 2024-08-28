@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { useForm } from '@inertiajs/react';
 
 export default function Edit({ auth, driver }) {
 
     console.log(driver)
 
-    // Initialize state with driver data
-    const [formData, setFormData] = useState({
+    const { data, setData, put, errors, processing } = useForm({
+        user_id: driver.user_id,
         name: driver.name,
         email: driver.email,
         phone: driver.phone,
@@ -19,17 +21,18 @@ export default function Edit({ auth, driver }) {
     // Handle input changes
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'radio' ? (checked ? value : prevState[name]) : value,
-        }));
+        setData(name, type === 'radio' ? value : value);
     };
     
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        put(route('drivers.edit', driver.user_id));
+    };
 
     return(
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Condutor {driver.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Condutor #{driver.user_id}</h2>}
         >
 
             {/*<Head title={'Condutor'} />*/}
@@ -37,83 +40,103 @@ export default function Edit({ auth, driver }) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <form action={`/drivers/edit/${driver.user_id}`} method="POST">
+                        <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken} />
                             <input type="hidden" name="user_id" value={driver.user_id} />
 
-                            <label htmlFor="name">Nome</label><br/>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name" 
-                                value={formData.name} 
+                            <TextField
+                                label="Nome"
+                                id="name"
+                                name="name"
+                                value={data.name}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
-
-                            <label htmlFor="email">Email</label><br/>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                value={formData.email} 
-                                onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
-
-                            <label htmlFor="phone">Número de telemóvel</label><br/>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone" 
-                                value={formData.phone} 
-                                onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
-
-                            <p>Licença de Pesados?</p>
-                            <input 
-                                type="radio" 
-                                id="heavy_license_no" 
-                                name="heavy_license" 
-                                value="0" 
-                                checked={formData.heavy_license == "Não"} 
-                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                variant="outlined"
+                                error={Boolean(errors.name)}
+                                helperText={errors.name}
                             />
-                            <label htmlFor="heavy_vehicle_no">Não</label><br/>
-                            <input 
-                                type="radio" 
-                                id="heavy_license_yes" 
-                                name="heavy_license" 
-                                value="1" 
-                                checked={formData.heavy_license == "Sim"} 
+
+                            <TextField
+                                label="Email"
+                                id="email"
+                                name="email"
+                                value={data.email}
                                 onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                variant="outlined"
+                                type="email"
+                                error={Boolean(errors.email)}
+                                helperText={errors.email}
                             />
-                            <label htmlFor="heavy_license_yes">Sim</label><br/>
 
-                            <p>Disponível?</p>
-                            <input 
-                                type="radio" 
-                                id="status_no" 
-                                name="status" 
-                                value="0" 
-                                checked={formData.status == "0"} 
+                            <TextField
+                                label="Número de telemóvel"
+                                id="phone"
+                                name="phone"
+                                value={data.phone}
                                 onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                variant="outlined"
+                                type="tel"
+                                error={Boolean(errors.phone)}
+                                helperText={errors.phone}
                             />
-                            <label htmlFor="status_no">Não</label><br/>
-                            <input 
-                                type="radio" 
-                                id="status_yes" 
-                                name="status" 
-                                value="1" 
-                                checked={formData.status == "1"} 
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="status_yes">Sim</label><br/>
 
-                            <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
+                            <FormControl component="fieldset" margin="normal">
+                                <FormLabel component="legend">Licença de Pesados?</FormLabel>
+                                <RadioGroup
+                                    name="heavy_license"
+                                    value={data.heavy_license}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel
+                                        value="0"
+                                        control={<Radio />}
+                                        label="Não"
+                                    />
+                                    <FormControlLabel
+                                        value="1"
+                                        control={<Radio />}
+                                        label="Sim"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <br/>
 
+                            <FormControl component="fieldset" margin="normal">
+                                <FormLabel component="legend">Disponível?</FormLabel>
+                                <RadioGroup
+                                    name="status"
+                                    value={data.status}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel
+                                        value="0"
+                                        control={<Radio />}
+                                        label="Não"
+                                    />
+                                    <FormControlLabel
+                                        value="1"
+                                        control={<Radio />}
+                                        label="Sim"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <br/>
 
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                            >
+                                Submeter
+                            </Button>
                         </form>
                     </div>
                 </div>

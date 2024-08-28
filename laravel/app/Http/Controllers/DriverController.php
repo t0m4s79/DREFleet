@@ -56,7 +56,7 @@ class DriverController extends Controller
             $user->update([
                 'user_type' => "Condutor",
             ]);
-            return redirect('/drivers')->with('message', 'Condutor/a criado/a com sucesso!');;
+            return redirect('/drivers')->with('message', 'Condutor/a criado/a com sucesso!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Houve um problema ao criar o condutor. Tente novamente.');
         }
@@ -85,19 +85,23 @@ class DriverController extends Controller
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         
-        $driver->update([
-            'heavy_license' => $incomingFields['heavy_license'],
-        ]);
-    
-        $user = User::findOrFail($incomingFields['user_id']);
-        $user->update([
-            'name' => $incomingFields['name'],
-            'email' => $incomingFields['email'],
-            'phone' => $incomingFields['phone'],
-            'status_code' => $incomingFields['status'],
-        ]);
+        try {
+            $driver->update([
+                'heavy_license' => $incomingFields['heavy_license'],
+            ]);
+        
+            $user = User::findOrFail($incomingFields['user_id']);
+            $user->update([
+                'name' => $incomingFields['name'],
+                'email' => $incomingFields['email'],
+                'phone' => $incomingFields['phone'],
+                'status_code' => $incomingFields['status'],
+            ]);
 
-        return redirect('/drivers');
+            return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
+        }  catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
+        }
     }
 
     public function deleteDriver($id)
