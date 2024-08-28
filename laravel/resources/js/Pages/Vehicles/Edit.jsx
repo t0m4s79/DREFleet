@@ -9,12 +9,14 @@ export default function Edit({ auth, vehicle}) {
         make: vehicle.make,
         model: vehicle.model,
         license_plate: vehicle.license_plate,
+        year: vehicle.year,
         heavy_vehicle: vehicle.heavy_vehicle,
         wheelchair_adapted: vehicle.wheelchair_adapted,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
+        oil_type: vehicle.oil_type,
     });
 
     const handleChange = (e) => {
@@ -72,6 +74,18 @@ export default function Edit({ auth, vehicle}) {
                                 inputProps={{ pattern: "[A-Za-z0-9]+" }}
                                 error={!!errors.license_plate}
                                 helperText={errors.license_plate || "Só são permitidos números e letras"}
+                            />
+
+                            <TextField
+                                label="Ano"
+                                name="year"
+                                value={data.year}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                inputProps={{ pattern: "[0-9]+" }}
+                                error={!!errors.year}
+                                helperText={errors.year || "Só são permitidos números"}
                             />
 
                             <Grid container>
@@ -157,6 +171,25 @@ export default function Edit({ auth, vehicle}) {
                                 error={!!errors.current_month_fuel_requests}
                                 helperText={errors.current_month_fuel_requests}
                             />
+
+                            <FormControl component="fieldset" margin="normal">
+                                <FormLabel component="legend">Tipo de Combustível</FormLabel>
+                                <RadioGroup
+                                    aria-label="oil_type"
+                                    name="oil_type"
+                                    value={data.oil_type}
+                                    onChange={(e) => setData('oil_type', e.target.value)}
+                                >
+                                    <FormControlLabel value="Gasolina 95" control={<Radio />} label="Gasolina 95" />
+                                    <FormControlLabel value="Gasolina 98" control={<Radio />} label="Gasolina 98" />
+                                    <FormControlLabel value="Gasóleo" control={<Radio />} label="Gasóleo" />
+                                    <FormControlLabel value="Híbrido" control={<Radio />} label="Híbrido" />
+                                    <FormControlLabel value="Elétrico" control={<Radio />} label="Elétrico" />
+                                </RadioGroup>
+                                {errors.status && <InputError message={errors.status} />}
+                            </FormControl>
+
+                            <br />
 
                             <Button type="submit" variant='outlined'>Submeter</Button>
 

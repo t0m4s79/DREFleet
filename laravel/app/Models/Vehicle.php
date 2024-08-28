@@ -13,12 +13,14 @@ class Vehicle extends Model
         'make',
         'model',
         'license_plate',
+        'year',
         'heavy_vehicle',
         'wheelchair_adapted',
         'capacity',
         'fuel_consumption',
         'status',
-        'current_month_fuel_requests'
+        'current_month_fuel_requests',
+        'oil_type',
     ];
     
     protected $hidden = [
