@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-
-use Illuminate\Validation\Rules;
 use Inertia\Response;
+use Illuminate\Http\Request;
+
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -31,15 +32,34 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'user_type' => 'Nenhum',
-            'status_code' => '0',
-            'password' => Hash::make($request->password),
+        try{
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'user_type' => 'Nenhum',
+                'status_code' => '0',
+                'password' => Hash::make($request->password),
+            ]);
+            
+            return redirect('/users')->with('message', 'Utilizador criada com sucesso!');;
+        } catch (\Exception $e) {
+            return redirect('users')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
+        }    
+    }
+
+    public function editUser(User $user, Request $request) {        //TODO: should phone be unique for each user???
+        $incomingFields = $request->validate([
+            'name' => 'required', 
+            'email' => ['required','email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)], // Ignore current user's email,
+            'phone' => ['required', 'min:9', 'max:15'],
         ]);
 
+        $incomingFields['name'] = strip_tags($incomingFields['name']);
+        $incomingFields['email'] = strip_tags($incomingFields['email']);
+        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
+
+        $user->update($incomingFields);
         return redirect('/users');
     }
 

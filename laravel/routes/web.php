@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.create');
     Route::post('/users/create', [UserController::class, 'createUser'])->name('users.create');              //CREATE
     Route::get('/users/edit/{user}', [UserController::class, 'showEditScreen'])->name('users.showEdit');    //GET
-    Route::post('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');           //EDIT
+    Route::put('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');           //EDIT
     Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');     //DELETE
 
     //DRIVERS

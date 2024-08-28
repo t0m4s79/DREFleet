@@ -18,7 +18,7 @@ class VehicleFactory extends Factory
     public function definition(): array
     {
         return [
-            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat']),
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(111111,999999),
             'heavy_vehicle' => rand(0,1),

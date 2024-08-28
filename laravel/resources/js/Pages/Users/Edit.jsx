@@ -37,7 +37,8 @@ export default function Edit({ auth, user }) {
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <form action={`/users/edit/${user.id}`} method="POST">
                             <input type="hidden" name="_token" value={csrfToken} />
-                            <input type="hidden" name="user_id" value={user.id} />
+                            <input type="hidden" name="_method" value="PUT"/>
+                            <input type="hidden" name="user_id" value={user.id}/>
 
                             <label htmlFor="name">Nome</label><br/>
                             <input 
