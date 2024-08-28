@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 export default function NewPlace({auth}) {
 
@@ -34,75 +34,88 @@ export default function NewPlace({auth}) {
 
                             <h2>Criar morada</h2>
                             <form onSubmit={handleSubmit} id="newPlaceForm">
-                                <input 
-                                    type="hidden" 
-                                    name="_token" 
-                                    value={csrfToken} 
-                                />
+                                <input type="hidden" name="_token" value={csrfToken} />
 
-                                <label htmlFor="name">Morada</label><br/>
-                                <input 
-                                    type="text" 
-                                    id="address" 
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="address"
                                     name="address"
-                                    value={data.address} 
-                                    onChange={(e) => setData('address', e.target.value)} 
+                                    label="Morada"
+                                    value={data.address}
+                                    onChange={(e) => setData('address', e.target.value)}
+                                    error={Boolean(errors.address)}
+                                    helperText={errors.address}
                                 />
-                                {errors.address && <InputError message={errors.address}/>}
-                                <br/>
 
-                                <label htmlFor="known_as">Conhecido como</label><br/>
-                                <input 
-                                    type="text" 
-                                    id="known_as" 
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="known_as"
                                     name="known_as"
-                                    value={data.known_as} 
-                                    onChange={(e) => setData('known_as', e.target.value)} 
+                                    label="Conhecido como"
+                                    value={data.known_as}
+                                    onChange={(e) => setData('known_as', e.target.value)}
+                                    error={Boolean(errors.known_as)}
+                                    helperText={errors.known_as}
                                 />
-                                {errors.known_as && <InputError message={errors.known_as}/>}
-                                <br/>
 
-                                <label htmlFor="latitude">Latitude</label><br/>
-                                <input 
-                                    type="number" 
-                                    step=".00001" 
-                                    id="latitude" 
-                                    name="latitude" 
-                                    placeholder="0.00000" 
-                                    min="-90" 
-                                    max="90"
-                                    value={data.latitude} 
-                                    onChange={(e) => setData('latitude', e.target.value)} 
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="latitude"
+                                    name="latitude"
+                                    label="Latitude"
+                                    type="number"
+                                    inputProps={{
+                                        step: 0.00001,
+                                        min: -90,
+                                        max: 90,
+                                        placeholder: "0.00000"
+                                    }}
+                                    value={data.latitude}
+                                    onChange={(e) => setData('latitude', e.target.value)}
+                                    error={Boolean(errors.latitude)}
+                                    helperText={errors.latitude}
                                 />
-                                {errors.latitude && <InputError message={errors.latitude}/>}
-                                <br/>
 
-                                <label htmlFor="longitude">Longitude</label><br/>
-                                <input 
-                                    type="number" 
-                                    step=".00001" 
-                                    id="longitude" 
-                                    name="longitude" 
-                                    placeholder="0.00000" 
-                                    min="-180" 
-                                    max="180"
-                                    value={data.longitude} 
-                                    onChange={(e) => setData('longitude', e.target.value)} 
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="longitude"
+                                    name="longitude"
+                                    label="Longitude"
+                                    type="number"
+                                    inputProps={{
+                                        step: 0.00001,
+                                        min: -180,
+                                        max: 180,
+                                        placeholder: "0.00000"
+                                    }}
+                                    value={data.longitude}
+                                    onChange={(e) => setData('longitude', e.target.value)}
+                                    error={Boolean(errors.longitude)}
+                                    helperText={errors.longitude}
                                 />
-                                {errors.longitude && <InputError message={errors.longitude}/>}
-                                <br/>
 
-                                <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
+                                <Button
+                                    variant="outlined"
+                                    type="submit"
+                                    disabled={processing}
+                                    sx={{ mt: 2 }}
+                                >
+                                    Submeter
+                                </Button>
 
-                                    <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-gray-600">Guardado</p>
-                                    </Transition>
+                                <Transition
+                                    show={recentlySuccessful}
+                                    enter="transition ease-in-out"
+                                    enterFrom="opacity-0"
+                                    leave="transition ease-in-out"
+                                    leaveTo="opacity-0"
+                                >
+                                    <p className="text-sm text-gray-600">Guardado</p>
+                                </Transition>
                             </form>
 
                         </div>
