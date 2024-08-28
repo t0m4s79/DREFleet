@@ -5,18 +5,20 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Grid } from '@mui/material';
 import { useState } from 'react';
 
-export default function NewDriver( {auth,vehicle} ) {
+export default function NewDriver( {auth} ) {
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         make: '',
         model: '',
         license_plate: '',
+        year: '',
         heavy_vehicle: '0',
         wheelchair_adapted: '0',
         capacity: '9',
         fuel_consumption: '',
         status: 'Disponível',
-        current_month_fuel_requests: '0'
+        current_month_fuel_requests: '0',
+        oil_type: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -76,6 +78,20 @@ export default function NewDriver( {auth,vehicle} ) {
                                     inputProps={{ pattern: "[A-Za-z0-9]+", maxLength: 6, title: "Só são permitidos números e letras" }}
                                     error={Boolean(errors.license_plate)}
                                     helperText={errors.license_plate && <InputError message={errors.license_plate} />}
+                                    margin="normal"
+                                />
+
+                                <TextField
+                                    fullWidth
+                                    label="Ano"
+                                    id="year"
+                                    name="year"
+                                    placeholder='2024'
+                                    value={data.year}
+                                    onChange={(e) => setData('year', e.target.value)}
+                                    inputProps={{ pattern: "[0-9]+", maxLength: 4 }}
+                                    error={Boolean(errors.year)}
+                                    helperText={errors.year && <InputError message={errors.year} />}
                                     margin="normal"
                                 />
 
@@ -170,6 +186,25 @@ export default function NewDriver( {auth,vehicle} ) {
                                     helperText={errors.current_month_fuel_requests && <InputError message={errors.current_month_fuel_requests} />}
                                     margin="normal"
                                 />
+
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Tipo de Combustível</FormLabel>
+                                    <RadioGroup
+                                        aria-label="oil_type"
+                                        name="oil_type"
+                                        value={data.oil_type}
+                                        onChange={(e) => setData('oil_type', e.target.value)}
+                                    >
+                                        <FormControlLabel value="Gasolina 95" control={<Radio />} label="Gasolina 95" />
+                                        <FormControlLabel value="Gasolina 98" control={<Radio />} label="Gasolina 98" />
+                                        <FormControlLabel value="Gasóleo" control={<Radio />} label="Gasóleo" />
+                                        <FormControlLabel value="Híbrido" control={<Radio />} label="Híbrido" />
+                                        <FormControlLabel value="Elétrico" control={<Radio />} label="Elétrico" />
+                                    </RadioGroup>
+                                    {errors.status && <InputError message={errors.status} />}
+                                </FormControl>
+                                
+                                <br />
 
                                 <Button variant="outlined" type="submit" disabled={processing}>
                                     Submeter

@@ -21,12 +21,14 @@ class VehicleFactory extends Factory
             'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(111111,999999),
+            'year' => rand(1960,2024),
             'heavy_vehicle' => rand(0,1),
             'wheelchair_adapted' => rand(0,1),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
             'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
-            'current_month_fuel_requests' => rand(0,6)
+            'current_month_fuel_requests' => rand(0,6),
+            'oil_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
         ];
     }
 }

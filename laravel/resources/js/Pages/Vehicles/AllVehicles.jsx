@@ -26,12 +26,14 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         make: 'Marca',
         model: 'Modelo',
         license_plate: 'Matrícula',
+        year: 'Ano',
         heavy_vehicle: 'Veículo Pesado',
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
-        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)'
+        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)',
+        oil_type: 'Tipo de Combustível',
     };
 
     return (
