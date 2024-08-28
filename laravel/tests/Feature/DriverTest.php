@@ -28,7 +28,7 @@ class DriverTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_drivers_creation_page_is_displayed(): void
+    public function test_driver_creation_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)

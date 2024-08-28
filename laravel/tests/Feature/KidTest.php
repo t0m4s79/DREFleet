@@ -28,7 +28,7 @@ class KidTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_kids_creation_page_is_displayed(): void
+    public function test_kid_creation_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)
