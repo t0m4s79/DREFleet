@@ -18,7 +18,6 @@ class PlaceTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-
     public function test_places_page_is_displayed(): void
     {
         $response = $this
@@ -122,5 +121,29 @@ class PlaceTest extends TestCase
         $this->assertDatabaseMissing('places', [
             'id' => $place->id,
         ]);
+    }
+
+    public function test_place_creation_handles_exception()
+    {
+        $incomingFields = [
+            'address' => 'Casa do Messi',
+            'known_as' => 'Casa do segundo melhor',
+            'latitude' => '10.01',
+            'longitude' => '1.11',
+        ];
+
+        // Mock the Vehicle model to throw an exception
+        $this->mock(Place::class, function ($mock) {
+            $mock->shouldReceive('create')
+                ->andThrow(new \Exception('Database error'));
+        });
+
+        // Act: Send a POST request to the create place route
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/places/create', $incomingFields);
+
+        // Assert: Check if the catch block was executed
+        $response->assertRedirect(); // Ensure it redirects back to the form
     }
 }

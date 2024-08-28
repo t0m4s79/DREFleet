@@ -10,12 +10,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VehicleTest extends TestCase
 {
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
     public function test_vehicles_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/vehicles');
 
         $response->assertOk();
@@ -23,10 +29,8 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_creation_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/vehicles/create');
 
         $response->assertOk();
@@ -34,11 +38,10 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_edit_page_is_displayed(): void
     {
-        $user = User::factory()->create();
         $vehicle = Vehicle::factory()->create();
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get("/vehicles/edit/{$vehicle->id}");
 
         $response->assertOk();
@@ -48,8 +51,6 @@ class VehicleTest extends TestCase
 
     public function test_user_can_create_a_vehicle(): void
     {
-        $user = User::factory()->create();
-
         $vehicleData = [
             'make' => 'Toyota',
             'model' => 'Corolla',
@@ -63,7 +64,7 @@ class VehicleTest extends TestCase
         ];
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/vehicles/create', $vehicleData);
 
         $response
@@ -76,8 +77,6 @@ class VehicleTest extends TestCase
 
     public function test_user_can_edit_a_vehicle(): void
     {
-        $user = User::factory()->create();
-
         $vehicle = Vehicle::factory()->create([
             'make' => 'Toyota',
             'model' => 'Corolla',
@@ -103,7 +102,7 @@ class VehicleTest extends TestCase
         ]; 
         
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
 
         $response
@@ -127,7 +126,6 @@ class VehicleTest extends TestCase
 
     public function test_user_can_delete_a_vehicle(): void
     {
-        $user = User::factory()->create();
         $vehicle = Vehicle::factory()->create([
             'make' => 'Peugeot',
             'model' => '106',
@@ -141,7 +139,7 @@ class VehicleTest extends TestCase
         ]);
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->delete("/vehicles/delete/{$vehicle->id}");
 
         $response
@@ -154,10 +152,7 @@ class VehicleTest extends TestCase
     }
 
     public function test_vehicle_creation_handles_exception()
-    {
-        // Arrange: Create a user and mock the Vehicle model
-        $user = User::factory()->create();
-        
+    {        
         // Prepare the incoming fields
         $incomingFields = [
             'make' => 'Toyota',
@@ -179,7 +174,7 @@ class VehicleTest extends TestCase
 
         // Act: Send a POST request to the create vehicle route
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/vehicles/create', $incomingFields);
 
         // Assert: Check if the catch block was executed

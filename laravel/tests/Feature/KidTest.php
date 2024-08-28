@@ -11,12 +11,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class KidTest extends TestCase
 {
+    protected $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+    }
+
     public function test_kids_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/kids');
 
         $response->assertOk();
@@ -24,10 +30,8 @@ class KidTest extends TestCase
 
     public function test_kids_creation_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/kids/create');
 
         $response->assertOk();
@@ -35,11 +39,10 @@ class KidTest extends TestCase
 
     public function test_kid_edit_page_is_displayed(): void
     {
-        $user = User::factory()->create();
         $kid = Kid::factory()->create();
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get("/kids/edit/{$kid->id}");
 
         $response->assertOk();
@@ -48,8 +51,6 @@ class KidTest extends TestCase
 
     public function test_user_can_create_a_kid(): void
     {
-        $user = User::factory()->create();
-
         $kidData = [
             'wheelchair' => '0',
             'name' => 'Cristiano Ronaldo',
@@ -58,7 +59,7 @@ class KidTest extends TestCase
         ];
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
         $response
@@ -71,8 +72,6 @@ class KidTest extends TestCase
 
     public function test_user_can_edit_a_kid(): void
     {
-        $user = User::factory()->create();
-
         $kid = Kid::factory()->create([
             'wheelchair' => '0',
             'name' => 'Cristiano Ronaldo',
@@ -88,7 +87,7 @@ class KidTest extends TestCase
         ];
         
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->put("/kids/edit/{$kid->id}", $updatedData);
 
         $response
@@ -105,7 +104,6 @@ class KidTest extends TestCase
 
     public function test_user_can_delete_a_kid(): void
     {
-        $user = User::factory()->create();
         $kid = Kid::factory()->create([
             'wheelchair' => '1',
             'name' => 'Leo Messi',
@@ -114,7 +112,7 @@ class KidTest extends TestCase
         ]);
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->delete("/kids/delete/{$kid->id}");
 
         $response
@@ -128,8 +126,6 @@ class KidTest extends TestCase
 
     public function test_user_can_create_a_kid_and_their_places(): void
     {
-        $user = User::factory()->create();
-
         $place_1 = Place::factory()->create();
         $place_2 = Place::factory()->create();
 
@@ -142,7 +138,7 @@ class KidTest extends TestCase
         ];
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
         $response
@@ -171,8 +167,6 @@ class KidTest extends TestCase
 
     public function test_user_can_edit_a_kid_and_remove_places(): void
     {
-        $user = User::factory()->create();
-
         $place_1 = Place::factory()->create();
         $place_2 = Place::factory()->create();
         $place_3 = Place::factory()->create();
@@ -186,7 +180,7 @@ class KidTest extends TestCase
         ];
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
         $kid = Kid::where('email', 'cris@siu.com')->orderBy('id', 'desc')->first();
@@ -201,7 +195,7 @@ class KidTest extends TestCase
         ];
         
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->put("/kids/edit/{$kid->id}", $updatedData);
 
         $response
@@ -223,5 +217,29 @@ class KidTest extends TestCase
             'place_id' => $place_3->id,
         ]);
         
+    }
+
+    public function test_kid_creation_handles_exception()
+    {
+        $incomingFields = [
+            'wheelchair' => '0',
+            'name' => 'Cristiano Ronaldo',
+            'phone' => '777777777',
+            'email' => 'cris@siu.com',
+        ];
+
+        // Mock the Vehicle model to throw an exception
+        $this->mock(Kid::class, function ($mock) {
+            $mock->shouldReceive('create')
+                ->andThrow(new \Exception('Database error'));
+        });
+
+        // Act: Send a POST request to the create place route
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/kids/create', $incomingFields);
+
+        // Assert: Check if the catch block was executed
+        $response->assertRedirect(); // Ensure it redirects back to the form
     }
 }
