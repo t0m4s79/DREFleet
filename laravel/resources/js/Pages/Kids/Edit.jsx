@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material';
-import { useForm } from '@inertiajs/react';
+import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
 export default function Edit({auth, kid, availablePlaces}) {
@@ -28,14 +27,15 @@ export default function Edit({auth, kid, availablePlaces}) {
     };
 
     const handleAddPlacesChange = (event) => {
-        setSelectedAddPlaces(event.target.value);
-        setData('addPlaces', selectedAddPlaces);
-
+        const newSelectedAddPlaces = event.target.value;
+        setSelectedAddPlaces(newSelectedAddPlaces);
+        setData('addPlaces', newSelectedAddPlaces);
     };
     
     const handleRemovePlacesChange = (event) => {
-        setSelectedRemovePlaces(event.target.value);
-        setData('removePlaces', selectedRemovePlaces);
+        const newSelectedRemovePlaces = event.target.value;
+        setSelectedRemovePlaces(newSelectedRemovePlaces);
+        setData('removePlaces', newSelectedRemovePlaces);
     };
 
     const handleSubmit = (e) => {
@@ -65,63 +65,60 @@ export default function Edit({auth, kid, availablePlaces}) {
                         <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken} />
 
-                            <label htmlFor="name">Nome</label><br/>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name" 
-                                value={data.name} 
+                            <TextField
+                                label="Nome"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                id="name"
+                                name="name"
+                                value={data.name}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
+                                error={!!errors.name}
+                                helperText={errors.name && <InputError message={errors.name} />}
                             />
-                            {errors.name && <InputError message={errors.name} />}
-                            <br/>
 
-                            <label htmlFor="email">Email</label><br/>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                value={data.email} 
+                            <TextField
+                                label="Email"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                id="email"
+                                name="email"
+                                value={data.email}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
+                                error={!!errors.email}
+                                helperText={errors.email && <InputError message={errors.email} />}
                             />
-                            {errors.email && <InputError message={errors.email} />}
-                            <br/>
 
-                            <label htmlFor="phone">Número de telemóvel</label><br/>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone" 
-                                value={data.phone} 
+                            <TextField
+                                label="Número de telemóvel"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                id="phone"
+                                name="phone"
+                                value={data.phone}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
+                                error={!!errors.phone}
+                                helperText={errors.phone && <InputError message={errors.phone} />}
                             />
-                            {errors.phone && <InputError message={errors.phone} />}
-                            <br/>
 
-                            <p>Utiliza cadeira de rodas?</p>
-                            <input 
-                                type="radio" 
-                                id="wheelchair_no" 
-                                name="wheelchair" 
-                                value="0" 
-                                checked={data.wheelchair == "0"} 
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="wheelchair_no">Não</label><br/>
-                            <input 
-                                type="radio" 
-                                id="wheelchair_yes" 
-                                name="wheelchair" 
-                                value="1" 
-                                checked={data.wheelchair == "1"} 
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="wheelchair_yes">Sim</label>
-                            {errors.wheelchair && <InputError message={errors.wheelchair} />}
-                            <br/>
+                            <FormControl component="fieldset" margin="normal">
+                                <FormLabel component="legend">Utiliza cadeira de rodas?</FormLabel>
+                                <RadioGroup
+                                    aria-label="wheelchair"
+                                    name="wheelchair"
+                                    value={data.wheelchair}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                    <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                </RadioGroup>
+                                {errors.wheelchair && <InputError message={errors.wheelchair} />}
+                            </FormControl>
+
 
                             <p>Adicionar Morada</p>
                             <FormControl sx={{ m: 1, minWidth: 300 }}>
