@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { TextField, Button } from '@mui/material';
+import { useForm } from '@inertiajs/react';
 
 export default function Edit({auth, place, kids}) {
 
     // Initialize state with kid data
-    const [formData, setFormData] = useState({
+    const { data, setData, put, errors, processing } = useForm({
         address: place.address,
         known_as: place.known_as,
         latitude: place.latitude,
         longitude: place.longitude,
     });
-
     
     const kid = kids.map((kid)=>(
         <option value={kid.id}>{kid.id} - {kid.name}</option>
@@ -21,10 +22,12 @@ export default function Edit({auth, place, kids}) {
     // Handle input changes
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'radio' ? (checked ? value : prevState[name]) : value,
-        }));
+        setData(name, type === 'radio' ? value : value);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        put(route('places.edit', place.id));
     };
     
 
@@ -39,51 +42,66 @@ export default function Edit({auth, place, kids}) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <form action={`/places/edit/${place.id}`} method="POST">
+                        <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken}/>
-                            <input type="hidden" name="_method" value="PUT"/>
 
-                            <label htmlFor="address">Nome</label><br/>
-                            <input 
-                                type="text" 
-                                id="address" 
-                                name="address" 
-                                value={formData.address} 
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                id="address"
+                                name="address"
+                                label="Nome"
+                                value={data.address}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
+                                error={Boolean(errors.address)}
+                                helperText={errors.address}
+                            />
 
-                            <label htmlFor="email">Conhecido como</label><br/>
-                            <input 
-                                type="text" 
-                                id="known_as" 
-                                name="known_as" 
-                                value={formData.known_as} 
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                id="known_as"
+                                name="known_as"
+                                label="Conhecido como"
+                                value={data.known_as}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
+                                error={Boolean(errors.known_as)}
+                                helperText={errors.known_as}
+                            />
 
-                            <label htmlFor="phone">Latitude</label><br/>
-                            <input 
-                                type="text" 
-                                id="latitude" 
-                                name="latitude" 
-                                value={formData.latitude} 
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                id="latitude"
+                                name="latitude"
+                                label="Latitude"
+                                value={data.latitude}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
+                                error={Boolean(errors.latitude)}
+                                helperText={errors.latitude}
+                            />
 
-                            <label htmlFor="phone">Longitude</label><br/>
-                            <input 
-                                type="text" 
-                                id="longitude" 
-                                name="longitude" 
-                                value={formData.longitude} 
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                id="longitude"
+                                name="longitude"
+                                label="Longitude"
+                                value={data.longitude}
                                 onChange={handleChange}
-                                className="mt-1 block w-full"
-                            /><br/>
+                                error={Boolean(errors.longitude)}
+                                helperText={errors.longitude}
+                            />
 
-                            <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                                sx={{ mt: 3 }}
+                            >
+                                Submeter
+                            </Button>
                         </form>
                     </div>
                 </div>
