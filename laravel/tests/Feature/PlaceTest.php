@@ -144,6 +144,6 @@ class PlaceTest extends TestCase
             ->post('/places/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect(); // Ensure it redirects back to the form
+        $response->assertRedirect('/places');
     }
 }

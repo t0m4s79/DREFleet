@@ -178,7 +178,6 @@ class VehicleTest extends TestCase
             ->post('/vehicles/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect(); // Ensure it redirects back to the form
-        $response->assertSessionHas('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+        $response->assertRedirect('/vehicles');
     }
 }

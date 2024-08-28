@@ -234,12 +234,12 @@ class KidTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create place route
+        // Act: Send a POST request to the create driver route
         $response = $this
             ->actingAs($this->user)
             ->post('/kids/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect(); // Ensure it redirects back to the form
+        $response->assertRedirect('/kids'); // Ensure it redirects back to the form
     }
 }
