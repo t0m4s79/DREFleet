@@ -54,7 +54,7 @@ class VehicleController extends Controller
             Vehicle::create($incomingFields);
             return redirect('/vehicles')->with('message', 'Veículo criado com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+            return redirect('vehicles')->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
         }
     }
 

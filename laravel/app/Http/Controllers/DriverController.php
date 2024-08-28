@@ -58,7 +58,7 @@ class DriverController extends Controller
             ]);
             return redirect('/drivers')->with('message', 'Condutor/a criado/a com sucesso!');;
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao criar o condutor. Tente novamente.');
+            return redirect('drivers')->with('error', 'Houve um problema ao criar o condutor. Tente novamente.');
         }
     }
 

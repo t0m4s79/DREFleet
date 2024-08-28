@@ -55,7 +55,7 @@ class KidController extends Controller
             $kid->places()->attach($incomingFields['places']);
             return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
+            return redirect('kids')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
 
