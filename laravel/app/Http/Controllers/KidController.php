@@ -44,8 +44,10 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (count($incomingFields['places'])>0) {
+        if (isset($incomingFields['places'])) {
             $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
+        } else {
+            $incomingFields['places'] = []; // If no places were selected, pass an empty array
         }
 
         try {
@@ -82,7 +84,7 @@ class KidController extends Controller
         return Inertia::render('Kids/Edit',['kid'=> $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
     }
 
-    public function editKid(Kid $kid, Request $request) { 
+    public function editKid(Kid $kid, Request $request) {        
         $incomingFields = $request->validate([
             'name' => 'required', 
             'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
@@ -108,14 +110,11 @@ class KidController extends Controller
         } else {
             $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
         }
-        try {
-            $kid->update($incomingFields);
-            $kid->places()->attach($incomingFields['addPlaces']);
-            $kid->places()->detach($incomingFields['removePlaces']);
-            return redirect('/kids')->with('message', 'Dados da criança atualizados com sucesso!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
-        }
+        
+        $kid->update($incomingFields);
+        $kid->places()->attach($incomingFields['addPlaces']);
+        $kid->places()->detach($incomingFields['removePlaces']);
+        return redirect('/kids');
     }
 
     public function deleteKid($id) {
