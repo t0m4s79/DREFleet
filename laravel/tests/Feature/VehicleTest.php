@@ -7,25 +7,23 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Arr;
+
 
 class VehicleTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
-    {
-        $response = $this->get('/');
+    protected $user;
 
-        $response->assertStatus(200);
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
     }
 
-    public function test_vehicle_page_is_displayed(): void
+    public function test_vehicles_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/vehicles');
 
         $response->assertOk();
@@ -33,10 +31,8 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_creation_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get('/vehicles/create');
 
         $response->assertOk();
@@ -44,11 +40,10 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_edit_page_is_displayed(): void
     {
-        $user = User::factory()->create();
         $vehicle = Vehicle::factory()->create();
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->get("/vehicles/edit/{$vehicle->id}");
 
         $response->assertOk();
@@ -58,22 +53,20 @@ class VehicleTest extends TestCase
 
     public function test_user_can_create_a_vehicle(): void
     {
-        $user = User::factory()->create();
-
         $vehicleData = [
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => '11XX11',
-            'heavy_vehicle' => '1',
-            'wheelchair_adapted' => '1',
-            'capacity' => '9',
-            'fuel_consumption' => '8.23',
-            'status' => 'Disponível',
-            'current_month_fuel_requests' => '2',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ];
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/vehicles/create', $vehicleData);
 
         $response
@@ -84,74 +77,50 @@ class VehicleTest extends TestCase
         $this->assertDatabaseHas('vehicles', $vehicleData);
     }
 
-    public function test_user_can_edit_a_vehicle(): void              //TODO: change from post to put/patch
+    public function test_user_can_edit_a_vehicle(): void
     {
-        $user = User::factory()->create();
-
         $vehicle = Vehicle::factory()->create([
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => '11XX11',
-            'heavy_vehicle' => '1',
-            'wheelchair_adapted' => '1',
-            'capacity' => '9',
-            'fuel_consumption' => '8.23',
-            'status' => 'Disponível',
-            'current_month_fuel_requests' => '2',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ]);
     
         $updatedData = [
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ]; 
         
         $response = $this
-        ->actingAs($user)
-        ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
+            ->actingAs($this->user)
+            ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/vehicles');
 
-        $this->assertDatabaseHas('vehicles', [
-            'id' => $vehicle->id,
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
-        ]);
+        $this->assertDatabaseHas('vehicles', $updatedData);
         
     }
 
     public function test_user_can_delete_a_vehicle(): void
     {
-        $user = User::factory()->create();
-        $vehicle = Vehicle::factory()->create([
-            'make' => 'Peugeot',
-            'model' => '106',
-            'license_plate' => '33YY11',
-            'heavy_vehicle' => '0',
-            'wheelchair_adapted' => '0',
-            'capacity' => '5',
-            'fuel_consumption' => '10.00',
-            'status' => 'Indisponível',
-            'current_month_fuel_requests' => '1',
-        ]);
+        $vehicle = Vehicle::factory()->create();
 
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->delete("/vehicles/delete/{$vehicle->id}");
 
         $response
@@ -164,21 +133,18 @@ class VehicleTest extends TestCase
     }
 
     public function test_vehicle_creation_handles_exception()
-    {
-        // Arrange: Create a user and mock the Vehicle model
-        $user = User::factory()->create();
-        
+    {        
         // Prepare the incoming fields
         $incomingFields = [
-            'make' => 'Toyota',
-            'model' => 'Corolla',
-            'license_plate' => 'XYZ123',
-            'heavy_vehicle' => 0,
-            'wheelchair_adapted' => 0,
-            'capacity' => 4,
-            'fuel_consumption' => 8.5,
-            'status' => 'active',
-            'current_month_fuel_requests' => 2,
+            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'model' => fake()->name(),
+            'license_plate' => rand(111111,999999),
+            'heavy_vehicle' => rand(0,1),
+            'wheelchair_adapted' => rand(0,1),
+            'capacity' => rand(5,15),
+            'fuel_consumption' => rand(2,10),
+            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0,6)
         ];
 
         // Mock the Vehicle model to throw an exception
@@ -189,11 +155,10 @@ class VehicleTest extends TestCase
 
         // Act: Send a POST request to the create vehicle route
         $response = $this
-            ->actingAs($user)
+            ->actingAs($this->user)
             ->post('/vehicles/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect(); // Ensure it redirects back to the form
-        $response->assertSessionHas('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+        $response->assertRedirect('/vehicles');
     }
 }

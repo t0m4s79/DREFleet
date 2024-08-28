@@ -42,7 +42,8 @@ export default function Edit({ auth, driver }) {
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken} />
-                            <input type="hidden" name="user_id" value={driver.user_id} />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="user_id" value={driver.user_id} />     
 
                             <TextField
                                 label="Nome"

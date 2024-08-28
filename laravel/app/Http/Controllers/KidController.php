@@ -44,18 +44,18 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['addPlaces'])) {
-            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
+        if (isset($incomingFields['places'])) {
+            $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
         } else {
-            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
+            $incomingFields['places'] = []; // If no places were selected, pass an empty array
         }
 
         try {
             $kid = Kid::create($incomingFields);
-            $kid->places()->attach($incomingFields['addPlaces']);
+            $kid->places()->attach($incomingFields['places']);
             return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
+            return redirect('kids')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
 
@@ -110,14 +110,11 @@ class KidController extends Controller
         } else {
             $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
         }
-        try {
-            $kid->update($incomingFields);
-            $kid->places()->attach($incomingFields['addPlaces']);
-            $kid->places()->detach($incomingFields['removePlaces']);
-            return redirect('/kids')->with('message', 'Dados da criança atualizados com sucesso!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
-        }
+        
+        $kid->update($incomingFields);
+        $kid->places()->attach($incomingFields['addPlaces']);
+        $kid->places()->detach($incomingFields['removePlaces']);
+        return redirect('/kids');
     }
 
     public function deleteKid($id) {

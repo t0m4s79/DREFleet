@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.create');
     Route::post('/users/create', [UserController::class, 'createUser'])->name('users.create');              //CREATE
     Route::get('/users/edit/{user}', [UserController::class, 'showEditScreen'])->name('users.showEdit');    //GET
-    Route::post('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');           //EDIT
+    Route::put('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');           //EDIT
     Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');     //DELETE
 
     //DRIVERS
@@ -67,13 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/places/create', [PlaceController::class, 'showCreatePlaceForm'])->name('places.create');
     Route::post('/places/create', [PlaceController::class, 'createPlace'])->name('places.create');
     Route::get('/places/edit/{place}', [PlaceController::class, 'showEditScreen'])->name('places.showEdit');
-    Route::post('/places/edit/{place}', [PlaceController::class, 'editPlace'])->name('places.edit');
+    Route::put('/places/edit/{place}', [PlaceController::class, 'editPlace'])->name('places.edit');
     Route::delete('/places/delete/{place}', [PlaceController::class, 'deletePlace'])->name('places.delete');
 
-});
-
-Route::get('test', function () {
-    return view('test');
 });
 
 require __DIR__.'/auth.php';
