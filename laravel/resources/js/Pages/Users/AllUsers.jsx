@@ -1,6 +1,8 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
+import { Button } from '@mui/material';
 
 export default function AllDrivers( {auth, users} ) {
     
@@ -29,12 +31,17 @@ export default function AllDrivers( {auth, users} ) {
 
             <Head title="Utilizadores" />
         
-            <div className='m-2 p-6'>
-                <a href={route('users.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Utilizador
-                </a>
+            <div className="py-12 px-6">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <Button href={route('users.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <AddIcon />
+                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            Novo Utilizador
+                        </a>
+                    </Button>
 
-                <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
+                    <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

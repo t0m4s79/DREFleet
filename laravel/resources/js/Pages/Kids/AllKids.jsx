@@ -19,19 +19,22 @@ export default function AllKids( {auth, kids, places, flash} ) {
         }
     }, [flash]);
     
-    //Deconstruct data to send to table component
-    let kidPlacesIds;
+    // Deconstruct data to send to table component
+    const kidInfo = kids.map((kid) => {
+        const kidPlacesIds = kid.place_ids.length
+            ? kid.place_ids.map((placeId) => ({ id: placeId }))
+            : [];
 
-    let kidInfo = kids.map((kid) => {
-
-        if(kid.place_ids.length) {
-            kidPlacesIds = kid.place_ids.map((place) => (
-                <Button variant='outlined' href={route('places.showEdit', place)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{place}</Button>
-            ))
-        } else kidPlacesIds = '-'
-
-        return {id: kid.id, name: kid.name, email: kid.email, phone: kid.phone, wheelchair: kid.wheelchair, places_count: kid.place_ids.length, place_ids: kidPlacesIds }
-    })
+        return {
+            id: kid.id,
+            name: kid.name,
+            email: kid.email,
+            phone: kid.phone,
+            wheelchair: kid.wheelchair ? 'Sim' : 'Não',
+            places_count: kid.place_ids.length > 0 ? kid.place_ids.length : 0,
+            place_ids: kidPlacesIds,
+        };
+    });
 
     const kidColumnLabels = {
         id: 'ID',
@@ -52,17 +55,18 @@ export default function AllKids( {auth, kids, places, flash} ) {
             <Head title="Crianças" />
         
 
-            <div className='m-2 p-6'>
+            <div className="py-12 px-6">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                <Button href={route('kids.create')}>
-                    <AddIcon />
-                    <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        Nova Criança
-                    </a>
-                </Button>
+                    <Button href={route('kids.create')}>
+                        <AddIcon />
+                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            Nova Criança
+                        </a>
+                    </Button>
 
-                <Table data={kidInfo} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/>
-
+                    <Table data={kidInfo} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/>
+                </div>
             </div>
 
             <Snackbar 

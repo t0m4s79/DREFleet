@@ -44,14 +44,24 @@ export default function AllVehicles( {auth, vehicles, flash}) {
 
             <Head title="Veículos" />
 
-            <Button href={route('vehicles.create')}>
-                <AddIcon />
-                <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                    Novo Veículo
-                </a>
-            </Button>
+            <div className="py-12 px-6">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <Button href={route('vehicles.create')}>
+                        <AddIcon />
+                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            Novo Veículo
+                        </a>
+                    </Button>
 
-            <Table data={vehicles} columnsLabel={VehicleColumnLabels} editAction="vehicles.showEdit" deleteAction="vehicles.delete"/>
+                    <Table
+                        data={vehicles}
+                        columnsLabel={VehicleColumnLabels}
+                        editAction="vehicles.showEdit"
+                        deleteAction="vehicles.delete"
+                        dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                    />
+                </div>
+            </div>
 
             <Snackbar 
                 open={openSnackbar} 
