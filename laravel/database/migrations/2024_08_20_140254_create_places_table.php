@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('known_as');
-            $table->decimal('latitude', total: 8, places: 5);
-            $table->decimal('longitude', total: 8, places: 5);
+            $table->geography('coordinates', subtype: 'point', srid: 4326);
             $table->timestamps();
         });
     }
