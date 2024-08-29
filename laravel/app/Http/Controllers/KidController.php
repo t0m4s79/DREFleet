@@ -34,13 +34,21 @@ class KidController extends Controller
     //TODO: more verification in each field and frontend verification messages!!!
     public function createKid(Request $request)
     {
+        $customErrorMessages = [
+            'required' => 'O campo :attribute é obrigatório.',
+            'email.email' => 'O campo :attribute deve ser um endereço de e-mail válido.',
+            'phone.required' => 'O campo telefone é obrigatório.',
+            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
+            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
+        ];
+
         $incomingFields = $request->validate([
             'name' => 'required',
-            'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
+            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
             'wheelchair' => 'required',
             'places' => 'array',
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
@@ -91,14 +99,22 @@ class KidController extends Controller
 
     public function editKid(Kid $kid, Request $request)
     {
+        $customErrorMessages = [
+            'required' => 'O campo :attribute é obrigatório.',
+            'email.email' => 'O campo :attribute deve ser um endereço de e-mail válido.',
+            'phone.required' => 'O campo telefone é obrigatório.',
+            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
+            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
+        ];
+
         $incomingFields = $request->validate([
             'name' => 'required',
-            'phone' => ['required', 'regex:/^[0-9]{9,15}$/'],
+            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
             'wheelchair' => 'required',
             'addPlaces' => 'array',
             'removePlaces' => 'array',
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);

@@ -75,7 +75,7 @@ export default function NewDriver( {auth} ) {
                                     placeholder='AAXXBB'
                                     value={data.license_plate}
                                     onChange={(e) => setData('license_plate', e.target.value)}
-                                    inputProps={{ pattern: "[A-Za-z0-9]+", maxLength: 6, title: "Só são permitidos números e letras" }}
+                                    //inputProps={{ pattern: "[A-Za-z0-9]+", maxLength: 6, title: "Só são permitidos números e letras" }}
                                     error={Boolean(errors.license_plate)}
                                     helperText={errors.license_plate && <InputError message={errors.license_plate} />}
                                     margin="normal"
@@ -89,7 +89,7 @@ export default function NewDriver( {auth} ) {
                                     placeholder='2024'
                                     value={data.year}
                                     onChange={(e) => setData('year', e.target.value)}
-                                    inputProps={{ pattern: "[0-9]+", maxLength: 4 }}
+                                    //inputProps={{ pattern: "[0-9]+", maxLength: 4 }}
                                     error={Boolean(errors.year)}
                                     helperText={errors.year && <InputError message={errors.year} />}
                                     margin="normal"
@@ -201,7 +201,7 @@ export default function NewDriver( {auth} ) {
                                         <FormControlLabel value="Híbrido" control={<Radio />} label="Híbrido" />
                                         <FormControlLabel value="Elétrico" control={<Radio />} label="Elétrico" />
                                     </RadioGroup>
-                                    {errors.status && <InputError message={errors.status} />}
+                                    {errors.oil_type && <InputError message={errors.oil_type} />}
                                 </FormControl>
                                 
                                 <br />
