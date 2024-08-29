@@ -1,8 +1,7 @@
 import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select } from '@mui/material';
-import { useState } from 'react';
+import { TextField, Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, FormControl, InputLabel, Radio, RadioGroup, FormControlLabel, FormLabel } from '@mui/material';import { useState } from 'react';
 
 export default function NewKid({auth, places}) {
 
@@ -53,76 +52,98 @@ export default function NewKid({auth, places}) {
                         <form onSubmit={handleSubmit} id="newKidForm">
                             <input type="hidden" name="_token" value={csrfToken} />
 
-                            <label htmlFor="name">Nome</label><br/>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name"
-                                value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
-                            />
-                            {errors.name && <InputError message={errors.name} />}
-                            <br/>
+                            <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="name"
+                                    name="name"
+                                    label="Nome"
+                                    value={data.name}
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    error={Boolean(errors.name)}
+                                    helperText={errors.name}
+                                />
 
-                            <label htmlFor="email">Email do encarregado de educação</label><br/>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email"
-                                value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}    
-                            />
-                            {errors.email && <InputError message={errors.email} />}
-                            <br/>
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="email"
+                                    name="email"
+                                    label="Email do encarregado de educação"
+                                    type="email"
+                                    value={data.email}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    error={Boolean(errors.email)}
+                                    helperText={errors.email}
+                                />
 
-                            <label htmlFor="phone">Número de telefone do encarregado de educação</label><br/>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone"
-                                value={data.phone}
-                                onChange={(e) => setData('phone', e.target.value)}    
-                            />
-                            {errors.phone && <InputError message={errors.phone} />}
-                            <br/>
-                            
-                            <p>Utiliza cadeira de rodas?</p>
-                            <input 
-                                type="radio" 
-                                name="wheelchair" 
-                                value="1"
-                                checked={data.wheelchair === '1'}
-                                onChange={(e) => setData('wheelchair', e.target.value)}
-                            />
-                            <label>Sim</label><br/>
-                            <input 
-                                type="radio" 
-                                name="wheelchair" 
-                                value="0"
-                                checked={data.wheelchair == '0'}
-                                onChange={(e) => setData('wheelchair', e.target.value)}
-                            />
-                            <label>Não</label><br/>
-                            {errors.wheelchair && <InputError message={errors.wheelchair} />}
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id="phone"
+                                    name="phone"
+                                    label="Número de telefone do encarregado de educação"
+                                    type="tel"
+                                    value={data.phone}
+                                    onChange={(e) => setData('phone', e.target.value)}
+                                    error={Boolean(errors.phone)}
+                                    helperText={errors.phone}
+                                />
 
-                            <p>Adicionar Morada</p>
-                            <Select 
-                                multiple
-                                value={kidPlaces}
-                                onChange={handleChange}
-                                input={<OutlinedInput label="Tag" />}
-                                renderValue={(selected) => selected.join(', ')}
-                                sx={{ maxHeight: '200px', width: '250px'}}
-                            >
-                                {placesList.map((place)=>(
-                                    <MenuItem key={place.value} value={place.value}>
-                                        <Checkbox checked={kidPlaces.indexOf(place.value) > -1} />
-                                        <ListItemText primary={place.label} />
-                                  </MenuItem>
-                                ))}
-                            </Select>
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Utiliza cadeira de rodas?</FormLabel>
+                                    <RadioGroup
+                                        row
+                                        aria-label="wheelchair"
+                                        name="wheelchair"
+                                        value={data.wheelchair}
+                                        onChange={(e) => setData('wheelchair', e.target.value)}
+                                    >
+                                        <FormControlLabel
+                                            value="1"
+                                            control={<Radio />}
+                                            label="Sim"
+                                        />
+                                        <FormControlLabel
+                                            value="0"
+                                            control={<Radio />}
+                                            label="Não"
+                                        />
+                                    </RadioGroup>
+                                    {errors.wheelchair && <InputError message={errors.wheelchair} />}
+                                </FormControl>
+                                <br />
+                                
+                                <p>Adicionar Morada</p>
+                                <FormControl sx={{ minWidth: 300 }} margin="normal">
+                                    <InputLabel id="places-label">Adicionar Morada</InputLabel>
+                                    <Select
+                                        labelId="places-label"
+                                        multiple
+                                        value={kidPlaces}
+                                        onChange={handleChange}
+                                        input={<OutlinedInput label="Adicionar Morada" />}
+                                        renderValue={(selected) => selected.join(', ')}
+                                        sx={{ maxHeight: '200px', width: '100%' }}
+                                    >
+                                        {placesList.map((place) => (
+                                            <MenuItem key={place.value} value={place.value}>
+                                                <Checkbox checked={kidPlaces.indexOf(place.value) > -1} />
+                                                <ListItemText primary={place.label} />
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <br/>
 
-                            <p><Button type="submit" value="Submit">Submeter</Button></p>
+                                <Button
+                                    variant="outlined"
+                                    type="submit"
+                                    disabled={processing}
+                                    sx={{ mt: 2 }}
+                                >
+                                    Submeter
+                                </Button>
                         </form>
                         </div>
                     </div>
