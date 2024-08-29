@@ -4,11 +4,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 export default function Edit({auth, place, kids}) {
 
     // Initialize state with kid data
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({      //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
         address: place.address,
         known_as: place.known_as,
-        latitude: place.latitude,
-        longitude: place.longitude,
+        latitude: place.coordinates.coordinates[0],
+        longitude: place.coordinates.coordinates[1],
     });
 
     

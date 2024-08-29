@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Place;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlaceTest extends TestCase
@@ -53,9 +54,9 @@ class PlaceTest extends TestCase
     {
         $placeData = [
             'address' => fake()->address(),
-            'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
-            'latitude' => '29.76',
-            'longitude' => '51.00',
+            'known_as' => Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
         ];
 
         $response = $this
@@ -66,19 +67,33 @@ class PlaceTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/places');
 
+        $place = Place::where('address', $placeData['address'])
+                    ->where('known_as', $placeData['known_as'])
+                    ->first();
 
-        $this->assertDatabaseHas('places', $placeData);
+        $this->assertNotNull($place);
+
+        $expectedCoordinates = new Point($placeData['latitude'], $placeData['longitude']);
+
+        $this->assertDatabaseHas('places', [
+            'address' => $place->address,
+            'known_as' =>  $place->known_as,
+        ]);
+
+        $this->assertEquals($expectedCoordinates->latitude, $place->coordinates->latitude);
+        $this->assertEquals($expectedCoordinates->longitude, $place->coordinates->longitude);
     }
 
-    public function test_user_can_edit_a_place(): void
+
+    public function test_user_can_edit_n_place(): void
     {
         $place = Place::factory()->create();
     
         $updatedData = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
-            'latitude' => '13.41',
-            'longitude' => '11.2',
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
         ];
         
         $response = $this
@@ -89,7 +104,17 @@ class PlaceTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/places');
 
-        $this->assertDatabaseHas('places', $updatedData); 
+        $place->refresh();
+
+        $expectedCoordinates = new Point($updatedData['latitude'], $updatedData['longitude']);
+        
+        $this->assertDatabaseHas('places', [
+            'address' => $place->address,
+            'known_as' =>  $place->known_as,
+        ]);
+
+        $this->assertEquals($expectedCoordinates->latitude, $place->coordinates->latitude);
+        $this->assertEquals($expectedCoordinates->longitude, $place->coordinates->longitude);
     }
 
     public function test_user_can_delete_a_place(): void

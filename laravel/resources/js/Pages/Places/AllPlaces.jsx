@@ -19,8 +19,6 @@ export default function AllPlaces( {auth, places, flash} ) {
             setOpenSnackbar(true);
         }
     }, [flash]);
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     //Deconstruct data to send to table component
     let kidPlacesIds;
@@ -32,7 +30,7 @@ export default function AllPlaces( {auth, places, flash} ) {
         }
         else kidPlacesIds = '-'
 
-        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
+        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.coordinates.coordinates[0], longitude: place.coordinates.coordinates[1], kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
     })
 
     const placeColumnLabels = {
