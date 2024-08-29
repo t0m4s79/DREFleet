@@ -54,7 +54,7 @@ export default function Edit({auth, kid, availablePlaces}) {
     return(
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Criança {kid.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Criança #{kid.id}</h2>}
         >
 
             {/*<Head title={'Condutor'} />*/}

@@ -95,7 +95,7 @@ export default function Edit({ auth, driver }) {
                                     row
                                 >
                                     <FormControlLabel
-                                        value="0"
+                                        value="Sim"
                                         control={<Radio />}
                                         label="Não"
                                     />

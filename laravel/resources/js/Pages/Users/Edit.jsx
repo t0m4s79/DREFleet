@@ -27,7 +27,7 @@ export default function Edit({ auth, user }) {
     return(
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Utilizador {user.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Utilizador #{user.id}</h2>}
         >
 
             {/*<Head title={'Utilizador'} />*/}

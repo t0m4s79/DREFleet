@@ -6,10 +6,7 @@ import { Button } from '@mui/material';
 
 export default function AllDrivers( {auth, users} ) {
     
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
     //Deconstruct data to send to table component
-    let cols;
     let userInfo = users.map((user) => (
         {id: user.id, name: user.name, email: user.email, phone: user.phone, user_type: user.user_type , status_code: user.status_code }
     ))
