@@ -6,11 +6,11 @@ import { useForm } from '@inertiajs/react';
 export default function Edit({auth, place, kids}) {
 
     // Initialize state with kid data
-    const { data, setData, put, errors, processing } = useForm({
+    const { data, setData, put, errors, processing } = useForm({    //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
         address: place.address,
         known_as: place.known_as,
-        latitude: place.latitude,
-        longitude: place.longitude,
+        latitude: place.coordinates.coordinates[0],
+        longitude: place.coordinates.coordinates[1],
     });
     
     const kid = kids.map((kid)=>(

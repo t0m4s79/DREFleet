@@ -19,25 +19,15 @@ export default function AllPlaces( {auth, places, flash} ) {
             setOpenSnackbar(true);
         }
     }, [flash]);
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
     // Deconstruct data to send to table component
     const placeInfo = places.map((place) => {
         const kidPlacesIds = place.kids.length
             ? place.kids.map((kid) => ({ id: kid.id })) // Store kid id in a more structured way
             : [];
-
-        return {
-            id: place.id,
-            address: place.address,
-            known_as: place.known_as,
-            latitude: place.latitude,
-            longitude: place.longitude,
-            kids_count: place.kid_ids.length > 0 ? place.kid_ids.length : 0,
-            kids_ids: kidPlacesIds,
-        };
-    });
+      
+        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.coordinates.coordinates[0], longitude: place.coordinates.coordinates[1], kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
+    })
 
     const placeColumnLabels = {
         id: 'ID',
