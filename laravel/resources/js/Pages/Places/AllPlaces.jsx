@@ -22,18 +22,22 @@ export default function AllPlaces( {auth, places, flash} ) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
-    //Deconstruct data to send to table component
-    let kidPlacesIds;
-    let placeInfo = places.map((place) => {
-        if(place.kids.length){
-            kidPlacesIds = place.kids.map((kid) => (
-                <Button variant='outlined' href={route('kids.showEdit', kid)} sx={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px', margin: '0px 4px'}}>{kid.id}</Button>
-            ))
-        }
-        else kidPlacesIds = '-'
+    // Deconstruct data to send to table component
+    const placeInfo = places.map((place) => {
+        const kidPlacesIds = place.kids.length
+            ? place.kids.map((kid) => ({ id: kid.id })) // Store kid id in a more structured way
+            : [];
 
-        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.latitude, longitude: place.longitude, kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
-    })
+        return {
+            id: place.id,
+            address: place.address,
+            known_as: place.known_as,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            kids_count: place.kid_ids.length > 0 ? place.kid_ids.length : 0,
+            kids_ids: kidPlacesIds,
+        };
+    });
 
     const placeColumnLabels = {
         id: 'ID',
@@ -54,17 +58,18 @@ export default function AllPlaces( {auth, places, flash} ) {
             <Head title="Moradas" />
         
 
-            <div className='m-2 p-6'>
+            <div className="py-12 px-6">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                <Button href={route('places.create')}>
-                    <AddIcon />
-                    <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        Nova Morada
-                    </a>
-                </Button>
+                    <Button href={route('places.create')}>
+                        <AddIcon />
+                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            Nova Morada
+                        </a>
+                    </Button>
 
-                <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
-
+                    <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
+                </div>
             </div>
 
             <Snackbar 
