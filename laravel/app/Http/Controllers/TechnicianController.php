@@ -88,7 +88,7 @@ class TechnicianController extends Controller
                 'user_type' => "Técnico",
             ]);
 
-            $user->kids()->attach($kidList1, ['priority' => 1]);
+            $user->kids()->attach($kidsList1, ['priority' => 1]);
             $user->kids()->attach($kidsList2, ['priority' => 2]);
 
             return redirect('/technicians')->with('message', 'Técnico/a criado/a com sucesso!');
@@ -114,12 +114,6 @@ class TechnicianController extends Controller
             'changePriority' => 'array',
         ]);
 
-        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
-
-        if (!empty($conflictingKids)) {
-            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
-        }
-
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
@@ -133,6 +127,12 @@ class TechnicianController extends Controller
         $removePriority2 = isset($incomingFields['removePriority2']) ? array_map('strip_tags', $incomingFields['removePriority2']) : [];
         
         $changePriority = isset($incomingFields['changePriority']) ? array_map('strip_tags', $incomingFields['changePriority']) : [];
+
+        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
+
+        if (!empty($conflictingKids)) {
+            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
+        }
 
         try {
             $user->update([
