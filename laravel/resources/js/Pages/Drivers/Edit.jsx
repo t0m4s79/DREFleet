@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useForm } from '@inertiajs/react';
+import InputError from '@/Components/InputError';
 
 export default function Edit({ auth, driver }) {
 
@@ -55,7 +56,7 @@ export default function Edit({ auth, driver }) {
                                 margin="normal"
                                 variant="outlined"
                                 error={Boolean(errors.name)}
-                                helperText={errors.name}
+                                helperText={errors.name  && <InputError message={errors.name} /> }
                             />
 
                             <TextField
@@ -69,7 +70,7 @@ export default function Edit({ auth, driver }) {
                                 variant="outlined"
                                 type="email"
                                 error={Boolean(errors.email)}
-                                helperText={errors.email}
+                                helperText={errors.email  && <InputError message={errors.email} />}
                             />
 
                             <TextField
@@ -83,14 +84,14 @@ export default function Edit({ auth, driver }) {
                                 variant="outlined"
                                 type="tel"
                                 error={Boolean(errors.phone)}
-                                helperText={errors.phone}
+                                helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
                             <FormControl component="fieldset" margin="normal">
                                 <FormLabel component="legend">Licença de Pesados?</FormLabel>
                                 <RadioGroup
                                     name="heavy_license"
-                                    value={data.heavy_license}
+                                    value={data.heavy_license == "Sim" ? 1 : 0}
                                     onChange={handleChange}
                                     row
                                 >
