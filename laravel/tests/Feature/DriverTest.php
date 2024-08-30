@@ -110,7 +110,7 @@ class DriverTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $driver = Driver::factory()->create([
+        Driver::factory()->create([
             'user_id' => $user->id,
         ]);
 
