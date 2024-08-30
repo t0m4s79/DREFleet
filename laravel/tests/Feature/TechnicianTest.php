@@ -69,7 +69,25 @@ class TechnicianTest extends TestCase
 
     public function test_user_can_edit_a_technician(): void
     {
+        $technician = TechnicianFactory::new()->create();
+    
+        $updatedData = [
+            'id' => $technician->id,
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
+            'status' => '1',
+        ]; 
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/technicians/edit/{$technician->id}", $updatedData);
 
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/technicians');
+
+        $this->assertDatabaseHas('users', $updatedData);
     }
 
     public function test_user_can_delete_a_technician(): void
@@ -94,6 +112,17 @@ class TechnicianTest extends TestCase
             'user_type' => 'Nenhum'
         ]);
     }
+
+    public function test_user_can_create_a_technician_with_kids():void
+    {
+        
+    }
+
+    public function test_user_edit_a_technician_and_their_kids():void
+    {
+        
+    }
+
 
     public function test_technician_creation_handles_exception()
     {
