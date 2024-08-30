@@ -109,7 +109,7 @@ class KidTest extends TestCase
         ]);
     }
 
-    public function test_user_can_create_a_kid_and_their_places(): void
+    public function test_user_can_create_a_kid_with_places(): void
     {
         $place_1 = Place::factory()->create();
         $place_2 = Place::factory()->create();
@@ -149,7 +149,7 @@ class KidTest extends TestCase
             'place_id' => $place_2->id,
         ]);
     }
-
+    
     public function test_user_can_edit_a_kid_and_remove_places(): void
     {
         $place_1 = Place::factory()->create();
