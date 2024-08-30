@@ -58,7 +58,6 @@ class TechnicianController extends Controller
     }
 
     //TODO: PRIORITY 1 VERIFICATION
-    //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
     public function createTechnician(Request $request) {
         $incomingFields = $request->validate([
             'id' => ['required','exists:users,id'],
@@ -80,7 +79,7 @@ class TechnicianController extends Controller
         $conflictingAdds = array_intersect($kidsList1, $kidsList2);
 
         if (!empty($conflictingAdds)) {
-            return redirect()->back()->with('error', 'Não pode associar uma criança e um técnico com duas prioridades diferentes. Os campos não podem repetir');
+            return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
         }
 
         try{
@@ -98,8 +97,7 @@ class TechnicianController extends Controller
     }
 
     //TODO: PRIORITY 1 VERIFICATION
-    //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
-    //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
+    //TODO: CHANGE PRIORITY LOGIC
     public function editTechnician(User $user, Request $request) {
         $incomingFields = $request->validate([
             'id' => 'required',
@@ -128,10 +126,14 @@ class TechnicianController extends Controller
         
         $changePriority = isset($incomingFields['changePriority']) ? array_map('strip_tags', $incomingFields['changePriority']) : [];
 
-        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
-
-        if (!empty($conflictingKids)) {
+        //CANT CHANGE AND REMOVE A PRIORITY AT THE SAME TIME
+        if (!empty(array_intersect($changePriority, array_merge($removePriority1, $removePriority2)))) {
             return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
+        }
+
+        //CANT ADD A KID WITH TWICE TO THE SAME TECHNICIAN WITH 2 DIFFERENT PRIORITIES
+        if (array_intersect($addPriority1,$addPriority2)) {
+            return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
         }
 
         try {
@@ -148,7 +150,13 @@ class TechnicianController extends Controller
             $user->kids()->detach($removePriority1);
             $user->kids()->detach($removePriority2);
 
-            $user->kids()->sync($changePriority);
+            //TODO: VER BEM SE ESTA É A LOGICA NECESSARIA PARA A CHANGE PRIORITIES OU SE ESTA DEMASIADO COMPLEXA
+            // $user->kids()->sync($changePriority);
+            foreach ($changePriority as $kidId) {
+                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
+                $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
+                $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
+            }
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
         }  catch (\Exception $e) {
@@ -175,6 +183,10 @@ class TechnicianController extends Controller
         });
 
         return Inertia::render('Technicians/Edit', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
             'technician' => $user,
             'associatedKids' => $userKids,
             'addPriority1' => $kidsNotWithPriority1,

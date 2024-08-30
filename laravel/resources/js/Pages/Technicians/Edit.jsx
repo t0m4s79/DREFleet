@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {Snackbar, Alert } from '@mui/material';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-
-export default function Edit({ auth, technician, associatedKids, addPriority1, addPriority2 }) {
+export default function Edit({ auth, technician, associatedKids, addPriority1, addPriority2, flash}) {
 
     console.log("tecnico")
     console.log(technician)
@@ -11,7 +11,18 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
     console.log(addPriority1)
     console.log("pode adicionar com prioridade 2")
     console.log(addPriority2)
+    
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
 
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
 
     // Initialize state with driver data
     const [formData, setFormData] = useState({
@@ -86,10 +97,21 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
 
                             <label htmlFor="removePriority1">Remover crianças secundárias (Prioridade 2)</label>
 
+                            <label htmlFor="replacePriority">Mudar prioridades</label>
+
                             <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
-
-
                         </form>
+
+                        <Snackbar 
+                                open={openSnackbar} 
+                                autoHideDuration={3000}
+                                onClose={() => setOpenSnackbar(false)}
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                            >
+                                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                                    {snackbarMessage}
+                                </Alert>
+                        </Snackbar>
                     </div>
                 </div>
             </div>
