@@ -62,7 +62,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                             <Button
                                 key={kid.id}
                                 variant="outlined"
-                                href={route('places.showEdit', kid)}
+                                href={route('kids.showEdit', kid)}
                                 sx={{
                                     maxWidth: '30px',
                                     maxHeight: '30px',
