@@ -93,7 +93,7 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
 
                             <label htmlFor="addPriority2">Adicionar crianças secundárias (Prioridade 2)</label>
 
-                            <label htmlFor="removePriority1">Remover crianças prioritárias (Prioridade 2)</label>
+                            <label htmlFor="removePriority1">Remover crianças prioritárias (Prioridade 1)</label>
 
                             <label htmlFor="removePriority1">Remover crianças secundárias (Prioridade 2)</label>
 

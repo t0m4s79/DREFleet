@@ -64,7 +64,7 @@ class DriverController extends Controller
             if ($user->user_type != 'Nenhum') {
                 return redirect('/drivers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores.');
             }
-            
+
             Driver::create($incomingFields);
             $user->update([
                 'user_type' => "Condutor",

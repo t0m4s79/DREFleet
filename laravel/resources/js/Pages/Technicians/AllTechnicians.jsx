@@ -4,13 +4,30 @@ import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@mui/material';
 
-export default function AllTechnicians( {auth, technicians} ) {
+export default function AllTechnicians({ auth, technicians }) {
     
     console.log(technicians)
     //Deconstruct data to send to table component
-    let technicianInfo = technicians.map((technician) => (
-        {id: technician.id, name: technician.name, email: technician.email, phone: technician.phone, status: technician.status }
-    ))
+    const technicianInfo = technicians.map((technician) => { 
+        const techKidsPrio1Ids = technician.priority_1.length
+            ? technician.priority_1.map((kidId) => ({ id: kidId }))
+            : [];
+        
+        const techKidsPrio2Ids = technician.priority_2.length
+            ? technician.priority_2.map((kidId) => ({ id: kidId }))
+            : [];
+        
+        return {
+            id: technician.id,
+            name: technician.name,
+            email: technician.email,
+            phone: technician.phone,
+            status_code:
+            technician.status_code,
+            kidsList1: techKidsPrio1Ids,
+            kidsList2: techKidsPrio2Ids
+        }
+    })
 
     const technicianColumnLabels = {
         id: 'ID',
