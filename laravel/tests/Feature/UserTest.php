@@ -54,9 +54,9 @@ class UserTest extends TestCase
         $userData = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' =>  'Teste1234',
-            'password_confirmation' => 'Teste1234',
-            'phone' => ''.rand(910000000, 999999999),
+            'password' =>  'Teste1234*',
+            'password_confirmation' => 'Teste1234*',
+            'phone' => '' . rand(910000000, 999999999),
         ];
 
         $response = $this
@@ -77,13 +77,13 @@ class UserTest extends TestCase
     public function test_user_can_edit_another_user(): void
     {
         $user = User::factory()->create();
-    
+
         $updatedData = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => rand(910000000, 999999999),
-        ]; 
-        
+        ];
+
         $response = $this
             ->actingAs($this->user)
             ->put("/users/edit/{$user->id}", $updatedData);
@@ -117,9 +117,9 @@ class UserTest extends TestCase
         $incomingFields = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' =>  'Teste1234',
-            'password_confirmation' => 'Teste1234',
-            'phone' => ''.rand(910000000, 999999999),
+            'password' =>  'Teste1234*',
+            'password_confirmation' => 'Teste1234*',
+            'phone' => '' . rand(910000000, 999999999),
         ];
 
         // Mock the Vehicle model to throw an exception

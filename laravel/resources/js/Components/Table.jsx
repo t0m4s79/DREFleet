@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import TextInput from './TextInput';
 import { Button } from '@mui/material';
+import {  ptPT } from '@mui/x-data-grid/locales';
 
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
 
@@ -126,6 +126,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 density='compact'
                 //loading                           //loading can be used when fetching data
                 hideFooterSelectedRowCount
+                localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
                 sx={{ fontSize: 14 }}
             />
         </div>
