@@ -24,11 +24,13 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         id: '',
-        kidsList1: '',
-        kidsList2: '',
+        kidsList1: [],
+        kidsList2: [],
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    //console.log('users', users)
 
     const userList = users.map((user) => {
         return {value: user.id, label: `#${user.id} - ${user.name}`, }
@@ -122,7 +124,7 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
                                         sx={{ maxHeight: '200px', width: '100%' }}
                                     >
                                         {kidList1.map((kid) => (
-                                            <MenuItem key={kid.value} value={kid.value}>
+                                            <MenuItem key={kid.value} value={kid.value} disabled={listKids2.includes(kid.value)}>
                                                 <Checkbox checked={listKids1.indexOf(kid.value) > -1} />
                                                 <ListItemText primary={kid.label} />
                                             </MenuItem>
@@ -144,7 +146,7 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
                                         sx={{ maxHeight: '200px', width: '100%' }}
                                     >
                                         {kidList2.map((kid) => (
-                                            <MenuItem key={kid.value} value={kid.value}>
+                                            <MenuItem key={kid.value} value={kid.value} disabled={listKids1.includes(kid.value)}>
                                                 <Checkbox checked={listKids2.indexOf(kid.value) > -1} />
                                                 <ListItemText primary={kid.label} />
                                             </MenuItem>

@@ -10,6 +10,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         headerName: columnsLabel[key],
         editable: false,
         renderCell: (params) => {
+            console.log(params)
             if (key === 'kids_ids') {
                 return (
                     <div>
@@ -33,6 +34,28 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 );
             }
             if (key === 'place_ids') {
+                return (
+                    <div>
+                        {params.value.map((kid) => (
+                            <Button
+                                key={kid.id}
+                                variant="outlined"
+                                href={route('places.showEdit', kid)}
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {kid.id}
+                            </Button>
+                        ))}
+                    </div>
+                );
+            }
+            if (key === 'kidsList1' || key === 'kidsList2') {
                 return (
                     <div>
                         {params.value.map((kid) => (
