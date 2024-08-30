@@ -88,7 +88,7 @@ class TechnicianController extends Controller
                 'user_type' => "Técnico",
             ]);
 
-            $user->kids()->attach($kidList1, ['priority' => 1]);
+            $user->kids()->attach($kidsList1, ['priority' => 1]);
             $user->kids()->attach($kidsList2, ['priority' => 2]);
 
             return redirect('/technicians')->with('message', 'Técnico/a criado/a com sucesso!');
@@ -100,7 +100,8 @@ class TechnicianController extends Controller
     //TODO: PRIORITY 1 VERIFICATION
     //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
     //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
-    public function editTechnician(User $user, Request $request) {
+    public function editTechnician(User $user, Request $request)
+    {
         $incomingFields = $request->validate([
             'id' => 'required',
             'name' => 'required',
@@ -114,12 +115,6 @@ class TechnicianController extends Controller
             'changePriority' => 'array',
         ]);
 
-        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
-
-        if (!empty($conflictingKids)) {
-            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
-        }
-
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
@@ -131,8 +126,14 @@ class TechnicianController extends Controller
 
         $addPriority2 = isset($incomingFields['addPriority2']) ? array_map('strip_tags', $incomingFields['addPriority2']) : [];
         $removePriority2 = isset($incomingFields['removePriority2']) ? array_map('strip_tags', $incomingFields['removePriority2']) : [];
-        
+
         $changePriority = isset($incomingFields['changePriority']) ? array_map('strip_tags', $incomingFields['changePriority']) : [];
+
+        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
+
+        if (!empty($conflictingKids)) {
+            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
+        }
 
         try {
             $user->update([
@@ -151,28 +152,29 @@ class TechnicianController extends Controller
             $user->kids()->sync($changePriority);
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
     }
 
-    public function showEditScreen(User $user) {
+    public function showEditScreen(User $user)
+    {
         $kidsWithPriority1Ids = DB::table('kid_user')
-        ->where('priority', 1)
-        ->pluck('kid_id')
-        ->toArray();
+            ->where('priority', 1)
+            ->pluck('kid_id')
+            ->toArray();
 
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
 
         $userKids = $user->kids()
-        ->select('kids.id', 'kid_user.priority')
-        ->get()
-        ->map(function ($kid) {
-            return [
-                'id' => $kid->id,
-                'priority' => $kid->pivot->priority,
-            ];
-        });
+            ->select('kids.id', 'kid_user.priority')
+            ->get()
+            ->map(function ($kid) {
+                return [
+                    'id' => $kid->id,
+                    'priority' => $kid->pivot->priority,
+                ];
+            });
 
         return Inertia::render('Technicians/Edit', [
             'technician' => $user,
@@ -182,14 +184,15 @@ class TechnicianController extends Controller
         ]);
     }
 
-    public function deleteTechnician($id) {
+    public function deleteTechnician($id)
+    {
         $user = User::findOrFail($id);
         $user->update([
             'user_type' => "Nenhum",
         ]);
 
         $user->kids()->detach();
-        
+
         return redirect('/technicians');
     }
 }
