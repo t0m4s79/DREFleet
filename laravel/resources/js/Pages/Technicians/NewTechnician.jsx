@@ -2,14 +2,25 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, TextField, Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, FormControl, InputLabel, Radio, RadioGroup, FormControlLabel, FormLabel } from '@mui/material';
-import { useState } from 'react';
+import { Autocomplete, TextField, Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
+import { useState, useEffect } from 'react';
 
-export default function NewTechnician( {auth, users, priority1AvailableKids,priority2AvailableKids} ) {
+export default function NewTechnician( {auth, users, priority1AvailableKids,priority2AvailableKids, flash} ) {
 
     const [listKids1, setListKids1] = useState([])
     const [listKids2, setListKids2] = useState([])
 
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         id: '',
@@ -18,8 +29,6 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    //console.log('users', users)
 
     const userList = users.map((user) => {
         return {value: user.id, label: `#${user.id} - ${user.name}`, }
@@ -145,18 +154,19 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
                                 <br/>
 
                                 <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600">Guardado</p>
-                                </Transition>
                             </form>
-            
+
+                                            
+                            <Snackbar 
+                                open={openSnackbar} 
+                                autoHideDuration={3000}
+                                onClose={() => setOpenSnackbar(false)}
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                            >
+                                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                                    {snackbarMessage}
+                                </Alert>
+                            </Snackbar>
                         </div>
                     </div>
                 </div>
