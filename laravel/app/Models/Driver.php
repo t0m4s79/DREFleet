@@ -50,7 +50,7 @@ class Driver extends Model
 
     public function getStatusAttribute(): int
     {
-        return $this->user->status_code;
+        return $this->user->status;
     }
 
     public function getHeavyLicenseAttribute($value)
