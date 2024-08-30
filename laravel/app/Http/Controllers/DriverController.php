@@ -59,7 +59,6 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
 
         try {
-            Driver::create($incomingFields);
             $user = User::findOrFail($incomingFields['user_id']);
 
             if ($user->user_type != 'Nenhum') {

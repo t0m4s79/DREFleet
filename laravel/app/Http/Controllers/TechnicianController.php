@@ -49,10 +49,16 @@ class TechnicianController extends Controller
 
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
 
-        return Inertia::render('Technicians/NewTechnician', ['users' => $users, 'priority1AvailableKids' => $kidsNotWithPriority1,'priority2AvailableKids' =>  Kid::all(), '']);
+        return Inertia::render('Technicians/NewTechnician', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'users' => $users, 'priority1AvailableKids' => $kidsNotWithPriority1,'priority2AvailableKids' =>  Kid::all()]);
     }
 
     //TODO: PRIORITY 1 VERIFICATION
+    //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
     public function createTechnician(Request $request) {
         $incomingFields = $request->validate([
             'id' => ['required','exists:users,id'],
@@ -71,6 +77,12 @@ class TechnicianController extends Controller
         $kidsList1 = isset($incomingFields['kidsList1']) ? array_map('strip_tags', $incomingFields['kidsList1']) : [];
         $kidsList2 = isset($incomingFields['kidsList2']) ? array_map('strip_tags', $incomingFields['kidsList2']) : [];
 
+        $conflictingAdds = array_intersect($kidsList1, $kidsList2);
+
+        if (!empty($conflictingAdds)) {
+            return redirect()->back()->with('error', 'Não pode associar uma criança e um técnico com duas prioridades diferentes. Os campos não podem repetir');
+        }
+
         try{
             $user->update([
                 'user_type' => "Técnico",
@@ -86,6 +98,8 @@ class TechnicianController extends Controller
     }
 
     //TODO: PRIORITY 1 VERIFICATION
+    //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
+    //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
     public function editTechnician(User $user, Request $request) {
         $incomingFields = $request->validate([
             'id' => 'required',
@@ -97,7 +111,14 @@ class TechnicianController extends Controller
             'removePriority1' => 'array',
             'addPriority2' => 'array',
             'removePriority2' => 'array',
+            'changePriority' => 'array',
         ]);
+
+        $conflictingKids = array_intersect($changePriority, array_merge($removePriority1, $removePriority2));
+
+        if (!empty($conflictingKids)) {
+            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
+        }
 
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -111,6 +132,8 @@ class TechnicianController extends Controller
         $addPriority2 = isset($incomingFields['addPriority2']) ? array_map('strip_tags', $incomingFields['addPriority2']) : [];
         $removePriority2 = isset($incomingFields['removePriority2']) ? array_map('strip_tags', $incomingFields['removePriority2']) : [];
         
+        $changePriority = isset($incomingFields['changePriority']) ? array_map('strip_tags', $incomingFields['changePriority']) : [];
+
         try {
             $user->update([
                 'name' => $incomingFields['name'],
@@ -124,6 +147,8 @@ class TechnicianController extends Controller
 
             $user->kids()->detach($removePriority1);
             $user->kids()->detach($removePriority2);
+
+            $user->kids()->sync($changePriority);
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
         }  catch (\Exception $e) {

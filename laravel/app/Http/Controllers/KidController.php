@@ -55,8 +55,7 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
-
+        $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
         try {
             $kid = Kid::create($incomingFields);
@@ -125,7 +124,7 @@ class KidController extends Controller
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect('/kids');
+            return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso.');;
         } catch (\Exception $e) {
             return redirect('kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
