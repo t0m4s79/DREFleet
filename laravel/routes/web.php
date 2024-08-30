@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.create');
     Route::post('/technicians/create', [TechnicianController::class, 'createTechnician'])->name('technicians.create');
     Route::get('/technicians/edit/{user}', [TechnicianController::class, 'showEditScreen'])->name('technicians.showEdit');
-    Route::put('/technicians/edit/{user}', [TechnicianController::class, 'editUser'])->name('technicians.edit');
+    Route::put('/technicians/edit/{user}', [TechnicianController::class, 'editTechnician'])->name('technicians.edit');
     Route::delete('/technicians/delete/{user}', [TechnicianController::class, 'deleteTechnician'])->name('technicians.delete');
 
     //VEHICLES
