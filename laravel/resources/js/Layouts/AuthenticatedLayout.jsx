@@ -60,10 +60,11 @@ export default function Authenticated({ user, header, children }) {
                                             <Dropdown.Content>
                                                 <Dropdown.Link  href={route('users.index')} active={route().current('users.index')}>Todos os Utilizadores</Dropdown.Link>
                                                 <Dropdown.Link  href={route('drivers.index')} active={route().current('drivers.index')}>Condutores</Dropdown.Link>
+                                                <Dropdown.Link  href={route('technicians.index')} active={route().current('technicians.index')}>Técnicos</Dropdown.Link>
+
                                                 {/* TODO: Links para: */}
                                                 {/* 2º) ADMINISTRADORES */}
                                                 {/* 3º) GESTORES */}
-                                                {/* 4º) TECNICOS */}
                                                 {/* 5º) POR ATRIBUIR */}
                                             </Dropdown.Content>
                                         </Dropdown>

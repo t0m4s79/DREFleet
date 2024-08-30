@@ -5,7 +5,7 @@ import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
-export default function AllKids( {auth, kids, places, flash} ) {
+export default function AllKids( {auth, kids, flash} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
