@@ -23,9 +23,12 @@ class PlaceFactory extends Factory
         $latitude = fake()->latitude();
         $longitude = fake()->longitude();
 
+        $firstPart = ['Casa', 'Restaurante', 'Bar', 'Café'];
+        $secondPart = ['do Avô', 'da Avó', 'do Pai', 'da Mãe', 'do Primo', 'da Tia', 'do Tio'];
+
         return [
             'address' => fake()->address(),
-            'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'known_as' => ''.Arr::random($firstPart) . ' ' . Arr::random($secondPart),
             'coordinates' => new Point($latitude, $longitude),
         ];
     }

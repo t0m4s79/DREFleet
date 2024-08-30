@@ -59,8 +59,13 @@ class DriverController extends Controller
         $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
 
         try {
-            Driver::create($incomingFields);
             $user = User::findOrFail($incomingFields['user_id']);
+
+            if ($user->user_type != 'Nenhum') {
+                return redirect('/drivers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores.');
+            }
+            
+            Driver::create($incomingFields);
             $user->update([
                 'user_type' => "Condutor",
             ]);

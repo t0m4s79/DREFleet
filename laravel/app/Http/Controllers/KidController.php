@@ -55,15 +55,11 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['places'])) {
-            $incomingFields['places'] = array_map('strip_tags', $incomingFields['places']);
-        } else {
-            $incomingFields['places'] = []; // If no places were selected, pass an empty array
-        }
+        $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
         try {
             $kid = Kid::create($incomingFields);
-            $kid->places()->attach($incomingFields['places']);
+            $kid->places()->attach($addPlaces);
             return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
         } catch (\Exception $e) {
             return redirect('kids')->with('error', 'Houve um problema ao criar a criança. Tente novamente mais tarde.');
@@ -121,23 +117,14 @@ class KidController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
-        if (isset($incomingFields['addPlaces'])) {
-            $incomingFields['addPlaces'] = array_map('strip_tags', $incomingFields['addPlaces']);
-        } else {
-            $incomingFields['addPlaces'] = []; // If no places were selected, pass an empty array
-        }
-
-        if (isset($incomingFields['removePlaces'])) {
-            $incomingFields['removePlaces'] = array_map('strip_tags', $incomingFields['removePlaces']);
-        } else {
-            $incomingFields['removePlaces'] = []; // If no places were selected, pass an empty array
-        }
+        $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
+        $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
 
         try {
             $kid->update($incomingFields);
-            $kid->places()->attach($incomingFields['addPlaces']);
-            $kid->places()->detach($incomingFields['removePlaces']);
-            return redirect('/kids');
+            $kid->places()->attach($addPlaces);
+            $kid->places()->detach($removePlaces);
+            return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso.');;
         } catch (\Exception $e) {
             return redirect('kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
