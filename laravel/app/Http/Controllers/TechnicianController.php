@@ -114,7 +114,6 @@ class TechnicianController extends Controller
             'changePriority' => 'array',
         ]);
 
-        $incomingFields['heavy_license'] = strip_tags($incomingFields['heavy_license']);
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
@@ -144,7 +143,7 @@ class TechnicianController extends Controller
                 'name' => $incomingFields['name'],
                 'email' => $incomingFields['email'],
                 'phone' => $incomingFields['phone'],
-                'status_code' => $incomingFields['status'],
+                'status' => $incomingFields['status'],
             ]);
 
             $user->kids()->attach($addPriority1, ['priority' => 1]);
@@ -161,8 +160,8 @@ class TechnicianController extends Controller
                 $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
             }
 
-            return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
-        } catch (\Exception $e) {
+            return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
+        }  catch (\Exception $e) {
             return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
     }

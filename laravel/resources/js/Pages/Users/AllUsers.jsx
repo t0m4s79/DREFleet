@@ -8,7 +8,7 @@ export default function AllDrivers( {auth, users} ) {
     
     //Deconstruct data to send to table component
     let userInfo = users.map((user) => (
-        {id: user.id, name: user.name, email: user.email, phone: user.phone, user_type: user.user_type , status_code: user.status_code }
+        {id: user.id, name: user.name, email: user.email, phone: user.phone, user_type: user.user_type , status: user.status }
     ))
 
     const userColumnLabels = {
@@ -17,7 +17,7 @@ export default function AllDrivers( {auth, users} ) {
         email: 'Email',
         phone: 'Numero de Telefone',
         user_type: 'Tipo de Utilizador',
-        status_code: 'Estado'
+        status: 'Estado'
     };
     
     return (

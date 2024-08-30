@@ -122,7 +122,7 @@ class DriverController extends Controller
                 'name' => $incomingFields['name'],
                 'email' => $incomingFields['email'],
                 'phone' => $incomingFields['phone'],
-                'status_code' => $incomingFields['status'],
+                'status' => $incomingFields['status'],
             ]);
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');

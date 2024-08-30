@@ -34,7 +34,7 @@ export default function AllTechnicians({ auth, technicians }) {
         name: 'Nome',
         email: 'Email',
         phone: 'Numero de Telefone',
-        status_code: 'Estado',
+        status: 'Estado',
         kidsList1: 'Crianças de Prioridade 1',
         kidsList2: 'Crianças de Prioridade 2',
     };
