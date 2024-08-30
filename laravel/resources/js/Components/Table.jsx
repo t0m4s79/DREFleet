@@ -10,7 +10,6 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         headerName: columnsLabel[key],
         editable: false,
         renderCell: (params) => {
-            console.log('params',params)
             if (key === 'kids_ids') {
                 return (
                     <div>
