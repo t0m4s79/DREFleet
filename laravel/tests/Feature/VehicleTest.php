@@ -54,17 +54,17 @@ class VehicleTest extends TestCase
     public function test_user_can_create_a_vehicle(): void
     {
         $vehicleData = [
-            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => rand(111111,999999),
-            'year' => rand(1960,2024),
-            'heavy_vehicle' => rand(0,1),
-            'wheelchair_adapted' => rand(0,1),
-            'capacity' => rand(5,15),
-            'fuel_consumption' => rand(2,10),
-            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
-            'current_month_fuel_requests' => rand(0,6),
-            'oil_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
+            'license_plate' => '' . rand(111111, 999999),
+            'year' => rand(1960, 2024),
+            'heavy_vehicle' => rand(0, 1),
+            'wheelchair_adapted' => rand(0, 1),
+            'capacity' => rand(5, 15),
+            'fuel_consumption' => rand(2, 10),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0, 6),
+            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ];
 
         $response = $this
@@ -82,33 +82,33 @@ class VehicleTest extends TestCase
     public function test_user_can_edit_a_vehicle(): void
     {
         $vehicle = Vehicle::factory()->create([
-            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => rand(111111,999999),
-            'year' => rand(1960,2024),
-            'heavy_vehicle' => rand(0,1),
-            'wheelchair_adapted' => rand(0,1),
-            'capacity' => rand(5,15),
-            'fuel_consumption' => rand(2,10),
-            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
-            'current_month_fuel_requests' => rand(0,6),
-            'oil_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
+            'license_plate' => '' . rand(111111, 999999),
+            'year' => rand(1960, 2024),
+            'heavy_vehicle' => rand(0, 1),
+            'wheelchair_adapted' => rand(0, 1),
+            'capacity' => rand(5, 15),
+            'fuel_consumption' => rand(2, 10),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0, 6),
+            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ]);
-    
+
         $updatedData = [
-            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => rand(111111,999999),
-            'year' => rand(1960,2024),
-            'heavy_vehicle' => rand(0,1),
-            'wheelchair_adapted' => rand(0,1),
-            'capacity' => rand(5,15),
-            'fuel_consumption' => rand(2,10),
-            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
-            'current_month_fuel_requests' => rand(0,6),
-            'oil_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
-        ]; 
-        
+            'license_plate' => '' . rand(111111, 999999),
+            'year' => rand(1960, 2024),
+            'heavy_vehicle' => rand(0, 1),
+            'wheelchair_adapted' => rand(0, 1),
+            'capacity' => rand(5, 15),
+            'fuel_consumption' => rand(2, 10),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0, 6),
+            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+        ];
+
         $response = $this
             ->actingAs($this->user)
             ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
@@ -118,7 +118,6 @@ class VehicleTest extends TestCase
             ->assertRedirect('/vehicles');
 
         $this->assertDatabaseHas('vehicles', $updatedData);
-        
     }
 
     public function test_user_can_delete_a_vehicle(): void
@@ -139,20 +138,20 @@ class VehicleTest extends TestCase
     }
 
     public function test_vehicle_creation_handles_exception()
-    {        
+    {
         // Prepare the incoming fields
         $incomingFields = [
-            'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
+            'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => rand(111111,999999),
-            'year' => rand(1960,2024),
-            'heavy_vehicle' => rand(0,1),
-            'wheelchair_adapted' => rand(0,1),
-            'capacity' => rand(5,15),
-            'fuel_consumption' => rand(2,10),
-            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
-            'current_month_fuel_requests' => rand(0,6),
-            'oil_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
+            'license_plate' => '' . rand(111111, 999999),
+            'year' => rand(1960, 2024),
+            'heavy_vehicle' => rand(0, 1),
+            'wheelchair_adapted' => rand(0, 1),
+            'capacity' => rand(5, 15),
+            'fuel_consumption' => rand(2, 10),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
+            'current_month_fuel_requests' => rand(0, 6),
+            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ];
 
         // Mock the Vehicle model to throw an exception

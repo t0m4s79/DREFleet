@@ -30,13 +30,24 @@ class PlaceController extends Controller
     }
 
     //TODO: more verification in each field and verification messages!!!
-    public function createPlace(Request $request) {
+    public function createPlace(Request $request)
+    {
+        $customErrorMessages = [
+            'required' => 'O campo :attribute é obrigatório.',
+            'numeric' => 'Apenas são permitidos números.',
+            'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
+            'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
+            'latitude.regex' => 'O formato da latitude é inválido. Deve ter até 6 casas decimais.',
+            'longitude.regex' => 'O formato da longitude é inválido. Deve ter até 6 casas decimais.',
+            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
+        ];
+
         $incomingFields = $request->validate([
-            'address' => 'required',
-            'known_as' => 'required',
-            'latitude' => ['required','numeric','between:-90,90'],
-            'longitude' => ['required', 'numeric','between:-180,180'],
-        ]);
+            'address' => 'required|string|max:255',
+            'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,6}$/'],
+        ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
@@ -45,7 +56,7 @@ class PlaceController extends Controller
 
         $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
 
-        try{
+        try {
             Place::create([
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
@@ -71,12 +82,22 @@ class PlaceController extends Controller
 
     public function editPlace(Place $place, Request $request)
     {
+        $customErrorMessages = [
+            'required' => 'O campo :attribute é obrigatório.',
+            'numeric' => 'Apenas são permitidos números.',
+            'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
+            'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
+            'latitude.regex' => 'O formato da latitude é inválido. Deve ter até 6 casas decimais.',
+            'longitude.regex' => 'O formato da longitude é inválido. Deve ter até 6 casas decimais.',
+            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
+        ];
+
         $incomingFields = $request->validate([
-            'address' => 'required',
-            'known_as' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-        ]);
+            'address' => 'required|string|max:255',
+            'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,6}$/'],
+        ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
