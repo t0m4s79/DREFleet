@@ -63,7 +63,7 @@ class VehicleController extends Controller
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
             'status' => 'required',
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
-            'oil_type' => 'required',
+            'fuel_type' => 'required',
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -76,7 +76,7 @@ class VehicleController extends Controller
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
-        $incomingFields['oil_type'] = strip_tags($incomingFields['oil_type']);
+        $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
 
 
         Vehicle::create($incomingFields);
@@ -90,7 +90,7 @@ class VehicleController extends Controller
 
     public function editVehicle(Vehicle $vehicle, Request $request)
     {
-        $customErrorMessages = [
+        $customErrorMessages = [                //TODO: attribute em PORTUGUES
             'required' => 'O campo :attribute é obrigatório.',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
@@ -121,7 +121,7 @@ class VehicleController extends Controller
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
             'status' => 'required',
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
-            'oil_type' => 'required',
+            'fuel_type' => 'required',
         ], $customErrorMessages);
 
         if ($incomingFields['wheelchair_adapted'] == 'Sim') {              //These if's can be taken out if respective attributes methods are taken out of the vehicle model
@@ -146,7 +146,7 @@ class VehicleController extends Controller
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
-        $incomingFields['oil_type'] = strip_tags($incomingFields['oil_type']);
+        $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
 
 
         try {

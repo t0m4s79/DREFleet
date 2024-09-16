@@ -16,7 +16,7 @@ export default function Edit({ auth, vehicle}) {
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
-        oil_type: vehicle.oil_type,
+        fuel_type: vehicle.fuel_type,
     });
 
     const handleChange = (e) => {
@@ -175,10 +175,10 @@ export default function Edit({ auth, vehicle}) {
                             <FormControl component="fieldset" margin="normal">
                                 <FormLabel component="legend">Tipo de Combustível</FormLabel>
                                 <RadioGroup
-                                    aria-label="oil_type"
-                                    name="oil_type"
-                                    value={data.oil_type}
-                                    onChange={(e) => setData('oil_type', e.target.value)}
+                                    aria-label="fuel_type"
+                                    name="fuel_type"
+                                    value={data.fuel_type}
+                                    onChange={(e) => setData('fuel_type', e.target.value)}
                                 >
                                     <FormControlLabel value="Gasolina 95" control={<Radio />} label="Gasolina 95" />
                                     <FormControlLabel value="Gasolina 98" control={<Radio />} label="Gasolina 98" />

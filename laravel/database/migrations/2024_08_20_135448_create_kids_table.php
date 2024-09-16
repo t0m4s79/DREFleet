@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kids', function (Blueprint $table) {              //TODO: kids and places model relation
+        Schema::create('kids', function (Blueprint $table) {
             $table->id();
             $table->boolean('wheelchair');
             $table->string('name');

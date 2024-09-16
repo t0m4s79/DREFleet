@@ -20,7 +20,7 @@ class Vehicle extends Model
         'fuel_consumption',
         'status',
         'current_month_fuel_requests',
-        'oil_type',
+        'fuel_type',
     ];
     
     protected $hidden = [

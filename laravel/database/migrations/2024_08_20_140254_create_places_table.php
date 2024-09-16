@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('places', function (Blueprint $table) {              //TODO: kids and places model relation and timestamps
+        Schema::create('places', function (Blueprint $table) {
             $table->id();
             $table->string('address');
             $table->string('known_as');
