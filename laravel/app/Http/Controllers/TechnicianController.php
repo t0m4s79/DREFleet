@@ -102,7 +102,6 @@ class TechnicianController extends Controller
     public function editTechnician(User $user, Request $request) {
 
         $incomingFields = $request->validate([
-            'id' => 'required',
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required',
@@ -133,7 +132,7 @@ class TechnicianController extends Controller
             return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
         }
 
-        //CANT ADD A KID WITH TWICE TO THE SAME TECHNICIAN WITH 2 DIFFERENT PRIORITIES
+        //CANT ADD A KID TWICE TO THE SAME TECHNICIAN WITH 2 DIFFERENT PRIORITIES
         if (array_intersect($addPriority1,$addPriority2)) {
             return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
         }
@@ -146,6 +145,7 @@ class TechnicianController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
+            
             $user->kids()->attach($addPriority1, ['priority' => 1]);
             $user->kids()->attach($addPriority2, ['priority' => 2]);
 
@@ -155,7 +155,7 @@ class TechnicianController extends Controller
             //TODO: VER BEM SE ESTA É A LOGICA NECESSARIA PARA A CHANGE PRIORITIES OU SE ESTA DEMASIADO COMPLEXA
             // $user->kids()->sync($changePriority);
             foreach ($changePriority as $kidId) {
-                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
+                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;        //TODO: ERRO
                 $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
                 $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
             }
@@ -193,7 +193,7 @@ class TechnicianController extends Controller
             'technician' => $user,
             'associatedKids' => $userKids,
             'addPriority1' => $kidsNotWithPriority1,
-            'addPriority2' => Kid::all(),
+            'addPriority2' => Kid::all(),               //TODO: only kids not already associated with user
         ]);
     }
 
