@@ -35,17 +35,22 @@ class TechnicianController extends Controller
         });
 
         return Inertia::render('Technicians/AllTechnicians', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
             'technicians' => $technicians,
         ]);
     }
 
-    public function showCreateTechnicianForm() {
-        $users = User::where('user_type','Nenhum')->get();
-        
+    public function showCreateTechnicianForm()
+    {
+        $users = User::where('user_type', 'Nenhum')->get();
+
         $kidsWithPriority1Ids = DB::table('kid_user')
-        ->where('priority', 1)
-        ->pluck('kid_id')
-        ->toArray();
+            ->where('priority', 1)
+            ->pluck('kid_id')
+            ->toArray();
 
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
 
@@ -54,21 +59,25 @@ class TechnicianController extends Controller
                 'message' => session('message'),
                 'error' => session('error'),
             ],
-            'users' => $users, 'priority1AvailableKids' => $kidsNotWithPriority1,'priority2AvailableKids' =>  Kid::all()]);
+            'users' => $users,
+            'priority1AvailableKids' => $kidsNotWithPriority1,
+            'priority2AvailableKids' =>  Kid::all()
+        ]);
     }
 
     //TODO: PRIORITY 1 VERIFICATION
-    public function createTechnician(Request $request) {
+    public function createTechnician(Request $request)
+    {
         $incomingFields = $request->validate([
-            'id' => ['required','exists:users,id'],
+            'id' => ['required', 'exists:users,id'],
             'kidsList1' => 'array',
             'kidsList2' => 'array',
         ]);
 
         $incomingFields['id'] = strip_tags($incomingFields['id']);
-        
+
         $user = User::find($incomingFields['id']);
-        
+
         if ($user->user_type != 'Nenhum') {
             return redirect('/technicians')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos.');
         }
@@ -82,7 +91,7 @@ class TechnicianController extends Controller
             return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
         }
 
-        try{
+        try {
             $user->update([
                 'user_type' => "Técnico",
             ]);
@@ -93,14 +102,15 @@ class TechnicianController extends Controller
             return redirect('/technicians')->with('message', 'Técnico/a criado/a com sucesso!');
         } catch (\Exception $e) {
             return redirect('technicians')->with('error', 'Houve um problema ao criar o técnico. Tente novamente.');
-        }  
+        }
     }
 
     //TODO: PRIORITY 1 VERIFICATION
     //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
     //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
-    public function editTechnician(User $user, Request $request) {
-
+    public function editTechnician(User $user, Request $request)
+    {
+        //dd($request);
         $incomingFields = $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -112,7 +122,7 @@ class TechnicianController extends Controller
             'removePriority2' => 'array',
             'changePriority' => 'array',
         ]);
-
+        
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
@@ -161,7 +171,8 @@ class TechnicianController extends Controller
             }
 
             return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
+            Log::debug($e);
             return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
     }
@@ -176,11 +187,12 @@ class TechnicianController extends Controller
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
 
         $userKids = $user->kids()
-            ->select('kids.id', 'kid_user.priority')
+            ->select('kids.id', 'kids.name', 'kid_user.priority')
             ->get()
             ->map(function ($kid) {
                 return [
                     'id' => $kid->id,
+                    'name' => $kid->name,
                     'priority' => $kid->pivot->priority,
                 ];
             });
