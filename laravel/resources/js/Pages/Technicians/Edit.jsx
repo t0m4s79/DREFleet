@@ -54,7 +54,7 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <form action={`/Technicians/edit/${technician.id}`} method="POST">
+                        <form action={`/technicians/edit/${technician.id}`} method="POST">
                             <input type="hidden" name="_token" value={csrfToken} />
                             <input type="hidden" name="_method" value="PUT"/>
                             <input type="hidden" name="id" value={technician.id}/>
@@ -88,6 +88,8 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
                                 onChange={handleChange}
                                 className="mt-1 block w-full"
                             /><br/>
+
+                            <label htmlFor="status">Disponível</label>
 
                             <label htmlFor="addPriority1">Adicionar crianças prioritárias (Prioridade 1)</label>
 

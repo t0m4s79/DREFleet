@@ -64,7 +64,7 @@ class VehicleTest extends TestCase
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
-            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ];
 
         $response = $this
@@ -92,7 +92,7 @@ class VehicleTest extends TestCase
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
-            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ]);
 
         $updatedData = [
@@ -106,7 +106,7 @@ class VehicleTest extends TestCase
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
-            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ];
 
         $response = $this
@@ -151,7 +151,7 @@ class VehicleTest extends TestCase
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
-            'oil_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
         ];
 
         // Mock the Vehicle model to throw an exception
