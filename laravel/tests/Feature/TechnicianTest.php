@@ -161,81 +161,81 @@ class TechnicianTest extends TestCase
         ]); 
     }
 
-    // public function test_user_edit_a_technician_and_their_kids():void   //TODO: CHECK WHY TEST IS NOT PASSING EVEN THOUGH IT RUNS FINE
-    // {
-    //     $kid_1 = Kid::factory()->create();
-    //     $kid_2 = Kid::factory()->create();
-    //     $kid_3 = Kid::factory()->create();
-    //     $kid_4 = Kid::factory()->create();
-    //     $kid_5 = Kid::factory()->create();
+    public function test_user_edit_a_technician_and_their_kids():void   //TODO: CHECK WHY TEST IS NOT PASSING EVEN THOUGH IT RUNS FINE
+    {
+        $kid_1 = Kid::factory()->create();
+        $kid_2 = Kid::factory()->create();
+        $kid_3 = Kid::factory()->create();
+        $kid_4 = Kid::factory()->create();
+        $kid_5 = Kid::factory()->create();
 
-    //     $technician = TechnicianFactory::new()->create();
+        $technician = TechnicianFactory::new()->create();
 
-    //     $technicianData = [
-    //         'id' => $technician->id,
-    //         'kidsList1' => [$kid_1->id],
-    //         'kidsList2' => [$kid_2->id, $kid_3->id],
-    //     ];
+        $technicianData = [
+            'id' => $technician->id,
+            'kidsList1' => [$kid_1->id],
+            'kidsList2' => [$kid_2->id, $kid_3->id],
+        ];
 
-    //     $response = $this
-    //         ->actingAs($this->user)
-    //         ->post('/tehcnicians/create', $technicianData);
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/tehcnicians/create', $technicianData);
 
-    //     $updatedData = [
-    //         'id' => $technician->id,
-    //         'name' => fake()->name(),
-    //         'email' => fake()->unique()->safeEmail(),
-    //         'phone' => rand(910000000, 999999999),
-    //         'status' => '1',
-    //         'addPriority1' => [$kid_4->id],
-    //         'removePriority1' => [$kid_1->id],
-    //         'addPriority2' => [$kid_5->id],
-    //         'removePriority2' => [$kid_2->id],
-    //         'changePriority' => [$kid_3->id],       //IF THIS ARRAY IS EMPTY THE TEST PASSES
-    //     ];
+        $updatedData = [
+            'id' => $technician->id,
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => rand(910000000, 999999999),
+            'status' => '1',
+            'addPriority1' => [$kid_4->id],
+            'removePriority1' => [$kid_1->id],
+            'addPriority2' => [$kid_5->id],
+            'removePriority2' => [$kid_2->id],
+            //'changePriority' => [$kid_3->id],       //IF THIS ARRAY IS EMPTY THE TEST PASSES
+        ];
 
-    //     $response = $this
-    //         ->actingAs($this->user)
-    //         ->put("/technicians/edit/{$technician->id}", $updatedData);
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/technicians/edit/{$technician->id}", $updatedData);
 
-    //     $response
-    //         ->assertSessionHasNoErrors()
-    //         ->assertRedirect('/technicians');
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/technicians');
 
-    //     $this->assertDatabaseMissing('kid_user', [
-    //         'kid_id' => $kid_1->id,
-    //         'user_id' => $technician->id,
-    //     ]);
+        $this->assertDatabaseMissing('kid_user', [
+            'kid_id' => $kid_1->id,
+            'user_id' => $technician->id,
+        ]);
 
-    //     $this->assertDatabaseMissing('kid_user', [
-    //         'kid_id' => $kid_2->id,
-    //         'user_id' => $technician->id,
-    //     ]);
+        $this->assertDatabaseMissing('kid_user', [
+            'kid_id' => $kid_2->id,
+            'user_id' => $technician->id,
+        ]);
 
-    //     $this->assertDatabaseHas('kid_user', [
-    //         'kid_id' => $kid_4->id,
-    //         'user_id' => $technician->id,
-    //         'priority' => '1',
-    //     ]);
+        $this->assertDatabaseHas('kid_user', [
+            'kid_id' => $kid_4->id,
+            'user_id' => $technician->id,
+            'priority' => '1',
+        ]);
 
-    //     $this->assertDatabaseHas('kid_user', [
-    //         'kid_id' => $kid_5->id,
-    //         'user_id' => $technician->id,
-    //         'priority' => '2',
-    //     ]);
+        $this->assertDatabaseHas('kid_user', [
+            'kid_id' => $kid_5->id,
+            'user_id' => $technician->id,
+            'priority' => '2',
+        ]);
 
-    //     $this->assertDatabaseMissing('kid_user', [
-    //         'kid_id' => $kid_3->id,
-    //         'user_id' => $technician->id,
-    //         'priority' => '2',
-    //     ]);
+        // $this->assertDatabaseMissing('kid_user', [
+        //     'kid_id' => $kid_3->id,
+        //     'user_id' => $technician->id,
+        //     'priority' => '2',
+        // ]);
 
-    //     $this->assertDatabaseHas('kid_user', [
-    //         'kid_id' => $kid_3->id,
-    //         'user_id' => $technician->id,
-    //         'priority' => '1',
-    //     ]);
-    // }
+        // $this->assertDatabaseHas('kid_user', [
+        //     'kid_id' => $kid_3->id,
+        //     'user_id' => $technician->id,
+        //     'priority' => '1',
+        // ]);
+    }
 
 
     public function test_technician_creation_handles_exception()
