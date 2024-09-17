@@ -59,7 +59,7 @@ export default function AllTechnicians({ auth, technicians, flash }) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Técnicos</h2>}
         >
 
-            <Head title="Utilizadores" />
+            <Head title="Técnicos" />
         
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">

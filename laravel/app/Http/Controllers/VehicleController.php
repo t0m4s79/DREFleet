@@ -9,8 +9,7 @@ use Illuminate\Validation\Rule;
 
 class VehicleController extends Controller
 {
-    //
-
+    
     public function index()
     {
         $vehicles = Vehicle::All();

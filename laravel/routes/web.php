@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\KidController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
@@ -78,6 +79,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditScreen'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
+
+    //ROUTES (MAPS)
+    Route::get('/routes', [RouteController::class, 'example'])->name('routes.example');
 
 });
 
