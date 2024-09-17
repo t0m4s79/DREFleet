@@ -18,7 +18,7 @@ export default function NewDriver( {auth} ) {
         fuel_consumption: '',
         status: 'Disponível',
         current_month_fuel_requests: '0',
-        oil_type: '',
+        fuel_type: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -190,10 +190,10 @@ export default function NewDriver( {auth} ) {
                                 <FormControl component="fieldset" margin="normal">
                                     <FormLabel component="legend">Tipo de Combustível</FormLabel>
                                     <RadioGroup
-                                        aria-label="oil_type"
-                                        name="oil_type"
-                                        value={data.oil_type}
-                                        onChange={(e) => setData('oil_type', e.target.value)}
+                                        aria-label="fuel_type"
+                                        name="fuel_type"
+                                        value={data.fuel_type}
+                                        onChange={(e) => setData('fuel_type', e.target.value)}
                                     >
                                         <FormControlLabel value="Gasolina 95" control={<Radio />} label="Gasolina 95" />
                                         <FormControlLabel value="Gasolina 98" control={<Radio />} label="Gasolina 98" />
@@ -201,7 +201,7 @@ export default function NewDriver( {auth} ) {
                                         <FormControlLabel value="Híbrido" control={<Radio />} label="Híbrido" />
                                         <FormControlLabel value="Elétrico" control={<Radio />} label="Elétrico" />
                                     </RadioGroup>
-                                    {errors.oil_type && <InputError message={errors.oil_type} />}
+                                    {errors.fuel_type && <InputError message={errors.fuel_type} />}
                                 </FormControl>
                                 
                                 <br />

@@ -33,7 +33,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         fuel_consumption: 'Consumo',
         status: 'Estado',
         current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)',
-        oil_type: 'Tipo de Combustível',
+        fuel_type: 'Tipo de Combustível',
     };
 
     return (

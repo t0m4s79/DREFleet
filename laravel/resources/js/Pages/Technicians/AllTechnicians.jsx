@@ -2,9 +2,23 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, Snackbar, Alert  } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-export default function AllTechnicians({ auth, technicians }) {
+export default function AllTechnicians({ auth, technicians, flash }) {
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
+    
     
     console.log(technicians)
     //Deconstruct data to send to table component
@@ -59,6 +73,17 @@ export default function AllTechnicians({ auth, technicians }) {
                     <Table data={technicianInfo} columnsLabel={technicianColumnLabels} editAction="technicians.showEdit" deleteAction="technicians.delete" dataId="id"/>
                 </div>
             </div>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </AuthenticatedLayout>
     );
 }

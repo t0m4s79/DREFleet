@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('fuel_consumption', 6, 3);
             $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido']);
             $table->tinyInteger('current_month_fuel_requests');
-            $table->enum('oil_type',['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']);
+            $table->enum('fuel_type',['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']);
             $table->timestamps();
         });
     }
