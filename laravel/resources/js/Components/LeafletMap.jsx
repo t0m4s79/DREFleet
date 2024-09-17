@@ -12,20 +12,52 @@ const center = {
     lng: -16.9167589,
 }
 
-function Routing() {					//Routing Function
-    const map = useMap();
- 
-    //const apiKey = import.meta.env.VITE_ORS_API_KEY; // Ensure this is correct
-
-    L.Routing.control({
-    //   waypoints: [
-    //     L.latLng(32.6443385,  -16.9167589),
-    //     L.latLng(32.6443385, -16.8167589),
-    //     L.latLng(32.7443385, -16.9167589)
-    //   ],
-	  geocoder: L.Control.Geocoder.nominatim()		//Allows geocoding
-    }).addTo(map);
-}
+function Routing() {
+	const map = useMap();
+	const routingControlRef = useRef(null);
+	const geocoderRef = useRef(null);
+  
+	useEffect(() => {
+	  // Only add the routing control once
+	  if (!routingControlRef.current) {
+		routingControlRef.current = L.Routing.control({
+		//   waypoints: [
+		// 	L.latLng(32.6443385, -16.9167589),
+		// 	L.latLng(32.6443385, -16.8167589),
+		// 	L.latLng(32.7443385, -16.9167589),
+		//   ],
+		geocoder: L.Control.Geocoder.nominatim()		//Allows geocoding
+	}).addTo(map);
+	  }
+  
+	  // Only add the geocoder once
+	  if (!geocoderRef.current) {
+		geocoderRef.current = L.Control.geocoder({
+		  defaultMarkGeocode: false, // Prevent default marker
+		})
+		  .on('markgeocode', function (e) {
+			const latlng = e.geocode.center;
+			L.marker(latlng).addTo(map); // Add marker at geocoded location
+			map.setView(latlng, map.getZoom()); // Center the map on geocoded location
+		  })
+		  .addTo(map);
+	  }
+  
+	  // Clean up both controls when component unmounts
+	  return () => {
+		if (routingControlRef.current) {
+		  map.removeControl(routingControlRef.current);
+		  routingControlRef.current = null;
+		}
+		if (geocoderRef.current) {
+		  map.removeControl(geocoderRef.current);
+		  geocoderRef.current = null;
+		}
+	  };
+	}, [map]);
+  
+	return null;
+  }
 
 function LocationMarker() {							//Function to get user location on map click
     const [position, setPosition] = useState(null)
