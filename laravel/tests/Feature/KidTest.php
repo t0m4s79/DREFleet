@@ -213,7 +213,7 @@ class KidTest extends TestCase
             'email' => fake()->unique()->safeEmail(),
         ];
 
-        // Mock the Vehicle model to throw an exception
+        // Mock the Kid model to throw an exception
         $this->mock(Kid::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));

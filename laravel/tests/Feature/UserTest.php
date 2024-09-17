@@ -122,7 +122,7 @@ class UserTest extends TestCase
             'phone' => '' . rand(910000000, 999999999),
         ];
 
-        // Mock the Vehicle model to throw an exception
+        // Mock the User model to throw an exception
         $this->mock(User::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));

@@ -136,7 +136,7 @@ class DriverTest extends TestCase
             'heavy_license' => '0',
         ];
 
-        // Mock the Vehicle model to throw an exception
+        // Mock the Driver model to throw an exception
         $this->mock(Driver::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));

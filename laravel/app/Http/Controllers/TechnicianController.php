@@ -163,7 +163,6 @@ class TechnicianController extends Controller
             $user->kids()->detach($removePriority2);
 
             //TODO: VER BEM SE ESTA É A LOGICA NECESSARIA PARA A CHANGE PRIORITIES OU SE ESTA DEMASIADO COMPLEXA
-            // $user->kids()->sync($changePriority);
             foreach ($changePriority as $kidId) {
                 $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;        //TODO: ERRO
                 $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority

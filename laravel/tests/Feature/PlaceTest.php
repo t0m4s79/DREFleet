@@ -143,7 +143,7 @@ class PlaceTest extends TestCase
             'longitude' => fake()->longitude(),
         ];
 
-        // Mock the Vehicle model to throw an exception
+        // Mock the Place model to throw an exception
         $this->mock(Place::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));
