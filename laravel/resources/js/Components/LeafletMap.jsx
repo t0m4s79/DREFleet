@@ -4,27 +4,30 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
+import 'leaflet-control-geocoder';
 
 const center = {
     lat: 32.6443385,
     lng: -16.9167589,
 }
 
-function Routing() {
+function Routing() {					//Routing Function
     const map = useMap();
  
     //const apiKey = import.meta.env.VITE_ORS_API_KEY; // Ensure this is correct
 
     L.Routing.control({
-      waypoints: [
-        L.latLng( 32.6443385,  -16.9167589),
-        L.latLng(32.6443385, -16.8167589),
-        L.latLng(32.7443385, -16.9167589)
-      ]
+    //   waypoints: [
+    //     L.latLng(32.6443385,  -16.9167589),
+    //     L.latLng(32.6443385, -16.8167589),
+    //     L.latLng(32.7443385, -16.9167589)
+    //   ],
+	  geocoder: L.Control.Geocoder.nominatim()		//Allows geocoding
     }).addTo(map);
 }
 
-function LocationMarker() {
+function LocationMarker() {							//Function to get user location on map click
     const [position, setPosition] = useState(null)
     const map = useMapEvents({
       click() {
@@ -43,7 +46,7 @@ function LocationMarker() {
     )
 }
 
-function DraggableMarker() {
+function DraggableMarker() {						//Function to create dragable map
     const [draggable, setDraggable] = useState(false)
     const [position, setPosition] = useState(center)
     const markerRef = useRef(null)
@@ -77,9 +80,9 @@ function DraggableMarker() {
         </Popup>
       </Marker>
     )
-  }
+}
 
-export default function LeafletMap() {
+export default function LeafletMap() {			//MAP
     return (
     <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '90%', margin: 'auto' }}>
         <TileLayer
@@ -89,9 +92,9 @@ export default function LeafletMap() {
         {/* <Marker position={[32.6443385, -16.9167589]}>
         <Popup>Start Point</Popup>
         </Marker> */}
-        <Routing style={{height: '200px'}}/>
-        <DraggableMarker />
-        <LocationMarker />
+        <Routing/>
+        {/* {<DraggableMarker />} */}
+        {/* <LocationMarker /> */}
     </MapContainer>
     );
 }
