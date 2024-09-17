@@ -172,7 +172,6 @@ class TechnicianController extends Controller
 
             return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            Log::debug($e);
             return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
         }
     }
