@@ -19,7 +19,7 @@ export default function Dashboard({ auth }) {
                 </div>
                 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="pb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                         <div className="p-6 text-gray-900">
                             <h2>Condutores</h2>
                         </div>
@@ -36,7 +36,7 @@ export default function Dashboard({ auth }) {
                 </div>
 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="pb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                         <div className="p-6 text-gray-900">
                             <h2>Veículos</h2>
                         </div>
@@ -52,7 +52,7 @@ export default function Dashboard({ auth }) {
                 </div>
 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="pb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                         <div className="p-6 text-gray-900">
                             <h2>Viagens</h2>
                         </div>
