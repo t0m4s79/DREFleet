@@ -9,6 +9,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         field: key,
         headerName: columnsLabel[key],
         editable: false,
+        flex: 1,
         renderCell: (params) => {
             console.log(params)
             if (key === 'kids_ids') {
@@ -100,7 +101,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             </div>
         ),
         sortable: false, // Disable sorting for actions column
-        width: 150, // Adjust as needed
+        minWidth: 150, // Adjust as needed
     });
 
     const rows = data.map((elem) => ({

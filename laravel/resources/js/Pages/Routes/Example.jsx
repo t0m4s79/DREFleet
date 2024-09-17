@@ -12,8 +12,10 @@ export default function RoutesExample({auth}) {
 
             <Head title="Rotas" />
         
-            <div className="App">
-                <LeafletMap />
+            <div className="py-12 px-6">
+                <div className="overflow-hidden shadow-sm sm:rounded-lg">
+                    <LeafletMap/>
+                </div>
             </div>
         </AuthenticatedLayout>
     );
