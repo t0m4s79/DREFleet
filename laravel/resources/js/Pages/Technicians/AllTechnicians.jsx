@@ -36,8 +36,7 @@ export default function AllTechnicians({ auth, technicians, flash }) {
             name: technician.name,
             email: technician.email,
             phone: technician.phone,
-            status_code:
-            technician.status_code,
+            status: technician.status,
             kidsList1: techKidsPrio1Ids,
             kidsList2: techKidsPrio2Ids
         }
