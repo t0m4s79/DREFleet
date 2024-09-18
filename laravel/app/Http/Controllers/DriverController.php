@@ -127,7 +127,7 @@ class DriverController extends Controller
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do/a condutor/a. Tente novamente mais tarde.');
+            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do/a condutor/a. Tente novamente.');
         }
     }
 

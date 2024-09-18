@@ -9,6 +9,7 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
+use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(6)->create();
         TechnicianFactory::new()->count(4)->create();
+        ManagerFactory::new()->count(2)->create();
         Driver::factory(4)->create();
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();

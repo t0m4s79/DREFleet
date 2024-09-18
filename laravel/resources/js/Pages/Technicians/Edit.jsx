@@ -3,15 +3,6 @@ import { Snackbar, Alert, Checkbox, FormControl, InputLabel, ListItemText, MenuI
 import { useForm } from '@inertiajs/react';
 
 export default function Edit({ auth, technician, associatedKids, addPriority1, addPriority2, flash}) {
-
-    console.log("tecnico")
-    console.log(technician)
-    console.log("crianças associadas")
-    console.log(associatedKids)
-    console.log("pode adicionar com prioridade 1")
-    console.log(addPriority1)
-    console.log("pode adicionar com prioridade 2")
-    console.log(addPriority2)
     
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');

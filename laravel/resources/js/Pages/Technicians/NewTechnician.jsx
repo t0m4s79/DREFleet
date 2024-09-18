@@ -106,9 +106,6 @@ export default function NewTechnician( {auth, users, priority1AvailableKids,prio
                                     {user}
                                 </select> */}
 
-                                
-                                {errors.heavy_license && <InputError message={errors.heavy_license} />}
-
                                 <p>Crianças pelo qual é responsável</p><br />
 
                                 <p>Prioridade 1</p>
