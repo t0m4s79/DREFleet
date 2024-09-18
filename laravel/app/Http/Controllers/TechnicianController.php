@@ -110,7 +110,6 @@ class TechnicianController extends Controller
     //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
     public function editTechnician(User $user, Request $request)
     {
-        //dd($request);
         $incomingFields = $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -162,16 +161,15 @@ class TechnicianController extends Controller
             $user->kids()->detach($removePriority1);
             $user->kids()->detach($removePriority2);
 
-            //TODO: VER BEM SE ESTA É A LOGICA NECESSARIA PARA A CHANGE PRIORITIES OU SE ESTA DEMASIADO COMPLEXA
             foreach ($changePriority as $kidId) {
-                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;        //TODO: ERRO
+                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
                 $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
                 $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
             }
 
             return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente mais tarde.');
+            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do técnico. Tente novamente.');
         }
     }
 

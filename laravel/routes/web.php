@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\TechnicianController;
@@ -43,6 +44,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditScreen'])->name('kids.showEdit');
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
+
+    //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
+    Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
+    Route::get('/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.create');
+    Route::post('/managers/create', [ManagerController::class, 'createManager'])->name('managers.create');
+    Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditScreen'])->name('managers.showEdit');
+    Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
+    Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
@@ -65,7 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');
     Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');
 
-    //TECHNICIANS (USER MODEL WITH TECHNICIAN USER_TYPE)
+    //TECHNICIANS (USER MODEL WITH Técnico USER_TYPE)
     Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
     Route::get('/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.create');
     Route::post('/technicians/create', [TechnicianController::class, 'createTechnician'])->name('technicians.create');
