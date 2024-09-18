@@ -12,8 +12,8 @@ export default function OrderIndex({auth}) {
 
             <Head title="Rotas" />
         
-            <div className="py-12 px-6">
-                <div className="overflow-hidden shadow-sm sm:rounded-lg">
+            <div className="m-auto py-12 w-4/5">
+                <div className="overflow-hidden shadow-lg sm:rounded-lg">
                     <LeafletMap/>
                 </div>
             </div>
