@@ -6,8 +6,9 @@ import InputError from '@/Components/InputError';
 
 export default function Edit({ auth, driver }) {
 
-    console.log(driver)
-
+    //console.log(driver)
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({
         user_id: driver.user_id,
         name: driver.name,
@@ -91,7 +92,7 @@ export default function Edit({ auth, driver }) {
                                 <FormLabel component="legend">Licença de Pesados?</FormLabel>
                                 <RadioGroup
                                     name="heavy_license"
-                                    value={data.heavy_license == "Sim" ? 1 : 0}
+                                    value={data.heavy_license == "Sim" ? 1 : 0}     // Backend sends heavy_license as "Sim" or "Não" to frontend for display purposes, however it's value has to stored as "1" or "0".
                                     onChange={handleChange}
                                     row
                                 >

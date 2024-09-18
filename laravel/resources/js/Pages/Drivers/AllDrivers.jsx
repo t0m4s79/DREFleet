@@ -7,15 +7,15 @@ import { useEffect, useState } from 'react';
 
 export default function AllDrivers( {auth, drivers, flash} ) {
     
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+    const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
+    const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
 
     useEffect(() => {
-        if (flash.message || flash.error) {
-            setSnackbarMessage(flash.message || flash.error);
-            setSnackbarSeverity(flash.error ? 'error' : 'success');
-            setOpenSnackbar(true);
+        if (flash.message || flash.error) {                                 // if there is a flash message/error
+            setSnackbarMessage(flash.message || flash.error);               // set the message
+            setSnackbarSeverity(flash.error ? 'error' : 'success');         // defines background color of snackbar
+            setOpenSnackbar(true);                                          // show snackbar
         }
     }, [flash]);
 

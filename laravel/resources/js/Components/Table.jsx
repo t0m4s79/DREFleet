@@ -3,15 +3,20 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import {  ptPT } from '@mui/x-data-grid/locales';
 
+// Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
 
+    // Define DataGrid columns based on columnsLabel
+    // columns can be different depending on the information provided and thus need to render different elements
     const columns = Object.keys(columnsLabel).map(key => ({
         field: key,
         headerName: columnsLabel[key],
         editable: false,
         flex: 1,
         renderCell: (params) => {
-            console.log(params)
+            //console.log(params)
+            // Display kids_ids as buttons that direct to the respective kid's page
+            // Shown in Places "table"
             if (key === 'kids_ids') {
                 return (
                     <div>
@@ -34,6 +39,8 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            // Display place_ids as buttons that direct to the respective place's page
+            // Shown in Kids "table"
             if (key === 'place_ids') {
                 return (
                     <div>
@@ -56,6 +63,8 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            // Display kidsList with buttons, each button redirecting to the respective kid's page
+            // Shown in Technician "table"
             if (key === 'kidsList1' || key === 'kidsList2') {
                 return (
                     <div>
@@ -81,6 +90,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             return params.value;
         }
     }));
+    // Add static column with Edit and Delete buttons
     columns.push({
         field: 'actions',
         headerName: 'Ações',
@@ -109,6 +119,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         ...elem
     }));
 
+    // Method to handle delete
     const handleDelete = async (id) => {
 
         if (window.confirm('Tem a certeza que pretende eliminar o elemento com id ' + id + '?')) {
