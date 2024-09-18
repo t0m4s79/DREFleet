@@ -19,7 +19,7 @@ function Routing() {
   
 	useEffect(() => {
 	  // Only add the routing control once
-	  if (!routingControlRef.current) {
+	  
 		routingControlRef.current = L.Routing.control({
 		//   waypoints: [
 		// 	L.latLng(32.6443385, -16.9167589),
@@ -28,7 +28,7 @@ function Routing() {
 		//   ],
 		geocoder: L.Control.Geocoder.nominatim()		//Allows geocoding
 	}).addTo(map);
-	  }
+	  
   
 	  // Only add the geocoder once
 	  if (!geocoderRef.current) {
