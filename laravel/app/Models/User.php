@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Kid;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -63,4 +64,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Kid::class)->withPivot('priority')->withTimestamps();
     }
 
+    //TODO: CHECK IF THIS IS CORRECT
+    public function ordersTechnician(): HasMany
+    {
+        return $this->hasMany(Order::class, 'technician_id');
+    }
+
+    public function ordersManager(): HasMany
+    {
+        return $this->hasMany(Order::class, 'manager_id');
+    }
 }

@@ -45,6 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
 
+    //ORDERS (MAPS)
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
+    Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
+    Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEdit');
+    Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
+    Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
+    
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
     Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
     Route::get('/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.create');
@@ -89,9 +97,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditScreen'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
-
-    //ROUTES (MAPS)
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
 });
 
