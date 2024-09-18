@@ -13,51 +13,49 @@ const center = {
 }
 
 function Routing() {
-	const map = useMap();
-	const routingControlRef = useRef(null);
-	const geocoderRef = useRef(null);
-  
-	useEffect(() => {
-	  // Only add the routing control once
-	  
-		routingControlRef.current = L.Routing.control({
-		//   waypoints: [
-		// 	L.latLng(32.6443385, -16.9167589),
-		// 	L.latLng(32.6443385, -16.8167589),
-		// 	L.latLng(32.7443385, -16.9167589),
-		//   ],
-		geocoder: L.Control.Geocoder.nominatim()		//Allows geocoding
-	}).addTo(map);
-	  
-  
-	  // Only add the geocoder once
-	  if (!geocoderRef.current) {
-		geocoderRef.current = L.Control.geocoder({
-		  defaultMarkGeocode: false, // Prevent default marker
-		})
-		  .on('markgeocode', function (e) {
-			const latlng = e.geocode.center;
-			L.marker(latlng).addTo(map); // Add marker at geocoded location
-			map.setView(latlng, map.getZoom()); // Center the map on geocoded location
-		  })
-		  .addTo(map);
-	  }
-  
-	  // Clean up both controls when component unmounts
-	  return () => {
-		if (routingControlRef.current) {
-		  map.removeControl(routingControlRef.current);
-		  routingControlRef.current = null;
-		}
-		if (geocoderRef.current) {
-		  map.removeControl(geocoderRef.current);
-		  geocoderRef.current = null;
-		}
-	  };
-	}, [map]);
-  
-	return null;
-  }
+    const map = useMap();
+    const routingControlRef = useRef(null);
+    const geocoderRef = useRef(null);
+
+    useEffect(() => {
+        routingControlRef.current = L.Routing.control({
+            router: L.Routing.osrmv1({
+                serviceUrl: `https://router.project-osrm.org/route/v1`,				//TODO: route instructions to portuguese
+            }),
+            geocoder: L.Control.Geocoder.nominatim(),
+            language: 'pt',
+        }).addTo(map);
+
+        // Add the geocoder control once				
+        if (!geocoderRef.current) {
+            geocoderRef.current = L.Control.geocoder({
+                defaultMarkGeocode: false
+            })
+                .on('markgeocode', function (e) {
+                    const latlng = e.geocode.center;
+                    L.marker(latlng).addTo(map);
+                    map.setView(latlng, map.getZoom());
+                })
+                .addTo(map);
+        }
+
+        // Cleanup on component unmount
+        return () => {
+            if (routingControlRef.current) {
+                map.removeControl(routingControlRef.current);
+                routingControlRef.current = null;
+            }
+            if (geocoderRef.current) {
+                map.removeControl(geocoderRef.current);
+                geocoderRef.current = null;
+            }
+        };
+    }, [map]);
+
+    return null;
+}
+
+
 
 function LocationMarker() {							//Function to get user location on map click
     const [position, setPosition] = useState(null)
@@ -116,7 +114,7 @@ function DraggableMarker() {						//Function to create dragable map
 
 export default function LeafletMap() {			//MAP
     return (
-    <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '90%', margin: 'auto', zIndex:'5' }}>
+    <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '90%', margin: 'auto' }}>
         <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

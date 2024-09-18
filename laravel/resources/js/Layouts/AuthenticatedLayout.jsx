@@ -79,7 +79,7 @@ export default function Authenticated({ user, header, children }) {
                                     Moradas
                                 </NavLink>
 
-                                <NavLink href={route('routes.example')} active={route().current('vehicles.example')}>
+                                <NavLink href={route('orders.index')} active={route().current('orders.index')}>
                                     Rotas
                                 </NavLink>
                             </div>

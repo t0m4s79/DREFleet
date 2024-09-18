@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\KidController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\DriverController;
@@ -81,7 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
 
     //ROUTES (MAPS)
-    Route::get('/routes', [RouteController::class, 'example'])->name('routes.example');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
 });
 
