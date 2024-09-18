@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -68,6 +69,10 @@ class ManagerController extends Controller
 
     public function editManager(User $user, Request $request) {
         //dd($request);
+
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'name' => 'required',
             'email' => 'required',

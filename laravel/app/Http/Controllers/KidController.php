@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\Kid;
 use Inertia\Inertia;
 use App\Models\Place;
@@ -34,13 +35,8 @@ class KidController extends Controller
     //TODO: more verification in each field and frontend verification messages!!!
     public function createKid(Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'email.email' => 'O email deve ser um endereço de e-mail válido.',
-            //'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
-            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'name' => 'required',
@@ -95,13 +91,8 @@ class KidController extends Controller
 
     public function editKid(Kid $kid, Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'email.email' => 'O email deve ser um endereço de e-mail válido.',
-            //'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
-            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'name' => 'required',

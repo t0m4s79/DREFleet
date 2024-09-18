@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use App\Models\Driver;
 use Inertia\Inertia;
@@ -45,10 +46,8 @@ class DriverController extends Controller
 
     public function createDriver(Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'user_id.unique' => 'Este utilizador já é um condutor.'
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'user_id' => ['required', 'unique:drivers,user_id'],
@@ -84,13 +83,9 @@ class DriverController extends Controller
 
     public function editDriver(Driver $driver, Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'email.email' => 'O email deve ser um endereço de e-mail válido.',
-            'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
-            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'user_id' => 'required',
             'heavy_license' => 'required',

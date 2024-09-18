@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
@@ -68,6 +69,9 @@ class TechnicianController extends Controller
     //TODO: PRIORITY 1 VERIFICATION
     public function createTechnician(Request $request)
     {
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'id' => ['required', 'exists:users,id'],
             'kidsList1' => 'array',
@@ -107,6 +111,9 @@ class TechnicianController extends Controller
 
     public function editTechnician(User $user, Request $request)
     {
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+        
         $incomingFields = $request->validate([
             'name' => 'required',
             'email' => 'required',
