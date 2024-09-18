@@ -46,7 +46,7 @@ class DriverController extends Controller
     public function createDriver(Request $request)
     {
         $customErrorMessages = [
-            'required' => 'O campo :attribute é obrigatório.',
+            'required' => 'Este campo é obrigatório.',
             'user_id.unique' => 'Este utilizador já é um condutor.'
         ];
 
@@ -85,8 +85,8 @@ class DriverController extends Controller
     public function editDriver(Driver $driver, Request $request)
     {
         $customErrorMessages = [
-            'required' => 'O campo :attribute é obrigatório.',
-            'email.email' => 'O campo :attribute deve ser um endereço de e-mail válido.',
+            'required' => 'Este campo é obrigatório.',
+            'email.email' => 'O email deve ser um endereço de e-mail válido.',
             'phone.required' => 'O campo telefone é obrigatório.',
             'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
             'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',

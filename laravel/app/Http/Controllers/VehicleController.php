@@ -32,7 +32,7 @@ class VehicleController extends Controller
     public function createVehicle(Request $request)
     {
         $customErrorMessages = [
-            'required' => 'O campo :attribute é obrigatório.',
+            'required' => 'Este campo é obrigatório.',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
             'year.integer' => 'O campo ano deve ser um número inteiro.',
@@ -89,8 +89,8 @@ class VehicleController extends Controller
 
     public function editVehicle(Vehicle $vehicle, Request $request)
     {
-        $customErrorMessages = [                //TODO: attribute em PORTUGUES
-            'required' => 'O campo :attribute é obrigatório.',
+        $customErrorMessages = [
+            'required' => 'Este campo é obrigatório.',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
             'year.integer' => 'O campo ano deve ser um número inteiro.',

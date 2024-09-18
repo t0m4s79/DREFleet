@@ -33,7 +33,7 @@ class PlaceController extends Controller
     public function createPlace(Request $request)
     {
         $customErrorMessages = [
-            'required' => 'O campo :attribute é obrigatório.',
+            'required' => 'Este campo é obrigatório.',
             'numeric' => 'Apenas são permitidos números.',
             'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
             'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
@@ -83,7 +83,7 @@ class PlaceController extends Controller
     public function editPlace(Place $place, Request $request)
     {
         $customErrorMessages = [
-            'required' => 'O campo :attribute é obrigatório.',
+            'required' => 'Este campo é obrigatório.',
             'numeric' => 'Apenas são permitidos números.',
             'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
             'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
