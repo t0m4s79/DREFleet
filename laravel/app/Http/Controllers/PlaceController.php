@@ -29,7 +29,6 @@ class PlaceController extends Controller
         ]);
     }
 
-    //TODO: more verification in each field and verification messages!!!
     public function createPlace(Request $request)
     {
         $customErrorMessages = [

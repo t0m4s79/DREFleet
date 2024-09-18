@@ -105,9 +105,6 @@ class TechnicianController extends Controller
         }
     }
 
-    //TODO: PRIORITY 1 VERIFICATION
-    //TODO: ADD CANT REPEAT IN BOTH PRIORITIES
-    //TODO: CANT BE IN CHANGE AND REMOVE AT THE SAME TIME
     public function editTechnician(User $user, Request $request)
     {
         $incomingFields = $request->validate([
