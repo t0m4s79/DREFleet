@@ -2,8 +2,7 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, Button, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography } from '@mui/material';
 
 export default function NewDriver( {auth, users} ) {
 
@@ -50,35 +49,59 @@ export default function NewDriver( {auth, users} ) {
                                 <p>Selecione o utilizador</p>
 
                                 <Autocomplete
-                                    id='user-combo-box'
+                                    id="user-combo-box"
                                     options={userList}
                                     getOptionLabel={(option) => option.label}
                                     onChange={handleUserChange}
-                                    renderInput={(params) => <TextField {...params} label="Utilizador" />}
-                                    sx={{ width: 500 }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Utilizador"
+                                            variant="outlined"
+                                            margin="normal"
+                                            fullWidth
+                                            error={!!errors.user_id}
+                                            helperText={errors.user_id}
+                                        />
+                                    )}
+                                    sx={{ width: 500, marginBottom: 2 }}
                                 />
-                                {errors.user_id && <InputError message={errors.user_id} />}
 
-                                <p>Carta de Pesados</p>
-                                <input
-                                    type="radio"
-                                    name="heavy_license"
-                                    value="0"
-                                    checked={data.heavy_license === '0'}
-                                    onChange={(e) => setData('heavy_license', e.target.value)}
-                                />
-                                <label>Não</label><br/>
-                                <input
-                                    type="radio"
-                                    name="heavy_license"
-                                    value="1"
-                                    checked={data.heavy_license === '1'}
-                                    onChange={(e) => setData('heavy_license', e.target.value)}
-                                />
-                                <label>Sim</label><br/>
-                                {errors.heavy_license && <InputError message={errors.heavy_license} />}
+                                <Typography variant="body1">Carta de Pesados</Typography>
+                                {/* Radio buttons for heavy_license */}
+                                <FormControl component="fieldset">
+                                    <RadioGroup
+                                        aria-label="heavy_license"
+                                        name="heavy_license"
+                                        value={data.heavy_license}
+                                        onChange={(e) => setData('heavy_license', e.target.value)}
+                                    >
+                                        <FormControlLabel
+                                            value="0"
+                                            control={<Radio />}
+                                            label="Não"
+                                        />
+                                        <FormControlLabel
+                                            value="1"
+                                            control={<Radio />}
+                                            label="Sim"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                                {errors.heavy_license && (
+                                    <InputError message={errors.heavy_license} />
+                                )}
 
-                                <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
+                                <br />
+
+                                <Button
+                                    variant="outlined"
+                                    type="submit"
+                                    disabled={processing}
+                                    sx={{ mt: 2 }}
+                                >
+                                    Submeter
+                                </Button>
 
                                 <Transition
                                     show={recentlySuccessful}

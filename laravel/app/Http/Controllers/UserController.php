@@ -80,11 +80,14 @@ class UserController extends Controller
 
     public function editUser(User $user, Request $request)
     {        //TODO: should phone be unique for each user???
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)], // Ignore current user's email,
-            'phone' => 'required|numeric|digits_between:9,15|unique:users,phone',
-        ]);
+            'phone' => ['required', 'numeric', 'digits_between:9,15', Rule::unique('users', 'phone')->ignore($user->id)],
+        ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
