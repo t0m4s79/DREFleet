@@ -20,7 +20,7 @@ export default function OrderIndex({auth, drivers, vehicles, technicians, manage
         
             <div className="m-auto py-12 w-4/5">
                 <div className="overflow-hidden shadow-lg sm:rounded-lg">
-                    <LeafletMap/>
+                    <LeafletMap routing={true} />
                 </div>
             </div>
         </AuthenticatedLayout>

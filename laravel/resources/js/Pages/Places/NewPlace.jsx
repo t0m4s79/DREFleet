@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { Button, TextField } from '@mui/material';
+import LeafletMap from '@/Components/LeafletMap';
 
 export default function NewPlace({auth}) {
 
@@ -117,6 +118,9 @@ export default function NewPlace({auth}) {
                                     <p className="text-sm text-gray-600">Guardado</p>
                                 </Transition>
                             </form>
+
+                            <br />
+                            <LeafletMap routing={false}/>
 
                         </div>
                     </div>

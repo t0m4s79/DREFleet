@@ -12,21 +12,13 @@ const center = {
     lng: -16.9167589,
 }
 
-function Routing() {
+function Routing({ routing }) {
     const map = useMap();
     const routingControlRef = useRef(null);
     const geocoderRef = useRef(null);
 
     useEffect(() => {
-        routingControlRef.current = L.Routing.control({
-            router: L.Routing.osrmv1({
-                serviceUrl: `https://router.project-osrm.org/route/v1`,				//TODO: route instructions to portuguese
-            }),
-            geocoder: L.Control.Geocoder.nominatim(),
-            language: 'pt',
-        }).addTo(map);
-
-        // Add the geocoder control once				
+        // Add the geocoder control (it will always be present)
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({
                 defaultMarkGeocode: false
@@ -39,22 +31,34 @@ function Routing() {
                 .addTo(map);
         }
 
+        // Conditionally add the routing control only when routing is true
+        if (routing && !routingControlRef.current) {
+            routingControlRef.current = L.Routing.control({
+                router: L.Routing.osrmv1({
+                    serviceUrl: `https://router.project-osrm.org/route/v1`, //TODO: route instructions to Portuguese
+                }),
+                geocoder: L.Control.Geocoder.nominatim(),
+                language: 'pt',
+            }).addTo(map);
+        }
+
         // Cleanup on component unmount
         return () => {
+            // Remove routing control if it was added
             if (routingControlRef.current) {
                 map.removeControl(routingControlRef.current);
                 routingControlRef.current = null;
             }
+            // Remove geocoder control if it was added
             if (geocoderRef.current) {
                 map.removeControl(geocoderRef.current);
                 geocoderRef.current = null;
             }
         };
-    }, [map]);
+    }, [map, routing]); // Re-run effect when map or routing changes
 
     return null;
 }
-
 
 
 function LocationMarker() {							//Function to get user location on map click
@@ -112,19 +116,19 @@ function DraggableMarker() {						//Function to create dragable map
     )
 }
 
-export default function LeafletMap() {			//MAP
+export default function LeafletMap({ routing }) {  // routing -> activate (true) routing or not (false)
     return (
-    <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
-        <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {/* <Marker position={[32.6443385, -16.9167589]}>
-        <Popup>Start Point</Popup>
-        </Marker> */}
-        <Routing/>
-        {/* {<DraggableMarker />} */}
-        {/* <LocationMarker /> */}
-    </MapContainer>
+        <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {/* <Marker position={[32.6443385, -16.9167589]}>
+                <Popup>Start Point</Popup>
+            </Marker> */}
+            {<Routing routing={routing}/>}
+            {/* {<DraggableMarker />} */}
+            {/* <LocationMarker /> */}
+        </MapContainer>
     );
 }
