@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('wheelchair_adapted');
             $table->integer('capacity');
             $table->decimal('fuel_consumption', 6, 3);
-            $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido']);
+            $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido', 'Em Serviço']);
             $table->tinyInteger('current_month_fuel_requests');
             $table->enum('fuel_type',['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']);
             $table->timestamps();
