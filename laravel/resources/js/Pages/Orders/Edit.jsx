@@ -3,7 +3,7 @@ import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderIndex({auth, orders}) {
+export default function OrderIndex({auth, drivers, vehicles, technicians, managers}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
