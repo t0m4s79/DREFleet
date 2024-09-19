@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Kid;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
@@ -27,17 +28,20 @@ class DatabaseSeeder extends Seeder
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();
         Place::factory(15)->create();
+        Order::factory(6)->create();
 
         $kids = Kid::all();
         $places = Place::all();
         $technicians = User::where('user_type','Técnico');
 
+        //Seed kid-place pivot table
         $kids->each(function ($kid) use ($places) {
             $kid->places()->sync(
                 $places->random(rand(1,3))->pluck('id')->toArray()
             );
         });
 
+        //Seed kid-technician pivot table
         $technicians->each(function ($technician) use ($kids) {
             $kidIds = $kids->random(rand(1, 3))->pluck('id')->toArray(); // Randomly select 1-3 kids
         
