@@ -205,14 +205,24 @@ export default function Edit({ auth, technician, associatedKids, addPriority1, a
                                     row
                                 >
                                     <FormControlLabel
-                                        value="0"
+                                        value="Disponível"
                                         control={<Radio />}
-                                        label="Não"
+                                        label="Disponível"
                                     />
                                     <FormControlLabel
-                                        value="1"
+                                        value="Indisponível"
                                         control={<Radio />}
-                                        label="Sim"
+                                        label="Indisponível"
+                                    />
+                                    <FormControlLabel
+                                        value="Em Serviço"
+                                        control={<Radio />}
+                                        label="Em Serviço"
+                                    />
+                                    <FormControlLabel
+                                        value="Escondido"
+                                        control={<Radio />}
+                                        label="Escondido"
                                     />
                                 </RadioGroup>
                             </FormControl>

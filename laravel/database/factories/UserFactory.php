@@ -32,6 +32,8 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'phone' => rand(910000000, 999999999),
             'user_type' =>  'Nenhum',
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
+
         ];
     }
 

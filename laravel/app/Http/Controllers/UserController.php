@@ -57,7 +57,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'user_type' => 'Nenhum',
-                'status' => '0',
+                'status' => 'Disponível',
                 'password' => Hash::make($request->password),
             ]);
 

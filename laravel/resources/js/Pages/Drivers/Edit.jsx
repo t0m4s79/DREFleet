@@ -92,7 +92,7 @@ export default function Edit({ auth, driver }) {
                                 <FormLabel component="legend">Licença de Pesados?</FormLabel>
                                 <RadioGroup
                                     name="heavy_license"
-                                    value={data.heavy_license}     // Backend sends heavy_license as "Sim" or "Não" to frontend for display purposes, however it's value has to stored as "1" or "0".
+                                    value={data.heavy_license}
                                     onChange={handleChange}
                                     row
                                 >
@@ -111,7 +111,7 @@ export default function Edit({ auth, driver }) {
                             <br/>
 
                             <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Disponível?</FormLabel>
+                                <FormLabel component="legend">Estado</FormLabel>
                                 <RadioGroup
                                     name="status"
                                     value={data.status}
@@ -119,14 +119,24 @@ export default function Edit({ auth, driver }) {
                                     row
                                 >
                                     <FormControlLabel
-                                        value="0"
+                                        value="Disponível"
                                         control={<Radio />}
-                                        label="Não"
+                                        label="Disponível"
                                     />
                                     <FormControlLabel
-                                        value="1"
+                                        value="Indisponível"
                                         control={<Radio />}
-                                        label="Sim"
+                                        label="Indisponível"
+                                    />
+                                    <FormControlLabel
+                                        value="Em Serviço"
+                                        control={<Radio />}
+                                        label="Em Serviço"
+                                    />
+                                    <FormControlLabel
+                                        value="Escondido"
+                                        control={<Radio />}
+                                        label="Escondido"
                                     />
                                 </RadioGroup>
                             </FormControl>

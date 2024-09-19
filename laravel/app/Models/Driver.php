@@ -49,7 +49,7 @@ class Driver extends Model
         return $this->user->phone;
     }
 
-    public function getStatusAttribute(): int
+    public function getStatusAttribute(): string
     {
         return $this->user->status;
     }
