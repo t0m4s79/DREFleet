@@ -18,12 +18,23 @@ class UserController extends Controller
     {
         $users = User::All();
 
-        return Inertia::render('Users/AllUsers', ['users' => $users]);
+        return Inertia::render('Users/AllUsers', [
+            'users' => $users,
+            'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+        ]);
     }
 
     public function showCreateUserForm()
     {
-        return Inertia::render('Users/NewUser');
+        return Inertia::render('Users/NewUser', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+        ]);
     }
 
     public function createUser(Request $request)
@@ -58,9 +69,15 @@ class UserController extends Controller
 
     public function showEditUserForm(User $user)
     {
-        return Inertia::render('Users/Edit', ['user' => $user]);
+        return Inertia::render('Users/Edit', [
+            'user' => $user,
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+        ]);
     }
-    
+
     public function editUser(User $user, Request $request)
     {        //TODO: should phone be unique for each user???
         $incomingFields = $request->validate([
@@ -79,9 +96,14 @@ class UserController extends Controller
 
     public function deleteUser($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+    
+            return redirect('/users')->with('message', 'Utilizador apagado com sucesso!');
 
-        return redirect('/users');
+        } catch (\Exception $e) {
+            return redirect('/users')->with('error', 'Houve um ao apagar o utilizador. Tente novamente.');
+        }
     }
 }

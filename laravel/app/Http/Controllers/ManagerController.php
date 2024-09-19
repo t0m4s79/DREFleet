@@ -103,12 +103,17 @@ class ManagerController extends Controller
     }
 
     public function deleteManager($id) {
-        $user = User::findOrFail($id);
-        $user->update([
-            'user_type' => "Nenhum",
-        ]);
+        try {
+            $user = User::findOrFail($id);
+            $user->update([
+                'user_type' => "Nenhum",
+            ]);
 
-        return redirect('/managers');
+            return redirect('/managers')->with('message', 'Utilizador retirado da lista de gestores com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/managers')->with('error', 'Houve um problema ao retirar o utilizador da lista de gestores. Tente novamente.');
+        }
     }
 
     //TODO: VERIFICATION MESSAGES

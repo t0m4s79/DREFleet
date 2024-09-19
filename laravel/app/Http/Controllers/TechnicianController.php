@@ -211,13 +211,19 @@ class TechnicianController extends Controller
 
     public function deleteTechnician($id)
     {
-        $user = User::findOrFail($id);
-        $user->update([
-            'user_type' => "Nenhum",
-        ]);
+        try {
+            $user = User::findOrFail($id);
+            $user->update([
+                'user_type' => "Nenhum",
+            ]);
 
-        $user->kids()->detach();
+            $user->kids()->detach();
 
-        return redirect('/technicians');
+
+            return redirect('/technicians')->with('message', 'Utilizador retirado da lista de técnicos com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/technicians')->with('error', 'Houve um problema ao retirar o utilizador da lista de técnicos. Tente novamente.');
+        }
     }
 }

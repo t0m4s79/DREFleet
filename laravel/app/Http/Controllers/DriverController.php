@@ -128,14 +128,19 @@ class DriverController extends Controller
 
     public function deleteDriver($id)
     {
-        $driver = Driver::findOrFail($id);
-        $driver->delete();
+        try {
+            $driver = Driver::findOrFail($id);
+            $driver->delete();
 
-        $user = User::findOrFail($id);
-        $user->update([
-            'user_type' => "Nenhum",
-        ]);
+            $user = User::findOrFail($id);
+            $user->update([
+                'user_type' => "Nenhum",
+            ]);
 
-        return redirect('/drivers');
+            return redirect('/drivers')->with('message', 'Utilizador retirado da lista de condutores com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/drivers')->with('error', 'Houve um problema ao retirar o utilizador da lista de condutores. Tente novamente.');
+        }
     }
 }

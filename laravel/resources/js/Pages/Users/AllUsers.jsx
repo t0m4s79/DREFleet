@@ -2,10 +2,23 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, Snackbar, Alert } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-export default function AllDrivers( {auth, users} ) {
+export default function AllDrivers( {auth, users, flash} ) {
     
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
+
     //Deconstruct data to send to table component
     let userInfo = users.map((user) => (
         {id: user.id, name: user.name, email: user.email, phone: user.phone, user_type: user.user_type , status: user.status }
@@ -40,6 +53,18 @@ export default function AllDrivers( {auth, users} ) {
                     <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
                 </div>
             </div>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
         </AuthenticatedLayout>
     );
 }

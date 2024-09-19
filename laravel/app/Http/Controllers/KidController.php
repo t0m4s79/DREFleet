@@ -123,9 +123,14 @@ class KidController extends Controller
 
     public function deleteKid($id)
     {
-        $kid = Kid::findOrFail($id);
-        $kid->delete();
+        try {
+            $kid = Kid::findOrFail($id);
+            $kid->delete();
 
-        return redirect('/kids');
+            return redirect('/kids')->with('message', 'Criança apagada com sucesso!');
+            
+        } catch (\Exception $e) {
+            return redirect('/kids')->with('error', 'Houve um problema ao apagar a criança. Tente novamente.');
+        }
     }
 }

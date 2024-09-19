@@ -114,9 +114,14 @@ class PlaceController extends Controller
 
     public function deletePlace($id)
     {
-        $place = Place::findOrFail($id);
-        $place->delete();
+        try {
+            $place = Place::findOrFail($id);
+            $place->delete();
 
-        return redirect('/places');
+            return redirect('/places')->with('message', 'Morada apagada com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/places')->with('error', 'Houve um problema ao apagar a morada. Tente novamente.');
+        }
     }
 }

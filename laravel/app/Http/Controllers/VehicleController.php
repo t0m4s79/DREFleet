@@ -135,9 +135,14 @@ class VehicleController extends Controller
 
     public function deleteVehicle($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
-        $vehicle->delete();
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->delete();
+    
+            return redirect('/vehicles')->with('message', 'Veículo apagado com sucesso!');
 
-        return redirect('/vehicles');
+        } catch (\Exception $e) {
+            return redirect('/vehicles')->with('error', 'Houve um problema ao apagar o veículo. Tente novamente.');
+        }
     }
 }
