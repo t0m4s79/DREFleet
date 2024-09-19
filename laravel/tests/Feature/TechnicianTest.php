@@ -162,7 +162,7 @@ class TechnicianTest extends TestCase
         ]); 
     }
 
-    public function test_user_edit_a_technician_and_their_kids():void   //TODO: CHECK WHY TEST IS NOT PASSING EVEN THOUGH IT RUNS FINE
+    public function test_user_edit_a_technician_and_their_kids():void   //TODO: CHECK WHY TEST IS NOT PASSING WITH "changePriority" EVEN THOUGH IT RUNS FINE
     {
         $kid_1 = Kid::factory()->create();
         $kid_2 = Kid::factory()->create();

@@ -107,6 +107,7 @@ export default function Authenticated({ user, header, children }) {
                                             </Dropdown.Trigger>
 
                                             <Dropdown.Content>
+                                                <Dropdown.Link  href={route('orders.index')} active={route().current('orders.index')}>Todos os Pedidos</Dropdown.Link>
                                                 <Dropdown.Link  href={route('orders.create')} active={route().current('orders.create')}>Criar Pedido</Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
