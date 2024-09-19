@@ -12,7 +12,7 @@ const center = {
     lng: -16.9167589,
 }
 
-function Routing({ routing, onLocationSelect }) {
+function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
     const map = useMap();
     const routingControlRef = useRef(null);
     const geocoderRef = useRef(null);
@@ -46,9 +46,21 @@ function Routing({ routing, onLocationSelect }) {
                 router: L.Routing.osrmv1({
                     serviceUrl: `https://router.project-osrm.org/route/v1`, //TODO: route instructions to Portuguese
                 }),
-                geocoder: L.Control.Geocoder.nominatim(),
+                geocoder: L.Control.Geocoder.nominatim({
+					geocodingQueryParams: {countrycodes: 'pt'}
+				}),
                 language: 'pt',
             }).addTo(map);
+
+			routingControlRef.current.on('routesfound', function (e) {
+                const waypoints = e.routes[0].waypoints.map((wp) => ({
+                    lat: wp.latLng.lat,
+                    lng: wp.latLng.lng
+                }));
+
+                // Pass the trajectory waypoints back to the form through the callback
+                onTrajectoryChange(waypoints);
+            });
         }
 
         // Cleanup on component unmount
@@ -64,7 +76,7 @@ function Routing({ routing, onLocationSelect }) {
                 geocoderRef.current = null;
             }
         };
-    }, [map, routing]); // Re-run effect when map or routing changes
+    }, [map, routing, onTrajectoryChange]); // Re-run effect when map or routing changes
 
     return null;
 }
@@ -125,19 +137,14 @@ function DraggableMarker() {						//Function to create dragable map
     )
 }
 
-export default function LeafletMap({ routing, onLocationSelect }) {  // routing -> activate (true) routing or not (false)
+export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange}) {  // routing -> activate (true) routing or not (false)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {/* <Marker position={[32.6443385, -16.9167589]}>
-                <Popup>Start Point</Popup>
-            </Marker> */}
-            {<Routing routing={routing} onLocationSelect={onLocationSelect}/>}
-            {/* {<DraggableMarker />} */}
-            {/* {<LocationMarker />} */}
+            {<Routing routing={routing} onLocationSelect={onLocationSelect} onTrajectoryChange={onTrajectoryChange} />}
         </MapContainer>
     );
 }

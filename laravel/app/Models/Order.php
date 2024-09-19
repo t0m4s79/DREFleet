@@ -27,7 +27,8 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'coordinates' => Point::class,
+        'end_coordinates' => Point::class,
+        'begin_coordinates' => Point::class,
     ];
     
 }
