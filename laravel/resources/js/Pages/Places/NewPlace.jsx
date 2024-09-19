@@ -4,9 +4,12 @@ import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { Button, TextField } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
+import { useState } from 'react';
 
 export default function NewPlace({auth}) {
 
+    const [lat, setLat] = useState('');
+    const [lng, setLng] = useState('');
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
@@ -23,6 +26,18 @@ export default function NewPlace({auth}) {
         post(route('places.create'));
     };
 
+    const updateCoordinates = (latitude, longitude) => {
+        setLat(latitude);
+        setLng(longitude);
+        setData({
+            ...data, // Keep other fields intact
+            latitude: latitude,
+            longitude: longitude,
+          });
+    };
+
+    console.log('lat', lat)
+    console.log('lng', lng)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -121,7 +136,7 @@ export default function NewPlace({auth}) {
                             </form>
 
                             <br />
-                            <LeafletMap routing={false}/>
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates}/>
 
                         </div>
                     </div>

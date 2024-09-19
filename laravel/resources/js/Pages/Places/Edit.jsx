@@ -2,8 +2,13 @@ import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button } from '@mui/material';
 import { useForm } from '@inertiajs/react';
+import LeafletMap from '@/Components/LeafletMap';
+import { useState } from 'react';
 
 export default function Edit({auth, place, kids}) {
+
+    const [lat, setLat] = useState('');
+    const [lng, setLng] = useState('');
 
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
@@ -20,6 +25,16 @@ export default function Edit({auth, place, kids}) {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setData(name, type === 'radio' ? value : value);
+    };
+
+    const updateCoordinates = (latitude, longitude) => {
+        setLat(latitude);
+        setLng(longitude);
+        setData({
+            ...data, // Keep other fields intact
+            latitude: latitude,
+            longitude: longitude,
+          });
     };
 
     const handleSubmit = (e) => {
@@ -100,6 +115,10 @@ export default function Edit({auth, place, kids}) {
                                 Submeter
                             </Button>
                         </form>
+
+                        <br />
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates}/>
+
                     </div>
                 </div>
             </div>
