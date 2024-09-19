@@ -39,26 +39,19 @@ class DriverTest extends TestCase
 
     public function test_driver_edit_page_is_displayed(): void
     {
-        $user = User::factory()->create();
-
-        $driver = Driver::factory()->create([
-            'heavy_license' => '1',
-            'user_id' => $user->id,
-        ]);
+        $driver = Driver::factory()->create([]);
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/drivers/edit/{$user->id}");
+            ->get("/drivers/edit/{$driver->user_id}");
 
         $response->assertOk();
     }
 
     public function test_user_can_create_a_driver(): void
     {
-        $user = User::factory()->create();
-
         $driverData = [
-            'user_id' => $user->id,
+            'user_id' => User::factory()->create()->id,
             'heavy_license' => '1',
         ];
 
@@ -76,63 +69,57 @@ class DriverTest extends TestCase
 
     public function test_user_can_edit_a_driver(): void
     {
-        $user = User::factory()->create();
-
-        Driver::factory()->create([
-            'user_id' => $user->id,
+        $driver = Driver::factory()->create([
+            'user_id' => User::factory()->create()->id,
             'heavy_license' => '1',
         ]);
     
         $updatedData = [
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone,
+            'user_id' => $driver->user_id,
+            'name' => $driver->name,
+            'email' => $driver->email,
+            'phone' => $driver->phone,
             'status' => '1',
             'heavy_license' => '0',
         ]; 
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/drivers/edit/{$user->id}", $updatedData);
+            ->put("/drivers/edit/{$driver->user_id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/drivers');
 
         $this->assertDatabaseHas('drivers', [
-            'user_id' => $user->id,
+            'user_id' => $driver->user_id,
             'heavy_license' => '0',
         ]);
     }
 
     public function test_user_can_delete_a_driver(): void
     {
-        $user = User::factory()->create();
-
-        Driver::factory()->create([
-            'user_id' => $user->id,
+        $driver = Driver::factory()->create([
+            'user_id' => User::factory()->create()->id,
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/drivers/delete/{$user->id}");
+            ->delete("/drivers/delete/{$driver->user_id}");
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/drivers');
 
         $this->assertDatabaseMissing('drivers', [
-            'user_id' => $user->id,
+            'user_id' => $driver->user_id,
         ]);
     }
 
     public function test_driver_creation_handles_exception()
     {
-        $user = User::factory()->create();
-
         $incomingFields = [
-            'user_id' => $user->id,
+            'user_id' => User::factory()->create()->id,
             'heavy_license' => '0',
         ];
 

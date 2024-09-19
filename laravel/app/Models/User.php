@@ -52,7 +52,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function phone(): HasOne
+    public function driver(): HasOne
     {
         return $this->hasOne(Driver::class);
     }

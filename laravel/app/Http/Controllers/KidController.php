@@ -115,7 +115,7 @@ class KidController extends Controller
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso.');;
+            return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso!');;
         } catch (\Exception $e) {
             return redirect('/kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente.');
         }

@@ -17,6 +17,7 @@ class DriverFactory extends Factory
      */
     public function definition(): array
     {
+        //USER_ID ALWAYS 0 ON DRIVER FACTORY CREATION (WHEN TESTS AND OTHER FACTORIES CALL THIS)????
         return [
             'user_id' => User::factory()->state([
                 'user_type' => 'Condutor',

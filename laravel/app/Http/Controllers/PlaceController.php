@@ -9,6 +9,7 @@ use App\Models\Place;
 use Illuminate\Http\Request;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
+//TODO: UNIT TESTS WITH THE NEW AUTO COORDINATES MAP!!!
 class PlaceController extends Controller
 {
     public function index() //: Response
