@@ -12,7 +12,7 @@ const center = {
     lng: -16.9167589,
 }
 
-function Routing({ routing }) {
+function Routing({ routing, onLocationSelect }) {
     const map = useMap();
     const routingControlRef = useRef(null);
     const geocoderRef = useRef(null);
@@ -25,7 +25,16 @@ function Routing({ routing }) {
             })
                 .on('markgeocode', function (e) {
                     const latlng = e.geocode.center;
-                    L.marker(latlng).addTo(map);
+                    var marker = new L.marker(latlng, {draggable:'true'}).addTo(map);
+					marker.on('dragend', function(event){
+						var position = marker.getLatLng();
+						marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
+						map.panTo(new L.LatLng(position.lat, position.lng))
+						console.log('latlng', marker.getLatLng())
+						onLocationSelect(marker.getLatLng().lat,marker.getLatLng().lng)
+					});
+					map.addLayer(marker);
+					onLocationSelect(marker.getLatLng().lat,marker.getLatLng().lng)
                     map.setView(latlng, map.getZoom());
                 })
                 .addTo(map);
@@ -64,19 +73,19 @@ function Routing({ routing }) {
 function LocationMarker() {							//Function to get user location on map click
     const [position, setPosition] = useState(null)
     const map = useMapEvents({
-      click() {
-        map.locate()
-      },
-      locationfound(e) {
-        setPosition(e.latlng)
-        map.flyTo(e.latlng, map.getZoom())
-      },
+		click() {
+			map.locate()
+		},
+		locationfound(e) {
+			setPosition(e.latlng)
+			map.flyTo(e.latlng, map.getZoom())
+		},
     })
   
     return position === null ? null : (
-      <Marker position={position}>
-        <Popup>You are here</Popup>
-      </Marker>
+		<Marker position={position}>
+			<Popup>You are here</Popup>
+		</Marker>
     )
 }
 
@@ -116,7 +125,7 @@ function DraggableMarker() {						//Function to create dragable map
     )
 }
 
-export default function LeafletMap({ routing }) {  // routing -> activate (true) routing or not (false)
+export default function LeafletMap({ routing, onLocationSelect }) {  // routing -> activate (true) routing or not (false)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
             <TileLayer
@@ -126,9 +135,9 @@ export default function LeafletMap({ routing }) {  // routing -> activate (true)
             {/* <Marker position={[32.6443385, -16.9167589]}>
                 <Popup>Start Point</Popup>
             </Marker> */}
-            {<Routing routing={routing}/>}
+            {<Routing routing={routing} onLocationSelect={onLocationSelect}/>}
             {/* {<DraggableMarker />} */}
-            {/* <LocationMarker /> */}
+            {/* {<LocationMarker />} */}
         </MapContainer>
     );
 }
