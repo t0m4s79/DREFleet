@@ -12,6 +12,8 @@ class Driver extends Model
     use HasFactory;
 
     protected $primaryKey = 'user_id';
+    public $incrementing = false; // Disable auto-incrementing as 'user_id' is not an auto-increment column
+    protected $keyType = 'int'; // Set the key type to integer
 
     protected $fillable = [
         'user_id',
