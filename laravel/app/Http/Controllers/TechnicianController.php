@@ -109,6 +109,38 @@ class TechnicianController extends Controller
         }
     }
 
+    public function showEditTechnicianForm(User $user)
+    {
+        $kidsWithPriority1Ids = DB::table('kid_user')
+            ->where('priority', 1)
+            ->pluck('kid_id')
+            ->toArray();
+
+        $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
+
+        $userKids = $user->kids()
+            ->select('kids.id', 'kids.name', 'kid_user.priority')
+            ->get()
+            ->map(function ($kid) {
+                return [
+                    'id' => $kid->id,
+                    'name' => $kid->name,
+                    'priority' => $kid->pivot->priority,
+                ];
+            });
+
+        return Inertia::render('Technicians/Edit', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'technician' => $user,
+            'associatedKids' => $userKids,
+            'addPriority1' => $kidsNotWithPriority1,
+            'addPriority2' => Kid::all(),               //TODO: only kids not already associated with user
+        ]);
+    }
+
     public function editTechnician(User $user, Request $request)
     {
         // Load custom error messages from helper
@@ -175,38 +207,6 @@ class TechnicianController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Houve um problema ao editar os dados do técnico. Tente novamente.');
         }
-    }
-
-    public function showEditTechnicianForm(User $user)
-    {
-        $kidsWithPriority1Ids = DB::table('kid_user')
-            ->where('priority', 1)
-            ->pluck('kid_id')
-            ->toArray();
-
-        $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
-
-        $userKids = $user->kids()
-            ->select('kids.id', 'kids.name', 'kid_user.priority')
-            ->get()
-            ->map(function ($kid) {
-                return [
-                    'id' => $kid->id,
-                    'name' => $kid->name,
-                    'priority' => $kid->pivot->priority,
-                ];
-            });
-
-        return Inertia::render('Technicians/Edit', [
-            'flash' => [
-                'message' => session('message'),
-                'error' => session('error'),
-            ],
-            'technician' => $user,
-            'associatedKids' => $userKids,
-            'addPriority1' => $kidsNotWithPriority1,
-            'addPriority2' => Kid::all(),               //TODO: only kids not already associated with user
-        ]);
     }
 
     public function deleteTechnician($id)

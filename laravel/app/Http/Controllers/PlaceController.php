@@ -30,6 +30,11 @@ class PlaceController extends Controller
         ]);
     }
 
+    public function showCreatePlaceForm()
+    {
+        return Inertia::render('Places/NewPlace');
+    }
+
     public function createPlace(Request $request)
     {
         $customErrorMessages = [
@@ -67,11 +72,6 @@ class PlaceController extends Controller
         } catch (\Exception $e) {
             return redirect('places')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
-    }
-
-    public function showCreatePlaceForm()
-    {
-        return Inertia::render('Places/NewPlace');
     }
 
     public function showEditPlaceForm(Place $place)

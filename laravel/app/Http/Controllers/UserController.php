@@ -56,6 +56,11 @@ class UserController extends Controller
         }
     }
 
+    public function showEditUserForm(User $user)
+    {
+        return Inertia::render('Users/Edit', ['user' => $user]);
+    }
+    
     public function editUser(User $user, Request $request)
     {        //TODO: should phone be unique for each user???
         $incomingFields = $request->validate([
@@ -70,11 +75,6 @@ class UserController extends Controller
 
         $user->update($incomingFields);
         return redirect('/users');
-    }
-
-    public function showEditUserForm(User $user)
-    {
-        return Inertia::render('Users/Edit', ['user' => $user]);
     }
 
     public function deleteUser($id)

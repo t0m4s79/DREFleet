@@ -32,6 +32,22 @@ class KidController extends Controller
         ]);
     }
 
+    public function showCreateKidForm()
+    {
+
+        $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
+
+        // Add a new attribute for place IDs
+        $kids->transform(function ($kid) {
+            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
+            return $kid;
+        });
+
+        $places = Place::all();
+
+        return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
+    }
+    
     //TODO: more verification in each field and frontend verification messages!!!
     public function createKid(Request $request)
     {
@@ -60,22 +76,6 @@ class KidController extends Controller
         } catch (\Exception $e) {
             return redirect('kids')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
-    }
-
-    public function showCreateKidForm()
-    {
-
-        $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
-
-        // Add a new attribute for place IDs
-        $kids->transform(function ($kid) {
-            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
-            return $kid;
-        });
-
-        $places = Place::all();
-
-        return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
     }
 
     public function showEditKidForm(Kid $kid)
