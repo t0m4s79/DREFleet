@@ -14,15 +14,6 @@ class DriverController extends Controller
 {
     public function index() //: Response
     {
-        // $users = User::leftJoin('drivers', 'users.id', '=', 'drivers.user_id')
-        //         ->whereNull('drivers.user_id')
-        //         ->select('users.*')
-        //         ->get();
-
-        // $drivers = Driver::join('users', 'users.id', '=', 'drivers.user_id')
-        //         ->select('drivers.*', 'users.*')
-        //         ->get();
-
         $drivers = Driver::all();
 
         return Inertia::render('Drivers/AllDrivers', [

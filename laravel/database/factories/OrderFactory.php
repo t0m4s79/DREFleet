@@ -29,9 +29,6 @@ class OrderFactory extends Factory
         $technician = TechnicianFactory::new()->create();
         $vehicle = Vehicle::factory()->create();
         $driver = Driver::factory()->create();
-
-        //TODO:FIXED BELOW PROBLEM, SHOULD CHANGE TESTS AND OTHER CLASSES THAT CALL THE DRIVER
-        //USER_ID ALWAYS 0 ON DRIVER FACTORY CREATION (WHEN TESTS AND OTHER FACTORIES CALL IT)???? -> NEED TO USE USER FACTORY DIRECTLY
         
         $trajectory = $this->generateTrajectory($begin_latitude, $begin_longitude, $end_latitude, $end_longitude);
 
