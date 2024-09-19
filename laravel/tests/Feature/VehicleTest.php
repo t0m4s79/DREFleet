@@ -56,7 +56,7 @@ class VehicleTest extends TestCase
         $vehicleData = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => '' . rand(111111, 999999),
+            'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
             'heavy_vehicle' => rand(0, 1),
             'wheelchair_adapted' => rand(0, 1),
@@ -84,7 +84,7 @@ class VehicleTest extends TestCase
         $vehicle = Vehicle::factory()->create([
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => '' . rand(111111, 999999),
+            'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
             'heavy_vehicle' => rand(0, 1),
             'wheelchair_adapted' => rand(0, 1),
@@ -98,7 +98,7 @@ class VehicleTest extends TestCase
         $updatedData = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => '' . rand(111111, 999999),
+            'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
             'heavy_vehicle' => rand(0, 1),
             'wheelchair_adapted' => rand(0, 1),
@@ -143,7 +143,7 @@ class VehicleTest extends TestCase
         $incomingFields = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
-            'license_plate' => '' . rand(111111, 999999),
+            'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
             'heavy_vehicle' => rand(0, 1),
             'wheelchair_adapted' => rand(0, 1),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,34 +18,30 @@ class UserController extends Controller
     {
         $users = User::All();
 
-        return Inertia::render('Users/AllUsers', ['users' => $users]);
+        return Inertia::render('Users/AllUsers', [
+            'users' => $users,
+            'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+        ]);
     }
 
     public function showCreateUserForm()
     {
-        return Inertia::render('Users/NewUser');
+        return Inertia::render('Users/NewUser', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+        ]);
     }
 
     public function createUser(Request $request)
     {
-        $customErrorMessages = [
-            'name.required' => 'O campo nome é obrigatório.',
-            'name.max' => 'O campo nome não pode mais de 255 carateres',
-            'email.required' => 'O campo e-mail é obrigatório.',
-            'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
-            'email.unique' => 'Este endereço de e-mail já está em uso.',
-            'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'O campo telefone deve conter apenas números.',
-            'phone.digits_between' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-            'phone.unique' => 'Este número de telefone já está em uso.',
-            'password.required' => 'O campo senha é obrigatório.',
-            'password.confirmed' => 'As senhas não coincidem.',
-            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
-            'password.mixed_case' => 'A senha deve conter pelo menos uma letra maiúscula e uma letra minúscula.',
-            'password.numbers' => 'A senha deve conter pelo menos um número.',
-            'password.symbols' => 'A senha deve conter pelo menos um caracter especial.',
-            'password.confirmed' => 'As senhas não coincidem.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $request->merge(['email' => strtolower($request->input('email'))]);
 
         $request->validate([
@@ -70,6 +67,17 @@ class UserController extends Controller
         }
     }
 
+    public function showEditUserForm(User $user)
+    {
+        return Inertia::render('Users/Edit', [
+            'user' => $user,
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+        ]);
+    }
+
     public function editUser(User $user, Request $request)
     {        //TODO: should phone be unique for each user???
         $incomingFields = $request->validate([
@@ -86,16 +94,16 @@ class UserController extends Controller
         return redirect('/users');
     }
 
-    public function showEditScreen(User $user)
-    {
-        return Inertia::render('Users/Edit', ['user' => $user]);
-    }
-
     public function deleteUser($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+    
+            return redirect('/users')->with('message', 'Utilizador apagado com sucesso!');
 
-        return redirect('/users');
+        } catch (\Exception $e) {
+            return redirect('/users')->with('error', 'Houve um ao apagar o utilizador. Tente novamente.');
+        }
     }
 }

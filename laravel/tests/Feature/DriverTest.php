@@ -78,7 +78,7 @@ class DriverTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $driver = Driver::factory()->create([
+        Driver::factory()->create([
             'user_id' => $user->id,
             'heavy_license' => '1',
         ]);
@@ -89,7 +89,7 @@ class DriverTest extends TestCase
             'email' => $user->email,
             'phone' => $user->phone,
             'status' => '1',
-            'heavy_license' => 'Não',
+            'heavy_license' => '0',
         ]; 
         
         $response = $this

@@ -5,10 +5,11 @@ import InputError from '@/Components/InputError';
 
 export default function Edit({auth, kid, availablePlaces}) {
 
-    const [selectedAddPlaces, setSelectedAddPlaces] = useState([]);
-    const [selectedRemovePlaces, setSelectedRemovePlaces] = useState([]);
-    console.log(kid)
-
+    const [selectedAddPlaces, setSelectedAddPlaces] = useState([]);                 // state variable that holds the places to be added
+    const [selectedRemovePlaces, setSelectedRemovePlaces] = useState([]);           // state variable that holds the places to be removed
+    //console.log(kid)
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({
         name: kid.name,
         email: kid.email,
@@ -26,12 +27,14 @@ export default function Edit({auth, kid, availablePlaces}) {
         setData(name, type === 'radio' ? value : value);
     };
 
+    // Handle changes when a place is added
     const handleAddPlacesChange = (event) => {
         const newSelectedAddPlaces = event.target.value;
         setSelectedAddPlaces(newSelectedAddPlaces);
         setData('addPlaces', newSelectedAddPlaces);
     };
     
+    // Handle changes when a place is removed
     const handleRemovePlacesChange = (event) => {
         const newSelectedRemovePlaces = event.target.value;
         setSelectedRemovePlaces(newSelectedRemovePlaces);
@@ -42,14 +45,6 @@ export default function Edit({auth, kid, availablePlaces}) {
         e.preventDefault();
         put(route('kids.edit', kid.id));
     };
-
-    // const addPlaces = availablePlaces.map((availablePlace)=>(
-    //     <option key={availablePlace.id} value={availablePlace.id}>{availablePlace.id} - {availablePlace.address}</option>
-    // ));
-
-    // const removePlaces = kid.places.map((availablePlace)=>(
-    //     <option key={availablePlace.id} value={availablePlace.id}>{availablePlace.id} - {availablePlace.address}</option>
-    // ));    
 
     return(
         <AuthenticatedLayout

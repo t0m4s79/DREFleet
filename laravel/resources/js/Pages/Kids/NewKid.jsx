@@ -7,7 +7,9 @@ export default function NewKid({auth, places}) {
 
     const [kidPlaces, setKidPlaces] = useState([])
 
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
+    const { data, setData, post, errors, processing } = useForm
     ({
         wheelchair:'',
         name: '',
@@ -18,10 +20,12 @@ export default function NewKid({auth, places}) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    // Change how data is shown in the options
     const placesList = places.map((place) => {
         return {value: place.id, label: `#${place.id} - ${place.address}`}
     })
 
+    // Handle AutoComplete changes when a place is selected
     const handleChange = (event) => {
         const {
             target: { value },

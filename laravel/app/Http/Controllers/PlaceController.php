@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\Kid;
 use Inertia\Inertia;
 use App\Models\Place;
@@ -27,6 +28,11 @@ class PlaceController extends Controller
             ],
             'places' => $places
         ]);
+    }
+
+    public function showCreatePlaceForm()
+    {
+        return Inertia::render('Places/NewPlace');
     }
 
     public function createPlace(Request $request)
@@ -68,12 +74,7 @@ class PlaceController extends Controller
         }
     }
 
-    public function showCreatePlaceForm()
-    {
-        return Inertia::render('Places/NewPlace');
-    }
-
-    public function showEditScreen(Place $place)
+    public function showEditPlaceForm(Place $place)
     {
         $kids = Kid::all();
         return Inertia::render('Places/Edit', ['place' => $place, 'kids' => $kids]);
@@ -81,15 +82,8 @@ class PlaceController extends Controller
 
     public function editPlace(Place $place, Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'numeric' => 'Apenas são permitidos números.',
-            'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
-            'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
-            'latitude.regex' => 'O formato da latitude é inválido. Deve ter até 6 casas decimais.',
-            'longitude.regex' => 'O formato da longitude é inválido. Deve ter até 6 casas decimais.',
-            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
@@ -112,7 +106,7 @@ class PlaceController extends Controller
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect('/places');
+            return redirect('/places')->with('message', 'Morada editada com sucesso!');
         } catch (\Exception $e) {
             return redirect('/places')->with('error', 'Houve um problema ao editar a morada. Tente novamente.');
         }
@@ -120,9 +114,14 @@ class PlaceController extends Controller
 
     public function deletePlace($id)
     {
-        $place = Place::findOrFail($id);
-        $place->delete();
+        try {
+            $place = Place::findOrFail($id);
+            $place->delete();
 
-        return redirect('/places');
+            return redirect('/places')->with('message', 'Morada apagada com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/places')->with('error', 'Houve um problema ao apagar a morada. Tente novamente.');
+        }
     }
 }

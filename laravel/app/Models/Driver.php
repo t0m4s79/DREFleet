@@ -54,11 +54,6 @@ class Driver extends Model
         return $this->user->status;
     }
 
-    public function getHeavyLicenseAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

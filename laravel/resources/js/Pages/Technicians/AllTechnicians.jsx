@@ -19,8 +19,6 @@ export default function AllTechnicians({ auth, technicians, flash }) {
         }
     }, [flash]);
     
-    
-    console.log(technicians)
     //Deconstruct data to send to table component
     const technicianInfo = technicians.map((technician) => { 
         const techKidsPrio1Ids = technician.priority_1.length

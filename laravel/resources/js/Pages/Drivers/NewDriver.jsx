@@ -7,6 +7,8 @@ import { useState } from 'react';
 
 export default function NewDriver( {auth, users} ) {
 
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
         heavy_license: ''
@@ -15,7 +17,7 @@ export default function NewDriver( {auth, users} ) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     //console.log('users', users)
-
+    // Change how data is shown in the options
     const userList = users.map((user) => {
         return {value: user.id, label: `#${user.id} - ${user.name}`, }
     })
@@ -56,9 +58,6 @@ export default function NewDriver( {auth, users} ) {
                                     sx={{ width: 500 }}
                                 />
                                 {errors.user_id && <InputError message={errors.user_id} />}
-                                {/* <select name="user_id" id="">
-                                    {user}
-                                </select> */}
 
                                 <p>Carta de Pesados</p>
                                 <input

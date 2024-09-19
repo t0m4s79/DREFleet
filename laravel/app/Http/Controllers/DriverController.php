@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use App\Models\Driver;
 use Inertia\Inertia;
@@ -45,10 +46,8 @@ class DriverController extends Controller
 
     public function createDriver(Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'user_id.unique' => 'Este utilizador já é um condutor.'
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'user_id' => ['required', 'unique:drivers,user_id'],
@@ -75,7 +74,7 @@ class DriverController extends Controller
         }
     }
 
-    public function showEditScreen(Driver $driver): Response
+    public function showEditDriverForm(Driver $driver): Response
     {
         return Inertia::render('Drivers/Edit', [
             'driver' => $driver,
@@ -84,13 +83,9 @@ class DriverController extends Controller
 
     public function editDriver(Driver $driver, Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'email.email' => 'O email deve ser um endereço de e-mail válido.',
-            'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'Formato inválido. Apenas são permitidos números.',
-            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'user_id' => 'required',
             'heavy_license' => 'required',
@@ -106,11 +101,11 @@ class DriverController extends Controller
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
 
-        if ($incomingFields['heavy_license'] == 'Sim') {              //These if's can be taken out if heavy attribute method is taken out of the driver model
-            $incomingFields['heavy_license'] = '1';                 //but the the table will show heavy license as 0 or 1 instead of Sim ou Não
-        } else if ($incomingFields['heavy_license'] == 'Não') {
-            $incomingFields['heavy_license'] = '0';
-        }
+        // if ($incomingFields['heavy_license'] == 'Sim') {              //These if's can be taken out if heavy attribute method is taken out of the driver model
+        //     $incomingFields['heavy_license'] = '1';                 //but the the table will show heavy license as 0 or 1 instead of Sim ou Não
+        // } else if ($incomingFields['heavy_license'] == 'Não') {
+        //     $incomingFields['heavy_license'] = '0';
+        // }
 
         try {
             $driver->update([
@@ -127,20 +122,25 @@ class DriverController extends Controller
 
             return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do/a condutor/a. Tente novamente.');
+            return redirect('/drivers')->with('error', 'Houve um problema ao editar os dados do/a condutor/a. Tente novamente.');
         }
     }
 
     public function deleteDriver($id)
     {
-        $driver = Driver::findOrFail($id);
-        $driver->delete();
+        try {
+            $driver = Driver::findOrFail($id);
+            $driver->delete();
 
-        $user = User::findOrFail($id);
-        $user->update([
-            'user_type' => "Nenhum",
-        ]);
+            $user = User::findOrFail($id);
+            $user->update([
+                'user_type' => "Nenhum",
+            ]);
 
-        return redirect('/drivers');
+            return redirect('/drivers')->with('message', 'Utilizador retirado da lista de condutores com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/drivers')->with('error', 'Houve um problema ao retirar o utilizador da lista de condutores. Tente novamente.');
+        }
     }
 }

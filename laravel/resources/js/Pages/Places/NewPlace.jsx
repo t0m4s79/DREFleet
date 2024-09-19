@@ -7,7 +7,8 @@ import LeafletMap from '@/Components/LeafletMap';
 
 export default function NewPlace({auth}) {
 
-
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         address: '',
         known_as: '',

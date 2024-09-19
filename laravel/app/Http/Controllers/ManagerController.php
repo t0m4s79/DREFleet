@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -33,9 +34,12 @@ class ManagerController extends Controller
     }
 
     public function createManager(Request $request) {
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+        
         $incomingFields = $request->validate([
             'id' => ['required', 'exists:users,id'],
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['id'] = strip_tags($incomingFields['id']);
 
@@ -56,7 +60,7 @@ class ManagerController extends Controller
         }
     }
 
-    public function showEditScreen(User $user) {
+    public function showEditManagerForm(User $user) {
         return Inertia::render('Managers/Edit', [
             'flash' => [
                 'message' => session('message'),
@@ -68,12 +72,16 @@ class ManagerController extends Controller
 
     public function editManager(User $user, Request $request) {
         //dd($request);
+
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => 'required',
-        ]);
+        ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
@@ -90,17 +98,22 @@ class ManagerController extends Controller
 
             return redirect('/managers')->with('message', 'Dados do/a gestor/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do gestor. Tente novamente.');
+            return redirect('/managers')->with('error', 'Houve um problema ao editar os dados do gestor. Tente novamente.');
         }
     }
 
     public function deleteManager($id) {
-        $user = User::findOrFail($id);
-        $user->update([
-            'user_type' => "Nenhum",
-        ]);
+        try {
+            $user = User::findOrFail($id);
+            $user->update([
+                'user_type' => "Nenhum",
+            ]);
 
-        return redirect('/managers');
+            return redirect('/managers')->with('message', 'Utilizador retirado da lista de gestores com sucesso!');
+
+        } catch (\Exception $e) {
+            return redirect('/managers')->with('error', 'Houve um problema ao retirar o utilizador da lista de gestores. Tente novamente.');
+        }
     }
 
     //TODO: VERIFICATION MESSAGES

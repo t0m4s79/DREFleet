@@ -5,17 +5,14 @@ import { useForm } from '@inertiajs/react';
 
 export default function Edit({auth, place, kids}) {
 
-    // Initialize state with kid data
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({    //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
         address: place.address,
         known_as: place.known_as,
         latitude: place.coordinates.coordinates[0],
         longitude: place.coordinates.coordinates[1],
     });
-    
-    const kid = kids.map((kid)=>(
-        <option value={kid.id}>{kid.id} - {kid.name}</option>
-    ));
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 

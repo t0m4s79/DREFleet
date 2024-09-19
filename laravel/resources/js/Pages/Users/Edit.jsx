@@ -3,8 +3,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 export default function Edit({ auth, user }) {
 
-    console.log(user)
-
     // Initialize state with driver data
     const [formData, setFormData] = useState({
         name: user.name,

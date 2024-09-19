@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Vehicle;
@@ -31,20 +32,8 @@ class VehicleController extends Controller
     //TODO: more verification in each field and frontend verification messages!!!
     public function createVehicle(Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
-            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
-            'year.integer' => 'O campo ano deve ser um número inteiro.',
-            'year.digits' => 'O campo ano deve ter 4 dígitos.',
-            'heavy_vehicle.boolean' => 'O campo veículo pesado deve ser verdadeiro ou falso.',
-            'wheelchair_adapted.boolean' => 'O campo adaptação para cadeiras de rodas deve ser verdadeiro ou falso.',
-            'capacity.integer' => 'O campo capacidade deve ser um número inteiro.',
-            'capacity.min' => 'A capacidade deve ser no mínimo :min.',
-            'fuel_consumption.numeric' => 'O campo consumo deve ser um número.',
-            'status.in' => 'O campo estado deve ser um dos seguintes: ativo, inativo, manutenção.',
-            'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'make' => 'required|string|max:255',
@@ -52,7 +41,7 @@ class VehicleController extends Controller
             'license_plate' => [
                 'required',
                 'string',
-                //'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
+                'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
                 Rule::unique(Vehicle::class),
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
@@ -82,27 +71,15 @@ class VehicleController extends Controller
         return redirect('/vehicles')->with('message', 'Veículo criado com sucesso!');
     }
 
-    public function showEditScreen(Vehicle $vehicle)
+    public function showEditVehicleForm(Vehicle $vehicle)
     {
         return Inertia::render('Vehicles/Edit', ['vehicle' => $vehicle]);
     }
 
     public function editVehicle(Vehicle $vehicle, Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
-            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
-            'year.integer' => 'O campo ano deve ser um número inteiro.',
-            'year.digits' => 'O campo ano deve ter 4 dígitos.',
-            'heavy_vehicle.boolean' => 'O campo veículo pesado deve ser verdadeiro ou falso.',
-            'wheelchair_adapted.boolean' => 'O campo adaptação para cadeiras de rodas deve ser verdadeiro ou falso.',
-            'capacity.integer' => 'O campo capacidade deve ser um número inteiro.',
-            'capacity.min' => 'A capacidade deve ser no mínimo :min.',
-            'fuel_consumption.numeric' => 'O campo consumo deve ser um número.',
-            'status.in' => 'O campo estado deve ser um dos seguintes: ativo, inativo, manutenção.',
-            'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'make' => 'required|string|max:255',
@@ -110,7 +87,7 @@ class VehicleController extends Controller
             'license_plate' => [
                 'required',
                 'string',
-                //'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
+                'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
                 Rule::unique('vehicles')->ignore($vehicle->id), // Unique rule that ignores the current vehicle's ID during editing
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
@@ -152,15 +129,20 @@ class VehicleController extends Controller
             $vehicle->update($incomingFields);
             return redirect('/vehicles')->with('message', 'Dados do veículo editados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('kids')->with('error', 'Houve um problema ao editar os dados do veículo. Tente novamente.');
+            return redirect('/vehicles')->with('error', 'Houve um problema ao editar os dados do veículo. Tente novamente.');
         }
     }
 
     public function deleteVehicle($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
-        $vehicle->delete();
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->delete();
+    
+            return redirect('/vehicles')->with('message', 'Veículo apagado com sucesso!');
 
-        return redirect('/vehicles');
+        } catch (\Exception $e) {
+            return redirect('/vehicles')->with('error', 'Houve um problema ao apagar o veículo. Tente novamente.');
+        }
     }
 }
