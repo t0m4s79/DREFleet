@@ -37,21 +37,14 @@ class PlaceController extends Controller
 
     public function createPlace(Request $request)
     {
-        $customErrorMessages = [
-            'required' => 'Este campo é obrigatório.',
-            'numeric' => 'Apenas são permitidos números.',
-            'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
-            'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
-            'latitude.regex' => 'O formato da latitude é inválido. Deve ter até 6 casas decimais.',
-            'longitude.regex' => 'O formato da longitude é inválido. Deve ter até 6 casas decimais.',
-            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
-        ];
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,6}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
@@ -88,8 +81,8 @@ class PlaceController extends Controller
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,6}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
