@@ -74,7 +74,7 @@ class PlaceController extends Controller
         return Inertia::render('Places/NewPlace');
     }
 
-    public function showEditScreen(Place $place)
+    public function showEditPlaceForm(Place $place)
     {
         $kids = Kid::all();
         return Inertia::render('Places/Edit', ['place' => $place, 'kids' => $kids]);
