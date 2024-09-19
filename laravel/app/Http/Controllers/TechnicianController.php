@@ -177,7 +177,7 @@ class TechnicianController extends Controller
         }
     }
 
-    public function showEditScreen(User $user)
+    public function showEditTechnicianForm(User $user)
     {
         $kidsWithPriority1Ids = DB::table('kid_user')
             ->where('priority', 1)

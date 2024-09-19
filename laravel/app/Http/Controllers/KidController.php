@@ -78,7 +78,7 @@ class KidController extends Controller
         return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
     }
 
-    public function showEditScreen(Kid $kid)
+    public function showEditKidForm(Kid $kid)
     {
 
         $kidPlaces = $kid->places;                                                  //Given kid places

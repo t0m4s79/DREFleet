@@ -72,7 +72,7 @@ class UserController extends Controller
         return redirect('/users');
     }
 
-    public function showEditScreen(User $user)
+    public function showEditUserForm(User $user)
     {
         return Inertia::render('Users/Edit', ['user' => $user]);
     }

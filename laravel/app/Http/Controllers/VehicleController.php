@@ -71,7 +71,7 @@ class VehicleController extends Controller
         return redirect('/vehicles')->with('message', 'Veículo criado com sucesso!');
     }
 
-    public function showEditScreen(Vehicle $vehicle)
+    public function showEditVehicleForm(Vehicle $vehicle)
     {
         return Inertia::render('Vehicles/Edit', ['vehicle' => $vehicle]);
     }
