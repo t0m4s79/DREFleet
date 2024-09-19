@@ -98,7 +98,7 @@ class ManagerController extends Controller
 
             return redirect('/managers')->with('message', 'Dados do/a gestor/a atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do gestor. Tente novamente.');
+            return redirect('/managers')->with('error', 'Houve um problema ao editar os dados do gestor. Tente novamente.');
         }
     }
 

@@ -106,7 +106,7 @@ class PlaceController extends Controller
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect('/places');
+            return redirect('/places')->with('message', 'Morada editada com sucesso!');
         } catch (\Exception $e) {
             return redirect('/places')->with('error', 'Houve um problema ao editar a morada. Tente novamente.');
         }

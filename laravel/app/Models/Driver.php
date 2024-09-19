@@ -52,9 +52,4 @@ class Driver extends Model
     {
         return $this->user->status;
     }
-
-    public function getHeavyLicenseAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
 }

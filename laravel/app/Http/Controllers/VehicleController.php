@@ -129,7 +129,7 @@ class VehicleController extends Controller
             $vehicle->update($incomingFields);
             return redirect('/vehicles')->with('message', 'Dados do veículo editados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('kids')->with('error', 'Houve um problema ao editar os dados do veículo. Tente novamente.');
+            return redirect('/vehicles')->with('error', 'Houve um problema ao editar os dados do veículo. Tente novamente.');
         }
     }
 

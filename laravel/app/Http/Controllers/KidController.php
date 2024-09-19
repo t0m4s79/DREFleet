@@ -47,7 +47,7 @@ class KidController extends Controller
 
         return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
     }
-    
+
     //TODO: more verification in each field and frontend verification messages!!!
     public function createKid(Request $request)
     {
@@ -117,7 +117,7 @@ class KidController extends Controller
             $kid->places()->detach($removePlaces);
             return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso.');;
         } catch (\Exception $e) {
-            return redirect('kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente.');
+            return redirect('/kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente.');
         }
     }
 
