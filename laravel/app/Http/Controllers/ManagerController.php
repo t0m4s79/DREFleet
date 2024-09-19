@@ -34,9 +34,12 @@ class ManagerController extends Controller
     }
 
     public function createManager(Request $request) {
+        // Load custom error messages from helper
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+        
         $incomingFields = $request->validate([
             'id' => ['required', 'exists:users,id'],
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['id'] = strip_tags($incomingFields['id']);
 
@@ -74,11 +77,11 @@ class ManagerController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => 'required',
-        ]);
+        ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);

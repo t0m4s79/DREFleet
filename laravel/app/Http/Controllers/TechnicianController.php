@@ -76,7 +76,7 @@ class TechnicianController extends Controller
             'id' => ['required', 'exists:users,id'],
             'kidsList1' => 'array',
             'kidsList2' => 'array',
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['id'] = strip_tags($incomingFields['id']);
 
@@ -115,16 +115,16 @@ class TechnicianController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
         $incomingFields = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => 'required',
             'addPriority1' => 'array',
             'removePriority1' => 'array',
             'addPriority2' => 'array',
             'removePriority2' => 'array',
             'changePriority' => 'array',
-        ]);
+        ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
