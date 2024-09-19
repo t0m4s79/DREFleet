@@ -61,7 +61,7 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return redirect('/users')->with('message', 'Utilizador criada com sucesso!');;
+            return redirect('/users')->with('message', 'Utilizador criada com sucesso!');
         } catch (\Exception $e) {
             return redirect('users')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
         }
@@ -87,14 +87,20 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)], // Ignore current user's email,
             'phone' => ['required', 'numeric', 'digits_between:9,15', Rule::unique('users', 'phone')->ignore($user->id)],
+            'status' => 'required',
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['phone'] = strip_tags($incomingFields['phone']);
+        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
-        $user->update($incomingFields);
-        return redirect('/users');
+        try {
+            $user->update($incomingFields);
+            return redirect('/users')->with('message', 'Dados do/a Utilizador/a atualizados com sucesso!');
+        } catch (\Exception $e) {
+            return redirect('users')->with('error', 'Houve um problema ao utilizador os dados do/a Utilizador/a. Tente novamente.');
+        }
     }
 
     public function deleteUser($id)
