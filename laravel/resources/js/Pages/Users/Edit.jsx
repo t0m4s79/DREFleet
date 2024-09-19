@@ -68,6 +68,15 @@ export default function Edit({ auth, user }) {
                                 className="mt-1 block w-full"
                             /><br/>
 
+                            <label htmlFor="phone">Estado</label><br/>
+                            <select name="statis" id="cars">
+                                <option value="Disponível">Disponível</option>
+                                <option value="Indisponível">Indisponível</option>
+                                <option value="Em Serviço">Em Serviço</option>
+                                <option value="Escondido">Escondido</option>
+                            </select>
+                            <br /> <br />
+
                             <p><button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Submeter</button></p>
 
 

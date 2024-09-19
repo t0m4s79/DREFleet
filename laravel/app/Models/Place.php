@@ -16,7 +16,7 @@ class Place extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        //'id',                 //TODO:NEEDED?
         'address',
         'known_as',
         'coordinates',

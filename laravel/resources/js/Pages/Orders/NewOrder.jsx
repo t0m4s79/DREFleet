@@ -3,7 +3,13 @@ import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderIndex({auth}) {
+export default function OrderIndex({auth, drivers, vehicles, technicians, managers}) {
+
+    console.log(drivers);
+    console.log(vehicles);
+    console.log(technicians);
+    console.log(managers);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -14,7 +20,7 @@ export default function OrderIndex({auth}) {
         
             <div className="m-auto py-12 w-4/5">
                 <div className="overflow-hidden shadow-lg sm:rounded-lg">
-                    <LeafletMap routing={true}/>
+                    <LeafletMap routing={true} />
                 </div>
             </div>
         </AuthenticatedLayout>

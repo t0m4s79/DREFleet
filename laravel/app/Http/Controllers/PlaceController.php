@@ -70,7 +70,7 @@ class PlaceController extends Controller
 
             return redirect('/places')->with('message', 'Morada criada com sucesso!');;
         } catch (\Exception $e) {
-            return redirect('places')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
+            return redirect('/places')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
     }
 

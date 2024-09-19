@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Database\Factories\ManagerFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -75,7 +76,7 @@ class ManagerTest extends TestCase
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
-            'status' => '1',
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
         ]; 
         
         $response = $this

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Kid;
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Database\Factories\TechnicianFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -76,7 +77,7 @@ class TechnicianTest extends TestCase
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
-            'status' => '1',
+            'status' =>  Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
         ]; 
         
         $response = $this

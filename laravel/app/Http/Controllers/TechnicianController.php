@@ -66,7 +66,6 @@ class TechnicianController extends Controller
         ]);
     }
 
-    //TODO: PRIORITY 1 VERIFICATION
     public function createTechnician(Request $request)
     {
         // Load custom error messages from helper

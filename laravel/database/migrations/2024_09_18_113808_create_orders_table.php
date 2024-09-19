@@ -21,7 +21,7 @@ return new class extends Migration
             $table->geography('begin_coordinates', subtype: 'point', srid: 4326);
             $table->geography('end_coordinates', subtype: 'point', srid: 4326);;
             $table->json('trajectory');
-            $table->dateTime('approved_date');
+            $table->dateTime('approved_date')->nullable();
 
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
@@ -29,9 +29,11 @@ return new class extends Migration
             $table->unsignedBigInteger('driver_id');
             $table->foreign('driver_id')->references('user_id')->on('drivers')->onDelete('cascade');
 
-            $table->unsignedBigInteger('manager_id');
+            $table->unsignedBigInteger('manager_id')->nullable();
             $table->foreign('manager_id')->references('id')->on('users')->onDelete('cascade');
 
+            $table->unsignedBigInteger('technician_id');
+            $table->foreign('technician_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
