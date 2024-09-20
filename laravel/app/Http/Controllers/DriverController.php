@@ -21,7 +21,7 @@ class DriverController extends Controller
                 'message' => session('message'),
                 'error' => session('error'),
             ],
-            'drivers' => $drivers
+            'drivers' => $drivers,
         ]);
     }
 
@@ -55,13 +55,13 @@ class DriverController extends Controller
                 return redirect('/drivers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores.');
             }
 
-            Driver::create($incomingFields);
+            $driver = Driver::create($incomingFields);
             $user->update([
                 'user_type' => "Condutor",
             ]);
-            return redirect('/drivers')->with('message', 'Condutor/a criado/a com sucesso!');
+            return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
-            return redirect('drivers')->with('error', 'Houve um problema ao criar o condutor. Tente novamente.');
+            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
         }
     }
 
@@ -111,9 +111,9 @@ class DriverController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
-            return redirect('/drivers')->with('message', 'Dados do/a Condutor/a atualizados com sucesso!');
+            return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/drivers')->with('error', 'Houve um problema ao editar os dados do/a condutor/a. Tente novamente.');
+            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
         }
     }
 
@@ -128,10 +128,10 @@ class DriverController extends Controller
                 'user_type' => "Nenhum",
             ]);
 
-            return redirect('/drivers')->with('message', 'Utilizador retirado da lista de condutores com sucesso!');
+            return redirect()->route('drivers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/drivers')->with('error', 'Houve um problema ao retirar o utilizador da lista de condutores. Tente novamente.');
+            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }
     }
 }

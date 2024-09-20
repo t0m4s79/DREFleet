@@ -17,10 +17,11 @@ class ErrorMessagesHelper
             'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
             'phone.unique' => 'Este número de telefone já está em uso.',
             'numeric' => 'Apenas são permitidos números.',
+            // Places
             'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
             'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
-            'latitude.regex' => 'O formato da latitude é inválido. Deve ter até 6 casas decimais.',
-            'longitude.regex' => 'O formato da longitude é inválido. Deve ter até 6 casas decimais.',
+            'latitude.regex' => 'O formato da latitude é inválido. Deve ter 1 a 10 casas decimais.',
+            'longitude.regex' => 'O formato da longitude é inválido. Deve ter 1 a 10 casas decimais.',
             'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
             // Name
             'name.required' => 'O campo nome é obrigatório.',
@@ -37,7 +38,7 @@ class ErrorMessagesHelper
             'password.numbers' => 'A senha deve conter pelo menos um número.',
             'password.symbols' => 'A senha deve conter pelo menos um caracter especial.',
             'password.confirmed' => 'As senhas não coincidem.',
-            // Vehicle related
+            // Vehicles
             'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
             'year.integer' => 'O campo ano deve ser um número inteiro.',

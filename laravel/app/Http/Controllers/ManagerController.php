@@ -46,7 +46,7 @@ class ManagerController extends Controller
         $user = User::find($incomingFields['id']);
 
         if ($user->user_type != 'Nenhum') {
-            return redirect('/managers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos.');
+            return redirect('/managers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em gestores.');
         }
 
         try {
@@ -54,9 +54,9 @@ class ManagerController extends Controller
                 'user_type' => "Gestor",
             ]);
 
-            return redirect('/managers')->with('message', 'Gestor/a criado/a com sucesso!');
+            return redirect()->route('managers.index')->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
-            return redirect('managers')->with('error', 'Houve um problema ao criar o gestor. Tente novamente.');
+            return redirect()->route('managers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de gestores. Tente novamente.');
         }
     }
 
@@ -96,9 +96,9 @@ class ManagerController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
-            return redirect('/managers')->with('message', 'Dados do/a gestor/a atualizados com sucesso!');
+            return redirect()->route('managers.index')->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/managers')->with('error', 'Houve um problema ao editar os dados do gestor. Tente novamente.');
+            return redirect()->route('managers.index')->with('error', 'Houve um problema ao atualizar os dados do gestor com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -109,28 +109,14 @@ class ManagerController extends Controller
                 'user_type' => "Nenhum",
             ]);
 
-            return redirect('/managers')->with('message', 'Utilizador retirado da lista de gestores com sucesso!');
+            return redirect()->route('managers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/managers')->with('error', 'Houve um problema ao retirar o utilizador da lista de gestores. Tente novamente.');
+            return redirect()->route('managers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
         }
     }
 
     //TODO: VERIFICATION MESSAGES
-
-    //TODO: MANAGER TESTS
-
-    //TODO: ORDER TESTS
-
-    //TODO: REFACTOR ERROR MESSAGES IN BACKEND TO A COMMON FUNCTION INSTEAD OF REPEATING IN EVERY CRUD FUNCTION
-
-    //TODO: :attribute IN PORTUGUESE!!!
-
-    //TODO: JSX COMMENTS!!!!!!!!!!!!!
-
-    //TODO: CHANGE ORDER OF EDIT FUNCTIONS IN CONTROLLERS
-
-    //TODO: DELETE FUNCTIONS SNACK BAR MESSAGE
 
     //TODO: MANAGERS FRONTEND TABLE SHOULD HAVE LINK FOR ALL APPROVED ORDERS BY HIM
 

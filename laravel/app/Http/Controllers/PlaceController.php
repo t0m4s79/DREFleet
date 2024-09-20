@@ -9,7 +9,6 @@ use App\Models\Place;
 use Illuminate\Http\Request;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
-//TODO: UNIT TESTS WITH THE NEW AUTO COORDINATES MAP!!!
 class PlaceController extends Controller
 {
     public function index() //: Response
@@ -56,15 +55,15 @@ class PlaceController extends Controller
         $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
 
         try {
-            Place::create([
+            $place = Place::create([
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect('/places')->with('message', 'Morada criada com sucesso!');;
+            return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');;
         } catch (\Exception $e) {
-            return redirect('/places')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
+            return redirect()->route('places.index')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
     }
 
@@ -100,9 +99,9 @@ class PlaceController extends Controller
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect('/places')->with('message', 'Morada editada com sucesso!');
+            return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/places')->with('error', 'Houve um problema ao editar a morada. Tente novamente.');
+            return redirect()->route('places.index')->with('error', 'Houve um problema ao atualizar os dados da morada com id ' . $place->id . '. Tente novamente.');
         }
     }
 
@@ -112,10 +111,10 @@ class PlaceController extends Controller
             $place = Place::findOrFail($id);
             $place->delete();
 
-            return redirect('/places')->with('message', 'Morada apagada com sucesso!');
+            return redirect()->route('places.index')->with('message', 'Morada com id ' . $id . ' apagada com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/places')->with('error', 'Houve um problema ao apagar a morada. Tente novamente.');
+            return redirect()->route('places.index')->with('error', 'Houve um problema ao apagar a morada com id ' . $id . '. Tente novamente.');
         }
     }
 }

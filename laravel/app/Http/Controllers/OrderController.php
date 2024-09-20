@@ -54,7 +54,6 @@ class OrderController extends Controller
     }
 
     //TODO: CHECK IF TECHNICIAN IS IN FACT TECHNICIAN AND NOT ANOTHER TYPE OF USER
-    //TODO: CHECK IF ADDRESSES ARE VALID/EXIST
     //TODO: CAN DRIVER/VEHICLE BE NULL??
     //TODO: UNIT TESTS!!!
     //TODO: FRONTEND BACKEND-> STYLE AND VERIFICATION
@@ -66,11 +65,11 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'vehicle_id' => ['required','exists:vehicles,id'],
@@ -95,7 +94,7 @@ class OrderController extends Controller
         $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
 
         try {
-            Order::create([
+            $order = Order::create([
                 'begin_address' => $incomingFields['begin_address'],
                 'end_address' => $incomingFields['end_address'],
                 'begin_date' => $incomingFields['begin_date'],
@@ -108,11 +107,11 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect('/orders')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');;
 
         } catch (\Exception $e) {
             Log::error($e);  // Log the error for debugging
-            return redirect('/orders/create')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
 
@@ -145,11 +144,11 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,6}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'vehicle_id' => ['required','exists:vehicles,id'],
@@ -187,10 +186,10 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect('/orders')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Dados do pedido com id ' . $order->id . ' atualizados com sucesso!');;
 
         } catch (\Exception $e) {
-            return redirect('/orders')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao atualizar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -200,10 +199,10 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
-            return redirect('/orders')->with('message', 'Pedido apagado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao tentar apagar o pedido com id ' . $id . '. Tente novamente.');
         }
     }
 
@@ -223,10 +222,10 @@ class OrderController extends Controller
                 'approved_date' => $currentDate,
             ]);
 
-            return redirect('/orders')->with('message', 'Dados do pedido atualizados com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id .' aprovado com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/orders')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao tentar aprovar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 

@@ -29,7 +29,6 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/NewVehicle');
     }
 
-    //TODO: more verification in each field and frontend verification messages!!!
     public function createVehicle(Request $request)
     {
         // Load custom error messages from helper
@@ -66,9 +65,13 @@ class VehicleController extends Controller
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
         $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
 
+        try {
+            $vehicle = Vehicle::create($incomingFields);
+            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
 
-        Vehicle::create($incomingFields);
-        return redirect('/vehicles')->with('message', 'Veículo criado com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+        }
     }
 
     public function showEditVehicleForm(Vehicle $vehicle)
@@ -127,9 +130,9 @@ class VehicleController extends Controller
 
         try {
             $vehicle->update($incomingFields);
-            return redirect('/vehicles')->with('message', 'Dados do veículo editados com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Dados do veículocom id ' . $vehicle->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/vehicles')->with('error', 'Houve um problema ao editar os dados do veículo. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao atualizar os dados do veículo com id ' . $vehicle->id . '. Tente novamente.');
         }
     }
 
@@ -139,10 +142,10 @@ class VehicleController extends Controller
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
     
-            return redirect('/vehicles')->with('message', 'Veículo apagado com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/vehicles')->with('error', 'Houve um problema ao apagar o veículo. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
         }
     }
 }

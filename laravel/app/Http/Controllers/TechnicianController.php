@@ -102,9 +102,9 @@ class TechnicianController extends Controller
             $user->kids()->attach($kidsList1, ['priority' => 1]);
             $user->kids()->attach($kidsList2, ['priority' => 2]);
 
-            return redirect('/technicians')->with('message', 'Técnico/a criado/a com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
-            return redirect('technicians')->with('error', 'Houve um problema ao criar o técnico. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de técnicos. Tente novamente.');
         }
     }
 
@@ -115,7 +115,11 @@ class TechnicianController extends Controller
             ->pluck('kid_id')
             ->toArray();
 
+        //Kids that still dont have a priority 1 technician
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
+
+        //Every kid except for the ones already associated with the given technician
+        $addPriority2 = Kid::whereNotIn('id', $user->kids()->pluck('kids.id')->toArray())->get();
 
         $userKids = $user->kids()
             ->select('kids.id', 'kids.name', 'kid_user.priority')
@@ -136,7 +140,7 @@ class TechnicianController extends Controller
             'technician' => $user,
             'associatedKids' => $userKids,
             'addPriority1' => $kidsNotWithPriority1,
-            'addPriority2' => Kid::all(),               //TODO: only kids not already associated with user
+            'addPriority2' => $addPriority2,
         ]);
     }
 
@@ -202,9 +206,9 @@ class TechnicianController extends Controller
                 $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
             }
 
-            return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao editar os dados do técnico. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -219,10 +223,10 @@ class TechnicianController extends Controller
             $user->kids()->detach();
 
 
-            return redirect('/technicians')->with('message', 'Utilizador retirado da lista de técnicos com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao retirar o utilizador da lista de técnicos. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de técnicos. Tente novamente.');
         }
     }
 }
