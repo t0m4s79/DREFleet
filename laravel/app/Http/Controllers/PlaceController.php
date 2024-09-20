@@ -70,7 +70,7 @@ class PlaceController extends Controller
     public function showEditPlaceForm(Place $place)
     {
         $kids = Kid::all();
-        return Inertia::render('Places/Edit', ['place' => $place, 'kids' => $kids]);
+        return Inertia::render('Places/EditPlace', ['place' => $place, 'kids' => $kids]);
     }
 
     public function editPlace(Place $place, Request $request)

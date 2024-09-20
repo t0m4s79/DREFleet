@@ -12,29 +12,48 @@ const center = {
     lng: -16.9167589,
 }
 
+const boundsSouthWestCorner = [32.269181, -17.735033];
+const boundsNorthEastCorner = [33.350247, -15.861279];
+
 function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
     const map = useMap();
     const routingControlRef = useRef(null);
     const geocoderRef = useRef(null);
 
     useEffect(() => {
+		// Define the bounds (southwest and northeast corners)
+        const bounds = L.latLngBounds(
+            boundsSouthWestCorner, // Southwest corner
+            boundsNorthEastCorner  // Northeast corner
+        );
+
+        // Set max bounds to restrict map area
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
+        });
+
         // Add the geocoder control (it will always be present)
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({
-                defaultMarkGeocode: false
+                defaultMarkGeocode: false,
+				geocodingQueryParams: {
+                    countrycodes: 'pt', // Still restrict by country if necessary
+                    bounded: 1,
+                    viewbox: `${boundsSouthWestCorner[1]},${boundsSouthWestCorner[0]},${boundsNorthEastCorner[1]},${boundsNorthEastCorner[0]}`
+                }
             })
-                .on('markgeocode', function (e) {
+            .on('markgeocode', function (e) {
                     const latlng = e.geocode.center;
                     var marker = new L.marker(latlng, {draggable:'true'}).addTo(map);
 					marker.on('dragend', function(event){
 						var position = marker.getLatLng();
 						marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
 						map.panTo(new L.LatLng(position.lat, position.lng))
-						console.log('latlng', marker.getLatLng())
 						onLocationSelect(marker.getLatLng().lat,marker.getLatLng().lng)
 					});
 					map.addLayer(marker);
-					onLocationSelect(marker.getLatLng().lat,marker.getLatLng().lng)
+					onLocationSelect(marker.getLatLng().lat,marker.getLatLng().lng);
                     map.setView(latlng, map.getZoom());
                 })
                 .addTo(map);
@@ -47,7 +66,11 @@ function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
                     serviceUrl: `https://router.project-osrm.org/route/v1`, //TODO: route instructions to Portuguese
                 }),
                 geocoder: L.Control.Geocoder.nominatim({
-					geocodingQueryParams: {countrycodes: 'pt'}
+					geocodingQueryParams: {
+                        countrycodes: 'pt', // Still restrict by country
+                        bounded: 1,
+                        viewbox: `${boundsSouthWestCorner[1]},${boundsSouthWestCorner[0]},${boundsNorthEastCorner[1]},${boundsNorthEastCorner[0]}`
+                    }
 				}),
                 language: 'pt',
             }).addTo(map);

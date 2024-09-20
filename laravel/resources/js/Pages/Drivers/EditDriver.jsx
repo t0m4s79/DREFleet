@@ -4,7 +4,7 @@ import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel
 import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
-export default function Edit({ auth, driver }) {
+export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
     // Inertia's built-in useForm hook to manage form data, actions, errors

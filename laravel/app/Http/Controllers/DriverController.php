@@ -67,7 +67,7 @@ class DriverController extends Controller
 
     public function showEditDriverForm(Driver $driver): Response
     {
-        return Inertia::render('Drivers/Edit', [
+        return Inertia::render('Drivers/EditDriver', [
             'driver' => $driver,
         ]);
     }

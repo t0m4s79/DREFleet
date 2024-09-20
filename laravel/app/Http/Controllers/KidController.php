@@ -85,7 +85,7 @@ class KidController extends Controller
         $associatedPlaceIds = $kid->places->pluck('id');
         $availablePlaces = Place::whereNotIn('id', $associatedPlaceIds)->get();     //Places that dont belong to given kid
 
-        return Inertia::render('Kids/Edit', ['kid' => $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
+        return Inertia::render('Kids/EditKid', ['kid' => $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
     }
 
     public function editKid(Kid $kid, Request $request)

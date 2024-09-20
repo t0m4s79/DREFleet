@@ -5,7 +5,7 @@ import { useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
 
-export default function Edit({auth, place, kids}) {
+export default function EditPlace({auth, place, kids}) {
 
     const [lat, setLat] = useState('');
     const [lng, setLng] = useState('');

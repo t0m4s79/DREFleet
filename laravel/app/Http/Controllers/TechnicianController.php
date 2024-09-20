@@ -132,7 +132,7 @@ class TechnicianController extends Controller
                 ];
             });
 
-        return Inertia::render('Technicians/Edit', [
+        return Inertia::render('Technicians/EditTechnician', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),

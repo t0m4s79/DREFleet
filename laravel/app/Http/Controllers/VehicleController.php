@@ -76,7 +76,7 @@ class VehicleController extends Controller
 
     public function showEditVehicleForm(Vehicle $vehicle)
     {
-        return Inertia::render('Vehicles/Edit', ['vehicle' => $vehicle]);
+        return Inertia::render('Vehicles/EditVehicle', ['vehicle' => $vehicle]);
     }
 
     public function editVehicle(Vehicle $vehicle, Request $request)
