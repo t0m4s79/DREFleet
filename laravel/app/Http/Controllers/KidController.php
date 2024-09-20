@@ -48,7 +48,6 @@ class KidController extends Controller
         return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
     }
 
-    //TODO: more verification in each field and frontend verification messages!!!
     public function createKid(Request $request)
     {
         // Load custom error messages from helper

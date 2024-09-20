@@ -115,7 +115,11 @@ class TechnicianController extends Controller
             ->pluck('kid_id')
             ->toArray();
 
+        //Kids that still dont have a priority 1 technician
         $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
+
+        //Every kid except for the ones already associated with the given technician
+        $addPriority2 = Kid::whereNotIn('id', $user->kids()->pluck('kids.id')->toArray())->get();
 
         $userKids = $user->kids()
             ->select('kids.id', 'kids.name', 'kid_user.priority')
@@ -136,7 +140,7 @@ class TechnicianController extends Controller
             'technician' => $user,
             'associatedKids' => $userKids,
             'addPriority1' => $kidsNotWithPriority1,
-            'addPriority2' => Kid::all(),               //TODO: only kids not already associated with user
+            'addPriority2' => $addPriority2,
         ]);
     }
 
