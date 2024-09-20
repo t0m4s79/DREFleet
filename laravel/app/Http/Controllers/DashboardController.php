@@ -12,7 +12,7 @@ class DashboardController extends Controller
     public function index(){
         $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
-        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível');
+        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
 
         return Inertia::render('Dashboard', [
             // 'flash' => [

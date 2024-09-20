@@ -48,14 +48,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditKidForm'])->name('kids.showEdit');
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
-
-    //ORDERS (MAPS)
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
-    Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
-    Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEditOrder');
-    Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
-    Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
     Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
@@ -64,6 +56,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
     Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
     Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
+
+    //ORDERS (MAPS)
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
+    Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
+    Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEditOrder');
+    Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
+    Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
+    Route::put('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');

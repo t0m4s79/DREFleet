@@ -85,7 +85,7 @@ class PlaceTest extends TestCase
     }
 
 
-    public function test_user_can_edit_n_place(): void
+    public function test_user_can_edit_a_place(): void
     {
         $place = Place::factory()->create();
     
