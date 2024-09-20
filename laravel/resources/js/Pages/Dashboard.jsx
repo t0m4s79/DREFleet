@@ -1,12 +1,22 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
-    console.log(drivers);
-    console.log(tehcnicians);
-    console.log(vehicles);
+export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[] }) {
+    
+    console.log('drivers', drivers);
+    console.log('technicians', technicians);
+    console.log('vehicles', vehicles);
+
+    // const availableDrivers = drivers.map((driver)=> {   
+    //     if(driver.status == "Disponível") {
+    //         return driver
+    //     } else {
+    //         return 0;
+    //     }
+    // })
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -30,19 +40,26 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
 
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
                                 >
-                                Condutores em Serviço
+                                    Condutores em Serviço
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
-                                </AccordionDetails>
+                                    {drivers.filter(driver => driver.status === 'Em Serviço').length > 0 ? (
+                                        drivers.filter(driver => driver.status === 'Em Serviço').map(driver => (
+                                            <div>
+                                                <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
+                                                    #{driver.id} - {driver.name}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum condutor em serviço.</div>
+                                    )}
+                                </AccordionDetails>   
+
                             </Accordion>
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
@@ -53,12 +70,18 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
                                 Condutores Disponíveis
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
-                                </AccordionDetails>
+                                    {drivers.filter(driver => driver.status === 'Disponível').length > 0 ? (
+                                        drivers.filter(driver => driver.status === 'Disponível').map(driver => (
+                                            <div>
+                                                <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
+                                                    #{driver.id} - {driver.name}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum condutor disponível.</div>
+                                    )}
+                                </AccordionDetails>   
                             </Accordion>
                         </div>
                     </div>
@@ -71,19 +94,26 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
 
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
                                 >
                                 Técnicos em Serviço
                                 </AccordionSummary>
+
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
-                                </AccordionDetails>
+                                    {technicians.filter(technician => technician.status === 'Em Serviço').length > 0 ? (
+                                        technicians.filter(technician => technician.status === 'Em Serviço').map(technician => (
+                                            <div>
+                                                <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
+                                                    #{technician.id} - {technician.name}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum técnico em serviço.</div>
+                                    )}
+                                </AccordionDetails>   
                             </Accordion>
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
@@ -94,11 +124,17 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
                                 Técnicos Disponíveis
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {technicians.filter(technician => technician.status === 'Disponível').length > 0 ? (
+                                        technicians.filter(technician => technician.status === 'Disponível').map(technician => (
+                                            <div>
+                                                <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
+                                                    #{technician.id} - {technician.name}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum técnico disponível.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
                         </div>
@@ -112,18 +148,24 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
 
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header"
                                 >
                                 Veículos em Serviço
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {vehicles.filter(vehicle => vehicle.status === 'Em Serviço').length > 0 ? (
+                                        vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => (
+                                            <div>
+                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
+                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum veículo em serviço.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
                             <Accordion style={{boxShadow: 'none'}}>
@@ -135,11 +177,17 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
                                 Veículos Disponíveis
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {vehicles.filter(vehicle => vehicle.status === 'Disponível').length > 0 ? (
+                                        vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => (
+                                            <div>
+                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
+                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum veículo disponível.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -152,11 +200,17 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
                                 Veículos em Manutenção
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {vehicles.filter(vehicle => vehicle.status === 'Em Manutenção').length > 0 ? (
+                                        vehicles.filter(vehicle => vehicle.status === 'Em Manutenção').map(vehicle => (
+                                            <div>
+                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
+                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum veículo em Manutenção.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
                         </div>
