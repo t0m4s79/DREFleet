@@ -35,19 +35,51 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                         <input type="text" id="begin_address" name="begin_address"/><br/>
 
                         <label htmlFor="begin_latitude">Latitude da Origem</label><br />
-                        <input type="number" id="begin_latitude" name="begin_latitude"/><br/>
+                        <input 
+                            type="number" 
+                            id="begin_latitude" 
+                            name="begin_latitude" 
+                            min="-90" 
+                            max="90" 
+                            step="0.0000000001"
+                            required 
+                        /><br/>
 
-                        <label htmlFor="begin_longitude">Longitude da Origem</label><br/>
-                        <input type="number" id="begin_longitude" name="begin_longitude"/><br/>
+                        <label htmlFor="begin_longitude">Longitude da Origem</label><br />
+                        <input 
+                            type="number" 
+                            id="begin_longitude" 
+                            name="begin_longitude" 
+                            min="-180" 
+                            max="180" 
+                            step="0.0000000001"
+                            required 
+                        /><br/>
 
                         <label htmlFor="end_address">Morada do Destino</label><br/>
                         <input type="text" id="end_address" name="end_address"/><br/>
 
-                        <label htmlFor="end_latitude">Latitude do Destino</label><br/>
-                        <input type="number" id="end_latitude" name="end_latitude"/><br/>
+                        <label htmlFor="end_latitude">Latitude da Origem</label><br />
+                        <input 
+                            type="number" 
+                            id="end_latitude" 
+                            name="end_latitude" 
+                            min="-90" 
+                            max="90" 
+                            step="0.0000000001"
+                            required 
+                        /><br/>
 
-                        <label htmlFor="end_longitude">Longitude do Destino</label><br/>
-                        <input type="number" id="end_longitude" name="end_longitude"/><br/>
+                        <label htmlFor="end_longitude">Longitude da Origem</label><br />
+                        <input 
+                            type="number" 
+                            id="end_longitude" 
+                            name="end_longitude" 
+                            min="-180" 
+                            max="180" 
+                            step="0.0000000001"
+                            required 
+                        /><br/>
 
                         <label htmlFor="begin_date">Data e Hora de Início</label><br/>
                         <input type="datetime-local" id="begin_date" name="begin_date"/><br/>
