@@ -16,7 +16,7 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedido #{order.id}</h2>}
         >
 
             <Head title="Pedidos" />

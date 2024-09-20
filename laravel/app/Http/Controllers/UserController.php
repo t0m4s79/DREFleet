@@ -52,7 +52,7 @@ class UserController extends Controller
         ], $customErrorMessages);
 
         try {
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -61,9 +61,9 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return redirect('/users')->with('message', 'Utilizador criada com sucesso!');
+            return redirect()->route('users.index')->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
         } catch (\Exception $e) {
-            return redirect('users')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
+            return redirect()->route('users.index')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
         }
     }
 
@@ -97,9 +97,9 @@ class UserController extends Controller
 
         try {
             $user->update($incomingFields);
-            return redirect('/users')->with('message', 'Dados do/a Utilizador/a atualizados com sucesso!');
+            return redirect()->route('users.index')->with('message', 'Dados do/a utilizador/a com id ' . $user->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('users')->with('error', 'Houve um problema ao utilizador os dados do/a Utilizador/a. Tente novamente.');
+            return redirect()->route('users.index')->with('error', 'Houve um problema ao atualizar os dados do utilizador com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -109,10 +109,10 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
     
-            return redirect('/users')->with('message', 'Utilizador apagado com sucesso!');
+            return redirect()->route('users.index')->with('message', 'Utilizador com ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/users')->with('error', 'Houve um ao apagar o utilizador. Tente novamente.');
+            return redirect()->route('users.index')->with('error', 'Houve um  problema ao eliminar os dados do utilizador com id ' . $id . '. Tente novamente.');
         }
     }
 }

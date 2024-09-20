@@ -102,9 +102,9 @@ class TechnicianController extends Controller
             $user->kids()->attach($kidsList1, ['priority' => 1]);
             $user->kids()->attach($kidsList2, ['priority' => 2]);
 
-            return redirect('/technicians')->with('message', 'Técnico/a criado/a com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
-            return redirect('technicians')->with('error', 'Houve um problema ao criar o técnico. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de técnicos. Tente novamente.');
         }
     }
 
@@ -206,9 +206,9 @@ class TechnicianController extends Controller
                 $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
             }
 
-            return redirect('/technicians')->with('message', 'Dados do/a técnico/a atualizados com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao editar os dados do técnico. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -223,10 +223,10 @@ class TechnicianController extends Controller
             $user->kids()->detach();
 
 
-            return redirect('/technicians')->with('message', 'Utilizador retirado da lista de técnicos com sucesso!');
+            return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao retirar o utilizador da lista de técnicos. Tente novamente.');
+            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de técnicos. Tente novamente.');
         }
     }
 }

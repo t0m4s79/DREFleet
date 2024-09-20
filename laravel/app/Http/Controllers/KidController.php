@@ -71,9 +71,9 @@ class KidController extends Controller
         try {
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
-            return redirect()->route('kids.index')->with('message', 'Criança criada com sucesso!');
+            return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
         } catch (\Exception $e) {
-            return redirect('kids')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
 
@@ -114,9 +114,9 @@ class KidController extends Controller
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect('/kids')->with('message', 'Dados da criança #' . $kid->id . ' editados com sucesso!');;
+            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');;
         } catch (\Exception $e) {
-            return redirect('/kids')->with('error', 'Houve um problema ao editar os dados da criança. Tente novamente.');
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
 
@@ -126,10 +126,10 @@ class KidController extends Controller
             $kid = Kid::findOrFail($id);
             $kid->delete();
 
-            return redirect('/kids')->with('message', 'Criança apagada com sucesso!');
+            return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
-            return redirect('/kids')->with('error', 'Houve um problema ao apagar a criança. Tente novamente.');
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }
 }

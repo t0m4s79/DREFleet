@@ -15,10 +15,10 @@ class DashboardController extends Controller
         $vehicles = Vehicle::whereNot('status','Escondido');
 
         return Inertia::render('Dashboard', [
-            'flash' => [
-                'message' => session('message'),
-                'error' => session('error'),
-            ],
+            // 'flash' => [
+            //     'message' => session('message'),
+            //     'error' => session('error'),
+            // ],
             'drivers' => $drivers,
             'technicians' => $technicians,
             'vehicles' => $vehicles,
