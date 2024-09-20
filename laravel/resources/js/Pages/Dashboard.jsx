@@ -228,7 +228,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 aria-controls="panel1-content"
                                 id="panel1-header"
                                 >
-                                Viagens em Curso
+                                Pedidos em Curso
                                 </AccordionSummary>
                                 <AccordionDetails>
                                 <ul className="px-4" style={{listStyleType: 'disc'}}>
@@ -238,13 +238,31 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 </ul>
                                 </AccordionDetails>
                             </Accordion>
+
                             <Accordion style={{boxShadow: 'none'}}>
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
                                 id="panel2-header"
                                 >
-                                Viagens Agendadas
+                                Pedidos Agendados
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                <ul className="px-4" style={{listStyleType: 'disc'}}>
+                                    <li>Coffee</li>
+                                    <li>Tea</li>
+                                    <li>Milk</li>
+                                </ul>
+                                </AccordionDetails>
+                            </Accordion>
+
+                            <Accordion style={{boxShadow: 'none'}}>
+                                <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel2-content"
+                                id="panel2-header"
+                                >
+                                Pedidos por Aprovar
                                 </AccordionSummary>
                                 <AccordionDetails>
                                 <ul className="px-4" style={{listStyleType: 'disc'}}>
