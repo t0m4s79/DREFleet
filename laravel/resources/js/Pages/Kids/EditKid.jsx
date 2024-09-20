@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
-export default function Edit({auth, kid, availablePlaces}) {
+export default function EditKid({auth, kid, availablePlaces}) {
 
     const [selectedAddPlaces, setSelectedAddPlaces] = useState([]);                 // state variable that holds the places to be added
     const [selectedRemovePlaces, setSelectedRemovePlaces] = useState([]);           // state variable that holds the places to be removed

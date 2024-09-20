@@ -69,7 +69,7 @@ class UserController extends Controller
 
     public function showEditUserForm(User $user)
     {
-        return Inertia::render('Users/Edit', [
+        return Inertia::render('Users/EditUser', [
             'user' => $user,
             'flash' => [
                 'message' => session('message'),

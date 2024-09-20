@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Grid } from '@mui/material';
 import { useForm } from '@inertiajs/react';
 
-export default function Edit({ auth, vehicle}) {
+export default function EditVehicle({ auth, vehicle}) {
 
     const { data, setData, put, processing, errors } = useForm({
         make: vehicle.make,

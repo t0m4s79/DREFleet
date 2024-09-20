@@ -61,7 +61,7 @@ class ManagerController extends Controller
     }
 
     public function showEditManagerForm(User $user) {
-        return Inertia::render('Managers/Edit', [
+        return Inertia::render('Managers/EditManager', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),

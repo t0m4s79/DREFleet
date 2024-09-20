@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { useForm } from '@inertiajs/react';
 
-export default function Edit({ auth, user }) {
+export default function EditUser({ auth, user }) {
 
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
@@ -45,7 +45,7 @@ export default function Edit({ auth, user }) {
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
-                                error={!!errors.name}
+                                error={Boolean(errors.name)}
                                 helperText={errors.name}
                             />
 

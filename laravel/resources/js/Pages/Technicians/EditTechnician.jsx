@@ -3,7 +3,7 @@ import { Snackbar, Alert, Checkbox, FormControl, InputLabel, ListItemText, MenuI
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useForm } from '@inertiajs/react';
 
-export default function Edit({ auth, technician, associatedKids, addPriority1, addPriority2, flash}) {
+export default function EditTechnician({ auth, technician, associatedKids, addPriority1, addPriority2, flash}) {
     
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
