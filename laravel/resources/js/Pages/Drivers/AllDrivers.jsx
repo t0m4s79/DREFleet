@@ -47,7 +47,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
 
                     <Button href={route('drivers.create')}>
                         <AddIcon />
-                        <a  className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <a  className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Condutor
                         </a>
                     </Button>

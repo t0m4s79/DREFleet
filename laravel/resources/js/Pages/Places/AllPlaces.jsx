@@ -53,7 +53,7 @@ export default function AllPlaces( {auth, places, flash} ) {
 
                     <Button href={route('places.create')}>
                         <AddIcon />
-                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Nova Morada
                         </a>
                     </Button>
