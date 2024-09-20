@@ -159,7 +159,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                         vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => (
                                             <div>
                                                 <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                 </a>
                                             </div>
                                         ))
@@ -181,7 +181,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                         vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => (
                                             <div>
                                                 <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                 </a>
                                             </div>
                                         ))
@@ -204,7 +204,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                         vehicles.filter(vehicle => vehicle.status === 'Em Manutenção').map(vehicle => (
                                             <div>
                                                 <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.license_plate}
+                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                 </a>
                                             </div>
                                         ))
