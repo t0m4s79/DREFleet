@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button } from '@mui/material';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
 
@@ -15,8 +15,8 @@ export default function EditPlace({auth, place, kids}) {
     const { data, setData, put, errors, processing } = useForm({    //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
         address: place.address,
         known_as: place.known_as,
-        latitude: place.coordinates.coordinates[0],
-        longitude: place.coordinates.coordinates[1],
+        latitude: place.coordinates.coordinates[1],
+        longitude: place.coordinates.coordinates[0],
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -41,7 +41,6 @@ export default function EditPlace({auth, place, kids}) {
         e.preventDefault();
         put(route('places.edit', place.id));
     };
-    
 
     return(
         <AuthenticatedLayout
@@ -49,7 +48,7 @@ export default function EditPlace({auth, place, kids}) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Morada #{place.id}</h2>}
         >
 
-            {/*<Head title={'Morada'} />*/}
+            {/*<Head title={'Moradas'} />*/}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -107,7 +106,7 @@ export default function EditPlace({auth, place, kids}) {
 
                             <Button
                                 type="submit"
-                                variant="contained"
+                                variant="outlined"
                                 color="primary"
                                 disabled={processing}
                                 sx={{ mt: 3 }}
@@ -117,7 +116,7 @@ export default function EditPlace({auth, place, kids}) {
                         </form>
 
                         <br />
-                            <LeafletMap routing={false} onLocationSelect={updateCoordinates}/>
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: data.latitude, lng: data.longitude}} edditing={true}/>
 
                     </div>
                 </div>

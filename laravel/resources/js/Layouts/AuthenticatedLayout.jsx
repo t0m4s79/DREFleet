@@ -20,7 +20,7 @@ export default function Authenticated({ user, header, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 md:flex">
                                 <NavLink href={route('dashboard.index')} active={route().current('dashboard.index')}>
                                     Painel de Controlo
                                 </NavLink>
@@ -116,7 +116,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
+                        <div className="hidden md:flex sm:items-center sm:ms-6">
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
@@ -183,6 +183,34 @@ export default function Authenticated({ user, header, children }) {
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('dashboard.index')} active={route().current('dashboard.index')}>
                             Painel de Controlo
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
+                            Veículos
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('users.index')} active={route().current('users.index')}>
+                            Todos os Utilizadores
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('drivers.index')} active={route().current('drivers.index')}>
+                            Condutores
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('technicians.index')} active={route().current('technicians.index')}>
+                            Técnicos
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('managers.index')} active={route().current('managers.index')}>
+                            Gestores
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('kids.index')} active={route().current('kids.index')}>
+                            Crianças
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink href={route('places.index')} active={route().current('places.index')}>
+                            Moradas
                         </ResponsiveNavLink>
                     </div>
 

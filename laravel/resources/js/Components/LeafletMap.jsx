@@ -124,50 +124,84 @@ function LocationMarker() {							//Function to get user location on map click
     )
 }
 
-function DraggableMarker() {						//Function to create dragable map
-    const [draggable, setDraggable] = useState(false)
-    const [position, setPosition] = useState(center)
-    const markerRef = useRef(null)
+function EditMarker({ initialPos, onPositionChange }) {
+    const [draggable, setDraggable] = useState(false);
+    const [position, setPosition] = useState(initialPos);
+    const markerRef = useRef(null);
+    const map = useMap(); // Get the map instance
+    const geocoderRef = useRef(null); // To ensure geocoder is only added once
+
     const eventHandlers = useMemo(
-      () => ({
-        dragend() {
-          const marker = markerRef.current
-          if (marker != null) {
-            setPosition(marker.getLatLng())
-          }
-        },
-      }),
-      [],
-    )
+        () => ({
+            dragend() {
+                const marker = markerRef.current;
+                if (marker != null) {
+                    setPosition(marker.getLatLng());
+                    // Update the form coordinates with the new marker position
+                    onPositionChange(marker.getLatLng().lat, marker.getLatLng().lng);
+                }
+            },
+        }),
+        [onPositionChange]
+    );
+
     const toggleDraggable = useCallback(() => {
-      setDraggable((d) => !d)
-    }, [])
-  
+        setDraggable((d) => !d);
+    }, []);
+
+    useEffect(() => {
+        // Add geocoder search bar only for the edit page
+        if (!geocoderRef.current) {
+            geocoderRef.current = L.Control.geocoder({
+                defaultMarkGeocode: false
+            })
+                .once('markgeocode', function (e) {
+                    const latlng = e.geocode.center;
+                    setPosition(latlng);
+                    map.setView(latlng, map.getZoom());
+                    // Update the form coordinates with the geocoder result
+                    onPositionChange(latlng.lat, latlng.lng);
+                })
+                .addTo(map);
+        }
+
+        // Cleanup geocoder on unmount
+        return () => {
+            if (geocoderRef.current) {
+                map.removeControl(geocoderRef.current);
+                geocoderRef.current = null;
+            }
+        };
+    }, [map, onPositionChange]);
+
     return (
-      <Marker
-        draggable={draggable}
-        eventHandlers={eventHandlers}
-        position={position}
-        ref={markerRef}>
-        <Popup minWidth={90}>
-          <span onClick={toggleDraggable}>
-            {draggable
-              ? 'Marker is draggable'
-              : 'Click here to make marker draggable'}
-          </span>
-        </Popup>
-      </Marker>
-    )
+        <Marker
+            draggable={draggable}
+            eventHandlers={eventHandlers}
+            position={position}
+            ref={markerRef}
+        >
+            <Popup minWidth={90}>
+                <span onClick={toggleDraggable}>
+                    {draggable
+                        ? 'Pode arrastar o marcador'
+                        : 'Clique aqui para arrastar o marcador'}
+                </span>
+            </Popup>
+        </Marker>
+    );
 }
 
-export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange}) {  // routing -> activate (true) routing or not (false)
+export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange, initialPosition, edditing}) {  // routing -> activate (true) routing or not (false)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {<Routing routing={routing} onLocationSelect={onLocationSelect} onTrajectoryChange={onTrajectoryChange} />}
+            {routing && <Routing routing={routing} onLocationSelect={onLocationSelect} onTrajectoryChange={onTrajectoryChange} />}
+
+            {edditing && <EditMarker initialPos={initialPosition} onPositionChange={onLocationSelect} />}
         </MapContainer>
     );
 }
