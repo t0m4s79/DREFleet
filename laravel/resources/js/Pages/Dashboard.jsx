@@ -159,23 +159,6 @@ export default function Dashboard({ auth, drivers, tehcnicians, vehicles }) {
                                 </ul>
                                 </AccordionDetails>
                             </Accordion>
-
-                            <Accordion style={{boxShadow: 'none'}}>
-                                <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header"
-                                >
-                                Veículos Indisponíveis
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
-                                </AccordionDetails>
-                            </Accordion>
                         </div>
                     </div>
                 </div>
