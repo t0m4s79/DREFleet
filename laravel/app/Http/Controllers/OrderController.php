@@ -91,7 +91,7 @@ class OrderController extends Controller
         
         try {
             $user = User::find($request->input('technician_id'));
-            if (!$user || $user->user_type !== 'Tecnico') {     //TODO: ADD THIS ERRORS TO FRONT-END INSTEAD OF REDIRECTING
+            if (!$user || $user->user_type !== 'Técnico') {     //TODO: ADD THIS ERRORS TO FRONT-END INSTEAD OF REDIRECTING
                 throw ValidationException::withMessages([       //TODO: Check this code and unit tests
                     'O valor do campo selecionado para o técnico é inválido. Tente novamente.'
                 ]);
@@ -185,7 +185,7 @@ class OrderController extends Controller
 
         try {
             $user = User::find($request->input('technician_id'));
-            if (!$user || $user->user_type !== 'Tecnico') {
+            if (!$user || $user->user_type !== 'Técnico') {
                 throw ValidationException::withMessages([       //TODO: Check this code
                     'technician_id' => ['O valor do campo selecionado para o técnico é inválido. Tente novamente.']
                 ]);
