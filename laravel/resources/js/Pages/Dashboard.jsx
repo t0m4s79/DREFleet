@@ -42,7 +42,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
-                                    id="panel1-header"
+                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Condutores em Serviço
                                 </AccordionSummary>
@@ -65,7 +65,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Condutores Disponíveis
                                 </AccordionSummary>
@@ -96,7 +96,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
-                                    id="panel1-header"
+                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Técnicos em Serviço
                                 </AccordionSummary>
@@ -119,7 +119,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Técnicos Disponíveis
                                 </AccordionSummary>
@@ -150,7 +150,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
-                                    id="panel1-header"
+                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Veículos em Serviço
                                 </AccordionSummary>
@@ -172,7 +172,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Veículos Disponíveis
                                 </AccordionSummary>
@@ -195,7 +195,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Veículos em Manutenção
                                 </AccordionSummary>
@@ -226,7 +226,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1-content"
-                                id="panel1-header"
+                                id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Pedidos em Curso
                                 </AccordionSummary>
@@ -243,7 +243,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Pedidos Agendados
                                 </AccordionSummary>
@@ -260,7 +260,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel2-content"
-                                id="panel2-header"
+                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                 Pedidos por Aprovar
                                 </AccordionSummary>
