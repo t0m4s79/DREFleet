@@ -13,6 +13,7 @@ use Carbon\Traits\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 //TODO: ARE MANAGERS NEEDED IN EDIT/NEW?
@@ -53,8 +54,6 @@ class OrderController extends Controller
         ]);
     }
 
-    //TODO: CHECK IF TECHNICIAN IS IN FACT TECHNICIAN AND NOT ANOTHER TYPE OF USER
-    //TODO: CHECK IF ADDRESSES ARE VALID/EXIST
     //TODO: CAN DRIVER/VEHICLE BE NULL??
     //TODO: FRONTEND BACKEND-> STYLE AND VERIFICATION
     //TODO: CUSTOM ERROR MESSAGES
@@ -89,10 +88,26 @@ class OrderController extends Controller
         $incomingFields['driver_id'] = strip_tags($incomingFields['driver_id']);
         $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
-        $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);            $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
+        $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
         $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
-
+        
         try {
+            $user = User::find($request->input('technician_id'));
+            if (!$user || $user->user_type !== 'Tecnico') {     //TODO: ADD THIS ERRORS TO FRONT-END INSTEAD OF REDIRECTING
+                throw ValidationException::withMessages([       //TODO: Check this code and unit tests
+                    'O valor do campo selecionado para o técnico é inválido. Tente novamente.'
+                ]);
+            }
+
+            $vehicle = Vehicle::find($request->input('vehicle_id'));
+            $driver = Driver::find($request->input('driver_id'));
+
+            if ($vehicle->heavy_vehicle == '1' && $driver->heavy_license == '0') {
+                throw ValidationException::withMessages([
+                    'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                ]);
+            }
+
             Order::create([
                 'begin_address' => $incomingFields['begin_address'],
                 'end_address' => $incomingFields['end_address'],
@@ -106,11 +121,14 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect('/orders')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
+
+        } catch (ValidationException $e) {
+            return redirect()->route('orders.create')->withErrors($e->validator)->withInput();
 
         } catch (\Exception $e) {
             Log::error($e);  // Log the error for debugging
-            return redirect('/orders/create')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
 
@@ -168,6 +186,22 @@ class OrderController extends Controller
         $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
         try {
+            $user = User::find($request->input('technician_id'));
+            if (!$user || $user->user_type !== 'Tecnico') {
+                throw ValidationException::withMessages([       //TODO: Check this code
+                    'technician_id' => ['O valor do campo selecionado para o técnico é inválido. Tente novamente.']
+                ]);
+            }
+
+            $vehicle = Vehicle::find($request->input('vehicle_id'));
+            $driver = Driver::find($request->input('driver_id'));
+
+            if ($vehicle->heavy_vehicle == '1' && $driver->heavy_license == '0') {
+                throw ValidationException::withMessages([
+                    'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                ]);
+            }
+            
             $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
             $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
 
@@ -184,10 +218,13 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect('/orders')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
 
+        }  catch (ValidationException $e) {
+            return redirect()->route('orders.create')->with('error', 'O valor do campo selecionado para o técnico é inválido. Tente novamente.');
+        
         } catch (\Exception $e) {
-            return redirect('/orders')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
 
@@ -197,10 +234,10 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
-            return redirect('/orders')->with('message', 'Pedido apagado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido apagado com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/technicians')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
         }
     }
 
@@ -221,10 +258,10 @@ class OrderController extends Controller
                 'approved_date' => $currentDate,
             ]);
 
-            return redirect('/orders')->with('message', 'Dados do pedido atualizados com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Dados do pedido atualizados com sucesso!');
 
         } catch (\Exception $e) {
-            return redirect('/orders')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
         }
     }
 
