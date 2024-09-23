@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Log;
 use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ErrorMessagesHelper;
 
 class TechnicianController extends Controller
 {
@@ -201,12 +202,18 @@ class TechnicianController extends Controller
             $user->kids()->detach($removePriority2);
 
             foreach ($changePriority as $kidId) {
-                $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
-                $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
-                $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
+                try {               
+                    $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
+                    $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
+                    $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
+                
+                } catch (\Exception $e) {
+                    Log::debug($e);
+                    return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados das prioriadades do técnico com id ' . $user->id . '. Tente novamente.');
+                }
             }
-
             return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
+            
         } catch (\Exception $e) {
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
         }
