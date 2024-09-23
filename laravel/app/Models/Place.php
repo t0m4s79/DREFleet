@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Kid;
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -28,5 +29,10 @@ class Place extends Model
     public function kids(): BelongsToMany
     {
         return $this->belongsToMany(Kid::class, 'kid_place', 'place_id', 'kid_id')->withTimestamps();
+    }
+
+    public function orderStops(): HasMany
+    {
+        return $this->hasMany(OrderStop::class);
     }
 }

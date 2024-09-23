@@ -38,8 +38,7 @@ class OrderController extends Controller
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
-        $managers = User::where('user_type', 'Gestor')->get();
-        $kids = Kid::all();
+        $kids = Kid::with('places')->get();
 
         return Inertia::render('Orders/NewOrder', [
             'flash' => [
@@ -49,7 +48,6 @@ class OrderController extends Controller
             'drivers' => $drivers,
             'vehicles' => $vehicles,
             'technicians' => $technicians,
-            'managers' => $managers,
             'kids' => $kids,
         ]);
     }
@@ -139,7 +137,7 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
-        $kids = Kid::all();
+        $kids = Kid::with('places')->get();
 
         return Inertia::render('Orders/EditOrder', [
             'flash' => [
@@ -264,5 +262,4 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
         }
     }
-
 }
