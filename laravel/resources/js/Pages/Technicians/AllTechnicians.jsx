@@ -62,7 +62,7 @@ export default function AllTechnicians({ auth, technicians, flash }) {
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <Button href={route('technicians.create')} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                         <AddIcon />
-                        <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Técnico
                         </a>
                     </Button>
