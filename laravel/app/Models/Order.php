@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
@@ -31,4 +33,28 @@ class Order extends Model
         'begin_coordinates' => Point::class,
     ];
     
+    public function orderStops(): HasMany
+    {
+        return $this->hasMany(OrderStop::class);
+    }
+
+    public function vehicle(): BelongsTo
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
+
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function technician(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(Driver::class);
+    }
 }
