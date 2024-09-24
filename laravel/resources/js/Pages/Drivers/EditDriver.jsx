@@ -26,9 +26,15 @@ export default function EditDriver({ auth, driver }) {
         const { name, value, type, checked } = e.target;
         setData(name, type === 'radio' ? value : value);
     };
+
+    const handleHeavyChange = () => {
+        if(data.heavy_license != 1)
+            setData('heavy_license_type', null)
+    }
     
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         put(route('drivers.edit', driver.user_id));
     };
 
@@ -111,7 +117,7 @@ export default function EditDriver({ auth, driver }) {
                             </FormControl>
                             <br/>
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
                                 <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
                                 <RadioGroup
                                     name="heavy_license_type"
