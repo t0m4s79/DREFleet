@@ -32,20 +32,20 @@ class Vehicle extends Model
         'updated_at',
     ];
 
-    public function getHeavyVehicleAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
+    // public function getHeavyVehicleAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
 
-    public function getWheelchairAdaptedAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
+    // public function getWheelchairAdaptedAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
 
-    public function getWheelchairCertifiedAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
+    // public function getWheelchairCertifiedAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
 
     public function orders(): HasMany
     {

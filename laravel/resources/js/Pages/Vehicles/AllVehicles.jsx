@@ -21,6 +21,26 @@ export default function AllVehicles( {auth, vehicles, flash}) {
 
     //console.log('vehicles', vehicles)
 
+    const vehicleInfo = vehicles.map((vehicle) => {
+        return {
+            id: vehicle.id,
+            make: vehicle.make,
+            model: vehicle.model,
+            license_plate: vehicle.license_plate,
+            year: vehicle.year,
+            heavy_vehicle: vehicle.heavy_vehicle ? 'Sim' : 'Não',
+            heavy_type: vehicle.heavy_type,
+            wheelchair_adapted: vehicle.wheelchair_adapted ? 'Sim' : 'Não' ,
+            wheelchair_certified: vehicle.wheelchair_certified ? 'Sim' : 'Não',
+            capacity: vehicle.capacity,
+            fuel_consumption: vehicle.fuel_consumption,
+            status: vehicle.status,
+            current_month_fuel_requests: vehicle.current_month_fuel_requests,
+            fuel_type: vehicle.fuel_type,
+            current_kilometrage: vehicle.current_kilometrage,
+        }
+    })
+
     const VehicleColumnLabels = {
         id: 'ID',
         make: 'Marca',
@@ -57,7 +77,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                     </Button>
 
                     <Table
-                        data={vehicles}
+                        data={vehicleInfo}
                         columnsLabel={VehicleColumnLabels}
                         editAction="vehicles.showEdit"
                         deleteAction="vehicles.delete"
