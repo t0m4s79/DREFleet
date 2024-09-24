@@ -70,7 +70,9 @@ class KidController extends Controller
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
@@ -111,7 +113,9 @@ class KidController extends Controller
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
             return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');;
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
@@ -125,6 +129,7 @@ class KidController extends Controller
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }

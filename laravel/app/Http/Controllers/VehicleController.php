@@ -118,7 +118,9 @@ class VehicleController extends Controller
         try {
             $vehicle->update($incomingFields);
             return redirect()->route('vehicles.index')->with('message', 'Dados do veículocom id ' . $vehicle->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao atualizar os dados do veículo com id ' . $vehicle->id . '. Tente novamente.');
         }
     }
@@ -132,6 +134,7 @@ class VehicleController extends Controller
             return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
         }
     }

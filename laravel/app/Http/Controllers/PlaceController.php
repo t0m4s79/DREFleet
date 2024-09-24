@@ -60,7 +60,9 @@ class PlaceController extends Controller
             ]);
 
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');;
+       
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
     }
@@ -96,7 +98,9 @@ class PlaceController extends Controller
             ]);
 
             return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao atualizar os dados da morada com id ' . $place->id . '. Tente novamente.');
         }
     }
@@ -110,6 +114,7 @@ class PlaceController extends Controller
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $id . ' apagada com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao apagar a morada com id ' . $id . '. Tente novamente.');
         }
     }

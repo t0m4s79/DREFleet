@@ -112,10 +112,11 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
 
         } catch (ValidationException $e) {
+            dd($e);
             return redirect()->route('orders.create')->withErrors($e->validator)->withInput();
 
         } catch (\Exception $e) {
-            Log::error($e);  // Log the error for debugging
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
@@ -200,9 +201,11 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
 
         }  catch (ValidationException $e) {
+            dd($e);
             return redirect()->route('orders.create')->with('error', 'O valor do campo selecionado para o técnico é inválido. Tente novamente.');
         
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
@@ -216,6 +219,7 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido apagado com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
         }
     }
@@ -238,6 +242,7 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Dados do pedido atualizados com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
         }
     }
