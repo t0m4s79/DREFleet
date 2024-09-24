@@ -17,7 +17,8 @@ class Driver extends Model
 
     protected $fillable = [
         'user_id',
-        'heavy_license'
+        'heavy_license',
+        'heavy_license_type',
     ];
 
     protected $appends = [

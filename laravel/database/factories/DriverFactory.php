@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,12 +18,15 @@ class DriverFactory extends Factory
      */
     public function definition(): array
     {
-        //USER_ID ALWAYS 0 ON DRIVER FACTORY CREATION (WHEN TESTS AND OTHER FACTORIES CALL THIS)????
+        $heavyLicense = fake()->boolean();;
+        $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         return [
             'user_id' => User::factory()->state([
                 'user_type' => 'Condutor',
             ]),
-            'heavy_license' => fake()->boolean(),
+            'heavy_license' => $heavyLicense,
+            'heavy_license_type' => $heavyLicenseType,
         ];    
     }
 }

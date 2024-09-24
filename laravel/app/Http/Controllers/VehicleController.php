@@ -46,7 +46,7 @@ class VehicleController extends Controller
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
-            'heavy_type' => 'required_if:heavy_vehicle,1', // Required only if heavy_vehicle is 1
+            'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
             'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
@@ -63,11 +63,7 @@ class VehicleController extends Controller
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
-        } 
-        else {
-            $incomingFields['heavy_type'] = strip_tags($incomingFields['heavy_type']);
-        } 
-
+        }
 
         try {
             $vehicle = Vehicle::create($incomingFields);
@@ -100,7 +96,7 @@ class VehicleController extends Controller
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
-            'heavy_type' => 'required_if:heavy_vehicle,1', // Required only if heavy_vehicle is 1
+            'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null ,'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
             'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
@@ -118,9 +114,6 @@ class VehicleController extends Controller
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
         } 
-        else {
-            $incomingFields['heavy_type'] = strip_tags($incomingFields['heavy_type']);
-        }
 
         try {
             $vehicle->update($incomingFields);

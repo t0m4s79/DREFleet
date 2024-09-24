@@ -40,7 +40,12 @@ class DriverController extends Controller
         $incomingFields = $request->validate([
             'user_id' => ['required', 'unique:drivers,user_id', 'numeric'],
             'heavy_license' => ['required', 'boolean'],
+            'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
         ], $customErrorMessages);
+
+        if($incomingFields['heavy_license'] == '0') {
+            $incomingFields['heavy_license_type'] = null;
+        } 
 
         try {
             $user = User::findOrFail($incomingFields['user_id']);
@@ -69,12 +74,14 @@ class DriverController extends Controller
 
     public function editDriver(Driver $driver, Request $request)
     {
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'user_id' => 'required',
             'heavy_license' => ['required', 'boolean'],
+            'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'name' => 'required|string|max:255',
             'email' => ['required', 'email'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
@@ -83,6 +90,10 @@ class DriverController extends Controller
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
+
+        if($incomingFields['heavy_license'] == '0') {
+            $incomingFields['heavy_license_type'] = null;
+        } 
 
         try {
             $driver->update([

@@ -51,9 +51,13 @@ class DriverTest extends TestCase
 
     public function test_user_can_create_a_driver(): void
     {
+        $heavyLicense = fake()->boolean();;
+        $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         $driverData = [
             'user_id' => User::factory()->create()->id,
-            'heavy_license' => fake()->boolean(),
+            'heavy_license' => $heavyLicense,
+            'heavy_license_type' => $heavyLicenseType
         ];
 
         $response = $this
@@ -70,18 +74,25 @@ class DriverTest extends TestCase
 
     public function test_user_can_edit_a_driver(): void
     {
+        $heavyLicense = fake()->boolean();;
+        $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         $driver = Driver::factory()->create([
             'user_id' => User::factory()->create()->id,
             'heavy_license' => '1',
         ]);
     
+        $newHeavyLicense = fake()->boolean();;
+        $newHeavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         $updatedData = [
             'user_id' => $driver->user_id,
             'name' => $driver->name,
             'email' => $driver->email,
             'phone' => $driver->phone,
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
-            'heavy_license' => '0',
+            'heavy_license' => $newHeavyLicense,
+            'heavy_license_type' => $newHeavyLicenseType,
         ]; 
         
         $response = $this
