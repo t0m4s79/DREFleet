@@ -26,8 +26,14 @@ export default function EditVehicle({ auth, vehicle}) {
         setData(e.target.name, e.target.value);
     };
 
+    const handleHeavyChange = () => {
+        if(data.heavy_vehicle != 1)
+            setData('heavy_type', null)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         put(route('vehicles.edit', vehicle.id)); // assuming you have a named route 'vehicles.update'
     };
 
@@ -97,7 +103,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                         <FormLabel component="legend">Veículo Pesado?</FormLabel>
                                         <RadioGroup
                                             name="heavy_vehicle"
-                                            value={data.heavy_vehicle == "Sim" ? 1 : 0}
+                                            value={data.heavy_vehicle}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
@@ -106,7 +112,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                     </FormControl>
                                 </Grid>
 
-                                <FormControl component="fieldset" margin="normal">
+                                <FormControl component="fieldset" margin="normal" disabled={data.heavy_vehicle == '0'}>
                                     <FormLabel component="legend">Tipo de Pesado</FormLabel>
                                     <RadioGroup
                                         name="heavy_type"
@@ -123,7 +129,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                         <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
-                                            value={data.wheelchair_adapted == "Sim" ? 1 : 0}
+                                            value={data.wheelchair_adapted}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
@@ -137,7 +143,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                         <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_certified"
-                                            value={data.wheelchair_certified == "Sim" ? 1 : 0}
+                                            value={data.wheelchair_certified}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
