@@ -79,6 +79,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //ROUTES
+    Route::get('/routes', [RouteController::class, 'index'])->name('routes.index');
+
     //USERS
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.create');
