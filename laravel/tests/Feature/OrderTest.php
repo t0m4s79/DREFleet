@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+//TODO: THROW EXCEPTION ERRORS
 class OrderTest extends TestCase
 {
     protected $user;
@@ -78,6 +79,8 @@ class OrderTest extends TestCase
         $endLatitude = fake()->latitude();
         $endLongitude = fake()->longitude();
 
+
+
         $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
         $orderData = [
@@ -91,7 +94,7 @@ class OrderTest extends TestCase
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -159,7 +162,7 @@ class OrderTest extends TestCase
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -231,7 +234,7 @@ class OrderTest extends TestCase
         $endLongitude = fake()->longitude();
 
         $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
-     
+
         $incomingFields = [
             'trajectory' => json_encode($trajectory),
             'begin_address' => fake()->address(),
@@ -243,7 +246,7 @@ class OrderTest extends TestCase
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];        

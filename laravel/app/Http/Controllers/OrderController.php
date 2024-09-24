@@ -61,11 +61,11 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'vehicle_id' => ['required','exists:vehicles,id'],
@@ -109,7 +109,7 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
 
         } catch (ValidationException $e) {
             dd($e);
@@ -150,11 +150,11 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'vehicle_id' => ['required','exists:vehicles,id'],
@@ -198,7 +198,7 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
 
         }  catch (ValidationException $e) {
             dd($e);

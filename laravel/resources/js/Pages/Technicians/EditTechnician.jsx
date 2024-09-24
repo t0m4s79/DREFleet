@@ -108,7 +108,7 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
         .map((kid) => ({
             value: kid.id,
             label: `#${kid.id} - ${kid.name}`,
-    }));;
+    }));
     console.log('KidsPrio2', KidsPrio2)
 
     //Change how kids data is shown

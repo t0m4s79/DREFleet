@@ -112,7 +112,7 @@ class KidController extends Controller
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');;
+            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);

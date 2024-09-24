@@ -87,7 +87,7 @@ class VehicleTest extends TestCase
 
     public function test_user_can_edit_a_vehicle(): void
     {
-        $heavyVehicle = fake()->boolean();;
+        $heavyVehicle = fake()->boolean();
         $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $vehicle = Vehicle::factory()->create([
@@ -107,7 +107,7 @@ class VehicleTest extends TestCase
             'current_kilometrage' => rand(1, 200000),
         ]);
 
-        $newHeavyVehicle = fake()->boolean();;
+        $newHeavyVehicle = fake()->boolean();
         $newHeavyType = $newHeavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $updatedData = [
@@ -157,7 +157,7 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_creation_handles_exception()
     {
-        $heavyVehicle = fake()->boolean();;
+        $heavyVehicle = fake()->boolean();
         $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         // Prepare the incoming fields

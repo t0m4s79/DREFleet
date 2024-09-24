@@ -42,9 +42,9 @@ class PlaceController extends Controller
 
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
-            'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
+            'known_as' => ['required', 'string', 'max:255'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
@@ -59,7 +59,7 @@ class PlaceController extends Controller
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');;
+            return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');
        
         } catch (\Exception $e) {
             dd($e);
@@ -81,8 +81,8 @@ class PlaceController extends Controller
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);

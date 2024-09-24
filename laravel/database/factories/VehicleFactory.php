@@ -17,7 +17,7 @@ class VehicleFactory extends Factory
      */
     public function definition(): array
     {
-        $heavyVehicle = fake()->boolean();;
+        $heavyVehicle = fake()->boolean();
         $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         return [

@@ -40,7 +40,7 @@ class DriverTest extends TestCase
 
     public function test_driver_edit_page_is_displayed(): void
     {
-        $driver = Driver::factory()->create([]);
+        $driver = Driver::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
@@ -51,7 +51,7 @@ class DriverTest extends TestCase
 
     public function test_user_can_create_a_driver(): void
     {
-        $heavyLicense = fake()->boolean();;
+        $heavyLicense = fake()->boolean();
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $driverData = [
@@ -74,15 +74,16 @@ class DriverTest extends TestCase
 
     public function test_user_can_edit_a_driver(): void
     {
-        $heavyLicense = fake()->boolean();;
+        $heavyLicense = rand(0,1);
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $driver = Driver::factory()->create([
             'user_id' => User::factory()->create()->id,
-            'heavy_license' => '1',
+            'heavy_license' => $heavyLicense,
+            'heavy_license_type' => $heavyLicenseType,
         ]);
     
-        $newHeavyLicense = fake()->boolean();;
+        $newHeavyLicense = rand(0,1);
         $newHeavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $updatedData = [
@@ -105,7 +106,8 @@ class DriverTest extends TestCase
 
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driver->user_id,
-            'heavy_license' => '0',
+            'heavy_license' => $newHeavyLicense,
+            'heavy_license_type' => $newHeavyLicenseType
         ]);
     }
 

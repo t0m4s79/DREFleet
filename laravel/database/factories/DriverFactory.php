@@ -18,7 +18,7 @@ class DriverFactory extends Factory
      */
     public function definition(): array
     {
-        $heavyLicense = fake()->boolean();;
+        $heavyLicense = fake()->boolean();
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         return [
