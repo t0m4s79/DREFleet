@@ -57,6 +57,9 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                         <label htmlFor="end_date">Data e Hora de Fim</label><br />
                         <input type="datetime-local" id="end_date" name="end_date" value="2024-09-19T10:30"/><br/>
 
+                        <label htmlFor="end_address">Tipo de Pedido</label><br/>
+                        <input type="text" id="order_type" name="order_type" value="Outros"/><br/>
+
                         <label htmlFor="vehicle_id">Veículo</label><br />
                         <input type="text" id="vehicle_id" name="vehicle_id" value="2"/><br/>
 

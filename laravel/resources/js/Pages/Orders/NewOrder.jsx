@@ -87,6 +87,9 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                         <label htmlFor="end_date">Data e Hora de Fim</label><br />
                         <input type="datetime-local" id="end_date" name="end_date"/><br/>
 
+                        <label htmlFor="end_address">Tipo de Pedido</label><br/>
+                        <input type="text" id="order_type" name="order_type" /><br/>
+
                         <label htmlFor="vehicle_id">Veículo</label><br />
                         <input type="text" id="vehicle_id" name="vehicle_id"/><br/>
 

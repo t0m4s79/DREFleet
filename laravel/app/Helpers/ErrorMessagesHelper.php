@@ -13,6 +13,7 @@ class ErrorMessagesHelper
             'boolean' => 'Este campo só permite valores que que representem verdadeiro (1) ou falso (0)',
             'between' => 'O valor deve estar entre :min e :max',
             'date' => 'Data encontr-se num formato inválido',
+            'digits' => 'O campo deve ter exatamente :digits dígitos.',
             'driver_id.exists' => 'Condutor selecionado não existe',
             'email' => 'Este campo só permite emails',
             'id.exists' => 'O utilizador especificado não existe',
@@ -22,7 +23,6 @@ class ErrorMessagesHelper
             'latitude.regex' => 'Este campo só permite 10 casas decimais',
             'longituder.regex' => 'Este campo só permite 10 casas decimais',
             'max' => 'O campo não pode ultrapassar :max',
-            'max' => 'O campo deve ter no máximo :max caracteres',
             'min' => 'O campo deve ser pelo menos :min',
             'numeric' => 'Apenas são permitidos números neste campo',
             'required' => 'Este campo é obrigatório',
@@ -56,20 +56,9 @@ class ErrorMessagesHelper
             'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos',
 
             // Vehicles
-            'capacity.integer' => 'O campo capacidade deve ser um número inteiro',
-            'capacity.min' => 'A capacidade deve ser no mínimo :min',
-            'current_kilometrage.integer' => 'O campo kilometragem atual deve ser um número inteiro',
-            'current_kilometrage.min' => 'A kilometragem atual deve ser no mínimo :min',
-            'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro',
-            'fuel_consumption.min' => 'O campo consumo deve ser no mínimo :min',
             'heavy_type.required_if' => 'Tipo de Pesado deve ser especificado caso o veículo seja pesado',
-            'heavy_vehicle.boolean' => 'O campo veículo pesado deve ser verdadeiro ou falso',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula',
-            'wheelchair_adapted.boolean' => 'O campo adaptação para cadeiras de rodas deve ser verdadeiro ou falso',
-            'year.digits' => 'O campo ano deve ter 4 dígitos',
-            'year.integer' => 'O campo ano deve ser um número inteiro',
-
         ];
     }
 }

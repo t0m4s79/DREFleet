@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use Illuminate\Support\Arr;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -47,6 +48,7 @@ class OrderFactory extends Factory
             'begin_coordinates' => new Point($begin_latitude, $begin_longitude),
             'end_coordinates' => new Point($end_latitude, $end_longitude),
             'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
             'vehicle_id' => $vehicle->id,
             'driver_id' => $driver->user_id,

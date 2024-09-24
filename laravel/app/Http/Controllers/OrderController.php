@@ -11,6 +11,7 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use Carbon\Traits\Date;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -68,6 +69,7 @@ class OrderController extends Controller
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
@@ -104,6 +106,7 @@ class OrderController extends Controller
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
+                'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
@@ -157,6 +160,7 @@ class OrderController extends Controller
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
@@ -193,6 +197,7 @@ class OrderController extends Controller
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
+                'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
