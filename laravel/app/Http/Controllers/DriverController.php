@@ -98,6 +98,7 @@ class DriverController extends Controller
         try {
             $driver->update([
                 'heavy_license' => $incomingFields['heavy_license'],
+                'heavy_license_type' => $incomingFields['heavy_license_type'],
             ]);
 
             $user = User::findOrFail($incomingFields['user_id']);
