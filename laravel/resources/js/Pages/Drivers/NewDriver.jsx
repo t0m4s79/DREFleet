@@ -27,8 +27,14 @@ export default function NewDriver( {auth, users} ) {
         setData('user_id', newValue?.value.toString() || ''); // Update form data with the selected user's ID
     };
 
+    const handleHeavyChange = () => {
+        if(data.heavy_license != 1)
+            setData('heavy_license_type', null)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         post(route('drivers.create'));
     };
 
@@ -95,7 +101,7 @@ export default function NewDriver( {auth, users} ) {
 
                             <Typography variant="body1">Tipo de Carta de Pesados</Typography>
                                 {/* Radio buttons for heavy_license_type */}
-                                <FormControl component="fieldset">
+                                <FormControl component="fieldset" disabled={data.heavy_license == '0'}>
                                     <RadioGroup
                                         aria-label="heavy_license_type"
                                         name="heavy_license_type"
