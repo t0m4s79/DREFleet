@@ -11,12 +11,15 @@ export default function EditVehicle({ auth, vehicle}) {
         license_plate: vehicle.license_plate,
         year: vehicle.year,
         heavy_vehicle: vehicle.heavy_vehicle,
+        heavy_type: vehicle.heavy_type,
         wheelchair_adapted: vehicle.wheelchair_adapted,
+        wheelchair_certified: vehicle.wheelchair_certified,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
         fuel_type: vehicle.fuel_type,
+        current_kilometrage: vehicle.current_kilometrage,
     });
 
     const handleChange = (e) => {
@@ -103,12 +106,38 @@ export default function EditVehicle({ auth, vehicle}) {
                                     </FormControl>
                                 </Grid>
 
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Tipo de Pesado</FormLabel>
+                                    <RadioGroup
+                                        name="heavy_type"
+                                        value={data.heavy_type}
+                                        onChange={handleChange}
+                                    >
+                                        <FormControlLabel value="Mercadorias" control={<Radio />} label="Mercadorias" />
+                                        <FormControlLabel value="Passageiros" control={<Radio />} label="Passageiros" />
+                                    </RadioGroup>
+                                </FormControl>
+
                                 <Grid item  xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal">
                                         <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
                                             value={data.wheelchair_adapted == "Sim" ? 1 : 0}
+                                            onChange={handleChange}
+                                        >
+                                            <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                            <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item  xs={12} md={6}>
+                                    <FormControl component="fieldset" margin="normal">
+                                        <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
+                                        <RadioGroup
+                                            name="wheelchair_certified"
+                                            value={data.wheelchair_certified == "Sim" ? 1 : 0}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
@@ -188,6 +217,19 @@ export default function EditVehicle({ auth, vehicle}) {
                                 </RadioGroup>
                                 {errors.status && <InputError message={errors.status} />}
                             </FormControl>
+
+                            <TextField
+                                label="Kilometragem Atual"
+                                name="current_kilometrage"
+                                type="number"
+                                value={data.current_kilometrage}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                inputProps={{ min: 0}}
+                                error={!!errors.current_kilometrage}
+                                helperText={errors.current_kilometrage}
+                            />
 
                             <br />
 
