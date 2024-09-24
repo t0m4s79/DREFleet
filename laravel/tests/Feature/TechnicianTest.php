@@ -77,7 +77,7 @@ class TechnicianTest extends TestCase
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
-            'status' =>  Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
         ]; 
         
         $response = $this
@@ -188,7 +188,7 @@ class TechnicianTest extends TestCase
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => rand(910000000, 999999999),
-            'status' => '1',
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
             'addPriority1' => [$kid_4->id],
             'removePriority1' => [$kid_1->id],
             'addPriority2' => [$kid_5->id],

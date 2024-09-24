@@ -51,25 +51,15 @@ class VehicleController extends Controller
             'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
-            'fuel_type' => 'required',
+            'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
             'current_kilometrage' => 'required|integer|min:0'
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
         $incomingFields['model'] = strip_tags($incomingFields['model']);
         $incomingFields['license_plate'] = strtoupper(strip_tags($incomingFields['license_plate']));
-        $incomingFields['year'] = strip_tags($incomingFields['year']);
-        $incomingFields['heavy_vehicle'] = strip_tags($incomingFields['heavy_vehicle']);
-        $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
-        $incomingFields['wheelchair_certified'] = strip_tags($incomingFields['wheelchair_certified']);
-        $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
-        $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
-        $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
-        $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
-        $incomingFields['current_kilometrage'] = strip_tags($incomingFields['current_kilometrage']);
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
@@ -115,25 +105,15 @@ class VehicleController extends Controller
             'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
-            'fuel_type' => 'required',
+            'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
             'current_kilometrage' => 'required|integer|min:0'
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
         $incomingFields['model'] = strip_tags($incomingFields['model']);
         $incomingFields['license_plate'] = strtoupper(strip_tags($incomingFields['license_plate']));
-        $incomingFields['year'] = strip_tags($incomingFields['year']);
-        $incomingFields['heavy_vehicle'] = strip_tags($incomingFields['heavy_vehicle']);
-        $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
-        $incomingFields['wheelchair_certified'] = strip_tags($incomingFields['wheelchair_certified']);
-        $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
-        $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
-        $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
-        $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
-        $incomingFields['current_kilometrage'] = strip_tags($incomingFields['current_kilometrage']);
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;

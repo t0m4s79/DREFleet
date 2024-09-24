@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
-//TODO: ARE MANAGERS NEEDED IN EDIT/NEW?
 class OrderController extends Controller
 {
     public function index()
@@ -33,7 +32,7 @@ class OrderController extends Controller
     }
 
     //TODO: ADD PLACES ATTACHED TO THE KIDS ARRAY
-    public function showCreateOrderForm()           //TODO: INCLUDE TECHNICIAN
+    public function showCreateOrderForm()
     {
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
@@ -76,15 +75,6 @@ class OrderController extends Controller
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-        $incomingFields['begin_date'] = strip_tags($incomingFields['begin_date']);
-        $incomingFields['end_date'] = strip_tags($incomingFields['end_date']);
-        $incomingFields['begin_latitude'] = strip_tags($incomingFields['begin_latitude']);
-        $incomingFields['begin_longitude'] = strip_tags($incomingFields['begin_longitude']);
-        $incomingFields['end_latitude'] = strip_tags($incomingFields['end_latitude']);
-        $incomingFields['end_longitude'] = strip_tags($incomingFields['end_longitude']);
-        $incomingFields['vehicle_id'] = strip_tags($incomingFields['vehicle_id']);
-        $incomingFields['driver_id'] = strip_tags($incomingFields['driver_id']);
-        $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
         $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
         $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
@@ -173,15 +163,6 @@ class OrderController extends Controller
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-        $incomingFields['begin_date'] = strip_tags($incomingFields['begin_date']);
-        $incomingFields['end_date'] = strip_tags($incomingFields['end_date']);
-        $incomingFields['begin_latitude'] = strip_tags($incomingFields['begin_latitude']);
-        $incomingFields['begin_longitude'] = strip_tags($incomingFields['begin_longitude']);
-        $incomingFields['end_latitude'] = strip_tags($incomingFields['end_latitude']);
-        $incomingFields['end_longitude'] = strip_tags($incomingFields['end_longitude']);
-        $incomingFields['vehicle_id'] = strip_tags($incomingFields['vehicle_id']);
-        $incomingFields['driver_id'] = strip_tags($incomingFields['driver_id']);
-        $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
         try {
             $user = User::find($request->input('technician_id'));
@@ -246,8 +227,6 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'manager_id' => ['required', 'exists:users,id']
         ]);
-
-        $incomingFields['manager_id'] = strip_tags($incomingFields['manager_id']);
 
         try {
             $currentDate = Date::now()->toDateTimeString();

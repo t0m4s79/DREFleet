@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
 
 class ManagerController extends Controller
 {
@@ -40,8 +41,6 @@ class ManagerController extends Controller
         $incomingFields = $request->validate([
             'id' => ['required', 'exists:users,id'],
         ], $customErrorMessages);
-
-        $incomingFields['id'] = strip_tags($incomingFields['id']);
 
         $user = User::find($incomingFields['id']);
 
@@ -80,13 +79,11 @@ class ManagerController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
         try {
             $user->update([

@@ -6,6 +6,7 @@ use Log;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Driver;
+use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -52,7 +53,7 @@ class DriverTest extends TestCase
     {
         $driverData = [
             'user_id' => User::factory()->create()->id,
-            'heavy_license' => '1',
+            'heavy_license' => fake()->boolean(),
         ];
 
         $response = $this
@@ -79,7 +80,7 @@ class DriverTest extends TestCase
             'name' => $driver->name,
             'email' => $driver->email,
             'phone' => $driver->phone,
-            'status' => '1',
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
             'heavy_license' => '0',
         ]; 
         

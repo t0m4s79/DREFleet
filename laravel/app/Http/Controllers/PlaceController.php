@@ -11,7 +11,7 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class PlaceController extends Controller
 {
-    public function index() //: Response
+    public function index()
     {
         $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
@@ -49,8 +49,6 @@ class PlaceController extends Controller
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
-        $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
-        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
         $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
 
@@ -87,8 +85,6 @@ class PlaceController extends Controller
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
-        $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
-        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
         try {
             $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);

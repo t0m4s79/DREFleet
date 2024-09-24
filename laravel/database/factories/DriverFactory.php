@@ -22,7 +22,7 @@ class DriverFactory extends Factory
             'user_id' => User::factory()->state([
                 'user_type' => 'Condutor',
             ]),
-            'heavy_license' => rand(0, 1),
+            'heavy_license' => fake()->boolean(),
         ];    
     }
 }

@@ -53,6 +53,7 @@ class ErrorMessagesHelper
             'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro.',
             'current_kilometrage.integer' => 'O campo kilometragem atual deve ser um número inteiro.',
             'current_kilometrage.min' => 'A kilometragem atual deve ser no mínimo :min.',
+            'heavy_type.required_if' => 'Tipo de Pesado deve ser especificado caso o veículo seja pesado.'
         ];
     }
 }

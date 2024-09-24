@@ -52,7 +52,7 @@ class KidTest extends TestCase
     public function test_user_can_create_a_kid(): void
     {
         $kidData = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
@@ -75,7 +75,7 @@ class KidTest extends TestCase
         $kid = Kid::factory()->create();
     
         $updatedData = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
@@ -115,7 +115,7 @@ class KidTest extends TestCase
         $place_2 = Place::factory()->create();
 
         $kidData = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
@@ -157,7 +157,7 @@ class KidTest extends TestCase
         $place_3 = Place::factory()->create();
 
         $kidData = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
@@ -171,7 +171,7 @@ class KidTest extends TestCase
         $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
 
         $updatedData = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
@@ -207,7 +207,7 @@ class KidTest extends TestCase
     public function test_kid_creation_handles_exception()
     {
         $incomingFields = [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),
