@@ -28,12 +28,15 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         license_plate: 'Matrícula',
         year: 'Ano',
         heavy_vehicle: 'Veículo Pesado',
+        heavy_type: 'Tipo de Pesado',
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
+        wheelchair_certified: 'Certificado para Cadeira de Todas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
         current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)',
         fuel_type: 'Tipo de Combustível',
+        current_kilometrage: 'Kilometragem Atual',
     };
 
     return (

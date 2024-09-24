@@ -37,7 +37,7 @@ class OrderFactory extends Factory
 
         // If approved, generate an approved date and assign a manager
         $approved_date = $isApproved ? fake()->dateTimeBetween('2024-01-01', '2025-12-31') : null;
-        $manager = $isApproved ?ManagerFactory::new()->create() : null;
+        $manager = $isApproved ? ManagerFactory::new()->create() : null;
 
         return [
             'begin_address' => fake()->address(),

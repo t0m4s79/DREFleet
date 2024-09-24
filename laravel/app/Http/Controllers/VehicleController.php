@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Vehicle;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Validation\ValidationException;
 
 class VehicleController extends Controller
 {
@@ -45,12 +46,15 @@ class VehicleController extends Controller
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
+            'heavy_type' => 'required_if:heavy_vehicle,1', // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
+            'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
             'status' => 'required',
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
             'fuel_type' => 'required',
+            'current_kilometrage' => 'required|integer|min:0'
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -59,17 +63,28 @@ class VehicleController extends Controller
         $incomingFields['year'] = strip_tags($incomingFields['year']);
         $incomingFields['heavy_vehicle'] = strip_tags($incomingFields['heavy_vehicle']);
         $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
+        $incomingFields['wheelchair_certified'] = strip_tags($incomingFields['wheelchair_certified']);
         $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
         $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
+        $incomingFields['current_kilometrage'] = strip_tags($incomingFields['current_kilometrage']);
+
+        if($incomingFields['heavy_vehicle'] == '0') {
+            $incomingFields['heavy_type'] = null;
+        } 
+        else {
+            $incomingFields['heavy_type'] = strip_tags($incomingFields['heavy_type']);
+        } 
+
 
         try {
             $vehicle = Vehicle::create($incomingFields);
             return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
         }
     }
@@ -95,25 +110,16 @@ class VehicleController extends Controller
             ],
             'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
+            'heavy_type' => 'required_if:heavy_vehicle,1', // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
+            'wheelchair_certified' => 'required',
             'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
             'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
             'status' => 'required',
             'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
             'fuel_type' => 'required',
+            'current_kilometrage' => 'required|integer|min:0'
         ], $customErrorMessages);
-
-        if ($incomingFields['wheelchair_adapted'] == 'Sim') {              //These if's can be taken out if respective attributes methods are taken out of the vehicle model
-            $incomingFields['wheelchair_adapted'] = '1';                 //but the the table will show 0 or 1 instead of Sim ou Não
-        } else if ($incomingFields['wheelchair_adapted'] == 'Não') {
-            $incomingFields['wheelchair_adapted'] = '0';
-        }
-
-        if ($incomingFields['heavy_vehicle'] == 'Sim') {
-            $incomingFields['heavy_vehicle'] = '1';
-        } else if ($incomingFields['heavy_vehicle'] == 'Não') {
-            $incomingFields['heavy_vehicle'] = '0';
-        }
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
         $incomingFields['model'] = strip_tags($incomingFields['model']);
@@ -121,12 +127,20 @@ class VehicleController extends Controller
         $incomingFields['year'] = strip_tags($incomingFields['year']);
         $incomingFields['heavy_vehicle'] = strip_tags($incomingFields['heavy_vehicle']);
         $incomingFields['wheelchair_adapted'] = strip_tags($incomingFields['wheelchair_adapted']);
+        $incomingFields['wheelchair_certified'] = strip_tags($incomingFields['wheelchair_certified']);
         $incomingFields['capacity'] = strip_tags($incomingFields['capacity']);
         $incomingFields['fuel_consumption'] = strip_tags($incomingFields['fuel_consumption']);
         $incomingFields['status'] = strip_tags($incomingFields['status']);
         $incomingFields['current_month_fuel_requests'] = strip_tags($incomingFields['current_month_fuel_requests']);
         $incomingFields['fuel_type'] = strip_tags($incomingFields['fuel_type']);
+        $incomingFields['current_kilometrage'] = strip_tags($incomingFields['current_kilometrage']);
 
+        if($incomingFields['heavy_vehicle'] == '0') {
+            $incomingFields['heavy_type'] = null;
+        } 
+        else {
+            $incomingFields['heavy_type'] = strip_tags($incomingFields['heavy_type']);
+        }
 
         try {
             $vehicle->update($incomingFields);

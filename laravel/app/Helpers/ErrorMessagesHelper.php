@@ -51,6 +51,8 @@ class ErrorMessagesHelper
             'fuel_consumption.min' => 'O campo consumo deve ser no mínimo :min.',
             'status.in' => 'O campo estado deve ser um dos seguintes: ativo, inativo, manutenção.',
             'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro.',
+            'current_kilometrage.integer' => 'O campo kilometragem atual deve ser um número inteiro.',
+            'current_kilometrage.min' => 'A kilometragem atual deve ser no mínimo :min.',
         ];
     }
 }
