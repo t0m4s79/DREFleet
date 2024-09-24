@@ -17,7 +17,7 @@ class KidFactory extends Factory
     public function definition(): array
     {
         return [
-            'wheelchair' => rand(0,1),
+            'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
             'phone' => rand(910000000, 999999999),
             'email' => fake()->unique()->safeEmail(),

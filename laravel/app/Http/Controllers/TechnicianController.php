@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
 use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
 class TechnicianController extends Controller
@@ -78,8 +79,6 @@ class TechnicianController extends Controller
             'kidsList2' => 'array',
         ], $customErrorMessages);
 
-        $incomingFields['id'] = strip_tags($incomingFields['id']);
-
         $user = User::find($incomingFields['id']);
 
         if ($user->user_type != 'Nenhum') {
@@ -104,7 +103,9 @@ class TechnicianController extends Controller
             $user->kids()->attach($kidsList2, ['priority' => 2]);
 
             return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de técnicos. Tente novamente.');
         }
     }
@@ -154,7 +155,7 @@ class TechnicianController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
             'addPriority1' => 'array',
             'removePriority1' => 'array',
             'addPriority2' => 'array',
@@ -164,8 +165,6 @@ class TechnicianController extends Controller
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
         $addPriority1 = isset($incomingFields['addPriority1']) ? array_map('strip_tags', $incomingFields['addPriority1']) : [];
         $removePriority1 = isset($incomingFields['removePriority1']) ? array_map('strip_tags', $incomingFields['removePriority1']) : [];
@@ -208,13 +207,14 @@ class TechnicianController extends Controller
                     $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
                 
                 } catch (\Exception $e) {
-                    Log::debug($e);
+                    dd($e);
                     return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados das prioriadades do técnico com id ' . $user->id . '. Tente novamente.');
                 }
             }
             return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
             
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -233,6 +233,7 @@ class TechnicianController extends Controller
             return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de técnicos. Tente novamente.');
         }
     }

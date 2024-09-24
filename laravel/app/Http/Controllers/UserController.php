@@ -44,25 +44,29 @@ class UserController extends Controller
 
         $request->merge(['email' => strtolower($request->input('email'))]);
 
-        $request->validate([
+        $incomingFields = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'phone' => 'required|numeric|digits_between:9,15|unique:users,phone',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], $customErrorMessages);
 
+        $incomingFields['name'] = strip_tags($incomingFields['name']);
+        $incomingFields['email'] = strip_tags($incomingFields['email']);
+
         try {
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
+                'name' => $incomingFields['name'] ,
+                'email' => $incomingFields['email'] ,
+                'phone' => $incomingFields['phone'] ,
                 'user_type' => 'Nenhum',
                 'status' => 'Disponível',
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($incomingFields['password']),
             ]);
 
             return redirect()->route('users.index')->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('users.index')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
         }
     }
@@ -78,27 +82,27 @@ class UserController extends Controller
         ]);
     }
 
+    //TODO: should phone be unique for each user???
     public function editUser(User $user, Request $request)
-    {        //TODO: should phone be unique for each user???
-        // Load custom error messages from helper
+    {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)], // Ignore current user's email,
             'phone' => ['required', 'numeric', 'digits_between:9,15', Rule::unique('users', 'phone')->ignore($user->id)],
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
         try {
             $user->update($incomingFields);
             return redirect()->route('users.index')->with('message', 'Dados do/a utilizador/a com id ' . $user->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('users.index')->with('error', 'Houve um problema ao atualizar os dados do utilizador com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -112,6 +116,7 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('message', 'Utilizador com ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('users.index')->with('error', 'Houve um  problema ao eliminar os dados do utilizador com id ' . $id . '. Tente novamente.');
         }
     }

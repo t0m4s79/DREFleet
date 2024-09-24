@@ -11,12 +11,12 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use Carbon\Traits\Date;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
-//TODO: ARE MANAGERS NEEDED IN EDIT/NEW?
 class OrderController extends Controller
 {
     public function index()
@@ -33,7 +33,7 @@ class OrderController extends Controller
     }
 
     //TODO: ADD PLACES ATTACHED TO THE KIDS ARRAY
-    public function showCreateOrderForm()           //TODO: INCLUDE TECHNICIAN
+    public function showCreateOrderForm()
     {
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
@@ -62,13 +62,14 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
@@ -76,15 +77,6 @@ class OrderController extends Controller
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-        $incomingFields['begin_date'] = strip_tags($incomingFields['begin_date']);
-        $incomingFields['end_date'] = strip_tags($incomingFields['end_date']);
-        $incomingFields['begin_latitude'] = strip_tags($incomingFields['begin_latitude']);
-        $incomingFields['begin_longitude'] = strip_tags($incomingFields['begin_longitude']);
-        $incomingFields['end_latitude'] = strip_tags($incomingFields['end_latitude']);
-        $incomingFields['end_longitude'] = strip_tags($incomingFields['end_longitude']);
-        $incomingFields['vehicle_id'] = strip_tags($incomingFields['vehicle_id']);
-        $incomingFields['driver_id'] = strip_tags($incomingFields['driver_id']);
-        $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
         $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
         $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
@@ -114,18 +106,20 @@ class OrderController extends Controller
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
+                'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
 
         } catch (ValidationException $e) {
+            dd($e);
             return redirect()->route('orders.create')->withErrors($e->validator)->withInput();
 
         } catch (\Exception $e) {
-            Log::error($e);  // Log the error for debugging
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
@@ -159,13 +153,14 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
             'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,10}$/'],   
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
@@ -173,15 +168,6 @@ class OrderController extends Controller
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-        $incomingFields['begin_date'] = strip_tags($incomingFields['begin_date']);
-        $incomingFields['end_date'] = strip_tags($incomingFields['end_date']);
-        $incomingFields['begin_latitude'] = strip_tags($incomingFields['begin_latitude']);
-        $incomingFields['begin_longitude'] = strip_tags($incomingFields['begin_longitude']);
-        $incomingFields['end_latitude'] = strip_tags($incomingFields['end_latitude']);
-        $incomingFields['end_longitude'] = strip_tags($incomingFields['end_longitude']);
-        $incomingFields['vehicle_id'] = strip_tags($incomingFields['vehicle_id']);
-        $incomingFields['driver_id'] = strip_tags($incomingFields['driver_id']);
-        $incomingFields['technician_id'] = strip_tags($incomingFields['technician_id']);
 
         try {
             $user = User::find($request->input('technician_id'));
@@ -211,17 +197,20 @@ class OrderController extends Controller
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
+                'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');;
+            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
 
         }  catch (ValidationException $e) {
+            dd($e);
             return redirect()->route('orders.create')->with('error', 'O valor do campo selecionado para o técnico é inválido. Tente novamente.');
         
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
@@ -235,6 +224,7 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido apagado com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
         }
     }
@@ -247,8 +237,6 @@ class OrderController extends Controller
             'manager_id' => ['required', 'exists:users,id']
         ]);
 
-        $incomingFields['manager_id'] = strip_tags($incomingFields['manager_id']);
-
         try {
             $currentDate = Date::now()->toDateTimeString();
             $order->update([
@@ -259,6 +247,7 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Dados do pedido atualizados com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
         }
     }

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+//TODO: THROW EXCEPTION ERRORS
 class OrderTest extends TestCase
 {
     protected $user;
@@ -78,6 +79,8 @@ class OrderTest extends TestCase
         $endLatitude = fake()->latitude();
         $endLongitude = fake()->longitude();
 
+
+
         $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
         $orderData = [
@@ -90,8 +93,9 @@ class OrderTest extends TestCase
             'end_longitude' => $endLongitude,
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -111,6 +115,7 @@ class OrderTest extends TestCase
             'end_address' => $orderData['end_address'],
             'begin_date' => $orderData['begin_date'],
             'end_date' => $orderData['end_date'],
+            'order_type' => $orderData['order_type'],
             'vehicle_id' => $orderData['vehicle_id'],
             'driver_id' => $orderData['driver_id'],
             'technician_id' => $orderData['technician_id'],
@@ -158,8 +163,9 @@ class OrderTest extends TestCase
             'end_longitude' => $endLongitude,
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -183,6 +189,7 @@ class OrderTest extends TestCase
             'end_address' => $order->end_address,
             'begin_date' => $order->begin_date,
             'end_date' => $order->end_date,
+            'order_type' => $order->order_type,
             'vehicle_id' => $order->vehicle_id,
             'driver_id' => $order->driver_id,
             'technician_id' => $order->technician_id,
@@ -231,7 +238,7 @@ class OrderTest extends TestCase
         $endLongitude = fake()->longitude();
 
         $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
-     
+
         $incomingFields = [
             'trajectory' => json_encode($trajectory),
             'begin_address' => fake()->address(),
@@ -242,8 +249,9 @@ class OrderTest extends TestCase
             'end_longitude' => $endLongitude,
             'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             
-            'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];        

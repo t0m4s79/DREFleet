@@ -17,16 +17,16 @@ class VehicleFactory extends Factory
      */
     public function definition(): array
     {
-        $heavy_vehicle = fake()->boolean();;
-        $heavy_type = $heavy_vehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $heavyVehicle = fake()->boolean();
+        $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         return [
             'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(111111,999999),
             'year' => rand(1960,2024),
-            'heavy_vehicle' => $heavy_vehicle,
-            'heavy_type' => $heavy_type,
+            'heavy_vehicle' => $heavyVehicle,
+            'heavy_type' => $heavyType,
             'wheelchair_adapted' => fake()->boolean(),
             'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5,15),

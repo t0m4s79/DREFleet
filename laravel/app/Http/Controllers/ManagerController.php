@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
 
 class ManagerController extends Controller
 {
@@ -41,8 +42,6 @@ class ManagerController extends Controller
             'id' => ['required', 'exists:users,id'],
         ], $customErrorMessages);
 
-        $incomingFields['id'] = strip_tags($incomingFields['id']);
-
         $user = User::find($incomingFields['id']);
 
         if ($user->user_type != 'Nenhum') {
@@ -55,7 +54,9 @@ class ManagerController extends Controller
             ]);
 
             return redirect()->route('managers.index')->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de gestores. Tente novamente.');
         }
     }
@@ -71,7 +72,6 @@ class ManagerController extends Controller
     }
 
     public function editManager(User $user, Request $request) {
-        //dd($request);
 
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -80,13 +80,11 @@ class ManagerController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
         try {
             $user->update([
@@ -97,7 +95,9 @@ class ManagerController extends Controller
             ]);
 
             return redirect()->route('managers.index')->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao atualizar os dados do gestor com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -112,6 +112,7 @@ class ManagerController extends Controller
             return redirect()->route('managers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
         }
     }

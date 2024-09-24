@@ -15,6 +15,7 @@ export default function EditDriver({ auth, driver }) {
         email: driver.email,
         phone: driver.phone,
         heavy_license: driver.heavy_license,
+        heavy_license_type: driver.heavy_license_type,
         status: driver.status,
     });
 
@@ -25,9 +26,15 @@ export default function EditDriver({ auth, driver }) {
         const { name, value, type, checked } = e.target;
         setData(name, type === 'radio' ? value : value);
     };
+
+    const handleHeavyChange = () => {
+        if(data.heavy_license != 1)
+            setData('heavy_license_type', null)
+    }
     
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         put(route('drivers.edit', driver.user_id));
     };
 
@@ -89,7 +96,7 @@ export default function EditDriver({ auth, driver }) {
                             />
 
                             <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Licença de Pesados?</FormLabel>
+                                <FormLabel component="legend">Carta de Pesados</FormLabel>
                                 <RadioGroup
                                     name="heavy_license"
                                     value={data.heavy_license}
@@ -105,6 +112,28 @@ export default function EditDriver({ auth, driver }) {
                                         value="1"
                                         control={<Radio />}
                                         label="Sim"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <br/>
+
+                            <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
+                                <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
+                                <RadioGroup
+                                    name="heavy_license_type"
+                                    value={data.heavy_license_type}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel
+                                        value="Mercadorias"
+                                        control={<Radio />}
+                                        label="Mercadorias"
+                                    />
+                                    <FormControlLabel
+                                        value="Passageiros"
+                                        control={<Radio />}
+                                        label="Passageiros"
                                     />
                                 </RadioGroup>
                             </FormControl>

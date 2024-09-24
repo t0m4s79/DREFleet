@@ -53,18 +53,24 @@ class VehicleTest extends TestCase
 
     public function test_user_can_create_a_vehicle(): void
     {
+        $heavyVehicle = fake()->boolean();
+        $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         $vehicleData = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
-            'heavy_vehicle' => rand(0, 1),
-            'wheelchair_adapted' => rand(0, 1),
+            'heavy_vehicle' => $heavyVehicle,
+            'heavy_type' => $heavyType,
+            'wheelchair_adapted' => fake()->boolean(),
+            'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5, 15),
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
             'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'current_kilometrage' => rand(1, 200000),
         ];
 
         $response = $this
@@ -81,32 +87,44 @@ class VehicleTest extends TestCase
 
     public function test_user_can_edit_a_vehicle(): void
     {
+        $heavyVehicle = fake()->boolean();
+        $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         $vehicle = Vehicle::factory()->create([
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
-            'heavy_vehicle' => rand(0, 1),
-            'wheelchair_adapted' => rand(0, 1),
+            'heavy_vehicle' => $heavyVehicle,
+            'heavy_type' => $heavyType,
+            'wheelchair_adapted' => fake()->boolean(),
+            'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5, 15),
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
             'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'current_kilometrage' => rand(1, 200000),
         ]);
+
+        $newHeavyVehicle = fake()->boolean();
+        $newHeavyType = $newHeavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $updatedData = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
-            'heavy_vehicle' => rand(0, 1),
-            'wheelchair_adapted' => rand(0, 1),
+            'heavy_vehicle' => $newHeavyVehicle,
+            'heavy_type' => $newHeavyType,
+            'wheelchair_adapted' => fake()->boolean(),
+            'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5, 15),
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
             'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'current_kilometrage' => rand(1, 200000),
         ];
 
         $response = $this
@@ -139,19 +157,25 @@ class VehicleTest extends TestCase
 
     public function test_vehicle_creation_handles_exception()
     {
+        $heavyVehicle = fake()->boolean();
+        $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         // Prepare the incoming fields
         $incomingFields = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
             'year' => rand(1960, 2024),
-            'heavy_vehicle' => rand(0, 1),
-            'wheelchair_adapted' => rand(0, 1),
+            'heavy_vehicle' => $heavyVehicle,
+            'heavy_type' => $heavyType,
+            'wheelchair_adapted' => fake()->boolean(),
+            'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5, 15),
             'fuel_consumption' => rand(2, 10),
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0, 6),
             'fuel_type' => Arr::random(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Híbrido', 'Elétrico']),
+            'current_kilometrage' => rand(1, 200000),
         ];
 
         // Mock the Vehicle model to throw an exception

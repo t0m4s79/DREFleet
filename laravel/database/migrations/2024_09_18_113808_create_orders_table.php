@@ -12,16 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {      //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (ORDER_STATUS)
-            $table->id();                                           //TODO: I A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
+            $table->id();                                           //TODO: IF A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
             $table->timestamps();
             $table->string('begin_address');
             $table->string('end_address');
             $table->dateTime('begin_date');
             $table->dateTime('end_date');
             $table->geography('begin_coordinates', subtype: 'point', srid: 4326);
-            $table->geography('end_coordinates', subtype: 'point', srid: 4326);;
+            $table->geography('end_coordinates', subtype: 'point', srid: 4326);
             $table->json('trajectory');
             $table->dateTime('approved_date')->nullable();
+            $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);
 
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');

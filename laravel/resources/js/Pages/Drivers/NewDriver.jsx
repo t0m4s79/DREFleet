@@ -10,7 +10,8 @@ export default function NewDriver( {auth, users} ) {
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
-        heavy_license: ''
+        heavy_license: '',
+        heavy_license_type: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -26,8 +27,14 @@ export default function NewDriver( {auth, users} ) {
         setData('user_id', newValue?.value.toString() || ''); // Update form data with the selected user's ID
     };
 
+    const handleHeavyChange = () => {
+        if(data.heavy_license != 1)
+            setData('heavy_license_type', null)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         post(route('drivers.create'));
     };
 
@@ -90,6 +97,31 @@ export default function NewDriver( {auth, users} ) {
                                 </FormControl>
                                 {errors.heavy_license && (
                                     <InputError message={errors.heavy_license} />
+                                )}
+
+                            <Typography variant="body1">Tipo de Carta de Pesados</Typography>
+                                {/* Radio buttons for heavy_license_type */}
+                                <FormControl component="fieldset" disabled={data.heavy_license == '0'}>
+                                    <RadioGroup
+                                        aria-label="heavy_license_type"
+                                        name="heavy_license_type"
+                                        value={data.heavy_license_type}
+                                        onChange={(e) => setData('heavy_license_type', e.target.value)}
+                                    >
+                                        <FormControlLabel
+                                            value="Mercadorias"
+                                            control={<Radio />}
+                                            label="Mercadorias"
+                                        />
+                                        <FormControlLabel
+                                            value="Passageiros"
+                                            control={<Radio />}
+                                            label="Passageiros"
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                                {errors.heavy_license_type && (
+                                    <InputError message={errors.heavy_license_type} />
                                 )}
 
                                 <br />

@@ -41,13 +41,16 @@ class DatabaseSeeder extends Seeder
             );
         });
 
-        //Seed kid-technician pivot table
+        // Seed kid-user pivot table
         $technicians->each(function ($technician) use ($kids) {
             $kidIds = $kids->random(rand(1, 3))->pluck('id')->toArray(); // Randomly select 1-3 kids
-        
+
             // Attach each kid with a random priority (1 or 2)
             foreach ($kidIds as $kidId) {
-                $technician->kids()->attach($kidId, ['priority' => Arr::random([1, 2])]);
+                // Check if the relationship already exists before attaching
+                if (!$technician->kids()->where('kid_id', $kidId)->exists()) {
+                    $technician->kids()->attach($kidId, ['priority' => Arr::random([1, 2])]);
+                }
             }
         });
     }

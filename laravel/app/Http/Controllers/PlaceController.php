@@ -11,7 +11,7 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class PlaceController extends Controller
 {
-    public function index() //: Response
+    public function index()
     {
         $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
@@ -42,15 +42,13 @@ class PlaceController extends Controller
 
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
-            'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
+            'known_as' => ['required', 'string', 'max:255'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
-        $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
-        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
         $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
 
@@ -61,8 +59,10 @@ class PlaceController extends Controller
                 'coordinates' => $coordinates,
             ]);
 
-            return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');;
+            return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');
+       
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
     }
@@ -81,14 +81,12 @@ class PlaceController extends Controller
         $incomingFields = $request->validate([
             'address' => 'required|string|max:255',
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{1,15}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{1,15}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
-        $incomingFields['latitude'] = strip_tags($incomingFields['latitude']);
-        $incomingFields['longitude'] = strip_tags($incomingFields['longitude']);
 
         try {
             $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
@@ -100,7 +98,9 @@ class PlaceController extends Controller
             ]);
 
             return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao atualizar os dados da morada com id ' . $place->id . '. Tente novamente.');
         }
     }
@@ -114,6 +114,7 @@ class PlaceController extends Controller
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $id . ' apagada com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('places.index')->with('error', 'Houve um problema ao apagar a morada com id ' . $id . '. Tente novamente.');
         }
     }

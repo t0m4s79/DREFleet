@@ -57,14 +57,12 @@ class KidController extends Controller
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
-            'wheelchair' => 'required',
+            'wheelchair' => ['required', 'boolean'],
             'places' => 'array',
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
         $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
@@ -72,7 +70,9 @@ class KidController extends Controller
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
@@ -97,15 +97,13 @@ class KidController extends Controller
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email'],
-            'wheelchair' => 'required',
+            'wheelchair' => ['required', 'boolean'],
             'addPlaces' => 'array',
             'removePlaces' => 'array',
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
         $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
         $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
@@ -114,8 +112,10 @@ class KidController extends Controller
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');;
+            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
@@ -129,6 +129,7 @@ class KidController extends Controller
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }
