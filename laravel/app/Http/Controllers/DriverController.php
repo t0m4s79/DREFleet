@@ -84,7 +84,7 @@ class DriverController extends Controller
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);

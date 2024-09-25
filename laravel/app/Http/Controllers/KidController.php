@@ -57,7 +57,7 @@ class KidController extends Controller
         $incomingFields = $request->validate([
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
             'places' => 'array',
         ], $customErrorMessages);
@@ -111,7 +111,7 @@ class KidController extends Controller
         $incomingFields = $request->validate([
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
             'addPlaces' => 'array',
             'removePlaces' => 'array',

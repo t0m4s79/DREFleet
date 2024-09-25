@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -20,5 +21,12 @@ class ProfileUpdateRequest extends FormRequest
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'phone' => ['required', 'string', 'max:15', 'min:9', Rule::unique(User::class)->ignore($this->user()->id)],
         ];
+    }
+
+    public function messages(): array
+    {
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
+        return $customErrorMessages;
     }
 }

@@ -153,7 +153,7 @@ class TechnicianController extends Controller
         
         $incomingFields = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
             'addPriority1' => 'array',
