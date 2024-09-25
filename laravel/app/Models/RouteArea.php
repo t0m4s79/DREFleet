@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Route extends Model
+class RouteArea extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'area'
+        'area_coordinates'
     ];
 
     protected $hidden = [

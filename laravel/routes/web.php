@@ -7,7 +7,7 @@ use App\Http\Controllers\KidController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PlaceController;
-use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RouteAreaController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
@@ -79,8 +79,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //ROUTES
-    Route::get('/routes', [RouteController::class, 'index'])->name('routes.index');
+    //ROUTE AREAS
+    Route::get('/routeAreas', [RouteAreaController::class, 'index'])->name('routes.index');
+    Route::get('/routeAreas/create', [RouteAreaController::class, 'showCreateRouteAreaForm'])->name('routes.create');
+    Route::post('/routeAreas/create', [RouteAreaController::class, 'createRouteArea'])->name('routes.create');
 
     //USERS
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
