@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
 
@@ -77,6 +77,19 @@ export default function NewPlace({auth}) {
                                     helperText={errors.known_as}
                                 />
 
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Estado</FormLabel>
+                                    <RadioGroup
+                                        name="place_type"
+                                        value={data.place_type}
+                                        onChange={(e) => setData('place_type', e.target.value)}
+                                        >
+                                        <FormControlLabel value="Residência" control={<Radio />} label="Residência" />
+                                        <FormControlLabel value="Escola" control={<Radio />} label="Escola" />
+                                        <FormControlLabel value="Outros" control={<Radio />} label="Outros" />
+                                    </RadioGroup>
+                                </FormControl>
+
                                 <TextField
                                     fullWidth
                                     margin="normal"
@@ -85,7 +98,7 @@ export default function NewPlace({auth}) {
                                     label="Latitude"
                                     type="number"
                                     inputProps={{
-                                        step: 0.00001,
+                                        step: 0.000000000000001,
                                         min: -90,
                                         max: 90,
                                         placeholder: "0.00000"
@@ -104,7 +117,7 @@ export default function NewPlace({auth}) {
                                     label="Longitude"
                                     type="number"
                                     inputProps={{
-                                        step: 0.00001,
+                                        step: 0.000000000000001,
                                         min: -180,
                                         max: 180,
                                         placeholder: "0.00000"
@@ -136,7 +149,7 @@ export default function NewPlace({auth}) {
                             </form>
 
                             <br />
-                            <LeafletMap routing={false} onLocationSelect={updateCoordinates}/>
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: data.latitude, lng: data.longitude}} edditing={true}/>
 
                         </div>
                     </div>

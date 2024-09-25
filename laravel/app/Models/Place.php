@@ -19,6 +19,7 @@ class Place extends Model
     protected $fillable = [
         'address',
         'known_as',
+        'place_type',
         'coordinates',
     ];
 

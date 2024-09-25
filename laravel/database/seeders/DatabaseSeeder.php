@@ -27,17 +27,18 @@ class DatabaseSeeder extends Seeder
         Driver::factory(4)->create();
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();
-        Place::factory(15)->create();
+        Place::factory(25)->create();
         Order::factory(6)->create();
 
         $kids = Kid::all();
-        $places = Place::all();
         $technicians = User::where('user_type','Técnico');
+        $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places
 
-        //Seed kid-place pivot table
+        // Seed kid-place pivot table
         $kids->each(function ($kid) use ($places) {
+            // Randomly select 1-3 places from the fetched collection
             $kid->places()->sync(
-                $places->random(rand(1,3))->pluck('id')->toArray()
+                $places->random(rand(1, 3))->pluck('id')->toArray()
             );
         });
 

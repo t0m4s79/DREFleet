@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('places', function (Blueprint $table) {
             $table->id();
             $table->string('address');
-            $table->string('known_as');
+            $table->string('known_as')->nullable();
+            $table->enum('place_type',['Residência', 'Escola', 'Outros'])->nullable();
             $table->geography('coordinates', subtype: 'point', srid: 4326);
             $table->timestamps();
         });
