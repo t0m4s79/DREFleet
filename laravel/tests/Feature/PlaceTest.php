@@ -55,6 +55,7 @@ class PlaceTest extends TestCase
         $placeData = [
             'address' => fake()->address(),
             'known_as' => Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];
@@ -92,6 +93,7 @@ class PlaceTest extends TestCase
         $updatedData = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];
@@ -139,6 +141,7 @@ class PlaceTest extends TestCase
         $incomingFields = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];

@@ -45,9 +45,9 @@ class UserController extends Controller
         $request->merge(['email' => strtolower($request->input('email'))]);
 
         $incomingFields = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'phone' => 'required|numeric|digits_between:9,15|unique:users,phone',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'lowercase'],
+            'phone' => ['required', 'numeric', 'digits_between:9,15', 'unique:users,phone'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], $customErrorMessages);
 
@@ -88,8 +88,8 @@ class UserController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)], // Ignore current user's email,
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id), 'lowercase'], // Ignore current user's email,
             'phone' => ['required', 'numeric', 'digits_between:9,15', Rule::unique('users', 'phone')->ignore($user->id)],
             'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);

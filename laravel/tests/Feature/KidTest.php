@@ -111,8 +111,8 @@ class KidTest extends TestCase
 
     public function test_user_can_create_a_kid_with_places(): void
     {
-        $place_1 = Place::factory()->create();
-        $place_2 = Place::factory()->create();
+        $place_1 = Place::factory()->create(['place_type' => 'Residência']);
+        $place_2 = Place::factory()->create(['place_type' => 'Residência']);
 
         $kidData = [
             'wheelchair' => fake()->boolean(),
@@ -152,9 +152,9 @@ class KidTest extends TestCase
     
     public function test_user_can_edit_a_kid_and_their_places(): void
     {
-        $place_1 = Place::factory()->create();
-        $place_2 = Place::factory()->create();
-        $place_3 = Place::factory()->create();
+        $place_1 = Place::factory()->create(['place_type' => 'Residência']);
+        $place_2 = Place::factory()->create(['place_type' => 'Residência']);
+        $place_3 = Place::factory()->create(['place_type' => 'Residência']);
 
         $kidData = [
             'wheelchair' => fake()->boolean(),

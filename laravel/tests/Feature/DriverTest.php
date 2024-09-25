@@ -84,7 +84,7 @@ class DriverTest extends TestCase
         ]);
     
         $newHeavyLicense = rand(0,1);
-        $newHeavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $newHeavyLicenseType = $newHeavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         $updatedData = [
             'user_id' => $driver->user_id,

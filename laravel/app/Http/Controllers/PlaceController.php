@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\Kid;
 use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class PlaceController extends Controller
@@ -41,10 +42,11 @@ class PlaceController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'address' => 'required|string|max:255',
+            'address' => ['required', 'string', 'max:255'],
             'known_as' => ['required', 'string', 'max:255'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
+            'place_type' => ['required', Rule::in(['Residência', 'Escola', 'Outros'])],            
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
@@ -57,6 +59,7 @@ class PlaceController extends Controller
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
                 'coordinates' => $coordinates,
+                'place_type' => $incomingFields['place_type'],
             ]);
 
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');
@@ -79,10 +82,11 @@ class PlaceController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'address' => 'required|string|max:255',
+            'address' => 'required', 'string', 'max:255',
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
-            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
+            'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
+            'place_type' => ['required', Rule::in(['Residência', 'Escola', 'Outros'])],            
         ], $customErrorMessages);
 
         $incomingFields['address'] = strip_tags($incomingFields['address']);
@@ -95,6 +99,7 @@ class PlaceController extends Controller
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
                 'coordinates' => $coordinates,
+                'place_type' => $incomingFields['place_type'],
             ]);
 
             return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');

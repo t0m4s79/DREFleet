@@ -13,6 +13,7 @@ use Carbon\Traits\Date;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -59,21 +60,23 @@ class OrderController extends Controller
     //TODO: HEAVY LICENSE FOR HEAVY VEHICLE,....
     public function createOrder(Request $request)
     {
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
-            'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
+            'begin_address' => ['required' , 'string', 'max:255'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
+            'end_address' => ['required', 'string', 'max:255'],
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
@@ -150,21 +153,23 @@ class OrderController extends Controller
     //TODO: IF EDITED AFTER APPROVED NEEDS REAPPROVAL
     public function editOrder(Order $order, Request $request)
     {
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => 'required|string|max:255',
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],
-            'end_address' => 'required|string|max:255',
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,10}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,10}$/'],   
+            'begin_address' => ['required', 'string', 'max:255'],
+            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
+            'end_address' => ['required', 'string', 'max:255'],
+            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
+            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
             'begin_date' => ['required', 'date'],
             'end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
-        ]);
+        ], $customErrorMessages);
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
@@ -182,7 +187,7 @@ class OrderController extends Controller
 
             if ($vehicle->heavy_vehicle == '1' && $driver->heavy_license == '0') {
                 throw ValidationException::withMessages([
-                    'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                    'Este condutor não tem a carta necessária para este veículo. Tente novamente.'
                 ]);
             }
             

@@ -30,6 +30,7 @@ class PlaceFactory extends Factory
             'address' => fake()->address(),
             'known_as' => ''.Arr::random($firstPart) . ' ' . Arr::random($secondPart),
             'coordinates' => new Point($latitude, $longitude),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
         ];
     }
 }

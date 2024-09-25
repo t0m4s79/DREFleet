@@ -26,13 +26,14 @@ export default function AllPlaces( {auth, places, flash} ) {
             ? place.kids.map((kid) => ({ id: kid.id })) // Store kid id in a more structured way
             : [];
       
-        return {id: place.id, address: place.address, known_as: place.known_as, latitude: place.coordinates.coordinates[1], longitude: place.coordinates.coordinates[0], kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
+        return {id: place.id, address: place.address, known_as: place.known_as, place_type: place.place_type ,latitude: place.coordinates.coordinates[1], longitude: place.coordinates.coordinates[0], kids_count: place.kid_ids == [] ? 0: place.kid_ids.length, kids_ids: kidPlacesIds}
     })
 
     const placeColumnLabels = {
         id: 'ID',
         address: 'Morada',
         known_as: 'Conhecido como',
+        place_type: 'Tipo',
         latitude: 'Latitude',
         longitude: 'Longitude',
         kids_count: 'Número de Crianças',
