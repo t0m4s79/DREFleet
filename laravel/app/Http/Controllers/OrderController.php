@@ -64,10 +64,10 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => 'required|string|max:255',
+            'begin_address' => ['required' , 'string', 'max:255'],
             'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
-            'end_address' => 'required|string|max:255',
+            'end_address' => ['required', 'string', 'max:255'],
             'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
             'begin_date' => ['required', 'date'],
@@ -157,10 +157,10 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => 'required|string|max:255',
+            'begin_address' => ['required', 'string', 'max:255'],
             'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
-            'end_address' => 'required|string|max:255',
+            'end_address' => ['required', 'string', 'max:255'],
             'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
             'begin_date' => ['required', 'date'],

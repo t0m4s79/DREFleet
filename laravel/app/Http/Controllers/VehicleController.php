@@ -36,25 +36,25 @@ class VehicleController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'make' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
+            'make' => ['required', 'string', 'max:255'],
+            'model' => ['required', 'string', 'max:255'],
             'license_plate' => [
                 'required',
                 'string',
                 'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
                 Rule::unique(Vehicle::class),
             ],
-            'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
+            'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
             'wheelchair_certified' => 'required',
-            'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
-            'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
+            'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
+            'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
-            'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
+            'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
-            'current_kilometrage' => 'required|integer|min:0'
+            'current_kilometrage' => ['required', 'integer', 'min:0']
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -86,25 +86,25 @@ class VehicleController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'make' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
+            'make' => ['required', 'string', 'max:255'],
+            'model' => ['required', 'string', 'max:255'],
             'license_plate' => [
                 'required',
                 'string',
                 'regex:/^(?=.*[a-zA-Z]{2})[a-zA-Z0-9]{2,6}$/', // Must have at least 2 letters and can contain up to 6 alphanumeric characters
                 Rule::unique('vehicles')->ignore($vehicle->id), // Unique rule that ignores the current vehicle's ID during editing
             ],
-            'year' => 'required|integer|digits:4', // Ensure the year is a 4-digit integer
+            'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
             'heavy_vehicle' => 'required',
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null ,'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'wheelchair_adapted' => 'required',
             'wheelchair_certified' => 'required',
-            'capacity' => 'required|integer|min:1', // Minimum capacity of 1, integer value
-            'fuel_consumption' => 'required|numeric|min:0', // Numeric value, can't be negative
+            'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
+            'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
-            'current_month_fuel_requests' => 'required|integer|min:0', // Integer, can’t be negative
+            'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
-            'current_kilometrage' => 'required|integer|min:0'
+            'current_kilometrage' => ['required', 'integer', 'min:0']
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);

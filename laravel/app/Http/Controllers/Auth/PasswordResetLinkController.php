@@ -33,7 +33,7 @@ class PasswordResetLinkController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $request->validate([
-            'email' => 'required|email',
+            'email' => ['required', 'email'],
         ], $customErrorMessages);
 
         // We will send the password reset link to this user. Once we have attempted
