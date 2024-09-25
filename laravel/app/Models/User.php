@@ -58,13 +58,6 @@ class User extends Authenticatable
         return $this->hasOne(Driver::class);
     }
 
-    //TECHNICIAN-KID RELATION
-    //TECHNICIAN DOESN'T NEED A SEPARATE TABLE FROM USERS BECAUSE, UNLIKE THE DRIVERS, IT DOESN'T HAVE ANY SPECIFIC ATTRIBUTES
-    public function kids(): BelongsToMany
-    {
-        return $this->belongsToMany(Kid::class)->withPivot('priority')->withTimestamps();
-    }
-
     //TODO: CHECK IF THIS IS CORRECT
     public function ordersTechnician(): HasMany
     {

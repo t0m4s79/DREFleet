@@ -16,26 +16,7 @@ class TechnicianController extends Controller
     public function index()
     {
         // Retrieve all technicians with their related kids, including the pivot priority
-        $technicians = User::where('user_type', 'Técnico')
-        ->with(['kids' => function ($query) {
-            $query->withPivot('priority');
-        }])
-        ->get();
-
-        // Transform the collection to add the priority arrays
-        $technicians->transform(function ($technician) {
-            // Filter kids by priority 1
-            $technician->priority_1 = $technician->kids->filter(function ($kid) {
-                return $kid->pivot->priority == 1;
-            })->pluck('id')->toArray();
-
-            // Filter kids by priority 2
-            $technician->priority_2 = $technician->kids->filter(function ($kid) {
-                return $kid->pivot->priority == 2;
-            })->pluck('id')->toArray();
-
-            return $technician;
-        });
+        $technicians = User::where('user_type', 'Técnico')->get();
 
         return Inertia::render('Technicians/AllTechnicians', [
             'flash' => [
@@ -50,21 +31,12 @@ class TechnicianController extends Controller
     {
         $users = User::where('user_type', 'Nenhum')->get();
 
-        $kidsWithPriority1Ids = DB::table('kid_user')
-            ->where('priority', 1)
-            ->pluck('kid_id')
-            ->toArray();
-
-        $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
-
         return Inertia::render('Technicians/NewTechnician', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
             ],
             'users' => $users,
-            'priority1AvailableKids' => $kidsNotWithPriority1,
-            'priority2AvailableKids' =>  Kid::all()
         ]);
     }
 
@@ -75,8 +47,6 @@ class TechnicianController extends Controller
 
         $incomingFields = $request->validate([
             'id' => ['required', 'exists:users,id'],
-            'kidsList1' => 'array',
-            'kidsList2' => 'array',
         ], $customErrorMessages);
 
         $user = User::find($incomingFields['id']);
@@ -85,22 +55,10 @@ class TechnicianController extends Controller
             return redirect('/technicians')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos.');
         }
 
-        $kidsList1 = isset($incomingFields['kidsList1']) ? array_map('strip_tags', $incomingFields['kidsList1']) : [];
-        $kidsList2 = isset($incomingFields['kidsList2']) ? array_map('strip_tags', $incomingFields['kidsList2']) : [];
-
-        $conflictingAdds = array_intersect($kidsList1, $kidsList2);
-
-        if (!empty($conflictingAdds)) {
-            return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
-        }
-
         try {
             $user->update([
                 'user_type' => "Técnico",
             ]);
-
-            $user->kids()->attach($kidsList1, ['priority' => 1]);
-            $user->kids()->attach($kidsList2, ['priority' => 2]);
 
             return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
         
@@ -112,37 +70,12 @@ class TechnicianController extends Controller
 
     public function showEditTechnicianForm(User $user)
     {
-        $kidsWithPriority1Ids = DB::table('kid_user')
-            ->where('priority', 1)
-            ->pluck('kid_id')
-            ->toArray();
-
-        //Kids that still dont have a priority 1 technician
-        $kidsNotWithPriority1 = Kid::whereNotIn('id', $kidsWithPriority1Ids)->get();
-
-        //Every kid except for the ones already associated with the given technician
-        $addPriority2 = Kid::whereNotIn('id', $user->kids()->pluck('kids.id')->toArray())->get();
-
-        $userKids = $user->kids()
-            ->select('kids.id', 'kids.name', 'kid_user.priority')
-            ->get()
-            ->map(function ($kid) {
-                return [
-                    'id' => $kid->id,
-                    'name' => $kid->name,
-                    'priority' => $kid->pivot->priority,
-                ];
-            });
-
         return Inertia::render('Technicians/EditTechnician', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
             ],
             'technician' => $user,
-            'associatedKids' => $userKids,
-            'addPriority1' => $kidsNotWithPriority1,
-            'addPriority2' => $addPriority2,
         ]);
     }
 
@@ -156,34 +89,10 @@ class TechnicianController extends Controller
             'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
-            'addPriority1' => 'array',
-            'removePriority1' => 'array',
-            'addPriority2' => 'array',
-            'removePriority2' => 'array',
-            'changePriority' => 'array',
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-
-        $addPriority1 = isset($incomingFields['addPriority1']) ? array_map('strip_tags', $incomingFields['addPriority1']) : [];
-        $removePriority1 = isset($incomingFields['removePriority1']) ? array_map('strip_tags', $incomingFields['removePriority1']) : [];
-
-        $addPriority2 = isset($incomingFields['addPriority2']) ? array_map('strip_tags', $incomingFields['addPriority2']) : [];
-        $removePriority2 = isset($incomingFields['removePriority2']) ? array_map('strip_tags', $incomingFields['removePriority2']) : [];
-
-        $changePriority = isset($incomingFields['changePriority']) ? array_map('strip_tags', $incomingFields['changePriority']) : [];
-
-
-        //CANT CHANGE AND REMOVE A PRIORITY AT THE SAME TIME
-        if (!empty(array_intersect($changePriority, array_merge($removePriority1, $removePriority2)))) {
-            return redirect()->back()->with('error', 'Não pode remover uma prioridade de uma criança e ao mesmo tempo alterá-la. Por favor, verifique.');
-        }
-
-        //CANT ADD A KID TWICE TO THE SAME TECHNICIAN WITH 2 DIFFERENT PRIORITIES
-        if (array_intersect($addPriority1,$addPriority2)) {
-            return redirect()->back()->with('error', 'Não pode adicionar as mesmas crianças em 2 prioridades diferentes.');
-        }
 
         try {
             $user->update([
@@ -193,24 +102,6 @@ class TechnicianController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
-            
-            $user->kids()->attach($addPriority1, ['priority' => 1]);
-            $user->kids()->attach($addPriority2, ['priority' => 2]);
-
-            $user->kids()->detach($removePriority1);
-            $user->kids()->detach($removePriority2);
-
-            foreach ($changePriority as $kidId) {
-                try {               
-                    $currentPriority = $user->kids()->where('kid_id', $kidId)->first()->pivot->priority;
-                    $newPriority = ($currentPriority == 1) ? 2 : 1; // Switch priority
-                    $user->kids()->updateExistingPivot($kidId, ['priority' => $newPriority]);
-                
-                } catch (\Exception $e) {
-                    dd($e);
-                    return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados das prioriadades do técnico com id ' . $user->id . '. Tente novamente.');
-                }
-            }
             return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
             
         } catch (\Exception $e) {
@@ -226,9 +117,6 @@ class TechnicianController extends Controller
             $user->update([
                 'user_type' => "Nenhum",
             ]);
-
-            $user->kids()->detach();
-
 
             return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
 

@@ -31,7 +31,6 @@ class DatabaseSeeder extends Seeder
         Order::factory(6)->create();
 
         $kids = Kid::all();
-        $technicians = User::where('user_type','Técnico');
         $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places
 
         // Seed kid-place pivot table
@@ -40,19 +39,6 @@ class DatabaseSeeder extends Seeder
             $kid->places()->sync(
                 $places->random(rand(1, 3))->pluck('id')->toArray()
             );
-        });
-
-        // Seed kid-user pivot table
-        $technicians->each(function ($technician) use ($kids) {
-            $kidIds = $kids->random(rand(1, 3))->pluck('id')->toArray(); // Randomly select 1-3 kids
-
-            // Attach each kid with a random priority (1 or 2)
-            foreach ($kidIds as $kidId) {
-                // Check if the relationship already exists before attaching
-                if (!$technician->kids()->where('kid_id', $kidId)->exists()) {
-                    $technician->kids()->attach($kidId, ['priority' => Arr::random([1, 2])]);
-                }
-            }
         });
     }
 }

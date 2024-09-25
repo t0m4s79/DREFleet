@@ -82,7 +82,7 @@ class PlaceController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'address' => 'required', 'string', 'max:255',
+            'address' => ['required', 'string', 'max:255'],
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
