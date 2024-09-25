@@ -28,4 +28,7 @@
 
 ![Diagrama Relações](https://github.com/user-attachments/assets/c6c15152-f48e-4fbd-943c-e86f6a96cb76)
 
+# Updated Entity Relationship Diagram
+
+![Diagrama Relações Atualizado drawio](https://github.com/user-attachments/assets/001af184-edb1-4a3e-8cb2-efa4bf11a093)
 
