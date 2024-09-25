@@ -47,7 +47,7 @@ class UserController extends Controller
         $incomingFields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'lowercase'],
-            'phone' => ['required|numeric', 'digits_between:9,15', 'unique:users,phone'],
+            'phone' => ['required', 'numeric', 'digits_between:9,15', 'unique:users,phone'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], $customErrorMessages);
 
