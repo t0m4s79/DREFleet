@@ -25,7 +25,7 @@ class OrderTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    private function generateTrajectory($startLat, $startLng, $endLat, $endLng)
+    private function generateRandomTrajectory($startLat, $startLng, $endLat, $endLng)
     {
         $points = [];
         $numPoints = rand(2,6); // Number of points in the trajectory
@@ -81,7 +81,7 @@ class OrderTest extends TestCase
 
 
 
-        $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
         $orderData = [
             'trajectory' => json_encode($trajectory),
@@ -151,7 +151,7 @@ class OrderTest extends TestCase
         $endLatitude = fake()->latitude();
         $endLongitude = fake()->longitude();
 
-        $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
     
         $updatedData = [
             'trajectory' => json_encode($trajectory),
@@ -237,7 +237,7 @@ class OrderTest extends TestCase
         $endLatitude = fake()->latitude();
         $endLongitude = fake()->longitude();
 
-        $trajectory = $this->generateTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
 
         $incomingFields = [
             'trajectory' => json_encode($trajectory),

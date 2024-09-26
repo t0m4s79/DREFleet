@@ -12,9 +12,10 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -57,7 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
     Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
 
-    //ORDERS (MAPS)
+    //ORDERS
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
     Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
@@ -65,6 +66,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::put('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
+
+    //ORDER ROUTES
+    Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
+    Route::get('/orderRoutes/create', [OrderRouteController::class, 'showCreateOrderRouteForm'])->name('orderRoutes.showCreate');
+    Route::post('/orderRoutes/create', [OrderRouteController::class, 'createOrderRoute'])->name('orderRoutes.create');
+    Route::get('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEditOrder');
+    Route::put('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
+    Route::delete('/orderRoutes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
