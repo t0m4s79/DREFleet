@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-//TODO: RELATION BETWEEN STOPS AND KIDS?
+//TODO: RELATION BETWEEN STOPS AND KIDS WITH PLACES INCLUDED
+//TODO: LOGIC AND CODE IMPLEMENTATION
 class OrderStop extends Model
 {
     use HasFactory;

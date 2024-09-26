@@ -52,9 +52,9 @@ class PlaceController extends Controller
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
 
-        $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
-
         try {
+            $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
+
             $place = Place::create([
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
