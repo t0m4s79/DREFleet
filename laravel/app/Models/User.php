@@ -58,7 +58,6 @@ class User extends Authenticatable
         return $this->hasOne(Driver::class);
     }
 
-    //TODO: CHECK IF THIS IS CORRECT
     public function ordersTechnician(): HasMany
     {
         return $this->hasMany(Order::class, 'technician_id');
@@ -67,5 +66,10 @@ class User extends Authenticatable
     public function ordersManager(): HasMany
     {
         return $this->hasMany(Order::class, 'manager_id');
+    }
+
+    public function orderRoutes(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
 }

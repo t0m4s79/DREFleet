@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Driver extends Model
 {
@@ -60,5 +61,11 @@ class Driver extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function orderRoutes(): BelongsToMany
+    {
+        //return $this->belongsToMany(User::class)->withPivot('priority')->withTimestamps();
+        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
 }
