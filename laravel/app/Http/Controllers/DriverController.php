@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 
 class DriverController extends Controller
 {
-    public function index() //: Response
+    public function index() : Response
     {
         $drivers = Driver::all();
 

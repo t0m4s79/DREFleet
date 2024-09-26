@@ -52,9 +52,9 @@ class PlaceController extends Controller
         $incomingFields['address'] = strip_tags($incomingFields['address']);
         $incomingFields['known_as'] = strip_tags($incomingFields['known_as']);
 
-        $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
-
         try {
+            $coordinates = new Point($incomingFields['latitude'], $incomingFields['longitude']);
+
             $place = Place::create([
                 'address' => $incomingFields['address'],
                 'known_as' => $incomingFields['known_as'],
@@ -82,7 +82,7 @@ class PlaceController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'address' => 'required', 'string', 'max:255',
+            'address' => ['required', 'string', 'max:255'],
             'known_as' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],

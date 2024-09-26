@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
@@ -29,10 +30,13 @@ class DatabaseSeeder extends Seeder
         Kid::factory(10)->create();
         Place::factory(25)->create();
         Order::factory(6)->create();
+        OrderRoute::factory(3)->create();
 
         $kids = Kid::all();
-        $technicians = User::where('user_type','Técnico');
         $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places
+        $drivers = Driver::all();
+        $technicians = User::where('user_type', 'Técnico')->get();
+        $orderRoutes = OrderRoute::all();
 
         // Seed kid-place pivot table
         $kids->each(function ($kid) use ($places) {
@@ -42,17 +46,16 @@ class DatabaseSeeder extends Seeder
             );
         });
 
-        // Seed kid-user pivot table
-        $technicians->each(function ($technician) use ($kids) {
-            $kidIds = $kids->random(rand(1, 3))->pluck('id')->toArray(); // Randomly select 1-3 kids
+        // Seed orderRoute-driver and orderRoute-technician pivot tables
+        $orderRoutes->each(function ($orderRoute) use ($drivers, $technicians) {
+           
+            $orderRoute->drivers()->sync(
+                $drivers->random(rand(1, 3))->pluck('user_id')->toArray()
+            );
 
-            // Attach each kid with a random priority (1 or 2)
-            foreach ($kidIds as $kidId) {
-                // Check if the relationship already exists before attaching
-                if (!$technician->kids()->where('kid_id', $kidId)->exists()) {
-                    $technician->kids()->attach($kidId, ['priority' => Arr::random([1, 2])]);
-                }
-            }
+            $orderRoute->technicians()->sync(
+                $technicians->random(rand(1, 3))->pluck('id')->toArray()
+            );
         });
     }
 }

@@ -20,23 +20,13 @@ export default function AllTechnicians({ auth, technicians, flash }) {
     }, [flash]);
     
     //Deconstruct data to send to table component
-    const technicianInfo = technicians.map((technician) => { 
-        const techKidsPrio1Ids = technician.priority_1.length
-            ? technician.priority_1.map((kidId) => ({ id: kidId }))
-            : [];
-        
-        const techKidsPrio2Ids = technician.priority_2.length
-            ? technician.priority_2.map((kidId) => ({ id: kidId }))
-            : [];
-        
+    const technicianInfo = technicians.map((technician) => {   
         return {
             id: technician.id,
             name: technician.name,
             email: technician.email,
             phone: technician.phone,
             status: technician.status,
-            kidsList1: techKidsPrio1Ids,
-            kidsList2: techKidsPrio2Ids
         }
     })
 
@@ -46,8 +36,6 @@ export default function AllTechnicians({ auth, technicians, flash }) {
         email: 'Email',
         phone: 'Numero de Telefone',
         status: 'Estado',
-        kidsList1: 'Crianças de Prioridade 1',
-        kidsList2: 'Crianças de Prioridade 2',
     };
     
     return (
