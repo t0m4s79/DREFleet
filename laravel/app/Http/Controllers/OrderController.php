@@ -7,9 +7,12 @@ use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Carbon\Traits\Date;
+use App\Models\OrderStop;
+use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
@@ -20,6 +23,13 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
 {
+    protected $orderStopController;
+
+    public function __construct(OrderStopController $orderStopController)
+    {
+        $this->orderStopController = $orderStopController;
+    }
+
     public function index()
     {
         $orders = Order::all();
@@ -40,6 +50,8 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $kids = Kid::with('places')->get();
+        $otherPlaces = Place::whereNot('place_type', 'Residência');
+        $routes = OrderRoute::all();
 
         return Inertia::render('Orders/NewOrder', [
             'flash' => [
@@ -50,6 +62,8 @@ class OrderController extends Controller
             'vehicles' => $vehicles,
             'technicians' => $technicians,
             'kids' => $kids,
+            'otherPlaces' => $otherPlaces,
+            'orderRoutes' => $routes,
         ]);
     }
 
@@ -57,7 +71,7 @@ class OrderController extends Controller
     //TODO: FRONTEND BACKEND-> STYLE AND VERIFICATION
     //TODO: CUSTOM ERROR MESSAGES
     //TODO: SNACKBAR
-    //TODO: HEAVY LICENSE FOR HEAVY VEHICLE,....
+    //TODO: TESTS WITH KIDS AND PLACES
     public function createOrder(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -70,12 +84,17 @@ class OrderController extends Controller
             'end_address' => ['required', 'string', 'max:255'],
             'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
-            'begin_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
+            'planned_begin_date' => ['required', 'date'],
+            'planned_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
+            'order_route_id' => ['nullable', 'exists:order_routes,id'],
+            'places' => ['required', 'array'], // Ensure 'places' is an array
+            'places.*' => ['array'],           // Ensure each item in 'places' is an array
+            'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
+            'places.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
         ], $customErrorMessages);
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
@@ -83,7 +102,9 @@ class OrderController extends Controller
 
         $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
         $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
-        
+
+        $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
+
         try {
             $user = User::find($request->input('technician_id'));
             if (!$user || $user->user_type !== 'Técnico') {     //TODO: ADD THIS ERRORS TO FRONT-END INSTEAD OF REDIRECTING
@@ -95,17 +116,24 @@ class OrderController extends Controller
             $vehicle = Vehicle::find($request->input('vehicle_id'));
             $driver = Driver::find($request->input('driver_id'));
 
-            if ($vehicle->heavy_vehicle == '1' && $driver->heavy_license == '0') {
-                throw ValidationException::withMessages([
-                    'Este condutor não tem a carta necessária para este veículo. Tente novamente'
-                ]);
+            if ($vehicle->heavy_vehicle == '1') {
+                if ($driver->heavy_license == '0') {
+                    throw ValidationException::withMessages([
+                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                    ]);
+                
+                } else if ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadoriass') {
+                    throw ValidationException::withMessages([
+                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                    ]);
+                }
             }
 
-            Order::create([
+            $order = Order::create([
                 'begin_address' => $incomingFields['begin_address'],
                 'end_address' => $incomingFields['end_address'],
-                'begin_date' => $incomingFields['begin_date'],
-                'end_date' => $incomingFields['end_date'],
+                'planned_begin_date' => $incomingFields['planned_begin_date'],
+                'planned_end_date' => $incomingFields['planned_end_date'],
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
@@ -113,9 +141,22 @@ class OrderController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
+                'order_route_id' => $incomingFields['order_route_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
+            //TODO: PLANNED ARRIVAL DATE??
+            // Create the order stops
+            foreach ($incomingFields['places'] as $place) {
+                $orderStopRequest = new Request([
+                    'order_id' => $order->id,
+                    'place_id' => $place['place_id'],
+                    'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
+                ]);
+
+                $this->orderStopController->createOrderStop($orderStopRequest);
+            }
+
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 
         } catch (ValidationException $e) {
             dd($e);
@@ -127,7 +168,6 @@ class OrderController extends Controller
         }
     }
 
-    //TODO: ADD PLACES ATTACHED TO THE KIDS ARRAY
     public function showEditOrderForm(Order $order)
     {
         $drivers = Driver::all();
@@ -135,6 +175,8 @@ class OrderController extends Controller
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
         $kids = Kid::with('places')->get();
+        $otherPlaces = Place::whereNot('place_type', 'Residência');
+        $routes = OrderRoute::all();
 
         return Inertia::render('Orders/EditOrder', [
             'flash' => [
@@ -147,6 +189,8 @@ class OrderController extends Controller
             'technicians' => $technicians,
             'managers' => $managers,
             'kids' => $kids,
+            'otherPlaces' => $otherPlaces,
+            'orderRoutes' => $routes,
         ]);
     }
 
@@ -163,21 +207,29 @@ class OrderController extends Controller
             'end_address' => ['required', 'string', 'max:255'],
             'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
             'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
-            'begin_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
+            'planned_begin_date' => ['required', 'date'],
+            'planned_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
             'technician_id' => ['required','exists:users,id'],
+            'order_route_id' => ['nullable', 'exists:order_routes,id'],
+            'addPlaces' => ['nullable', 'array'], // Ensure 'places' is an array
+            'addPlaces.*' => ['array'],           // Ensure each item in 'places' is an array
+            'addPlaces.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
+            'addPlaces.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
+            'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
         ], $customErrorMessages);
 
         $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
 
+        $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
+
         try {
             $user = User::find($request->input('technician_id'));
             if (!$user || $user->user_type !== 'Técnico') {
-                throw ValidationException::withMessages([       //TODO: Check this code
+                throw ValidationException::withMessages([
                     'technician_id' => ['O valor do campo selecionado para o técnico é inválido. Tente novamente.']
                 ]);
             }
@@ -185,10 +237,17 @@ class OrderController extends Controller
             $vehicle = Vehicle::find($request->input('vehicle_id'));
             $driver = Driver::find($request->input('driver_id'));
 
-            if ($vehicle->heavy_vehicle == '1' && $driver->heavy_license == '0') {
-                throw ValidationException::withMessages([
-                    'Este condutor não tem a carta necessária para este veículo. Tente novamente.'
-                ]);
+            if ($vehicle->heavy_vehicle == '1') {
+                if ($driver->heavy_license == '0') {
+                    throw ValidationException::withMessages([
+                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                    ]);
+                
+                } else if ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadoriass') {
+                    throw ValidationException::withMessages([
+                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
+                    ]);
+                }
             }
             
             $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
@@ -197,8 +256,8 @@ class OrderController extends Controller
             $order->update([
                 'begin_address' => $incomingFields['begin_address'],
                 'end_address' => $incomingFields['end_address'],
-                'begin_date' => $incomingFields['begin_date'],
-                'end_date' => $incomingFields['end_date'],
+                'planned_begin_date' => $incomingFields['planned_begin_date'],
+                'planned_end_date' => $incomingFields['planned_end_date'],
                 'begin_coordinates' => $beginCoordinates,
                 'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
@@ -206,9 +265,27 @@ class OrderController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
+                'order_route_id' => $incomingFields['order_route_id'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Pedido criado com sucesso!');
+            //TODO: PLANNED ARRIVAL DATE??
+            // Create the new order stops
+            foreach ($incomingFields['addPlaces'] as $place) {
+                $orderStopRequest = new Request([
+                    'order_id' => $order->id,
+                    'place_id' => $place['place_id'],
+                    'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
+                ]);
+
+                $this->orderStopController->createOrderStop($orderStopRequest);
+            }
+
+            // Delete the removed order stops
+            foreach ($incomingFields['removePlaces'] as $placeId) {
+                $this->orderStopController->deleteOrderStop($placeId);
+            }
+
+            return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         }  catch (ValidationException $e) {
             dd($e);
@@ -216,7 +293,7 @@ class OrderController extends Controller
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -226,18 +303,19 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
-            return redirect()->route('orders.index')->with('message', 'Pedido apagado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
-    public function approveOrder(Order $order, Request $request) {
+    //TODO: NEEDS TESTING
+    public function approveOrder(Order $order, Request $request) 
+    {
         //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
 
-        dd($request);
         $incomingFields = $request->validate([
             'manager_id' => ['required', 'exists:users,id']
         ]);
@@ -249,11 +327,55 @@ class OrderController extends Controller
                 'approved_date' => $currentDate,
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Dados do pedido atualizados com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    //TODO: NEEDS ROUTE IN WEB
+    //TODO: NEEDS TESTING
+    public function setOrderActualBeginDate(Order $order, Request $request) 
+    {
+
+        $incomingFields = $request->validate([
+            'actual_begin_date' => ['required', 'date']
+        ]);
+
+        try {
+            $order->update([
+                'actual_begin_date' => $incomingFields['actual_begin_date'],
+            ]);
+
+            return redirect()->route('orders.index')->with('message', 'Data em que pedido começou definida para o pedido com id ' . $order->id);
+
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que pedido começou para o pedido com id ' . $order->id);
+        }
+    }
+
+    //TODO: NEEDS ROUTE IN WEB
+    //TODO: NEEDS TESTING
+    public function setOrderActualEndDate(Order $order, Request $request) 
+    {
+
+        $incomingFields = $request->validate([
+            'actual_end_date' => ['required', 'date']
+        ]);
+
+        try {
+            $order->update([
+                'actual_end_date' => $incomingFields['actual_end_date'],
+            ]);
+
+            return redirect()->route('orders.index')->with('message', 'Data em que pedido acabou definida para o pedido com id ' . $order->id);
+
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que pedido acabou para o pedido com id ' . $order->id);
         }
     }
 }

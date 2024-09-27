@@ -15,8 +15,10 @@ class Order extends Model
     protected $fillable = [
         'begin_address',
         'end_address',
-        'begin_date',
-        'end_date',
+        'planned_begin_date',
+        'actual_begin_date',
+        'planned_end_date',
+        'actual_end_date',
         'begin_coordinates',
         'end_coordinates',
         'trajectory',

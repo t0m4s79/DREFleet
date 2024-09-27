@@ -43,8 +43,8 @@ class OrderFactory extends Factory
         return [
             'begin_address' => fake()->address(),
             'end_address' => fake()->address(),
-            'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
-            'end_date' => fake()->dateTimeBetween('2024-01-01','2025-12-31'),
+            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
+            'planned_end_date' => fake()->dateTimeBetween('2024-01-01','2025-12-31'),
             'begin_coordinates' => new Point($begin_latitude, $begin_longitude),
             'end_coordinates' => new Point($end_latitude, $end_longitude),
             'trajectory' => json_encode($trajectory),

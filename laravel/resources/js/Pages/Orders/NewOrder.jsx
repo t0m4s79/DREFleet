@@ -81,8 +81,8 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                             required 
                         /><br/>
 
-                        <label htmlFor="begin_date">Data e Hora de Início</label><br/>
-                        <input type="datetime-local" id="begin_date" name="begin_date"/><br/>
+                        <label htmlFor="planned_end_date">Data e Hora de Início</label><br/>
+                        <input type="datetime-local" id="planned_end_date" name="planned_end_date"/><br/>
 
                         <label htmlFor="end_date">Data e Hora de Fim</label><br />
                         <input type="datetime-local" id="end_date" name="end_date"/><br/>

@@ -8,6 +8,7 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 //TODO: RELATION BETWEEN STOPS AND KIDS WITH PLACES INCLUDED
 //TODO: LOGIC AND CODE IMPLEMENTATION
@@ -34,5 +35,10 @@ class OrderStop extends Model
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
+    }
+
+    public function kids(): BelongsToMany
+    {
+        return $this->belongsToMany(Kid::class)->withPivot('order_stop_place_id');
     }
 }
