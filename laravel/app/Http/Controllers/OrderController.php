@@ -8,6 +8,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Driver;
+use App\Models\Place;
 use App\Models\Vehicle;
 use Carbon\Traits\Date;
 use Illuminate\Http\Request;
@@ -39,7 +40,9 @@ class OrderController extends Controller
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
+        $managers = User::where('user_type', 'Gestor')->get();
         $kids = Kid::with('places')->get();
+        $places = Place::all();
 
         return Inertia::render('Orders/NewOrder', [
             'flash' => [
@@ -49,6 +52,8 @@ class OrderController extends Controller
             'drivers' => $drivers,
             'vehicles' => $vehicles,
             'technicians' => $technicians,
+            'managers' => $managers,
+            'places' => $places,
             'kids' => $kids,
         ]);
     }
@@ -134,7 +139,9 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
+        $places = Place::all();                     //TODO: TO BE CHANGED
         $kids = Kid::with('places')->get();
+        //dd($order);
 
         return Inertia::render('Orders/EditOrder', [
             'flash' => [
@@ -146,6 +153,7 @@ class OrderController extends Controller
             'vehicles' => $vehicles,
             'technicians' => $technicians,
             'managers' => $managers,
+            'places' => $places,
             'kids' => $kids,
         ]);
     }
