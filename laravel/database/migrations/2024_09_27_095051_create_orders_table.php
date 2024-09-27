@@ -16,14 +16,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('begin_address');
-            $table->string('end_address');
-            $table->dateTime('planned_begin_date');
-            $table->dateTime('actual_begin_date')->nullable();
-            $table->dateTime('planned_end_date');
-            $table->dateTime('actual_end_date')->nullable();
-            $table->geography('begin_coordinates', subtype: 'point', srid: 4326);
-            $table->geography('end_coordinates', subtype: 'point', srid: 4326);
+
             $table->json('trajectory');
             $table->dateTime('approved_date')->nullable();
             $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);

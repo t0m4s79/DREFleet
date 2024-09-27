@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
 use Illuminate\Support\Arr;
@@ -40,23 +41,23 @@ class OrderFactory extends Factory
         // Randomly decide if the order is approved
         $isApproved = fake()->boolean();
 
+        // Randomly decide if the order has a defined route
+        $hasRoute = fake()->boolean();
+
         // If approved, generate an approved date and assign a manager
         $approved_date = $isApproved ? fake()->dateTimeBetween('2024-01-01', '2025-12-31') : null;
         $manager = $isApproved ? ManagerFactory::new()->create() : null;
 
+        $route = $hasRoute? OrderRouteFactory::new()->create() : null;
+
         return [
-            'begin_address' => Place::factory()->create()->address,
-            'end_address' => Place::factory()->create()->address,
-            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
-            'planned_end_date' => fake()->dateTimeBetween('2024-01-01','2025-12-31'),
-            'begin_coordinates' => new Point($begin_latitude, $begin_longitude),
-            'end_coordinates' => new Point($end_latitude, $end_longitude),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
             'vehicle_id' => $vehicle->id,
             'driver_id' => $driver->user_id,
             'technician_id' => $technician->id,
+            'order_route_id' => $hasRoute ? $route->id : null,
 
             'approved_date' => $approved_date ? $approved_date : null,
             'manager_id' => $manager ? $manager->id : null,

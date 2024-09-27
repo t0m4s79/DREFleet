@@ -78,14 +78,6 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => ['required' , 'string', 'max:255'],
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
-            'end_address' => ['required', 'string', 'max:255'],
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
-            'planned_begin_date' => ['required', 'date'],
-            'planned_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
@@ -96,12 +88,6 @@ class OrderController extends Controller
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
         ], $customErrorMessages);
-
-        $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
-        $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-
-        $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
-        $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
@@ -130,12 +116,6 @@ class OrderController extends Controller
             }
 
             $order = Order::create([
-                'begin_address' => $incomingFields['begin_address'],
-                'end_address' => $incomingFields['end_address'],
-                'planned_begin_date' => $incomingFields['planned_begin_date'],
-                'planned_end_date' => $incomingFields['planned_end_date'],
-                'begin_coordinates' => $beginCoordinates,
-                'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
@@ -201,14 +181,6 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
-            'begin_address' => ['required', 'string', 'max:255'],
-            'begin_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
-            'begin_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],
-            'end_address' => ['required', 'string', 'max:255'],
-            'end_latitude' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'],
-            'end_longitude' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'],   
-            'planned_begin_date' => ['required', 'date'],
-            'planned_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => ['required','exists:drivers,user_id'],
@@ -221,13 +193,9 @@ class OrderController extends Controller
             'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
         ], $customErrorMessages);
 
-        $incomingFields['begin_address'] = strip_tags($incomingFields['begin_address']);
-        $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
-
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
         $incomingFields['addPlaces'] = $incomingFields['addPlaces'] ?? null;
         $incomingFields['removePlaces'] = $incomingFields['removePlaces'] ?? null;
-
 
         try {
             $user = User::find($request->input('technician_id'));
@@ -253,16 +221,7 @@ class OrderController extends Controller
                 }
             }
             
-            $beginCoordinates = new Point($incomingFields['begin_latitude'], $incomingFields['begin_longitude']);
-            $endCoordinates = new Point($incomingFields['end_latitude'], $incomingFields['end_longitude']);
-
             $order->update([
-                'begin_address' => $incomingFields['begin_address'],
-                'end_address' => $incomingFields['end_address'],
-                'planned_begin_date' => $incomingFields['planned_begin_date'],
-                'planned_end_date' => $incomingFields['planned_end_date'],
-                'begin_coordinates' => $beginCoordinates,
-                'end_coordinates' => $endCoordinates,
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
@@ -291,7 +250,7 @@ class OrderController extends Controller
                     $this->orderStopController->deleteOrderStop($placeId);
                 }
             }
-            
+
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         }  catch (ValidationException $e) {
@@ -339,50 +298,6 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
-        }
-    }
-
-    //TODO: NEEDS ROUTE IN WEB
-    //TODO: NEEDS TESTING
-    public function setOrderActualBeginDate(Order $order, Request $request) 
-    {
-
-        $incomingFields = $request->validate([
-            'actual_begin_date' => ['required', 'date']
-        ]);
-
-        try {
-            $order->update([
-                'actual_begin_date' => $incomingFields['actual_begin_date'],
-            ]);
-
-            return redirect()->route('orders.index')->with('message', 'Data em que pedido começou definida para o pedido com id ' . $order->id);
-
-        } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que pedido começou para o pedido com id ' . $order->id);
-        }
-    }
-
-    //TODO: NEEDS ROUTE IN WEB
-    //TODO: NEEDS TESTING
-    public function setOrderActualEndDate(Order $order, Request $request) 
-    {
-
-        $incomingFields = $request->validate([
-            'actual_end_date' => ['required', 'date']
-        ]);
-
-        try {
-            $order->update([
-                'actual_end_date' => $incomingFields['actual_end_date'],
-            ]);
-
-            return redirect()->route('orders.index')->with('message', 'Data em que pedido acabou definida para o pedido com id ' . $order->id);
-
-        } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que pedido acabou para o pedido com id ' . $order->id);
         }
     }
 }

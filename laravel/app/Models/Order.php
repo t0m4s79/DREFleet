@@ -13,20 +13,13 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'begin_address',
-        'end_address',
-        'planned_begin_date',
-        'actual_begin_date',
-        'planned_end_date',
-        'actual_end_date',
-        'begin_coordinates',
-        'end_coordinates',
         'trajectory',
         'order_type',
 
         'vehicle_id',
         'driver_id',
         'technician_id',
+        'route_id',
 
         'manager_id',
         'approved_date',
