@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use App\Models\OrderStop;
 use Illuminate\Support\Arr;
 use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
@@ -134,6 +135,19 @@ class OrderTest extends TestCase
             'driver_id' => $orderData['driver_id'],
             'technician_id' => $orderData['technician_id'],
         ]);
+
+        
+        $order = Order::where('trajectory', json_encode($trajectory))
+                    ->where('vehicle_id', $orderData['vehicle_id'])
+                    ->where('driver_id', $orderData['driver_id'])
+                    ->where('technician_id', $orderData['technician_id'])
+                    ->first();
+        
+        // Count the number of order stops associated with the created order
+        $orderStopsCount = OrderStop::where('order_id', $order->id)->count();
+        
+        // Assert that the number of order stops matches the size of the placesData array
+        $this->assertEquals(count($placesData), $orderStopsCount);
     }
 
 
@@ -177,6 +191,76 @@ class OrderTest extends TestCase
         ]);
     }
 
+    public function test_user_can_add_and_removes_places_to_an_order(): void
+    {
+        $order = Order::factory()->create();
+        $removeOrderStop = OrderStop::where('order_id', $order->id)->inRandomOrder()->first();
+        $addPlace = Place::factory()->create();
+
+        $this->assertDatabaseHas('order_stops', [
+            'id' => $removeOrderStop->id,
+            'order_id' => $order->id,
+        ]);
+
+        $this->assertDatabaseMissing('order_stops', [
+            'id' => $addPlace->id,
+            'order_id' => $order->id,
+        ]);
+
+        $beginLatitude = fake()->latitude();
+        $beginLongitude = fake()->longitude();
+
+        $endLatitude = fake()->latitude();
+        $endLongitude = fake()->longitude();
+
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+    
+        $updatedData = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'addPlaces' => [
+                [
+                'place_id' => $addPlace->id,  // Add necessary fields
+                ]
+            ],
+
+            'removePlaces' => [$removeOrderStop->id],
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/orders');
+
+        $order->refresh();
+
+        $this->assertDatabaseMissing('order_stops', [
+            'id' => $removeOrderStop->id,
+            'order_id' => $order->id,
+        ]);
+
+        $this->assertDatabaseHas('order_stops', [
+            'place_id' => $addPlace->id,
+            'order_id' => $order->id,
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'trajectory' => $order->trajectory,
+            'order_type' => $order->order_type,
+            'vehicle_id' => $order->vehicle_id,
+            'driver_id' => $order->driver_id,
+            'technician_id' => $order->technician_id,
+        ]);
+    }
+
     public function test_user_can_delete_an_order(): void
     {
         $order = Order::factory()->create();
@@ -194,12 +278,32 @@ class OrderTest extends TestCase
         ]);
     }
 
-    public function test_user_can_approve_a_order(): void
+    public function test_user_can_approve_a_order(): void       //TODO: NEEDS FIXING
     {
-        //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
+        $manager = User::factory()->create([
+            'user_type' => 'Gestor',
+        ]);
+
+        $order = Order::factory()->create([
+            'approved_date' => null,
+            'manager_id' => null,
+        ]);
+
+        $this->actingAs($manager);
+
+        $response = $this->put(route('orders.approve', $order), [
+            'manager_id' => $manager->id,
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'manager_id' => $manager->id,
+        ]);
+
+        $response->assertRedirect(route('orders.index'));      
     }
 
-    public function test_approve_order_fails_with_invalid_manager_id(): void
+    public function test_approve_order_fails_with_invalid_manager_id(): void    //TODO: NEEDS IMPLEMENTING
     {
         //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
     }
