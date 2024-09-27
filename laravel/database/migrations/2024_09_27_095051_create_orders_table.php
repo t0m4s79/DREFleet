@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {      //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (ORDER_STATUS)
-            $table->id();                                           //TODO: IF A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
+        //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (ORDER_STATUS)
+        //TODO: IF A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
             $table->string('begin_address');
             $table->string('end_address');
-            $table->dateTime('begin_date');
-            $table->dateTime('end_date');
+            $table->dateTime('planned_begin_date');
+            $table->dateTime('actual_begin_date')->nullable();
+            $table->dateTime('planned_end_date');
+            $table->dateTime('actual_end_date')->nullable();
             $table->geography('begin_coordinates', subtype: 'point', srid: 4326);
             $table->geography('end_coordinates', subtype: 'point', srid: 4326);
             $table->json('trajectory');
@@ -35,6 +39,9 @@ return new class extends Migration
 
             $table->unsignedBigInteger('technician_id');
             $table->foreign('technician_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->unsignedBigInteger('order_route_id')->nullable();
+            $table->foreign('order_route_id')->references('id')->on('order_routes')->onDelete('set null');
         });
     }
 
