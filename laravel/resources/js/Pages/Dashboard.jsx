@@ -200,8 +200,8 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 Veículos em Manutenção
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {vehicles.filter(vehicle => vehicle.status === 'Em Manutenção').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Em Manutenção').map(vehicle => (
+                                    {vehicles.filter(vehicle => vehicle.status === 'Em manutenção').length > 0 ? (
+                                        vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => (
                                             <div>
                                                 <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
                                                     #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
