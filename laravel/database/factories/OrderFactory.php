@@ -2,9 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Kid;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use App\Models\OrderStop;
 use Illuminate\Support\Arr;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -41,8 +45,8 @@ class OrderFactory extends Factory
         $manager = $isApproved ? ManagerFactory::new()->create() : null;
 
         return [
-            'begin_address' => fake()->address(),
-            'end_address' => fake()->address(),
+            'begin_address' => Place::factory()->create()->address,
+            'end_address' => Place::factory()->create()->address,
             'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
             'planned_end_date' => fake()->dateTimeBetween('2024-01-01','2025-12-31'),
             'begin_coordinates' => new Point($begin_latitude, $begin_longitude),
@@ -74,5 +78,39 @@ class OrderFactory extends Factory
         }
 
         return $points;
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Order $order) {
+            $trajectory = json_decode($order->trajectory, true);
+
+            // Create stops for each point
+            foreach ($trajectory as $point) {
+                $lat = $point['lat'];
+                $lng = $point['lng'];
+
+                $coordinates = new Point($lng, $lat);
+
+                $place = Place::factory()->create([
+                    'coordinates' => $coordinates,
+                ]);
+
+                // Create the order stop associated with this order
+                $orderStop = OrderStop::factory()->create([
+                    'order_id' => $order->id,
+                    'place_id' => $place->id,
+                ]);
+
+                if (rand(0, 1) === 1) {
+                    $place->update([
+                        'place_type' => 'Residência', // Replace 'some_attribute' with the actual attribute you want to update
+                    ]);
+                    $kid = Kid::factory()->create();
+                    $kid->places()->attach($place->id);
+                    $kid->orderStops()->attach($orderStop->id, ['place_id' => $place->id]);
+                }
+            }
+        });
     }
 }
