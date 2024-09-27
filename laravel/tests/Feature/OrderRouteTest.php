@@ -12,7 +12,7 @@ use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
 
-class OrderRoutesTest extends TestCase
+class OrderRouteTest extends TestCase
 {
     protected $user;
 
