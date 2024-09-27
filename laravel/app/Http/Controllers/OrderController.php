@@ -287,10 +287,9 @@ class OrderController extends Controller
         ]);
 
         try {
-            $currentDate = Date::now()->toDateTimeString();
             $order->update([
                 'manager_id' => $incomingFields['manager_id'],
-                'approved_date' => $currentDate,
+                'approved_date' => now(),
             ]);
 
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
