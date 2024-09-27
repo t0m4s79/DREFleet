@@ -225,6 +225,9 @@ class OrderController extends Controller
         $incomingFields['end_address'] = strip_tags($incomingFields['end_address']);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
+        $incomingFields['addPlaces'] = $incomingFields['addPlaces'] ?? null;
+        $incomingFields['removePlaces'] = $incomingFields['removePlaces'] ?? null;
+
 
         try {
             $user = User::find($request->input('technician_id'));
@@ -270,21 +273,25 @@ class OrderController extends Controller
 
             //TODO: PLANNED ARRIVAL DATE??
             // Create the new order stops
-            foreach ($incomingFields['addPlaces'] as $place) {
-                $orderStopRequest = new Request([
-                    'order_id' => $order->id,
-                    'place_id' => $place['place_id'],
-                    'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
-                ]);
+            if($incomingFields['addPlaces'] != null) {
+                foreach ($incomingFields['addPlaces'] as $place) {
+                    $orderStopRequest = new Request([
+                        'order_id' => $order->id,
+                        'place_id' => $place['place_id'],
+                        'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
+                    ]);
 
-                $this->orderStopController->createOrderStop($orderStopRequest);
+                    $this->orderStopController->createOrderStop($orderStopRequest);
+                }
             }
 
             // Delete the removed order stops
-            foreach ($incomingFields['removePlaces'] as $placeId) {
-                $this->orderStopController->deleteOrderStop($placeId);
+            if($incomingFields['removePlaces'] != null){
+                foreach ($incomingFields['removePlaces'] as $placeId) {
+                    $this->orderStopController->deleteOrderStop($placeId);
+                }
             }
-
+            
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         }  catch (ValidationException $e) {

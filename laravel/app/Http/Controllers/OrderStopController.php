@@ -33,7 +33,7 @@ class OrderStopController extends Controller
 
             if (isset($incomingFields['kid_id'])) {
                 $orderStop->kids()->attach($incomingFields['kid_id'], [
-                    'order_stop_place_id' => $incomingFields['place_id'],
+                    'place_id' => $incomingFields['place_id'],
                     'order_stop_id' => $orderStop->id,
                 ]);
             }

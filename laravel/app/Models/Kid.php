@@ -29,6 +29,6 @@ class Kid extends Model
 
     public function orderStops(): BelongsToMany
     {
-        return $this->belongsToMany(OrderStop::class)->withPivot('order_stop_place_id');
+        return $this->belongsToMany(OrderStop::class)->withPivot('place_id');
     }
 }
