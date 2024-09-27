@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Kid;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
@@ -42,6 +44,29 @@ class OrderTest extends TestCase
         return $points;
     }
 
+    private function generateRandomPlacesAndKids() {
+        $places = Place::factory()->count(rand(1,5))->create();
+
+        // Prepare the data for the order creation
+        $placesData = [];
+        foreach ($places as $place) {
+            if (rand(0, 1) === 1) { // 50% chance to have a kid
+                $kid = Kid::factory()->create();
+                $kid->places()->attach($place->id);
+                $placesData[] = [
+                    'place_id' => $place->id,
+                    'kid_id' => $kid->id,
+                ];
+            } else {
+                $placesData[] = [
+                    'place_id' => $place->id,
+                ];
+            }
+        }
+
+        return $placesData;
+    }
+
     public function test_orders_page_is_displayed(): void
     {
         $response = $this
@@ -73,13 +98,13 @@ class OrderTest extends TestCase
 
     public function test_user_can_create_an_order(): void
     {  
+        $placesData = $this->generateRandomPlacesAndKids();
+
         $beginLatitude = fake()->latitude();
         $beginLongitude = fake()->longitude();
 
         $endLatitude = fake()->latitude();
         $endLongitude = fake()->longitude();
-
-
 
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
@@ -91,9 +116,10 @@ class OrderTest extends TestCase
             'end_address' => fake()->address(),
             'end_latitude' => $endLatitude,
             'end_longitude' => $endLongitude,
-            'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
@@ -113,8 +139,8 @@ class OrderTest extends TestCase
             'trajectory' => $orderData['trajectory'],
             'begin_address' => $orderData['begin_address'],
             'end_address' => $orderData['end_address'],
-            'begin_date' => $orderData['begin_date'],
-            'end_date' => $orderData['end_date'],
+            'planned_begin_date' => $orderData['planned_begin_date'],
+            'planned_end_date' => $orderData['planned_end_date'],
             'order_type' => $orderData['order_type'],
             'vehicle_id' => $orderData['vehicle_id'],
             'driver_id' => $orderData['driver_id'],
@@ -123,8 +149,8 @@ class OrderTest extends TestCase
 
         $order = Order::where('begin_address', $orderData['begin_address'])
                     ->where('end_address', $orderData['end_address'])
-                    ->where('begin_date', $orderData['begin_date'])
-                    ->where('end_date', $orderData['end_date'])
+                    ->where('planned_begin_date', $orderData['planned_begin_date'])
+                    ->where('planned_end_date', $orderData['planned_end_date'])
                     ->where('vehicle_id', $orderData['vehicle_id'])
                     ->where('driver_id', $orderData['driver_id'])
                     ->where('technician_id', $orderData['technician_id'])
@@ -161,8 +187,8 @@ class OrderTest extends TestCase
             'end_address' => fake()->address(),
             'end_latitude' => $endLatitude,
             'end_longitude' => $endLongitude,
-            'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
@@ -187,8 +213,8 @@ class OrderTest extends TestCase
             'trajectory' => $order->trajectory,
             'begin_address' => $order->begin_address, 
             'end_address' => $order->end_address,
-            'begin_date' => $order->begin_date,
-            'end_date' => $order->end_date,
+            'planned_end_date' => $order->planned_begin_date,
+            'planned_end_date' => $order->planned_end_date,
             'order_type' => $order->order_type,
             'vehicle_id' => $order->vehicle_id,
             'driver_id' => $order->driver_id,
@@ -229,8 +255,20 @@ class OrderTest extends TestCase
         //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
     }
 
+    public function test_user_can_set_order_actual_begin_date(): void
+    {
+        //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
+    }
+
+    public function test_user_can_set_order_actual_end_date(): void
+    {
+        //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
+    }
+
     public function test_order_creation_handles_exception()
     {
+        $placesData = $this->generateRandomPlacesAndKids();
+
         $beginLatitude = fake()->latitude();
         $beginLongitude = fake()->longitude();
 
@@ -247,9 +285,10 @@ class OrderTest extends TestCase
             'end_address' => fake()->address(),
             'end_latitude' => $endLatitude,
             'end_longitude' => $endLongitude,
-            'begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'planned_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
