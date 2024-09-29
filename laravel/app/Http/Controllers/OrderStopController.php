@@ -6,9 +6,10 @@ use App\Models\OrderStop;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorMessagesHelper;
 
+// This class doesn't need to implement transactions because it is only
+// called by the order controller which already implements its own
 class OrderStopController extends Controller
 {
-    //TODO: TRANSACTIONS!!!
     public function createOrderStop(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();

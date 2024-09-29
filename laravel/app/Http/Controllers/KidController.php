@@ -6,6 +6,7 @@ use App\Models\Kid;
 use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
 
 class KidController extends Controller
@@ -79,12 +80,17 @@ class KidController extends Controller
 
         $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
+        DB::beginTransaction();
         try {
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
+            
+            DB::commit();
+
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
         
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
@@ -134,13 +140,18 @@ class KidController extends Controller
         $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
         $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
 
+        DB::beginTransaction();
         try {
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
+
+            DB::commit();
+
             return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
@@ -150,7 +161,8 @@ class KidController extends Controller
     {
         try {
             $kid = Kid::findOrFail($id);
-            $kid->delete();
+
+            DB::commit();
 
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             

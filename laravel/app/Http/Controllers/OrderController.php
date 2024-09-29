@@ -10,13 +10,12 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
-use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -111,6 +110,7 @@ class OrderController extends Controller
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
+        DB::beginTransaction();
         try {
             $order = Order::create([
                 'trajectory' => $incomingFields['trajectory'],
@@ -133,9 +133,12 @@ class OrderController extends Controller
                 $this->orderStopController->createOrderStop($orderStopRequest);
             }
 
+            DB::commit();
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
@@ -216,6 +219,7 @@ class OrderController extends Controller
         $incomingFields['addPlaces'] = $incomingFields['addPlaces'] ?? null;
         $incomingFields['removePlaces'] = $incomingFields['removePlaces'] ?? null;
 
+        DB::beginTransaction();
         try {
             $order->update([
                 'trajectory' => $incomingFields['trajectory'],
@@ -247,9 +251,12 @@ class OrderController extends Controller
                 }
             }
 
+            DB::commit();
+
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }

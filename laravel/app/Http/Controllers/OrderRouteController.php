@@ -9,10 +9,11 @@ use App\Models\Driver;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
 use MatanYadaev\EloquentSpatial\Objects\Point;
-use MatanYadaev\EloquentSpatial\Objects\LineString;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
+use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 
 class OrderRouteController extends Controller
@@ -72,6 +73,7 @@ class OrderRouteController extends Controller
         $usalDrivers = isset($incomingFields['usual_drivers']) ? array_map('strip_tags', $incomingFields['usual_drivers']) : [];
         $usualTechnicians = isset($incomingFields['usual_technicians']) ? array_map('strip_tags', $incomingFields['usual_technicians']) : [];
 
+        DB::beginTransaction();
         try {
             $points = [];
 
@@ -98,9 +100,12 @@ class OrderRouteController extends Controller
             $orderRoute->drivers()->attach($usalDrivers);
             $orderRoute->technicians()->attach($usualTechnicians);
 
+            DB::commit();
+
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
         }
@@ -141,6 +146,7 @@ class OrderRouteController extends Controller
 
         $coordinates = $incomingFields['area_coordinates'];
 
+        DB::beginTransaction();
         try {
             $points = [];
 
@@ -166,9 +172,12 @@ class OrderRouteController extends Controller
             $orderRoute->drivers()->sync($incomingFields['usual_drivers']);
             $orderRoute->technicians()->sync($incomingFields['usual_technicians']);
 
+            DB::commit();
+
             return redirect()->route('orderRoutes.index')->with('message', 'Dados da rota com id ' . $orderRoute->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao atualizar os dados da rota com id ' . $orderRoute->user_id . '. Tente novamente.');
         }
@@ -178,10 +187,6 @@ class OrderRouteController extends Controller
     {
         try {
             $orderRoute = OrderRoute::findOrFail($id);
-
-            $orderRoute->drivers()->detach();
-            $orderRoute->technicians()->detach();
-
             $orderRoute->delete();
             
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');

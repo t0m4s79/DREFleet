@@ -8,6 +8,7 @@ use Inertia\Response;
 use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
 
 class DriverController extends Controller
@@ -59,6 +60,7 @@ class DriverController extends Controller
             $incomingFields['heavy_license_type'] = null;
         } 
 
+        DB::beginTransaction();
         try {
             $user = User::findOrFail($incomingFields['user_id']);
 
@@ -66,8 +68,12 @@ class DriverController extends Controller
             $user->update([
                 'user_type' => "Condutor",
             ]);
+            
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
         }
@@ -103,6 +109,7 @@ class DriverController extends Controller
             $incomingFields['heavy_license_type'] = null;
         }
 
+        DB::beginTransaction();
         try {
             $driver->update([
                 'heavy_license' => $incomingFields['heavy_license'],
@@ -117,9 +124,12 @@ class DriverController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
         }
@@ -127,6 +137,7 @@ class DriverController extends Controller
 
     public function deleteDriver($id)
     {
+        DB::beginTransaction();
         try {
             $driver = Driver::findOrFail($id);
             $driver->delete();
@@ -136,9 +147,12 @@ class DriverController extends Controller
                 'user_type' => "Nenhum",
             ]);
 
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }
