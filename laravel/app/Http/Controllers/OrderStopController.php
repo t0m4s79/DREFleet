@@ -9,8 +9,6 @@ use Illuminate\Validation\ValidationException;
 
 class OrderStopController extends Controller
 {
-    //TODO: FUNCTION TO SHOW EVERY STOP IN AN ORDER
-    //TODO: FUNCTION TO SHOW A STOP
     public function createOrderStop(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -50,6 +48,7 @@ class OrderStopController extends Controller
         }
     }
 
+    // Can only edit the planned arrival time, the rest is only editable in the order itself
     public function editOrderStop(OrderStop $orderStop, Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -86,9 +85,10 @@ class OrderStopController extends Controller
     }
     
     //TODO: NEEDS ROUTE IN WEB
-    public function setOrderActualArrivalDate(OrderStop $orderStop, Request $request) 
+    //TODO: NEEDS TESTING
+    // To be used by the drivers/technicians when they reach the waypoint
+    public function orderStopReached(OrderStop $orderStop, Request $request) 
     {
-
         $incomingFields = $request->validate([
             'actual_arrival_date' => ['required', 'date']
         ]);

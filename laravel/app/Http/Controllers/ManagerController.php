@@ -39,14 +39,22 @@ class ManagerController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
         $incomingFields = $request->validate([
-            'id' => ['required', 'exists:users,id'],
+            'id' => [
+                'required', 
+                'exists:users,id',
+
+                function ($attribute, $value, $fail) use ($request) {
+                    $user = User::find($value);
+        
+                    if ($user && $user->user_type != 'Nenhum') {
+                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em gestores');
+                    }
+                },
+
+            ],
         ], $customErrorMessages);
 
         $user = User::find($incomingFields['id']);
-
-        if ($user->user_type != 'Nenhum') {
-            return redirect('/managers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em gestores.');
-        }
 
         try {
             $user->update([
@@ -120,16 +128,6 @@ class ManagerController extends Controller
     //TODO: VERIFICATION MESSAGES
 
     //TODO: MANAGERS FRONTEND TABLE SHOULD HAVE LINK FOR ALL APPROVED ORDERS BY HIM
-
-    //TODO: DASHBOARD TESTS
-
-    //TODO: ERROR HELPER UNIT TESTS
-
-    //TODO: FIX TECHNICIAN FAILLING TEST
-
-    //TODO: IN ALL CONTROLLERS -> CHECK IF EVERY FIELDS SHOULD HAVE A STRIP TAGS
-
-    //TODO: ORDER STOPS SEEDER
 
     //TODO: MODEL INSTANCES VIEWER (CLICKING ON, FOR EXAMPLE, A DRIVER SHOULD TAKE YOU TO A PAGE WHERE YOU CAN VIEW THE DRIVER INSTEAD OF EDIT)
 }

@@ -113,7 +113,7 @@ class VehicleController extends Controller
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
-        } 
+        }
 
         try {
             $vehicle->update($incomingFields);

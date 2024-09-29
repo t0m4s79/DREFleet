@@ -38,7 +38,19 @@ class DriverController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'user_id' => ['required', 'numeric'],
+            'user_id' => [
+                'required', 
+                'numeric',
+                
+                function ($attribute, $value, $fail) use ($request) {
+                    $user = User::find($value);
+        
+                    if ($user && $user->user_type != 'Nenhum') {
+                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores');
+                    }
+                },
+                
+            ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
         ], $customErrorMessages);
@@ -49,11 +61,6 @@ class DriverController extends Controller
 
         try {
             $user = User::findOrFail($incomingFields['user_id']);
-
-            //TODO: SHOULD BE FRONT-END INSTEAD OF REDIRECT
-            if ($user->user_type != 'Nenhum') {
-                return redirect('/drivers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores.');
-            }
 
             $driver = Driver::create($incomingFields);
             $user->update([
@@ -94,7 +101,7 @@ class DriverController extends Controller
 
         if($incomingFields['heavy_license'] == '0') {
             $incomingFields['heavy_license_type'] = null;
-        } 
+        }
 
         try {
             $driver->update([

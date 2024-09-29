@@ -23,6 +23,7 @@ use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
 {
+    //TODO: IF SOMEONE EDITS A PLACE OR KID OR ROUTE HOW DOES ORDER BEHAVE?
     protected $orderStopController;
 
     public function __construct(OrderStopController $orderStopController)
@@ -80,8 +81,36 @@ class OrderController extends Controller
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
-            'driver_id' => ['required','exists:drivers,user_id'],
-            'technician_id' => ['required','exists:users,id'],
+            'driver_id' => [
+                'required',
+                'exists:drivers,user_id',
+
+                function ($attribute, $value, $fail) use ($request) {
+                    $vehicle = Vehicle::find($request->input('vehicle_id'));
+                    $driver = Driver::find($value);
+        
+                    if ($vehicle && $vehicle->heavy_vehicle == '1') {
+                        if ($driver && $driver->heavy_license == '0') {
+                            $fail('Este condutor não tem a carta necessária para este veículo.');
+                        } elseif ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadorias') {
+                            $fail('Este condutor não tem a carta necessária para este veículo.');
+                        }
+                    }
+                },
+                
+            ],
+            'technician_id' => [
+                'required',
+                'exists:users,id',
+
+                function ($attribute, $value, $fail) {
+                    $user = User::find($value);
+                    if (!$user || $user->user_type !== 'Técnico') {
+                        $fail('O valor do campo selecionado para o técnico é inválido.');
+                    }
+                },
+
+            ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
@@ -92,29 +121,6 @@ class OrderController extends Controller
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
         try {
-            $user = User::find($request->input('technician_id'));
-            if (!$user || $user->user_type !== 'Técnico') {     //TODO: ADD THIS ERRORS TO FRONT-END INSTEAD OF REDIRECTING
-                throw ValidationException::withMessages([       //TODO: Check this code and unit tests
-                    'O valor do campo selecionado para o técnico é inválido. Tente novamente.'
-                ]);
-            }
-
-            $vehicle = Vehicle::find($request->input('vehicle_id'));
-            $driver = Driver::find($request->input('driver_id'));
-
-            if ($vehicle->heavy_vehicle == '1') {
-                if ($driver->heavy_license == '0') {
-                    throw ValidationException::withMessages([
-                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
-                    ]);
-                
-                } else if ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadoriass') {
-                    throw ValidationException::withMessages([
-                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
-                    ]);
-                }
-            }
-
             $order = Order::create([
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],

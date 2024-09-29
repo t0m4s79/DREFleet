@@ -59,7 +59,20 @@ class KidController extends Controller
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
-            'places' => 'array',
+            'places' => [
+                'array',
+
+                function ($attribute, $value, $fail) {
+                    // Iterate over places to check if all have 'Residência' as place_type
+                    foreach ($value as $placeId) {
+                        $place = Place::find($placeId);
+                        if (!$place || $place->place_type !== 'Residência') {
+                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
+                        }
+                    }
+                }
+
+            ],
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -68,16 +81,6 @@ class KidController extends Controller
         $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
         try {
-            foreach ($addPlaces as $placeId) {
-                $place = Place::findOrFail($placeId);
-                if ($place->place_type !== 'Residência') {
-                    // Throw a validation exception with a custom message
-                    throw ValidationException::withMessages([
-                        'places' => 'Apenas moradas com tipo "Residência" podem ser associadas a crianças.'
-                    ]);
-                }
-            }
-            
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
@@ -113,7 +116,20 @@ class KidController extends Controller
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
-            'addPlaces' => 'array',
+            'addPlaces' => [
+                'array',
+
+                function ($attribute, $value, $fail) {
+                    // Iterate over places to check if all have 'Residência' as place_type
+                    foreach ($value as $placeId) {
+                        $place = Place::find($placeId);
+                        if (!$place || $place->place_type !== 'Residência') {
+                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
+                        }
+                    }
+                }
+
+            ],
             'removePlaces' => 'array',
         ], $customErrorMessages);
 
@@ -124,16 +140,6 @@ class KidController extends Controller
         $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
 
         try {
-            foreach ($addPlaces as $placeId) {
-                $place = Place::findOrFail($placeId);
-                if ($place->place_type !== 'Residência') {
-                    // Throw a validation exception with a custom message
-                    throw ValidationException::withMessages([
-                        'places' => 'Apenas moradas com tipo "Residência" podem ser associadas a crianças.'
-                    ]);
-                }
-            }
-
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
