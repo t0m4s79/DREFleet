@@ -68,6 +68,66 @@ class OrderTest extends TestCase
         return $placesData;
     }
 
+    public function test_order_has_many_order_stops(): void
+    {
+        $order = Order::factory()->create();
+
+        $orderStops = OrderStop::factory()->count(10)->create([
+            'order_id' => $order->id,
+        ]);
+
+        $this->assertGreaterThanOrEqual(10, $order->orderStops->count());   //Factory already creates stops so it should have at least 10
+
+        foreach ($orderStops as $orderStop) {
+            $this->assertTrue($order->orderStops->contains($orderStop));
+        }
+    }
+
+    public function test_order_belongs_to_vehicle(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $order = Order::factory()->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        $this->assertTrue($order->vehicle->is($vehicle));
+    }
+
+    public function test_order_belongs_to_manager(): void
+    {
+        $manager = User::factory()->create();
+
+        $order = Order::factory()->create([
+            'manager_id' => $manager->id,
+            'approved_date' => now(),
+        ]);
+
+        $this->assertTrue($order->manager->is($manager));
+    }
+
+    public function test_order_belongs_to_technician(): void
+    {
+        $technician = User::factory()->create();
+
+        $order = Order::factory()->create([
+            'technician_id' => $technician->id,
+        ]);
+
+        $this->assertTrue($order->technician->is($technician));
+    }
+
+    public function test_order_belongs_to_driver(): void
+    {
+        $driver = Driver::factory()->create();
+
+        $order = Order::factory()->create([
+            'driver_id' => $driver->user_id,
+        ]);
+
+        $this->assertTrue($order->driver->is($driver));
+    }
+
     public function test_orders_page_is_displayed(): void
     {
         $response = $this
@@ -265,6 +325,8 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create();
 
+        $this->assertDatabaseHas('order_stops', ['order_id' => $order->id]);
+
         $response = $this
             ->actingAs($this->user)
             ->delete("/orders/delete/{$order->id}");
@@ -276,6 +338,8 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('orders', [
             'id' => $order->id,
         ]);
+
+        $this->assertDatabaseMissing('order_stops', ['order_id' => $order->id]);
     }
 
     public function test_user_can_approve_a_order(): void       //TODO: NEEDS FIXING

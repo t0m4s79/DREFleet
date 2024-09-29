@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Kid;
+use App\Models\OrderStop;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Place;
@@ -17,6 +18,42 @@ class KidTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+    }
+
+    public function test_kid_has_many_places(): void
+    {
+        $kid = Kid::factory()->create();
+
+        $places = Place::factory()->count(3)->create();
+
+        $kid->places()->attach($places->pluck('id'));
+
+        $this->assertCount(3, $kid->places);
+
+        foreach ($places as $place) {
+            $this->assertTrue($kid->places->contains($place));
+        }
+    }
+
+    public function test_kid_has_many_order_stops(): void
+    {
+        $kid = Kid::factory()->create();
+
+        $orderStops = OrderStop::factory()->count(3)->create();
+
+        foreach ($orderStops as $orderStop) {
+            $kid->places()->attach($orderStop->place_id);
+        }
+
+        foreach ($orderStops as $orderStop) {
+            $kid->orderStops()->attach($orderStop->id, ['place_id' => $orderStop->place_id]);
+        }
+                
+        $this->assertCount(3, $kid->orderStops);
+
+        foreach ($orderStops as $orderStop) {
+            $this->assertTrue($kid->orderStops->contains($orderStop));
+        }
     }
 
     public function test_kids_page_is_displayed(): void

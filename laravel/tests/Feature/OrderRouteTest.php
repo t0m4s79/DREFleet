@@ -63,6 +63,38 @@ class OrderRouteTest extends TestCase
             return $area;
     }
 
+    public function test_order_route_has_many_drivers(): void
+    {
+        $orderRoute = OrderRoute::factory()->create();
+
+        $drivers = Driver::factory()->count(3)->create();
+
+        $orderRoute->drivers()->attach($drivers->pluck('user_id'));
+
+        $this->assertCount(3, $orderRoute->drivers);
+
+        foreach ($drivers as $driver) {
+            $this->assertTrue($orderRoute->drivers->contains($driver));
+        }
+    }
+
+    public function test_order_route_has_many_technicians(): void
+    {
+        $orderRoute = OrderRoute::factory()->create();
+
+        $technicians = User::factory()->count(3)->create([
+            'user_type' => 'Técnico',
+        ]);
+
+        $orderRoute->technicians()->attach($technicians->pluck('id'));
+
+        $this->assertCount(3, $orderRoute->technicians);
+
+        foreach ($technicians as $technician) {
+            $this->assertTrue($orderRoute->technicians->contains($technician));
+        }
+    }
+
     public function test_order_routes_page_is_displayed(): void
     {
         $response = $this

@@ -4,10 +4,11 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Vehicle;
+use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
 
 
 class VehicleTest extends TestCase
@@ -18,6 +19,21 @@ class VehicleTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+    }
+
+    public function test_vehicle_has_many_orders(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $orders = Order::factory()->count(3)->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        $this->assertCount(3, $vehicle->orders);
+
+        foreach ($orders as $order) {
+            $this->assertTrue($vehicle->orders->contains($order));
+        }
     }
 
     public function test_vehicles_page_is_displayed(): void
@@ -48,8 +64,6 @@ class VehicleTest extends TestCase
 
         $response->assertOk();
     }
-
-
 
     public function test_user_can_create_a_vehicle(): void
     {
