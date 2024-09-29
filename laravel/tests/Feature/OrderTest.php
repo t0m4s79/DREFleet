@@ -289,7 +289,7 @@ class OrderTest extends TestCase
             'manager_id' => null,
         ]);
 
-        $this->actingAs($manager);
+        $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
 
         $response = $this->put(route('orders.approve', $order), [
             'manager_id' => $manager->id,
@@ -305,7 +305,30 @@ class OrderTest extends TestCase
 
     public function test_approve_order_fails_with_invalid_manager_id(): void    //TODO: NEEDS IMPLEMENTING
     {
-        //TODO: BACK-END AND FRONT-END AND ONLY THEN TESTS
+        $notManager = User::factory()->create([
+            'user_type' => Arr::random(['Condutor','Técnico','Nenhum']),
+        ]);
+
+        $order = Order::factory()->create([
+            'approved_date' => null,
+            'manager_id' => null,
+        ]);
+
+        $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
+
+        $response = $this->put(route('orders.approve', $order), [
+            'manager_id' => $notManager->id,
+        ]);
+
+        $response->assertSessionHasErrors(['manager_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'id' => $order->id,
+            'manager_id' => $notManager->id,
+        ]);
+
+        $this->assertNull($order->fresh()->approved_date);
+        $this->assertNull($order->fresh()->manager_id);
     }
 
     public function test_order_creation_handles_exception()

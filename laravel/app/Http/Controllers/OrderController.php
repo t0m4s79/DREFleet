@@ -277,13 +277,23 @@ class OrderController extends Controller
         }
     }
 
-    //TODO: NEEDS TESTING
+    //TODO: Add Administrators Role
     public function approveOrder(Order $order, Request $request) 
     {
         //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
 
         $incomingFields = $request->validate([
-            'manager_id' => ['required', 'exists:users,id']
+            'manager_id' => [
+                'required', 
+                'exists:users,id', 
+                function ($attribute, $value, $fail) {
+                    // Check if the manager_id belongs to a user with 'Gestor' type
+                    $user = User::find($value);
+                    if (!$user || $user->user_type !== 'Gestor') {
+                        $fail('O utilizador com id ' . $value . ' selecionado não está autorizado a aprovar pedidos.');
+                    }
+                }
+            ]
         ]);
 
         try {
