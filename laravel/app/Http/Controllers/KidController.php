@@ -161,8 +161,7 @@ class KidController extends Controller
     {
         try {
             $kid = Kid::findOrFail($id);
-
-            DB::commit();
+            $kid->delete();
 
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
