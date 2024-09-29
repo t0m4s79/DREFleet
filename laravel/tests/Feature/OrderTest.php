@@ -17,9 +17,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-//TODO: THROW EXCEPTION ERRORS
 class OrderTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -210,6 +211,106 @@ class OrderTest extends TestCase
         $this->assertEquals(count($placesData), $orderStopsCount);
     }
 
+    public function test_order_creation_fails_on_wrong_driver_for_vehicle(): void
+    {  
+        $placesData = $this->generateRandomPlacesAndKids();
+
+        $beginLatitude = fake()->latitude();
+        $beginLongitude = fake()->longitude();
+
+        $endLatitude = fake()->latitude();
+        $endLongitude = fake()->longitude();
+
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+     
+        //1 -> heavy vehicle with no heavy license
+        $orderData_1 = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData_1);
+
+
+        $response->assertSessionHasErrors(['driver_id']);
+        
+        $this->assertDatabaseMissing('orders', [
+            'trajectory' => $orderData_1['trajectory'],
+            'order_type' => $orderData_1['order_type'],
+            'vehicle_id' => $orderData_1['vehicle_id'],
+            'driver_id' => $orderData_1['driver_id'],
+            'technician_id' => $orderData_1['technician_id'],
+        ]);
+
+        //2 -> heavy Passangers vehicle with heavy Goods license     
+        $orderData_2 = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData_2);
+
+        $response->assertSessionHasErrors(['driver_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'trajectory' => $orderData_2['trajectory'],
+            'order_type' => $orderData_2['order_type'],
+            'vehicle_id' => $orderData_2['vehicle_id'],
+            'driver_id' => $orderData_2['driver_id'],
+            'technician_id' => $orderData_2['technician_id'],
+        ]);
+    }
+
+    public function test_order_creation_fails_on_wrong_technician(): void
+    {  
+        $placesData = $this->generateRandomPlacesAndKids();
+
+        $beginLatitude = fake()->latitude();
+        $beginLongitude = fake()->longitude();
+
+        $endLatitude = fake()->latitude();
+        $endLongitude = fake()->longitude();
+
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+     
+        $orderData = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData);
+
+        $response->assertSessionHasErrors(['technician_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'trajectory' => $orderData['trajectory'],
+            'order_type' => $orderData['order_type'],
+            'vehicle_id' => $orderData['vehicle_id'],
+            'driver_id' => $orderData['driver_id'],
+            'technician_id' => $orderData['technician_id'],
+        ]);
+    }
 
     public function test_user_can_edit_an_order(): void
     {
@@ -249,6 +350,85 @@ class OrderTest extends TestCase
             'driver_id' => $order->driver_id,
             'technician_id' => $order->technician_id,
         ]);
+    }
+
+    public function test_order_edit_on_wrong_driver_for_vehicle(): void
+    {
+        $order = Order::factory()->create();
+
+        $beginLatitude = fake()->latitude();
+        $beginLongitude = fake()->longitude();
+
+        $endLatitude = fake()->latitude();
+        $endLongitude = fake()->longitude();
+
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+    
+        //1 -> heavy vehicle with no heavy license
+        $updatedData_1 = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData_1);
+
+        $response->assertSessionHasErrors(['driver_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData_1);
+
+        //2 -> heavy Passangers vehicle with heavy Goods license     
+        $updatedData_2 = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData_2);
+
+        $response->assertSessionHasErrors(['driver_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData_2);
+    }
+
+    public function test_order_edit_on_wrong_technician(): void
+    {
+        $order = Order::factory()->create();
+
+        $beginLatitude = fake()->latitude();
+        $beginLongitude = fake()->longitude();
+
+        $endLatitude = fake()->latitude();
+        $endLongitude = fake()->longitude();
+
+        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+    
+        $updatedData = [
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['technician_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData);
     }
 
     public function test_user_can_add_and_removes_places_to_an_order(): void
@@ -342,7 +522,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('order_stops', ['order_id' => $order->id]);
     }
 
-    public function test_user_can_approve_a_order(): void       //TODO: NEEDS FIXING
+    public function test_user_can_approve_a_order(): void
     {
         $manager = User::factory()->create([
             'user_type' => 'Gestor',
@@ -367,7 +547,7 @@ class OrderTest extends TestCase
         $response->assertRedirect(route('orders.index'));      
     }
 
-    public function test_approve_order_fails_with_invalid_manager_id(): void    //TODO: NEEDS IMPLEMENTING
+    public function test_approve_order_fails_with_invalid_manager_id(): void
     {
         $notManager = User::factory()->create([
             'user_type' => Arr::random(['Condutor','Técnico','Nenhum']),
@@ -377,7 +557,7 @@ class OrderTest extends TestCase
             'approved_date' => null,
             'manager_id' => null,
         ]);
-
+        
         $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
 
         $response = $this->put(route('orders.approve', $order), [

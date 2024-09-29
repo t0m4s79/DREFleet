@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class KidTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -186,6 +188,33 @@ class KidTest extends TestCase
             'place_id' => $place_2->id,
         ]);
     }
+
+    public function test_create_kid_fails_on_wrong_place_type(): void
+    {
+        $place_1 = Place::factory()->create(['place_type' => 'Residência',]);
+        $place_2 = Place::factory()->create(['place_type' => 'Escola',]);
+
+        $kidData = [
+            'wheelchair' => fake()->boolean(),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
+            'places' => [$place_1->id, $place_2->id],
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/kids/create', $kidData);
+
+        $response->assertSessionHasErrors(['places']);
+
+        $this->assertDatabaseMissing('kids',[
+            'name' => $kidData['name'],
+            'phone' => $kidData['phone'],
+            'email' => $kidData['email'],
+            'wheelchair' => $kidData['wheelchair'],
+        ]);
+    }
     
     public function test_user_can_edit_a_kid_and_their_places(): void
     {
@@ -241,6 +270,48 @@ class KidTest extends TestCase
         
     }
 
+    public function test_edit_kid_fails_on_wrong_place_type(): void
+    {
+        $place_1 = Place::factory()->create(['place_type' => 'Residência',]);
+        $place_2 = Place::factory()->create(['place_type' => 'Escola',]);
+
+        $kidData = [
+            'wheelchair' => fake()->boolean(),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
+            'places' => [$place_1->id],
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/kids/create', $kidData);
+
+        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
+
+        $updatedData = [
+            'wheelchair' => fake()->boolean(),
+            'name' => fake()->name(),
+            'phone' => rand(910000000, 999999999),
+            'email' => fake()->unique()->safeEmail(),
+            'addPlaces' => [$place_2->id],
+            'removePlaces' => [$place_1->id],
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/kids/edit/{$kid->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['addPlaces']);
+
+        $this->assertDatabaseMissing('kids',[
+            'name' => $updatedData['name'],
+            'phone' => $updatedData['phone'],
+            'email' => $updatedData['email'],
+            'wheelchair' => $updatedData['wheelchair'],
+        ]);
+    }
+
     public function test_kid_creation_handles_exception()
     {
         $incomingFields = [
@@ -256,7 +327,7 @@ class KidTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create driver route
+        // Act: Send a POST request to the create kid route
         $response = $this
             ->actingAs($this->user)
             ->post('/kids/create', $incomingFields);

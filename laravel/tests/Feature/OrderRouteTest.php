@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Driver;
 use App\Models\OrderRoute;
+use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
@@ -14,6 +15,8 @@ use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 class OrderRouteTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -204,6 +207,35 @@ class OrderRouteTest extends TestCase
         $this->assertEquals($expectedArea,$orderRoute->area);
     }
 
+    public function test_order_route_creation_fails_on_wrong_technician(): void
+    {  
+        $user_1 = User::factory()->create([
+            'user_type' => 'Técnico',
+        ]);   
+        
+        $user_2 = User::factory()->create([
+            'user_type' => Arr::random(['Condutor', 'Condutor', 'Administrador']),
+        ]);
+
+        $coordinates = $this->generateRandomCoordinatesArray();
+
+        $orderRouteData = [
+            'name' => fake()->company(),
+            'area_coordinates' => $coordinates,
+            'usual_technicians' => [$user_1->id, $user_2->id],
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orderRoutes/create', $orderRouteData);
+
+        $response->assertSessionHasErrors(['usual_technicians.*']);
+
+        $this->assertDatabaseMissing('order_routes', [
+            'name' => $orderRouteData['name'],
+        ]);
+    }
+
     public function test_user_can_edit_an_order_route(): void
     {
         $orderRoute = OrderRoute::factory()->create();
@@ -258,6 +290,37 @@ class OrderRouteTest extends TestCase
         $this->assertEquals($expectedArea, $orderRoute->area);
     }
 
+    public function test_order_route_edit_fails_on_wrong_technician(): void
+    {  
+        $user_1 = User::factory()->create([
+            'user_type' => 'Técnico',
+        ]);   
+        
+        $user_2 = User::factory()->create([
+            'user_type' => Arr::random(['Condutor', 'Condutor', 'Administrador']),
+        ]);
+
+        $orderRoute = OrderRoute::factory()->create();
+
+        $coordinates = $this->generateRandomCoordinatesArray();
+
+        $updatedData = [
+            'name' => fake()->company(),
+            'area_coordinates' => $coordinates,
+            'usual_technicians' => [$user_1->id, $user_2->id],
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orderRoutes/edit/{$orderRoute->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['usual_technicians.*']);
+
+        $this->assertDatabaseMissing('order_routes', [
+            'name' => $updatedData['name'],
+        ]);
+    }
+
     public function test_user_can_delete_an_order_route(): void
     {
         $orderRoute = OrderRoute::factory()->create();
@@ -290,7 +353,7 @@ class OrderRouteTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create order route
+        // Act: Send a POST request to the create order_route route 
         $response = $this
             ->actingAs($this->user)
             ->post('/orderRoutes/create', $incomingFields);

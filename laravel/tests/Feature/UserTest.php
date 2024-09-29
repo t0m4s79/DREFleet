@@ -15,6 +15,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -187,7 +189,7 @@ class UserTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create driver route
+        // Act: Send a POST request to the create vehicle route
         $response = $this
             ->actingAs($this->user)
             ->post('/users/create', $incomingFields);

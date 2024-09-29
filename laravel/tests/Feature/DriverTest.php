@@ -14,6 +14,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DriverTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void
@@ -98,6 +100,27 @@ class DriverTest extends TestCase
 
 
         $this->assertDatabaseHas('drivers', $driverData);
+    }
+
+    public function test_create_driver_fails_on_non_none_user_type(): void
+    {
+        $user = User::factory()->create([
+            'user_type' => Arr::random(['Técnico', 'Gestor', 'Condutor', 'Administrador']),
+        ]);
+
+        $driverData = [
+            'user_id' => $user->id,
+            'heavy_license' => 1,
+            'heavy_license_type' => 'Mercadorias',
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/drivers/create', $driverData);
+
+        $response->assertSessionHasErrors(['user_id']);
+
+        $this->assertDatabaseMissing('drivers', $driverData);
     }
 
     public function test_user_can_edit_a_driver(): void

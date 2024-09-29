@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DashboardTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void

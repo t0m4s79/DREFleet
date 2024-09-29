@@ -13,6 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderStopTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void

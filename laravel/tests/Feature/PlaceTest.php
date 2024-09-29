@@ -14,6 +14,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlaceTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void
