@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
-use App\Models\Driver;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\ErrorMessagesHelper;
 
 class DriverController extends Controller
 {
@@ -38,7 +39,19 @@ class DriverController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'user_id' => ['required', 'numeric'],
+            'user_id' => [
+                'required', 
+                'numeric',
+                
+                function ($attribute, $value, $fail) use ($request) {
+                    $user = User::find($value);
+        
+                    if ($user && $user->user_type != 'Nenhum') {
+                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores');
+                    }
+                },
+                
+            ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
         ], $customErrorMessages);
@@ -47,20 +60,20 @@ class DriverController extends Controller
             $incomingFields['heavy_license_type'] = null;
         } 
 
+        DB::beginTransaction();
         try {
             $user = User::findOrFail($incomingFields['user_id']);
-
-            //TODO: SHOULD BE FRONT-END INSTEAD OF REDIRECT
-            if ($user->user_type != 'Nenhum') {
-                return redirect('/drivers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores.');
-            }
 
             $driver = Driver::create($incomingFields);
             $user->update([
                 'user_type' => "Condutor",
             ]);
+            
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
         }
@@ -94,8 +107,9 @@ class DriverController extends Controller
 
         if($incomingFields['heavy_license'] == '0') {
             $incomingFields['heavy_license_type'] = null;
-        } 
+        }
 
+        DB::beginTransaction();
         try {
             $driver->update([
                 'heavy_license' => $incomingFields['heavy_license'],
@@ -110,9 +124,12 @@ class DriverController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
-        
+
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
         }
@@ -120,6 +137,7 @@ class DriverController extends Controller
 
     public function deleteDriver($id)
     {
+        DB::beginTransaction();
         try {
             $driver = Driver::findOrFail($id);
             $driver->delete();
@@ -129,9 +147,12 @@ class DriverController extends Controller
                 'user_type' => "Nenhum",
             ]);
 
+            DB::commit();
+
             return redirect()->route('drivers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }

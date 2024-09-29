@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
@@ -46,14 +44,22 @@ class TechnicianController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'id' => ['required', 'exists:users,id'],
+            'id' => [
+                'required', 
+                'exists:users,id',
+                
+                function ($attribute, $value, $fail) use ($request) {
+                    $user = User::find($value);
+        
+                    if ($user && $user->user_type != 'Nenhum') {
+                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos');
+                    }
+                },
+
+            ],
         ], $customErrorMessages);
 
         $user = User::find($incomingFields['id']);
-
-        if ($user->user_type != 'Nenhum') {
-            return redirect('/technicians')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos.');
-        }
 
         try {
             $user->update([

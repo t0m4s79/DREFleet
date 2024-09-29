@@ -4,6 +4,9 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Driver;
+use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +15,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -20,7 +25,61 @@ class UserTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_users_page_is_displayed(): void              //USER_ID ALWAYS 0 ON DRIVER FACTORY CREATION????
+    public function test_user_has_one_driver(): void
+    {
+        $user = User::factory()->create();
+
+        $driver = Driver::factory()->create(['user_id' => $user->id]);
+
+        $this->assertTrue($user->driver->is($driver));
+    }
+
+    public function test_user_has_many_orders_as_technician(): void
+    {
+        $technician = User::factory()->create();
+
+        $orders = Order::factory()->count(3)->create([
+            'technician_id' => $technician->id,
+        ]);
+
+        $this->assertCount(3, $technician->ordersTechnician);
+
+        foreach ($orders as $order) {
+            $this->assertTrue($technician->ordersTechnician->contains($order));
+        }
+    }
+
+    public function test_user_has_many_orders_as_manager(): void
+    {
+        $manager = User::factory()->create();
+
+        $orders = Order::factory()->count(3)->create([
+            'manager_id' => $manager->id,
+        ]);
+
+        $this->assertCount(3, $manager->ordersManager);
+
+        foreach ($orders as $order) {
+            $this->assertTrue($manager->ordersManager->contains($order));
+        }
+    }
+
+    public function test_user_belongs_to_many_order_routes(): void
+    {
+        $user = User::factory()->create();
+
+        $orderRoutes = OrderRoute::factory()->count(3)->create();
+
+        $user->orderRoutes()->attach($orderRoutes->pluck('id'));
+
+        $this->assertCount(3, $user->orderRoutes);
+
+        foreach ($orderRoutes as $orderRoute) {
+            $this->assertTrue($user->orderRoutes->contains($orderRoute));
+        }
+    }
+
+    public function test_users_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)
@@ -130,7 +189,7 @@ class UserTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create driver route
+        // Act: Send a POST request to the create vehicle route
         $response = $this
             ->actingAs($this->user)
             ->post('/users/create', $incomingFields);
