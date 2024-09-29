@@ -15,14 +15,10 @@ class OrderStop extends Model
     use HasFactory;
 
     protected $fillable = [
-        'address',
-        'coordinates',
+        'planned_arrival_date',
+        'actual_arrival_date',
         'order_id',
         'place_id'
-    ];
-
-    protected $casts = [
-        'coordinates' => Point::class,
     ];
 
     public function order(): BelongsTo

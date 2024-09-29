@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/orderStops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
     Route::put('/orderStops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
     Route::delete('/orderStops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
+    Route::put('/orderStops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');

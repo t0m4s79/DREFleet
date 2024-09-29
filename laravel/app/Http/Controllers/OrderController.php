@@ -41,7 +41,6 @@ class OrderController extends Controller
         ]);
     }
 
-    //TODO: ADD PLACES ATTACHED TO THE KIDS ARRAY
     public function showCreateOrderForm()
     {
         $drivers = Driver::all();
@@ -66,10 +65,7 @@ class OrderController extends Controller
     }
 
     //TODO: CAN DRIVER/VEHICLE BE NULL??
-    //TODO: FRONTEND BACKEND-> STYLE AND VERIFICATION
-    //TODO: CUSTOM ERROR MESSAGES
     //TODO: SNACKBAR
-    //TODO: TESTS WITH KIDS AND PLACES
     public function createOrder(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();

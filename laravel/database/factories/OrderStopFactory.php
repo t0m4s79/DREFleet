@@ -19,7 +19,7 @@ class OrderStopFactory extends Factory
     public function definition(): array
     {
         return [
-            'planned_arrival_time' => null,
+            'planned_arrival_date' => null,
             'order_id' => Order::factory(),
             'place_id' => Place::factory(),
         ];
