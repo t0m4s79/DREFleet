@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
-use App\Models\Driver;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
 
 class DriverController extends Controller
 {
@@ -118,7 +118,7 @@ class DriverController extends Controller
             ]);
 
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
-        
+
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');

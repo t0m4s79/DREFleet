@@ -10,7 +10,6 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
-use Carbon\Traits\Date;
 use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
@@ -18,8 +17,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class OrderController extends Controller
 {
@@ -97,7 +94,6 @@ class OrderController extends Controller
                         }
                     }
                 },
-                
             ],
             'technician_id' => [
                 'required',
@@ -106,10 +102,9 @@ class OrderController extends Controller
                 function ($attribute, $value, $fail) {
                     $user = User::find($value);
                     if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor do campo selecionado para o técnico é inválido.');
+                        $fail('O valor selecionado para o campo do técnico é inválido');
                     }
                 },
-
             ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
@@ -143,10 +138,6 @@ class OrderController extends Controller
             }
 
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
-
-        } catch (ValidationException $e) {
-            dd($e);
-            return redirect()->route('orders.create')->withErrors($e->validator)->withInput();
 
         } catch (\Exception $e) {
             dd($e);
@@ -189,8 +180,34 @@ class OrderController extends Controller
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
-            'driver_id' => ['required','exists:drivers,user_id'],
-            'technician_id' => ['required','exists:users,id'],
+            'driver_id' => [
+                'required',
+                'exists:drivers,user_id',
+
+                function ($attribute, $value, $fail) use ($request) {
+                    $vehicle = Vehicle::find($request->input('vehicle_id'));
+                    $driver = Driver::find($value);
+        
+                    if ($vehicle && $vehicle->heavy_vehicle == '1') {
+                        if ($driver && $driver->heavy_license == '0') {
+                            $fail('Este condutor não tem a carta necessária para este veículo.');
+                        } elseif ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadorias') {
+                            $fail('Este condutor não tem a carta necessária para este veículo.');
+                        }
+                    }
+                },
+            ],
+            'technician_id' => [
+                'required',
+                'exists:users,id',
+
+                function ($attribute, $value, $fail) {
+                    $user = User::find($value);
+                    if (!$user || $user->user_type !== 'Técnico') {
+                        $fail('O valor selecionado para o campo do técnico é inválido');
+                    }
+                },
+            ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'addPlaces' => ['nullable', 'array'], // Ensure 'places' is an array
             'addPlaces.*' => ['array'],           // Ensure each item in 'places' is an array
@@ -204,29 +221,6 @@ class OrderController extends Controller
         $incomingFields['removePlaces'] = $incomingFields['removePlaces'] ?? null;
 
         try {
-            $user = User::find($request->input('technician_id'));
-            if (!$user || $user->user_type !== 'Técnico') {
-                throw ValidationException::withMessages([
-                    'technician_id' => ['O valor do campo selecionado para o técnico é inválido. Tente novamente.']
-                ]);
-            }
-
-            $vehicle = Vehicle::find($request->input('vehicle_id'));
-            $driver = Driver::find($request->input('driver_id'));
-
-            if ($vehicle->heavy_vehicle == '1') {
-                if ($driver->heavy_license == '0') {
-                    throw ValidationException::withMessages([
-                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
-                    ]);
-                
-                } else if ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadoriass') {
-                    throw ValidationException::withMessages([
-                        'Este condutor não tem a carta necessária para este veículo. Tente novamente'
-                    ]);
-                }
-            }
-            
             $order->update([
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
@@ -259,10 +253,6 @@ class OrderController extends Controller
 
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
-        }  catch (ValidationException $e) {
-            dd($e);
-            return redirect()->route('orders.create')->with('error', 'O valor do campo selecionado para o técnico é inválido. Tente novamente.');
-        
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');

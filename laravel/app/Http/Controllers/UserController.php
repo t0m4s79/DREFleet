@@ -65,6 +65,7 @@ class UserController extends Controller
             ]);
 
             return redirect()->route('users.index')->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
+        
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('users.index')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');

@@ -7,7 +7,6 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Validation\ValidationException;
 
 class VehicleController extends Controller
 {

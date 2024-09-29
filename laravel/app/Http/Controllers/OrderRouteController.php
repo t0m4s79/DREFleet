@@ -53,7 +53,16 @@ class OrderRouteController extends Controller
             'usual_drivers' => ['array'], // Ensure it's an array first
             'usual_drivers.*' => ['exists:drivers,user_id'], // Check that each item in the array exists in the drivers table
             'usual_technicians' => ['array'],
-            'usual_technicians.*' => ['exists:users,id'],
+            'usual_technicians.*' => [
+                'exists:users,id',
+
+                function ($attribute, $value, $fail) {
+                    $user = User::find($value);
+                    if (!$user || $user->user_type !== 'Técnico') {
+                        $fail('O valor selecionado para o campo do técnico é inválido');
+                    }
+                },
+            ],        
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -90,6 +99,7 @@ class OrderRouteController extends Controller
             $orderRoute->technicians()->attach($usualTechnicians);
 
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
+        
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
@@ -115,7 +125,16 @@ class OrderRouteController extends Controller
             'usual_drivers' => ['array'], // Ensure it's an array first
             'usual_drivers.*' => ['exists:drivers,user_id'], // Check that each item in the array exists in the drivers table
             'usual_technicians' => ['array'],
-            'usual_technicians.*' => ['exists:users,id'],
+            'usual_technicians.*' => [
+                'exists:users,id',
+
+                function ($attribute, $value, $fail) {
+                    $user = User::find($value);
+                    if (!$user || $user->user_type !== 'Técnico') {
+                        $fail('O valor selecionado para o campo do técnico é inválido');
+                    }
+                },
+            ],
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);

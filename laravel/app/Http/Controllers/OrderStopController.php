@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\OrderStop;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Validation\ValidationException;
 
 class OrderStopController extends Controller
 {
@@ -38,10 +37,6 @@ class OrderStopController extends Controller
 
             return redirect()->route('orders.index')->with('message', 'Paragem com id ' . $orderStop->id . ' criada com sucesso!');
 
-        } catch (ValidationException $e) {
-            dd($e);
-            return redirect()->route('orders.create')->withErrors($e->validator)->withInput();
-
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar a paragem. Tente novamente.');
@@ -64,7 +59,7 @@ class OrderStopController extends Controller
 
             return redirect()->route('orders.index')->with('message', 'Dados do da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
 
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }

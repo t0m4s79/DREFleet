@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Validation\ValidationException;
 
 class KidController extends Controller
 {
@@ -67,7 +66,7 @@ class KidController extends Controller
                     foreach ($value as $placeId) {
                         $place = Place::find($placeId);
                         if (!$place || $place->place_type !== 'Residência') {
-                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
+                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças');
                         }
                     }
                 }
@@ -84,10 +83,6 @@ class KidController extends Controller
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
-        
-        } catch (ValidationException $e) {
-            dd($e);
-            return redirect()->route('kids.index')->with('error', 'Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
         
         } catch (\Exception $e) {
             dd($e);
@@ -124,7 +119,7 @@ class KidController extends Controller
                     foreach ($value as $placeId) {
                         $place = Place::find($placeId);
                         if (!$place || $place->place_type !== 'Residência') {
-                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
+                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças');
                         }
                     }
                 }
@@ -145,11 +140,7 @@ class KidController extends Controller
             $kid->places()->detach($removePlaces);
             return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
         
-        } catch (ValidationException $e) {
-            dd($e);
-            return redirect()->route('kids.index')->with('error', 'Apenas moradas com tipo "Residência" podem ser associadas a crianças.');
-        
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }

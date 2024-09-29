@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kid;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
