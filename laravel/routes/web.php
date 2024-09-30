@@ -16,6 +16,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\OrderStopController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -74,6 +75,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEditOrder');
     Route::put('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
     Route::delete('/orderRoutes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
+
+    //ORDER STOPS
+    Route::post('/orderStops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
+    Route::put('/orderStops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
+    Route::delete('/orderStops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
+    Route::put('/orderStops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');

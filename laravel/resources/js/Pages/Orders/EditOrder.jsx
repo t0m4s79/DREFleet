@@ -177,36 +177,11 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                         />
                                     </Grid>
 
-                                    {/* Begin and End Date */}
-                                    <Grid item xs={6}>
-                                        <InputLabel htmlFor="data-hora-inicio" value="Data e Hora de Início" />
-                                        <TextField
-                                            //label="Data e Hora de Início"
-                                            id='data-hora-inicio'
-                                            name='data-hora-inicio'
-                                            type="datetime-local"
-                                            fullWidth
-                                            value={data.begin_date}
-                                            onChange={(e) => setData('begin_date', e.target.value)}
-                                            error={errors.begin_date ? true : false}
-                                            helperText={errors.begin_date}
-                                        />
-                                    </Grid>
+                        <label htmlFor="planned_begin_date">Data e Hora de Início</label><br/>
+                        <input type="datetime-local" id="planned_begin_date" name="planned_begin_date" value="2024-09-19T10:30"/><br/>
 
-                                    <Grid item xs={6}>
-                                        <InputLabel htmlFor="data-hora-fim" value="Data e Hora de Fim" />
-                                        <TextField
-                                            // label="Data e Hora de Fim"
-                                            id='data-hora-fim'
-                                            name='data-hora-fim'
-                                            type="datetime-local"
-                                            fullWidth
-                                            value={data.end_date}
-                                            onChange={(e) => setData('end_date', e.target.value)}
-                                            error={errors.end_date ? true : false}
-                                            helperText={errors.end_date}
-                                        />
-                                    </Grid>
+                        <label htmlFor="planned_end_date">Data e Hora de Fim</label><br />
+                        <input type="datetime-local" id="planned_end_date" name="planned_end_date" value="2024-09-19T10:30"/><br/>
 
                                     {/* Vehicle */}
                                     <Grid item xs={12}>

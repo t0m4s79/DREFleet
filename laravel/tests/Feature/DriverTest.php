@@ -5,13 +5,17 @@ namespace Tests\Feature;
 use Log;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Driver;
+use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DriverTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void
@@ -20,7 +24,33 @@ class DriverTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_drivers_page_is_displayed(): void              //USER_ID ALWAYS 0 ON DRIVER FACTORY CREATION????
+    public function test_driver_has_many_orders(): void
+    {
+        $driver = Driver::factory()->create();
+
+        $order = Order::factory()->create([
+            'driver_id' => $driver->user_id,
+        ]);
+
+        $this->assertTrue($driver->orders->contains($order)); // Check if the driver's orders include this order
+    }
+
+    public function test_driver_has_many_order_routes(): void
+    {
+        $driver = Driver::factory()->create();
+
+        $orderRoutes = OrderRoute::factory()->count(3)->create();
+
+        $driver->orderRoutes()->attach($orderRoutes->pluck('id'));
+
+        $this->assertCount(3, $driver->orderRoutes);
+
+        foreach ($orderRoutes as $orderRoute) {
+            $this->assertTrue($driver->orderRoutes->contains($orderRoute));
+        }
+    }
+
+    public function test_drivers_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)
@@ -70,6 +100,27 @@ class DriverTest extends TestCase
 
 
         $this->assertDatabaseHas('drivers', $driverData);
+    }
+
+    public function test_create_driver_fails_on_non_none_user_type(): void
+    {
+        $user = User::factory()->create([
+            'user_type' => Arr::random(['Técnico', 'Gestor', 'Condutor', 'Administrador']),
+        ]);
+
+        $driverData = [
+            'user_id' => $user->id,
+            'heavy_license' => 1,
+            'heavy_license_type' => 'Mercadorias',
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/drivers/create', $driverData);
+
+        $response->assertSessionHasErrors(['user_id']);
+
+        $this->assertDatabaseMissing('drivers', $driverData);
     }
 
     public function test_user_can_edit_a_driver(): void

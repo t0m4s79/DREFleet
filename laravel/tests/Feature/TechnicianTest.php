@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TechnicianTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -67,6 +69,28 @@ class TechnicianTest extends TestCase
 
 
         $this->assertDatabaseHas('users', $technicianData);
+    }
+
+    public function test_create_technician_fails_on_non_none_user_type(): void
+    {
+        $user = User::factory()->create([
+            'user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador']),
+        ]);
+
+        $managerData = [
+            'id' => $user->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/managers/create', $managerData);
+
+        $response->assertSessionHasErrors(['id']);
+
+        $this->assertDatabaseMissing('users', [
+            'id' => $user->id,
+            'user_type' => 'Técnico',
+        ]);
     }
 
     public function test_user_can_edit_a_technician(): void
@@ -128,7 +152,7 @@ class TechnicianTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create driver route
+        // Act: Send a POST request to the create technician route
         $response = $this
             ->actingAs($this->user)
             ->post('/technicians/create', $incomingFields);

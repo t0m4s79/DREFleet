@@ -60,12 +60,14 @@ class Driver extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'driver_id'); // Specify the foreign key explicitly
     }
 
     public function orderRoutes(): BelongsToMany
     {
-        //return $this->belongsToMany(User::class)->withPivot('priority')->withTimestamps();
         return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
+    
+    //return $this->belongsToMany(User::class)->withPivot('priority')->withTimestamps();
+
 }

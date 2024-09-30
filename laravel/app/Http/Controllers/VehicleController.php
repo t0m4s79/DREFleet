@@ -7,7 +7,6 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
-use Illuminate\Validation\ValidationException;
 
 class VehicleController extends Controller
 {
@@ -113,7 +112,7 @@ class VehicleController extends Controller
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
-        } 
+        }
 
         try {
             $vehicle->update($incomingFields);

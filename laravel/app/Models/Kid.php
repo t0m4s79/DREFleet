@@ -26,4 +26,9 @@ class Kid extends Model
     {
         return $this->belongSToMany(Place::class, 'kid_place', 'kid_id', 'place_id')->withTimestamps();
     }
+
+    public function orderStops(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderStop::class)->withPivot('place_id');
+    }
 }
