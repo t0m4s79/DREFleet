@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 
-function Routing({ waypoints }) {
+function Routing({ waypoints, onTrajectoryChange }) {
 
     const map = useMap();
 
@@ -35,7 +35,7 @@ function Routing({ waypoints }) {
             const trajectory = e.routes[0].coordinates;
 
             // Pass the trajectory waypoints back to the form through the callback
-            //onTrajectoryChange(trajectory);          // TODO: Change waypoints with coordinates property, CHECK ABOVE console.log
+            onTrajectoryChange(trajectory);
         });
 
         return () => map.removeControl(routingControl);
@@ -44,15 +44,15 @@ function Routing({ waypoints }) {
     return null;
 }
 
-export default function ExperimentalMap({ waypoints }) {
+export default function ExperimentalMap({ waypoints, onTrajectoryChange }) {
     console.log(waypoints)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%' }}>
-        <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Routing waypoints={waypoints} />
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange}/>
         </MapContainer>
     );
 }
