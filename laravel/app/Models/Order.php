@@ -13,6 +13,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
+        'expected_begin_date',
+        'expected_end_date',
         'trajectory',
         'order_type',
 

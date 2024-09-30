@@ -171,6 +171,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
         $orderData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
@@ -190,6 +192,8 @@ class OrderTest extends TestCase
 
 
         $this->assertDatabaseHas('orders', [
+            'expected_begin_date' => $orderData['expected_begin_date'],
+            'expected_end_date' => $orderData['expected_end_date'],
             'trajectory' => $orderData['trajectory'],
             'order_type' => $orderData['order_type'],
             'vehicle_id' => $orderData['vehicle_id'],
@@ -225,6 +229,8 @@ class OrderTest extends TestCase
      
         //1 -> heavy vehicle with no heavy license
         $orderData_1 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
@@ -242,6 +248,8 @@ class OrderTest extends TestCase
         $response->assertSessionHasErrors(['driver_id']);
         
         $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData_1['expected_begin_date'],
+            'expected_end_date' => $orderData_1['expected_end_date'],
             'trajectory' => $orderData_1['trajectory'],
             'order_type' => $orderData_1['order_type'],
             'vehicle_id' => $orderData_1['vehicle_id'],
@@ -251,6 +259,8 @@ class OrderTest extends TestCase
 
         //2 -> heavy Passangers vehicle with heavy Goods license     
         $orderData_2 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
@@ -267,6 +277,8 @@ class OrderTest extends TestCase
         $response->assertSessionHasErrors(['driver_id']);
 
         $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData_2['expected_begin_date'],
+            'expected_end_date' => $orderData_2['expected_end_date'],
             'trajectory' => $orderData_2['trajectory'],
             'order_type' => $orderData_2['order_type'],
             'vehicle_id' => $orderData_2['vehicle_id'],
@@ -288,6 +300,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
      
         $orderData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
@@ -304,6 +318,8 @@ class OrderTest extends TestCase
         $response->assertSessionHasErrors(['technician_id']);
 
         $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData['expected_begin_date'],
+            'expected_end_date' => $orderData['expected_end_date'],
             'trajectory' => $orderData['trajectory'],
             'order_type' => $orderData['order_type'],
             'vehicle_id' => $orderData['vehicle_id'],
@@ -325,6 +341,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
     
         $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
@@ -344,11 +362,13 @@ class OrderTest extends TestCase
         $order->refresh();
 
         $this->assertDatabaseHas('orders', [
-            'trajectory' => $order->trajectory,
-            'order_type' => $order->order_type,
-            'vehicle_id' => $order->vehicle_id,
-            'driver_id' => $order->driver_id,
-            'technician_id' => $order->technician_id,
+            'expected_begin_date' => $updatedData['expected_begin_date'],
+            'expected_end_date' => $updatedData['expected_end_date'],
+            'trajectory' => $updatedData['trajectory'],
+            'order_type' => $updatedData['order_type'],
+            'vehicle_id' => $updatedData['vehicle_id'],
+            'driver_id' => $updatedData['driver_id'],
+            'technician_id' => $updatedData['technician_id'],
         ]);
     }
 
@@ -366,6 +386,8 @@ class OrderTest extends TestCase
     
         //1 -> heavy vehicle with no heavy license
         $updatedData_1 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
@@ -384,6 +406,8 @@ class OrderTest extends TestCase
 
         //2 -> heavy Passangers vehicle with heavy Goods license     
         $updatedData_2 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
@@ -414,6 +438,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
     
         $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
@@ -456,6 +482,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
     
         $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
@@ -493,11 +521,13 @@ class OrderTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('orders', [
-            'trajectory' => $order->trajectory,
-            'order_type' => $order->order_type,
-            'vehicle_id' => $order->vehicle_id,
-            'driver_id' => $order->driver_id,
-            'technician_id' => $order->technician_id,
+            'expected_begin_date' => $updatedData['expected_begin_date'],
+            'expected_end_date' => $updatedData['expected_end_date'],
+            'trajectory' => $updatedData['trajectory'],
+            'order_type' => $updatedData['order_type'],
+            'vehicle_id' => $updatedData['vehicle_id'],
+            'driver_id' => $updatedData['driver_id'],
+            'technician_id' => $updatedData['technician_id'],
         ]);
     }
 
@@ -588,15 +618,9 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
 
         $incomingFields = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'begin_address' => fake()->address(),
-            'begin_latitude' => $beginLatitude,
-            'begin_longitude' => $beginLongitude,
-            'end_address' => fake()->address(),
-            'end_latitude' => $endLatitude,
-            'end_longitude' => $endLongitude,
-            'planned_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'planned_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
             

@@ -50,7 +50,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         heavy_vehicle: 'Veículo Pesado',
         heavy_type: 'Tipo de Pesado',
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
-        wheelchair_certified: 'Certificado para Cadeira de Todas',
+        wheelchair_certified: 'Certificado para Cadeira de Rodas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',

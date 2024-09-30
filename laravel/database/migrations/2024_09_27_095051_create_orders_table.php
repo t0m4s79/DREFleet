@@ -18,6 +18,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->json('trajectory');
+            $table->dateTime('expected_begin_date')->nullable();
+            $table->dateTime('expected_end_date')->nullable();
             $table->dateTime('approved_date')->nullable();
             $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);
 
