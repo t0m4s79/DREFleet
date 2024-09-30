@@ -20,8 +20,6 @@ class ErrorMessagesHelper
             'in' => 'O valor do campo não corresponde aos valores permitidos',
             'integer' => 'Apenas são permitidos números neste campo',
             'json' => 'Formato inválido (json)',
-            'latitude.regex' => 'Este campo vai de -90 a 90 e permite até 15 casas decimais',
-            'longitude.regex' => 'Este campo vai de -180 a 180 e permite até 15 casas decimais',
             'max' => 'O campo não pode ultrapassar :max caracteres',
             'min' => 'O campo deve ter pelo menos :min caracteres',
             'numeric' => 'Apenas são permitidos números neste campo',
@@ -32,9 +30,42 @@ class ErrorMessagesHelper
             'user_id.exists' => 'O utilizador especificado não existe',
             'vehicle_id.exists' => 'Veículo selecionado não existe',
 
+            // Coordinates and Spatial Data
+            'latitude.regex' => 'Este campo vai de -90 a 90 e permite até 15 casas decimais',
+            'longitude.regex' => 'Este campo vai de -180 a 180 e permite até 15 casas decimais',
+
             // Drivers
             'heavy_license_type.in' => 'Este campo contém valores fora dos permitidos',
             'heavy_license_type.required_if' => 'Tipo de Carta deve ser especificado caso o condutor tenha carta de pesados',
+
+            'license_region_identifier.in' => 
+                'Valor inválido inserido. Só são permitidas letras (máximo 2) identificadoras da região portuguesa que emitiu a carta:
+                    AveiroAV()<br>
+                    BE (Beja)<br>
+                    BR (Braga)<br>
+                    BG (Bragança)<br>
+                    CB (Castelo Branco)<br>
+                    C (Coimbra)<br>
+                    E (Évora)<br>
+                    FA (Faro)<br>
+                    GD (Guarda)<br>
+                    LE (Leiria)<br>
+                    L (Lisboa)<br>
+                    PT (Portalegre)<br>
+                    P (Porto)<br>
+                    SA (Santarém)<br>
+                    SE (Setúbal)<br>
+                    VC (Viana do Castelo)<br>
+                    VR (Vila Real)<br>
+                    VS (Viseu)<br>
+                    AN (Angra do Heroísmo)<br>
+                    H (Horta)<br>
+                    A (Ponta Delgada)<br>
+                    M (Funchal)
+            ',
+
+            'license_middle_digits.regex' => 'Este campo só permite números com, obrigatoriamente, 6 dígitos',
+            'license_last_digit.regex' => 'Este campo só permite números com, obrigatoriamente, 1 dígito',
 
             // Email
             'email.email' => 'Este campo deve ser um endereço email válido',
