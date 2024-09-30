@@ -81,8 +81,6 @@ class OrderStopController extends Controller
         }
     }
     
-    //TODO: NEEDS ROUTE IN WEB
-    //TODO: NEEDS TESTING
     // To be used by the drivers/technicians when they reach the waypoint
     public function orderStopReached(OrderStop $orderStop, Request $request) 
     {

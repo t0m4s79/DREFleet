@@ -107,7 +107,23 @@ class OrderController extends Controller
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
-            'places.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
+            'places.*.kid_id' => [
+                'nullable', 'exists:kids,id',  // Validate that 'kid_id' is optional but must exist if provided
+                
+                function ($attribute, $value, $fail) use ($request) {
+                    $vehicle = Vehicle::find($request->input('vehicle_id'));
+        
+                    if ($value) {
+                        $kid = Kid::find($value);
+
+                        if ($kid && $kid->wheelchair) {
+                            if (!$vehicle->wheelchair_adapted) {
+                                $fail("Este veículo não está preparado para transportar crianças com cadeira de rodas");
+                            }
+                        }
+                    }
+                },
+            ],
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
@@ -217,7 +233,23 @@ class OrderController extends Controller
             'addPlaces' => ['nullable', 'array'], // Ensure 'places' is an array
             'addPlaces.*' => ['array'],           // Ensure each item in 'places' is an array
             'addPlaces.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
-            'addPlaces.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
+            'places.*.kid_id' => [
+                'nullable', 'exists:kids,id',  // Validate that 'kid_id' is optional but must exist if provided
+                
+                function ($attribute, $value, $fail) use ($request) {
+                    $vehicle = Vehicle::find($request->input('vehicle_id'));
+        
+                    if ($value) {
+                        $kid = Kid::find($value);
+
+                        if ($kid && $kid->wheelchair) {
+                            if (!$vehicle->wheelchair_adapted) {
+                                $fail("Este veículo não está preparado para transportar crianças com cadeira de rodas");
+                            }
+                        }
+                    }
+                },
+            ],
             'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
         ], $customErrorMessages);
 
