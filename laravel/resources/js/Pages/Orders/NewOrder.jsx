@@ -7,18 +7,56 @@ import InputLabel from '@/Components/InputLabel';
 import { useState } from 'react';
 import ExperimentalMap from '@/Components/ExperimentalMap';
 
-export default function NewOrder({auth, drivers, vehicles, technicians, managers, kids, places}) {
+export default function NewOrder({auth, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
 
-    console.log('drivers', drivers);
+    //console.log('drivers', drivers);
     // console.log(vehicles);
-    console.log('technicians', technicians);
+    //console.log('technicians', technicians);
     // console.log(managers);
+    console.log('kids', kids)
+    console.log('otherplaces', otherPlaces)
 
-    const [waypoints, setWaypoints] = useState([]);
+    //const [waypoints, setWaypoints] = useState([]);
     //const [newWaypoint, setNewWaypoint] = useState({label: '', lat: '', lng: '' });
+    const [trajectory, setTrajectory] = useState([])
+    const [selectedKids, setSelectedKids] = useState([]);
+    const [waypoints, setWaypoints] = useState([]);
+
+    // Handler for when a kid is selected
+    const handleKidChange = (index, kid) => {
+        const updatedKids = [...selectedKids];
+        updatedKids[index] = { kid, place: null };
+        setSelectedKids(updatedKids);
+        setWaypoints(waypoints.slice(0, index)); // Reset waypoints after kid change
+    };
+
+    // Handler for when a place is selected
+    const handlePlaceChange = (index, place) => {
+        const updatedWaypoints = [...waypoints];
+        updatedWaypoints[index] = { 
+            value: place.id,
+            label: `#${place.id} - ${place.address}`, 
+            lat: place.coordinates.coordinates[1], 
+            lng: place.coordinates.coordinates[0]
+        };
+        setWaypoints(updatedWaypoints);
+    };
+
+    // Adding a new kid, adds a new 'slot' 
+    const addKid = () => {
+        setSelectedKids([...selectedKids, { kid: null, place: null }]);
+    };
+
+    const removeLastWaypoint = () => {
+        if (selectedKids.length > 0) {
+            setSelectedKids(selectedKids.slice(0, -1));
+            setWaypoints(waypoints.slice(0, -1));
+        }
+    };
+
 
     // Deconstruct places to change label display
-    const placesList = places.map((place) => ({
+    const otherPlacesList = otherPlaces.map((place) => ({
         value: place.id,
         label: `#${place.id} - ${place.address}`,
         lat: place.coordinates.coordinates[1],
@@ -48,35 +86,25 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
         trajectory: []
     })
 
-    const handleAddressChange = (index, value) => {
-        const updatedWaypoints = [...waypoints];
-        if (value) {
-            updatedWaypoints[index] = { address: value.label, lat: value.lat, lng: value.lng };
-        } else {
-            updatedWaypoints[index] = { address: '', lat: 0, lng: 0 };
-        }
-        setWaypoints(updatedWaypoints);
-    };
+    // const removeLastWaypoint = () => {
+    //     if (waypoints.length > 1) {
+    //         setWaypoints(waypoints.slice(0, -1));
+    //     }
+    // };
 
-    const addWaypoint = () => {
-        setWaypoints([...waypoints, { address: '', lat: 0, lng: 0 }]);
-    };
-
-    const removeLastWaypoint = () => {
-        if (waypoints.length > 1) {
-            setWaypoints(waypoints.slice(0, -1));
-        }
-    };
-
-    const updateTrajectory= () => {
-
+    const updateTrajectory= (newTraj) => {
+        console.log(newTraj)
+        setTrajectory(newTraj)
+        setData('trajectory', newTraj)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log('data', data);
         post(route('orders.create'));
     };
 
+    console.log('trajectory', trajectory)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -101,30 +129,44 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} md={6} style={{overflowY: 'scroll'}}>
                                                 <InputLabel value={'Pontos de paragem'} />
-                                                <Grid item xs={12}>
-                                                    {waypoints.map((_, index) => (
-                                                        <Autocomplete
-                                                            key={index}
-                                                            options={placesList}
-                                                            getOptionLabel={(option) => option.label}
-                                                            onChange={(event, value) => handleAddressChange(index, value)}
-                                                            renderInput={(params) => (
-                                                                <TextField
-                                                                    {...params}
-                                                                    fullWidth
-                                                                    label={`Waypoint ${index + 1}`}
+                                                {selectedKids.map((selectedKid, index) => (
+                                                    <Grid container item spacing={2} key={index}>
+                                                        {/* Kid selection */}
+                                                        <Grid item xs={6}>
+                                                            <Autocomplete
+                                                                options={kids}
+                                                                getOptionLabel={(kid) => kid.name}
+                                                                onChange={(event, kid) => handleKidChange(index, kid)}
+                                                                renderInput={(params) => <TextField {...params} label={`Kid ${index + 1}`} />}
+                                                            />
+                                                        </Grid>
+
+                                                        {/* Place selection (only show if a kid is selected) */}
+                                                        {selectedKid.kid && (
+                                                            <Grid item xs={6}>
+                                                                <Autocomplete
+                                                                    options={selectedKid.kid.places}
+                                                                    getOptionLabel={(place) => place.address}
+                                                                    onChange={(event, place) => handlePlaceChange(index, place)}
+                                                                    renderInput={(params) => <TextField {...params} label={`Place for Kid ${index + 1}`} />}
                                                                 />
-                                                            )}
-                                                        />
-                                                    ))}
+                                                            </Grid>
+                                                        )}
+                                                    </Grid>
+                                                ))}
+                                                {/* TODO:   ADD OtherPlaces to waypoint selection
+                                                            ADD BUTTONS to add waypoint for otherPlaces
+                                                            ADD MISSING FIELDS order_route_id, places
+                                                            ADD order_route selection
+                                                */}
+
+                                                {/* Buttons to add or remove waypoints */}
+                                                <Grid item xs={12}>
+                                                    <Button onClick={addKid}>Add Kid</Button>
+                                                    <Button onClick={removeLastWaypoint} disabled={selectedKids.length <= 0}>Remove Last Kid</Button>
+                                                    <Button onClick={() => setWaypoints([])}>Clear Route</Button>
                                                 </Grid>
-                                                <Button onClick={addWaypoint}>Add Waypoint</Button>
-                                                <Button onClick={removeLastWaypoint} disabled={waypoints.length <= 1}>
-                                                    Remove Last Waypoint
-                                                </Button>
-                                                <Button onClick={() => setWaypoints([])}>Clear Route</Button>
                                             </Grid>
-                    
 
                                         <Grid item xs={12} md={6}>
                                             {/* Passing waypoints to the map */}
@@ -134,11 +176,11 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                     
                                     <Grid container spacing={3}>
                                         <Grid item xs={6}>
-                                            <InputLabel htmlFor="data-hora-inicio" value="Data e Hora de Início" />
+                                            <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
                                             <TextField
                                                 //label="Data e Hora de Início"
-                                                id='data-hora-inicio'
-                                                name='data-hora-inicio'
+                                                id='planned_begin_date'
+                                                name='planned_begin_date'
                                                 type="datetime-local"
                                                 fullWidth
                                                 value={data.begin_date}
@@ -149,11 +191,11 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                         </Grid>
 
                                         <Grid item xs={6}>
-                                            <InputLabel htmlFor="data-hora-fim" value="Data e Hora de Fim" />
+                                            <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
                                             <TextField
                                                 // label="Data e Hora de Fim"
-                                                id='data-hora-fim'
-                                                name='data-hora-fim'
+                                                id='planned_end_date'
+                                                name='planned_end_date'
                                                 type="datetime-local"
                                                 fullWidth
                                                 value={data.end_date}
@@ -169,7 +211,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                             id="vehicle"
                                             options={vehicleList}
                                             getOptionLabel={(option) => option.label}
-                                            onChange={(e) => setData('vehicle_id', e.target.value)}
+                                            onChange={(e,value) => setData('vehicle_id', value.value)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -189,7 +231,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                             id="driver"
                                             options={driversList}
                                             getOptionLabel={(option) => option.label}
-                                            onChange={(e) => setData('driver_id', e.target.value)}
+                                            onChange={(e,value) => setData('driver_id', value.value)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -209,7 +251,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                             id="techician"
                                             options={techniciansList}
                                             getOptionLabel={(option) => option.label}
-                                            onChange={(e) => setData('technician_id', e.target.value)}
+                                            onChange={(e,value) => setData('technician_id', value.value)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
