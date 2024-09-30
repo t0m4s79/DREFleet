@@ -71,6 +71,8 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
+            'expected_begin_date' => ['required', 'date'],
+            'expected_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
             'driver_id' => [
@@ -113,6 +115,8 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order = Order::create([
+                'expected_begin_date' => $incomingFields['expected_begin_date'],
+                'expected_end_date' => $incomingFields['expected_end_date'],
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
@@ -176,6 +180,8 @@ class OrderController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
+            'expected_begin_date' => ['required', 'date'],
+            'expected_end_date' => ['required', 'date'],
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => ['required','exists:vehicles,id'],
@@ -222,6 +228,8 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order->update([
+                'expected_begin_date' => $incomingFields['expected_begin_date'],
+                'expected_end_date' => $incomingFields['expected_end_date'],
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],

@@ -51,6 +51,8 @@ class OrderFactory extends Factory
         $route = $hasRoute? OrderRouteFactory::new()->create() : null;
 
         return [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 

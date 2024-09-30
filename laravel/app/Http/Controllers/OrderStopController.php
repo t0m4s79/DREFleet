@@ -37,11 +37,11 @@ class OrderStopController extends Controller
                 ]);
             }
 
-            return redirect()->route('orders.index')->with('message', 'Paragem com id ' . $orderStop->id . ' criada com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Paragem com id ' . $orderStop->id . ' criada com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar a paragem. Tente novamente.');
+            // return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar a paragem. Tente novamente.');
         }
     }
 
@@ -59,11 +59,11 @@ class OrderStopController extends Controller
                 'planned_arrival_date' => $incomingFields['planned_arrival_date'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Dados do da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Dados do da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
+            // return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -73,11 +73,11 @@ class OrderStopController extends Controller
             $orderStop = OrderStop::findOrFail($id);
             $orderStop->delete();
 
-            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . 'apagado com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
+            // return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
     
@@ -97,11 +97,11 @@ class OrderStopController extends Controller
                 'actual_arrival_date' => $incomingFields['actual_arrival_date'],
             ]);
 
-            return redirect()->route('orders.index')->with('message', 'Data em que chegou à paragem com id ' . $orderStop->id . ' definida com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Data em que chegou à paragem com id ' . $orderStop->id . ' definida com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que chegou à paragem com id ' . $orderStop->id);
+            // return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que chegou à paragem com id ' . $orderStop->id);
         }
     }
 }
