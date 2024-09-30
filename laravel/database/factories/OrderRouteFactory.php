@@ -23,6 +23,7 @@ class OrderRouteFactory extends Factory
         return [
             'name' => fake()->company(),
             'area' => $this->generateRandomPolygon(),
+            'area_color' => fake()->hexColor(),
         ];
     }
 

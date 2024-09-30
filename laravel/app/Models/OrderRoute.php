@@ -14,6 +14,7 @@ class OrderRoute extends Model
     protected $fillable = [
         'name',
         'area',
+        'area_color',
     ];
 
     protected $casts = [
