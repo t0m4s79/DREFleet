@@ -9,7 +9,6 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
-use App\Models\Place;
 use App\Models\Vehicle;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
@@ -48,7 +47,7 @@ class OrderController extends Controller
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
         $kids = Kid::with('places')->get();
-        $otherPlaces = Place::whereNot('place_type', 'Residência');
+        $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::all();
 
         return Inertia::render('Orders/NewOrder', [
@@ -60,7 +59,6 @@ class OrderController extends Controller
             'vehicles' => $vehicles,
             'technicians' => $technicians,
             'managers' => $managers,
-            'places' => $places,
             'kids' => $kids,
             'otherPlaces' => $otherPlaces,
             'orderRoutes' => $routes,
@@ -72,7 +70,7 @@ class OrderController extends Controller
     public function createOrder(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
-
+        //dd($request);
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
