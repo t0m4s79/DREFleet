@@ -2,7 +2,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
-import { TextField, Button, Grid, Box, Autocomplete } from '@mui/material';
+import { TextField, Button, Grid, Box, Autocomplete, Typography, List, ListItem } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
 import { useState } from 'react';
 import ExperimentalMap from '@/Components/ExperimentalMap';
@@ -18,42 +18,11 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
 
     //const [waypoints, setWaypoints] = useState([]);
     //const [newWaypoint, setNewWaypoint] = useState({label: '', lat: '', lng: '' });
-    const [trajectory, setTrajectory] = useState([])
-    const [selectedKids, setSelectedKids] = useState([]);
+    const [trajectory, setTrajectory] = useState([]);
+    const [selectedKid, setSelectedKid] = useState({});
+    const [selectedKidPlace, setSelectedKidPlace] = useState({});
     const [waypoints, setWaypoints] = useState([]);
-
-    // Handler for when a kid is selected
-    const handleKidChange = (index, kid) => {
-        const updatedKids = [...selectedKids];
-        updatedKids[index] = { kid, place: null };
-        setSelectedKids(updatedKids);
-        setWaypoints(waypoints.slice(0, index)); // Reset waypoints after kid change
-    };
-
-    // Handler for when a place is selected
-    const handlePlaceChange = (index, place) => {
-        const updatedWaypoints = [...waypoints];
-        updatedWaypoints[index] = { 
-            value: place.id,
-            label: `#${place.id} - ${place.address}`, 
-            lat: place.coordinates.coordinates[1], 
-            lng: place.coordinates.coordinates[0]
-        };
-        setWaypoints(updatedWaypoints);
-    };
-
-    // Adding a new kid, adds a new 'slot' 
-    const addKid = () => {
-        setSelectedKids([...selectedKids, { kid: null, place: null }]);
-    };
-
-    const removeLastWaypoint = () => {
-        if (selectedKids.length > 0) {
-            setSelectedKids(selectedKids.slice(0, -1));
-            setWaypoints(waypoints.slice(0, -1));
-        }
-    };
-
+    const [places, setPlaces] = useState([]);
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -83,7 +52,8 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
         vehicle_id: '',
         driver_id: '',
         technician_id: '',
-        trajectory: []
+        trajectory: [],
+        places: [],         //waypoints
     })
 
     // const removeLastWaypoint = () => {
@@ -91,6 +61,57 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
     //         setWaypoints(waypoints.slice(0, -1));
     //     }
     // };
+
+    const handleKidChange = (kid) => {
+        setSelectedKid(kid);
+    };
+    
+    const handlePlaceChange = (place) => {
+        // Update the place for the last selected kid
+        if (selectedKid && place) {
+        
+            // Update waypoints
+            setSelectedKidPlace(place);
+        }
+    };
+    
+    const handleOtherPlaceChange = (place) => {
+        console.log('handler place', place)
+        // Add selected other place to waypoints
+        if (place) {
+            setWaypoints([...waypoints, { place }]);
+        }
+    };
+    
+    const addKid = () => {
+        setWaypoints([...waypoints, {
+            kid: selectedKid,
+            id: selectedKidPlace.id,
+            label: `#${selectedKidPlace.id} - ${selectedKidPlace.address}`,
+            lat: selectedKidPlace.coordinates.coordinates[1],
+            lng: selectedKidPlace.coordinates.coordinates[0],
+        }])
+        setPlaces([...places, {place_id: selectedKidPlace.id, kid_id: selectedKid.id}])
+        setSelectedKid("")
+    };
+    
+    const addOtherPlace = () => {
+        // Just a placeholder, actual handling is in handleOtherPlaceChange
+        //setPlaces([...places, {place_id: }])
+    };
+    
+    const removeLastWaypoint = () => {
+        // Remove the last waypoint
+        const updatedWaypoints = [...waypoints];
+        updatedWaypoints.pop();
+        setWaypoints(updatedWaypoints);
+    };     
+
+    const clearSelection = () => {
+        setWaypoints([]);
+        setSelectedKid(null);
+        setTrajectory([]);
+    }
 
     const updateTrajectory= (newTraj) => {
         console.log(newTraj)
@@ -104,6 +125,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
         post(route('orders.create'));
     };
 
+    console.log('waypoints', waypoints)
     console.log('trajectory', trajectory)
     return (
         <AuthenticatedLayout
@@ -129,31 +151,47 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} md={6} style={{overflowY: 'scroll'}}>
                                                 <InputLabel value={'Pontos de paragem'} />
-                                                {selectedKids.map((selectedKid, index) => (
-                                                    <Grid container item spacing={2} key={index}>
-                                                        {/* Kid selection */}
-                                                        <Grid item xs={6}>
-                                                            <Autocomplete
-                                                                options={kids}
-                                                                getOptionLabel={(kid) => kid.name}
-                                                                onChange={(event, kid) => handleKidChange(index, kid)}
-                                                                renderInput={(params) => <TextField {...params} label={`Kid ${index + 1}`} />}
-                                                            />
-                                                        </Grid>
+                                                <Grid item xs={12}>
+                                                    <List>
+                                                        {waypoints.map((waypoint,index)=> (
+                                                            <ListItem>
+                                                                <Grid item xs={12} key={index}>
+                                                                    <Typography key={index}>{waypoint.kid ? `${waypoint.kid.name} - ${waypoint.label}` : waypoint.label}</Typography>
+                                                                </Grid>
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <InputLabel value={'Selecionar Criança e Morada respetiva'} />
+                                                    <Autocomplete
+                                                        
+                                                        options={kids}
+                                                        getOptionLabel={(kid) => kid.name}
+                                                        onChange={(event, kid) => handleKidChange(kid)}
+                                                        renderInput={(params) => <TextField {...params} label="Criança" />}
+                                                    />
 
-                                                        {/* Place selection (only show if a kid is selected) */}
-                                                        {selectedKid.kid && (
-                                                            <Grid item xs={6}>
-                                                                <Autocomplete
-                                                                    options={selectedKid.kid.places}
-                                                                    getOptionLabel={(place) => place.address}
-                                                                    onChange={(event, place) => handlePlaceChange(index, place)}
-                                                                    renderInput={(params) => <TextField {...params} label={`Place for Kid ${index + 1}`} />}
-                                                                />
-                                                            </Grid>
-                                                        )}
-                                                    </Grid>
-                                                ))}
+                                                    {selectedKid && (
+                                                    <Autocomplete
+                                                        options={selectedKid.places || []}
+                                                        getOptionLabel={(place) => place.address}
+                                                        onChange={(event, place) => handlePlaceChange(place)}
+                                                        renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
+                                                    />
+                                                    )}
+                                                </Grid>
+
+                                                {/* Autocomplete for selecting other places */}
+                                                <Grid item xs={12}>
+                                                    <InputLabel value={'Selecionar Outro Local'} />
+                                                    <Autocomplete
+                                                    options={otherPlacesList}
+                                                    getOptionLabel={(place) => place.label}
+                                                    onChange={(event, place) => handleOtherPlaceChange(place)}
+                                                    renderInput={(params) => <TextField {...params} label="Outro Local" />}
+                                                    />
+                                                </Grid>
                                                 {/* TODO:   ADD OtherPlaces to waypoint selection
                                                             ADD BUTTONS to add waypoint for otherPlaces
                                                             ADD MISSING FIELDS order_route_id, places
@@ -163,8 +201,9 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                                 {/* Buttons to add or remove waypoints */}
                                                 <Grid item xs={12}>
                                                     <Button onClick={addKid}>Add Kid</Button>
-                                                    <Button onClick={removeLastWaypoint} disabled={selectedKids.length <= 0}>Remove Last Kid</Button>
-                                                    <Button onClick={() => setWaypoints([])}>Clear Route</Button>
+                                                    <Button onClick={addOtherPlace}>Add Other Place</Button>
+                                                    <Button onClick={removeLastWaypoint} disabled={waypoints.length <= 0}>Remove Last waypoint</Button>
+                                                    <Button onClick={clearSelection}>Clear Route</Button>
                                                 </Grid>
                                             </Grid>
 
