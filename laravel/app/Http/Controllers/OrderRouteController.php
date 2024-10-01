@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\TechnicianUserTypeValidation;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
@@ -57,13 +58,7 @@ class OrderRouteController extends Controller
             'usual_technicians' => ['array'],
             'usual_technicians.*' => [
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),
             ],        
         ], $customErrorMessages);
 
@@ -135,13 +130,7 @@ class OrderRouteController extends Controller
             'usual_technicians' => ['array'],
             'usual_technicians.*' => [
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),
             ],
         ], $customErrorMessages);
 

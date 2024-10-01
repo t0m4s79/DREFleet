@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\RoleUserTypeValidation;
 
 class DriverController extends Controller
 {
@@ -43,15 +44,7 @@ class DriverController extends Controller
             'user_id' => [
                 'required', 
                 'numeric',
-                
-                function ($attribute, $value, $fail) use ($request) {
-                    $user = User::find($value);
-        
-                    if ($user && $user->user_type != 'Nenhum') {
-                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores');
-                    }
-                },
-                
+                new RoleUserTypeValidation(),
             ],
             /*
                 Aveiro - AV.

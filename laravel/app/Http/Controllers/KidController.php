@@ -8,6 +8,7 @@ use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\KidPlaceTypeValidation;
 
 class KidController extends Controller
 {
@@ -61,17 +62,7 @@ class KidController extends Controller
             'wheelchair' => ['required', 'boolean'],
             'places' => [
                 'array',
-
-                function ($attribute, $value, $fail) {
-                    // Iterate over places to check if all have 'Residência' as place_type
-                    foreach ($value as $placeId) {
-                        $place = Place::find($placeId);
-                        if (!$place || $place->place_type !== 'Residência') {
-                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças');
-                        }
-                    }
-                }
-
+                new KidPlaceTypeValidation(),
             ],
         ], $customErrorMessages);
         
@@ -119,17 +110,7 @@ class KidController extends Controller
             'wheelchair' => ['required', 'boolean'],
             'addPlaces' => [
                 'array',
-
-                function ($attribute, $value, $fail) {
-                    // Iterate over places to check if all have 'Residência' as place_type
-                    foreach ($value as $placeId) {
-                        $place = Place::find($placeId);
-                        if (!$place || $place->place_type !== 'Residência') {
-                            $fail('Apenas moradas com tipo "Residência" podem ser associadas a crianças');
-                        }
-                    }
-                }
-
+                new KidPlaceTypeValidation(),
             ],
             'removePlaces' => 'array',
         ], $customErrorMessages);
