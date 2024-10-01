@@ -28,7 +28,7 @@ export default function NewOrderRoute({auth}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/routeAreas/create'); // Send form data to the backend
+        post(route('orderRoutes.create')); // Send form data to the backend
     };
 
     console.log('areaCoordinates', data.area_coordinates)
