@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Typography, Grid } from '@mui/material';
 import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
+{/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
+{/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
+{/*TODO: LICENSE NUMBER FIELDS ERROR POSITIONS*/}
+{/*TODO: LICENSE NUMBER FIELDS SHOWING CORRECTLY*/}
+{/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
 export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
@@ -14,6 +19,9 @@ export default function EditDriver({ auth, driver }) {
         name: driver.name,
         email: driver.email,
         phone: driver.phone,
+        license_region_identifier: driver.license_region_identifier,
+        license_middle_digits: driver.license_middle_digits,
+        license_last_digit: driver.license_last_digit,
         heavy_license: driver.heavy_license,
         heavy_license_type: driver.heavy_license_type,
         status: driver.status,
@@ -94,6 +102,50 @@ export default function EditDriver({ auth, driver }) {
                                 error={Boolean(errors.phone)}
                                 helperText={errors.phone && <InputError message={errors.phone} />}
                             />
+
+                            <Typography variant="body1">Número da Carta de Condução</Typography>
+                            <Grid container>
+                                <TextField
+                                    type="text"
+                                    id="license_region_identifier"
+                                    label="Identificador da Região"
+                                    name="license_region_identifier"
+                                    value={data.license_region_identifier}
+                                    onChange={(e) => setData('license_region_identifier', e.target.value)}
+                                    maxLength={2}
+                                />
+                                {errors.license_region_identifier && (
+                                    <InputError message={errors.license_region_identifier} />
+                                )}
+                                
+                                <span>-</span>
+
+                                <TextField
+                                    type="text"
+                                    label="Dígitos Intermédios"
+                                    id="license_middle_digits"
+                                    name="license_middle_digits"
+                                    value={data.license_middle_digits}
+                                    onChange={(e) => setData('license_middle_digits', e.target.value)}
+                                />
+                                {errors.license_middle_digits && (
+                                    <InputError message={errors.license_middle_digits} />
+                                )}
+                                
+                                <span> </span>
+
+                                <TextField
+                                    type="text"
+                                    label="Dígito Final"
+                                    id="license_last_digit"
+                                    name="license_last_digit"
+                                    value={data.license_last_digit}
+                                    onChange={(e) => setData('license_last_digit', e.target.value)}
+                                />
+                                {errors.license_last_digit && (
+                                    <InputError message={errors.license_last_digit} />
+                                )}
+                            </Grid>
 
                             <FormControl component="fieldset" margin="normal">
                                 <FormLabel component="legend">Carta de Pesados</FormLabel>

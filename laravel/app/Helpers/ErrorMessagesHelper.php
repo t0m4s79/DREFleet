@@ -18,11 +18,11 @@ class ErrorMessagesHelper
             'email' => 'Este campo só permite emails',
             'id.exists' => 'O utilizador especificado não existe',
             'in' => 'O valor do campo não corresponde aos valores permitidos',
-            'integer' => 'Apenas são permitidos números neste campo',
+            'integer' => 'Apenas são permitidos números positivos neste campo',
             'json' => 'Formato inválido (json)',
             'max' => 'O campo não pode ultrapassar :max caracteres',
             'min' => 'O campo deve ter pelo menos :min caracteres',
-            'numeric' => 'Apenas são permitidos números neste campo',
+            'numeric' => 'Apenas são permitidos números positivos neste campo',
             'required' => 'Este campo é obrigatório',
             'status.in' => 'Este campo contém valores não permitidos',
             'string' => 'Formato inválido (string)',
@@ -41,32 +41,32 @@ class ErrorMessagesHelper
 
             'license_region_identifier.in' => 
                 'Valor inválido inserido. Só são permitidas letras (máximo 2) identificadoras da região portuguesa que emitiu a carta:
-                    AV (Aveiro)<br>
-                    BE (Beja)<br>
-                    BR (Braga)<br>
-                    BG (Bragança)<br>
-                    CB (Castelo Branco)<br>
-                    C (Coimbra)<br>
-                    E (Évora)<br>
-                    FA (Faro)<br>
-                    GD (Guarda)<br>
-                    LE (Leiria)<br>
-                    L (Lisboa)<br>
-                    PT (Portalegre)<br>
-                    P (Porto)<br>
-                    SA (Santarém)<br>
-                    SE (Setúbal)<br>
-                    VC (Viana do Castelo)<br>
-                    VR (Vila Real)<br>
-                    VS (Viseu)<br>
-                    AN (Angra do Heroísmo)<br>
-                    H (Horta)<br>
-                    A (Ponta Delgada)<br>
+                    AV (Aveiro)
+                    BE (Beja)
+                    BR (Braga)
+                    BG (Bragança)
+                    CB (Castelo Branco)
+                    C (Coimbra)
+                    E (Évora)
+                    FA (Faro)
+                    GD (Guarda)
+                    LE (Leiria)
+                    L (Lisboa)
+                    PT (Portalegre)
+                    P (Porto)
+                    SA (Santarém)
+                    SE (Setúbal)
+                    VC (Viana do Castelo)
+                    VR (Vila Real)
+                    VS (Viseu)
+                    AN (Angra do Heroísmo)
+                    H (Horta)
+                    A (Ponta Delgada)
                     M (Funchal)
             ',
 
-            'license_middle_digits.regex' => 'Este campo só permite números com, obrigatoriamente, 6 dígitos',
-            'license_last_digit.regex' => 'Este campo só permite números com, obrigatoriamente, 1 dígito',
+            'license_middle_digits.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 6 dígitos',
+            'license_last_digit.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 1 dígito',
 
             // Email
             'email.email' => 'Este campo deve ser um endereço email válido',
