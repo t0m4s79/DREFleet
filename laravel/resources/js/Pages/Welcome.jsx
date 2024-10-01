@@ -11,11 +11,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     return (
         <>
             <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+            <div className="bg-white text-black/50 dark:bg-black dark:text-white/50">
                 <img
                     id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
+                    className="absolute top-0 min-w-full h-screen"
+                    src="/img/welcome_image.png"
                 />
                 <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
@@ -61,6 +61,91 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         </header>
 
                         <main className="mt-6">
+
+                            <div className="text-center mt-24 mb-40">
+                                        <h6 className="text-base font-light text-sky-500 text-center tracking-widest uppercase mb-2">
+                                            Direção Regional de Educação
+                                        </h6>
+                                        <h2 className="text-8xl font-bold text-black text-center mb-8">
+                                            Frotas DRE
+                                        </h2>
+                                        <p className="text-xl font-normal text-black text-center w-2/4 text-wrap m-auto">
+                                            Aplicação digital para os transportes realizados pela frota de veículos afetos à Direção Regional de Educação
+                                        </p>
+                                        <button className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase">
+                                            Entrar
+                                        </button>
+                            </div>
+
+                            <div className='flex flex-col md:flex-row items-center mt-96 mb-56 gap-24'>
+                                <div className='basis-5/12 text-center mx-auto'>
+                                    <img className='object-fill'
+                                    src="/img/about_image.svg"
+                                    alt="img" 
+                                    />
+                                </div>
+                                <div className='basis-7/12 pt-6'>
+                                    <h2 className="text-4xl font-bold text-black mb-5">
+                                        Sobre as frotas
+                                    </h2>
+                                    <p className="text-lg font-normal text-black text-balance m-auto">
+                                    A frota automóvel afeta à Direção Regional de Educação (DRE) é gerida pelo Núcleo de Equipamento e Conservação (NEC). O NEC é responsável, entre outras funções, por proceder à organização dos transportes e a escala dos assistentes operacionais afetos ao serviço de forma a assegurar, e com prioridade, o apoio ao transporte de crianças e jovens com necessidades educativas especiais.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className='flex flex-col md:flex-row items-center mt-1 mb-56 gap-16'>
+                                <div className='basis-1/3 text-center border border-slate-300 hover:border-slate-400 rounded-lg py-16 px-5'>
+                                    <img className='mx-auto w-32 mb-10'
+                                    src="/img/student_icon.svg"
+                                    alt="img" 
+                                    />
+                                    <h2 className='text-2xl font-bold text-black mb-4'>
+                                        Alunos
+                                    </h2>
+                                    <p className='text-base font-normal text-gray-400'>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a metus ultricies, volutpat eros vitae.
+                                    </p>
+                                </div>
+                                <div className='basis-1/3 text-center border border-slate-300 hover:border-slate-400 rounded-lg py-16 px-5'>
+                                    <img className='mx-auto w-32 mb-10'
+                                    src="/img/driver_icon.svg"
+                                    alt="img" 
+                                    />
+                                    <h2 className='text-2xl font-bold text-black mb-4'>
+                                        Condutores
+                                    </h2>
+                                    <p className='text-base font-normal text-gray-400'>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a metus ultricies, volutpat eros vitae.
+                                    </p>
+                                </div>
+                                <div className='basis-1/3 text-center border border-slate-300 hover:border-slate-400 rounded-lg py-16 px-5'>
+                                    <img className='mx-auto w-32 mb-10'
+                                    src="/img/tech_icon.svg"
+                                    alt="img" 
+                                    />
+                                    <h2 className='text-2xl font-bold text-black mb-4'>
+                                        Técnicos
+                                    </h2>
+                                    <p className='text-base font-normal text-gray-400'>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a metus ultricies, volutpat eros vitae.
+                                    </p>
+                                </div>
+                                
+                            </div>
+
+                            <div className="text-center mt-24 mb-40">
+                                        <h2 className="text-4xl font-bold text-black text-center mb-8">
+                                            A Direção Regional de Educação
+                                        </h2>
+                                        <p className="text-xl font-normal text-black text-center w-4/5 text-wrap m-auto">
+                                        A Direção Regional de Educação (DRE) é o serviço da administração direta da Região Autónoma da Madeira integrado na Secretaria Regional de Educação, Ciência e Tecnologia (SRE), que promove, desenvolve, aplica e presta apoio às políticas educativas no âmbito pedagógico e didático da educação pré-escolar, dos ensinos básico e secundário, da educação extraescolar e da educação especial de toda a Região, nomeadamente no que se refere às áreas curriculares, de enriquecimento do currículo, instrumentos de ensino e avaliação.
+                                        </p>
+                                        <button className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase">
+                                            Visitar site
+                                        </button>
+                            </div>
+
                             <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
                                 <a
                                     href="https://laravel.com/docs"
@@ -326,6 +411,24 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     </div>
                                 </div>
                             </div>
+
+                            
+
+                            <div className="h-full w-full relative text-center m-auto">
+                                     <img className='object-fill'
+                                    src="/img/welcome_image.png"
+                                    alt="img" 
+                                />
+                                <div className="w-full absolute top-0 left-0 text-center mt-10">
+                                    <h2 className="text-4xl font-bold text-black text-center">
+                                        Frotas DRE
+                                    </h2>
+                                    <button className="mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        Test Button
+                                    </button>
+                                    </div>
+                             </div>
+                                
                         </main>
 
                         <footer className="py-16 text-center text-sm text-black dark:text-white/70">
