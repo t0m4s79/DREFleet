@@ -1,7 +1,9 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { Button, Modal } from '@mui/material';
 import {  ptPT } from '@mui/x-data-grid/locales';
+import LeafletMap from './LeafletMap';
+import MapModal from './MapModal';
 
 // Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
@@ -87,6 +89,14 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            // Display trajectory using a Modal
+            // Shown in Orders 'table'
+            if(key == 'trajectory'){
+                return (
+                    <MapModal trajectory={params.value}/>
+                )
+            }
+
             return params.value;
         }
     }));

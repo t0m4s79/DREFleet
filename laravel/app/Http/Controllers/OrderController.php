@@ -49,8 +49,9 @@ class OrderController extends Controller
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
+        $managers = User::where('user_type', 'Gestor')->get();
         $kids = Kid::with('places')->get();
-        $otherPlaces = Place::whereNot('place_type', 'Residência');
+        $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::all();
 
         return Inertia::render('Orders/NewOrder', [
@@ -61,6 +62,7 @@ class OrderController extends Controller
             'drivers' => $drivers,
             'vehicles' => $vehicles,
             'technicians' => $technicians,
+            'managers' => $managers,
             'kids' => $kids,
             'otherPlaces' => $otherPlaces,
             'orderRoutes' => $routes,
@@ -152,6 +154,7 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
+        $places = Place::all();                     //TODO: TO BE CHANGED
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência');
         $routes = OrderRoute::all();
@@ -166,6 +169,7 @@ class OrderController extends Controller
             'vehicles' => $vehicles,
             'technicians' => $technicians,
             'managers' => $managers,
+            'places' => $places,
             'kids' => $kids,
             'otherPlaces' => $otherPlaces,
             'orderRoutes' => $routes,
