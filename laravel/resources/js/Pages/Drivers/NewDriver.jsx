@@ -2,14 +2,21 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
 
+{/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
+{/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
+{/*TODO: LICENSE NUMBER FIELDS ERROR POSITIONS*/}
+{/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
 export default function NewDriver( {auth, users} ) {
 
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
+        license_region_identifier: '',
+        license_middle_digits: '',
+        license_last_digit: '',
         heavy_license: '',
         heavy_license_type: '',
     });
@@ -73,6 +80,50 @@ export default function NewDriver( {auth, users} ) {
                                     )}
                                     sx={{ width: 500, marginBottom: 2 }}
                                 />
+
+                                <Typography variant="body1">Número da Carta de Condução</Typography>
+                                <Grid container>
+                                    <TextField
+                                        type="text"
+                                        id="license_region_identifier"
+                                        label="Identificador da Região"
+                                        name="license_region_identifier"
+                                        value={data.license_region_identifier}
+                                        onChange={(e) => setData('license_region_identifier', e.target.value)}
+                                        maxLength={2}
+                                    />
+                                    {errors.license_region_identifier && (
+                                        <InputError message={errors.license_region_identifier} />
+                                    )}
+                                    
+                                    <span>-</span>
+
+                                    <TextField
+                                        type="text"
+                                        label="Dígitos Intermédios"
+                                        id="license_middle_digits"
+                                        name="license_middle_digits"
+                                        value={data.license_middle_digits}
+                                        onChange={(e) => setData('license_middle_digits', e.target.value)}
+                                    />
+                                    {errors.license_middle_digits && (
+                                        <InputError message={errors.license_middle_digits} />
+                                    )}
+                                    
+                                    <span> </span>
+
+                                    <TextField
+                                        type="text"
+                                        label="Dígito Final"
+                                        id="license_last_digit"
+                                        name="license_last_digit"
+                                        value={data.license_last_digit}
+                                        onChange={(e) => setData('license_last_digit', e.target.value)}
+                                    />
+                                    {errors.license_last_digit && (
+                                        <InputError message={errors.license_last_digit} />
+                                    )}
+                                </Grid>
 
                                 <Typography variant="body1">Carta de Pesados</Typography>
                                 {/* Radio buttons for heavy_license */}

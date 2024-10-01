@@ -24,6 +24,35 @@ class DriverTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+    /*
+        Aveiro - AV.
+        Beja - BE.
+        Braga - BR.
+        Bragança - BG.
+        Castelo Branco - CB.
+        Coimbra - C.
+        Évora - E.
+        Faro - FA.
+        Guarda - GD.
+        Leiria - LE.
+        Lisboa - L.
+        Portalegre - PT.
+        Porto - P.
+        Santarém - SA.
+        Setúbal - SE.
+        Viana do Castelo - VC.
+        Vila Real - VR.
+        Viseu - VS.
+        Angra do Heroísmo - AN.
+        Horta - H.
+        Ponta Delgada - A.
+        Funchal - M.
+    */
+    protected function getRandomRegionIdentifier() :string
+    {
+        return Arr::random(['AV','BE','BR','BG','CB','C','E','FA','GD','LE','L','PT','P','SA','SE','VC','VR','VS','AN','H','A','M']);
+    }
+
     public function test_driver_has_many_orders(): void
     {
         $driver = Driver::factory()->create();
@@ -86,6 +115,9 @@ class DriverTest extends TestCase
 
         $driverData = [
             'user_id' => User::factory()->create()->id,
+            'license_region_identifier' => $this->getRandomRegionIdentifier(),
+            'license_middle_digits' => str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT),
+            'license_last_digit' => rand(0, 9),
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType
         ];
@@ -98,8 +130,14 @@ class DriverTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/drivers');
 
+        $expectedLicenseNumber = $driverData['license_region_identifier'] . '-' . $driverData['license_middle_digits'] . ' ' . $driverData['license_last_digit'];
 
-        $this->assertDatabaseHas('drivers', $driverData);
+        $this->assertDatabaseHas('drivers', [
+            'user_id' => $driverData['user_id'],
+            'license_number' => $expectedLicenseNumber,
+            'heavy_license' => $driverData['heavy_license'],
+            'heavy_license_type' => $driverData['heavy_license_type'],
+        ]);
     }
 
     public function test_create_driver_fails_on_non_none_user_type(): void
@@ -110,6 +148,9 @@ class DriverTest extends TestCase
 
         $driverData = [
             'user_id' => $user->id,
+            'license_region_identifier' => $this->getRandomRegionIdentifier(),
+            'license_middle_digits' => str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT),
+            'license_last_digit' => rand(0, 9),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
         ];
@@ -120,7 +161,14 @@ class DriverTest extends TestCase
 
         $response->assertSessionHasErrors(['user_id']);
 
-        $this->assertDatabaseMissing('drivers', $driverData);
+        $expectedLicenseNumber = $driverData['license_region_identifier'] . '-' . $driverData['license_middle_digits'] . ' ' . $driverData['license_last_digit'];
+
+        $this->assertDatabaseMissing('drivers', [
+            'user_id' => $driverData['user_id'],
+            'license_number' => $expectedLicenseNumber,
+            'heavy_license' => $driverData['heavy_license'],
+            'heavy_license_type' => $driverData['heavy_license_type'],
+        ]);
     }
 
     public function test_user_can_edit_a_driver(): void
@@ -143,6 +191,9 @@ class DriverTest extends TestCase
             'email' => $driver->email,
             'phone' => $driver->phone,
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
+            'license_region_identifier' => $this->getRandomRegionIdentifier(),
+            'license_middle_digits' => str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT),
+            'license_last_digit' => rand(0, 9),
             'heavy_license' => $newHeavyLicense,
             'heavy_license_type' => $newHeavyLicenseType,
         ]; 
@@ -155,8 +206,12 @@ class DriverTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/drivers');
 
+        $expectedLicenseNumber = $updatedData['license_region_identifier'] . '-' . $updatedData['license_middle_digits'] . ' ' . $updatedData['license_last_digit'];
+
+
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driver->user_id,
+            'license_number' => $expectedLicenseNumber,
             'heavy_license' => $newHeavyLicense,
             'heavy_license_type' => $newHeavyLicenseType
         ]);
@@ -185,6 +240,9 @@ class DriverTest extends TestCase
     {
         $incomingFields = [
             'user_id' => User::factory()->create()->id,
+            'license_region_identifier' => $this->getRandomRegionIdentifier(),
+            'license_middle_digits' => str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT),
+            'license_last_digit' => rand(0, 9),
             'heavy_license' => '0',
         ];
 

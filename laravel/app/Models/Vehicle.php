@@ -25,6 +25,7 @@ class Vehicle extends Model
         'current_month_fuel_requests',
         'fuel_type',
         'current_kilometrage',
+        'image_path',
     ];
     
     protected $hidden = [

@@ -18,6 +18,7 @@ class Driver extends Model
 
     protected $fillable = [
         'user_id',
+        'license_number',
         'heavy_license',
         'heavy_license_type',
     ];
@@ -66,8 +67,5 @@ class Driver extends Model
     public function orderRoutes(): BelongsToMany
     {
         return $this->belongsToMany(OrderRoute::class)->withTimestamps();
-    }
-    
-    //return $this->belongsToMany(User::class)->withPivot('priority')->withTimestamps();
-
+    }    
 }

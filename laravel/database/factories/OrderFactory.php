@@ -26,17 +26,11 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $begin_latitude = fake()->latitude();
-        $begin_longitude = fake()->longitude();
-
-        $end_latitude = fake()->latitude();
-        $end_longitude = fake()->longitude();
-
         $technician = TechnicianFactory::new()->create();
         $vehicle = Vehicle::factory()->create();
         $driver = Driver::factory()->create();
         
-        $trajectory = $this->generateRandomTrajectory($begin_latitude, $begin_longitude, $end_latitude, $end_longitude);
+        $trajectory = $this->generateRandomTrajectory();
 
         // Randomly decide if the order is approved
         $isApproved = fake()->boolean();
@@ -66,8 +60,14 @@ class OrderFactory extends Factory
         ];
     }
 
-    private function generateRandomTrajectory($startLat, $startLng, $endLat, $endLng)
+    private function generateRandomTrajectory()
     {
+        $startLat = fake()->latitude();
+        $startLng = fake()->longitude();
+
+        $endLat = fake()->latitude();
+        $endLng = fake()->longitude();
+
         $points = [];
         $numPoints = rand(2,6); // Number of points in the trajectory
         

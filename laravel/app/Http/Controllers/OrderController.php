@@ -14,8 +14,12 @@ use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\OrderDriverLicenseValidation;
+use App\Rules\TechnicianUserTypeValidation;
+use App\Rules\OrderVehicleCapacityValidation;
 
 class OrderController extends Controller
 {
@@ -29,7 +33,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::with(['orderStops'])->get();
 
         return Inertia::render('Orders/AllOrders',[
            'flash' => [
@@ -80,37 +84,31 @@ class OrderController extends Controller
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
-
-                function ($attribute, $value, $fail) use ($request) {
-                    $vehicle = Vehicle::find($request->input('vehicle_id'));
-                    $driver = Driver::find($value);
-        
-                    if ($vehicle && $vehicle->heavy_vehicle == '1') {
-                        if ($driver && $driver->heavy_license == '0') {
-                            $fail('Este condutor não tem a carta necessária para este veículo.');
-                        } elseif ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadorias') {
-                            $fail('Este condutor não tem a carta necessária para este veículo.');
-                        }
-                    }
-                },
+                new OrderDriverLicenseValidation($request->input('vehicle_id')),
             ],
             'technician_id' => [
-                'required',
+                'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),
             ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
-            'places.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
-        ], $customErrorMessages);
+            'places.*.kid_id' => [
+                'nullable',           // Validate that 'kid_id' is optional but must exist if provided
+                'exists:kids,id',
+                new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
+            ],
+
+            new OrderVehicleCapacityValidation(
+                $request->input('order_type'),
+                $request->input('vehicle_id'),
+                $request->input('places'),
+                $request->input('technician_id')
+            ),
+            
+        ] ,$customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
@@ -192,37 +190,31 @@ class OrderController extends Controller
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
-
-                function ($attribute, $value, $fail) use ($request) {
-                    $vehicle = Vehicle::find($request->input('vehicle_id'));
-                    $driver = Driver::find($value);
-        
-                    if ($vehicle && $vehicle->heavy_vehicle == '1') {
-                        if ($driver && $driver->heavy_license == '0') {
-                            $fail('Este condutor não tem a carta necessária para este veículo.');
-                        } elseif ($vehicle->heavy_type == 'Passageiros' && $driver->heavy_license_type == 'Mercadorias') {
-                            $fail('Este condutor não tem a carta necessária para este veículo.');
-                        }
-                    }
-                },
+                new OrderDriverLicenseValidation($request->input('vehicle_id')),
             ],
             'technician_id' => [
-                'required',
+                'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),                
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'addPlaces' => ['nullable', 'array'], // Ensure 'places' is an array
             'addPlaces.*' => ['array'],           // Ensure each item in 'places' is an array
             'addPlaces.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
-            'addPlaces.*.kid_id' => ['nullable', 'exists:kids,id'], // Validate that 'kid_id' is optional but must exist if provided
+            'places.*.kid_id' => [
+                'nullable',           // Validate that 'kid_id' is optional but must exist if provided
+                'exists:kids,id',
+                new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
+            ],
             'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
+
+            new OrderVehicleCapacityValidation(
+                $request->input('order_type'),
+                $request->input('vehicle_id'),
+                $request->input('places'),
+                $request->input('technician_id')
+            ),
+
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;

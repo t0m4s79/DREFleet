@@ -23,17 +23,17 @@ return new class extends Migration
             $table->dateTime('approved_date')->nullable();
             $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);
 
-            $table->unsignedBigInteger('vehicle_id');
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
+            $table->unsignedBigInteger('vehicle_id')->nullable();
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('set null');
 
-            $table->unsignedBigInteger('driver_id');
-            $table->foreign('driver_id')->references('user_id')->on('drivers')->onDelete('cascade');
+            $table->unsignedBigInteger('driver_id')->nullable();
+            $table->foreign('driver_id')->references('user_id')->on('drivers')->onDelete('set null');
 
             $table->unsignedBigInteger('manager_id')->nullable();
-            $table->foreign('manager_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('manager_id')->references('id')->on('users')->onDelete('set null');
 
-            $table->unsignedBigInteger('technician_id');
-            $table->foreign('technician_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('technician_id')->nullable();
+            $table->foreign('technician_id')->references('id')->on('users')->onDelete('set null');
 
             $table->unsignedBigInteger('order_route_id')->nullable();
             $table->foreign('order_route_id')->references('id')->on('order_routes')->onDelete('set null');

@@ -30,8 +30,14 @@ class OrderTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    private function generateRandomTrajectory($startLat, $startLng, $endLat, $endLng)
+    private function generateRandomTrajectory()
     {
+        $startLat = fake()->latitude();
+        $startLng = fake()->longitude();
+
+        $endLat = fake()->latitude();
+        $endLng = fake()->longitude();
+
         $points = [];
         $numPoints = rand(2,6); // Number of points in the trajectory
         
@@ -47,13 +53,13 @@ class OrderTest extends TestCase
         return $points;
     }
 
-    private function generateRandomPlacesAndKids() {
+    private function generateRandomPlacesAndKids($withKids) {
         $places = Place::factory()->count(rand(1,5))->create();
 
         // Prepare the data for the order creation
         $placesData = [];
         foreach ($places as $place) {
-            if (rand(0, 1) === 1) { // 50% chance to have a kid
+            if (rand(0, 1) === 1 && $withKids) { // 50% chance to have a kid
                 $kid = Kid::factory()->create();
                 $kid->places()->attach($place->id);
                 $placesData[] = [
@@ -161,25 +167,22 @@ class OrderTest extends TestCase
 
     public function test_user_can_create_an_order(): void
     {  
-        $placesData = $this->generateRandomPlacesAndKids();
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_type' => $orderType,
             'order_route_id' => OrderRoute::factory()->create()->id,
+
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -218,27 +221,152 @@ class OrderTest extends TestCase
         $this->assertEquals(count($placesData), $orderStopsCount);
     }
 
+    // Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
+    public function test_order_creation_fails_on_wrong_vehicle_for_kid(): void
+    {  
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
+        
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create(['wheelchair' => 1]);
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $orderData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => $orderType,
+            'places' => $placesData,
+            
+            //Not adapted for wheelchairs
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData['expected_begin_date'],
+            'expected_end_date' => $orderData['expected_end_date'],
+            'trajectory' => $orderData['trajectory'],
+            'order_type' => $orderData['order_type'],
+            'vehicle_id' => $orderData['vehicle_id'],
+            'driver_id' => $orderData['driver_id'],
+            'technician_id' => $orderData['technician_id'],
+        ]);
+    }
+
+    // Wrong order type for kid transportation
+    public function test_order_creation_fails_on_wrong_order_type_with_kid(): void
+    {  
+        $placesData = $this->generateRandomPlacesAndKids($withKids=true);
+        
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create();
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $orderData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData['expected_begin_date'],
+            'expected_end_date' => $orderData['expected_end_date'],
+            'trajectory' => $orderData['trajectory'],
+            'order_type' => $orderData['order_type'],
+            'vehicle_id' => $orderData['vehicle_id'],
+            'driver_id' => $orderData['driver_id'],
+            'technician_id' => $orderData['technician_id'],
+        ]);
+    }
+
+    // Capacity will be 1 with multiple passangers
+    public function test_order_creation_fails_on_vehicle_capacity_exceeded(): void
+    {  
+        $placesData = $this->generateRandomPlacesAndKids($withKids=true);
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $orderData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post('/orders/create', $orderData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $orderData['expected_begin_date'],
+            'expected_end_date' => $orderData['expected_end_date'],
+            'trajectory' => $orderData['trajectory'],
+            'order_type' => $orderData['order_type'],
+            'vehicle_id' => $orderData['vehicle_id'],
+            'driver_id' => $orderData['driver_id'],
+            'technician_id' => $orderData['technician_id'],
+        ]);
+    }
+
+    // Driver will not have heavy license while vehicle is heavy
     public function test_order_creation_fails_on_wrong_driver_for_vehicle(): void
     {  
-        $placesData = $this->generateRandomPlacesAndKids();
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
      
         //1 -> heavy vehicle with no heavy license
         $orderData_1 = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -268,7 +396,7 @@ class OrderTest extends TestCase
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -290,26 +418,23 @@ class OrderTest extends TestCase
         ]);
     }
 
+    // User is not a technician
     public function test_order_creation_fails_on_wrong_technician(): void
     {  
-        $placesData = $this->generateRandomPlacesAndKids();
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
         ];
@@ -335,13 +460,7 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
     
         $updatedData = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
@@ -349,7 +468,7 @@ class OrderTest extends TestCase
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -375,91 +494,6 @@ class OrderTest extends TestCase
         ]);
     }
 
-    public function test_order_edit_on_wrong_driver_for_vehicle(): void
-    {
-        $order = Order::factory()->create();
-
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
-    
-        //1 -> heavy vehicle with no heavy license
-        $updatedData_1 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
-
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
-        ];
-        
-        $response = $this
-            ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData_1);
-
-        $response->assertSessionHasErrors(['driver_id']);
-
-        $this->assertDatabaseMissing('orders', $updatedData_1);
-
-        //2 -> heavy Passangers vehicle with heavy Goods license     
-        $updatedData_2 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
-
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
-        ];
-        
-        $response = $this
-            ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData_2);
-
-        $response->assertSessionHasErrors(['driver_id']);
-
-        $this->assertDatabaseMissing('orders', $updatedData_2);
-    }
-
-    public function test_order_edit_on_wrong_technician(): void
-    {
-        $order = Order::factory()->create();
-
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
-    
-        $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
-
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
-        ];
-        
-        $response = $this
-            ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
-
-        $response->assertSessionHasErrors(['technician_id']);
-
-        $this->assertDatabaseMissing('orders', $updatedData);
-    }
-
     public function test_user_can_add_and_removes_places_to_an_order(): void
     {
         $order = Order::factory()->create();
@@ -476,13 +510,7 @@ class OrderTest extends TestCase
             'order_id' => $order->id,
         ]);
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
     
         $updatedData = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
@@ -498,7 +526,7 @@ class OrderTest extends TestCase
 
             'removePlaces' => [$removeOrderStop->id],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -534,6 +562,226 @@ class OrderTest extends TestCase
         ]);
     }
 
+    // Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
+    public function test_order_edit_fails_on_wrong_vehicle_for_kid(): void
+    {  
+        $order = Order::factory()->create();
+
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
+
+        //Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create(['wheelchair' => 1]);
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => $orderType,
+            'places' => $placesData,
+            
+            //Not adapted for wheelchairs
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $updatedData['expected_begin_date'],
+            'expected_end_date' => $updatedData['expected_end_date'],
+            'trajectory' => $updatedData['trajectory'],
+            'order_type' => $updatedData['order_type'],
+            'vehicle_id' => $updatedData['vehicle_id'],
+            'driver_id' => $updatedData['driver_id'],
+            'technician_id' => $updatedData['technician_id'],
+        ]);
+    }
+
+    // Wrong order type for kid transportation
+    public function test_order_edit_fails_on_wrong_order_type_with_kid(): void
+    {  
+        $order = Order::factory()->create();
+
+        $placesData = $this->generateRandomPlacesAndKids($withKids = true);
+
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create();
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $updatedData['expected_begin_date'],
+            'expected_end_date' => $updatedData['expected_end_date'],
+            'trajectory' => $updatedData['trajectory'],
+            'order_type' => $updatedData['order_type'],
+            'vehicle_id' => $updatedData['vehicle_id'],
+            'driver_id' => $updatedData['driver_id'],
+            'technician_id' => $updatedData['technician_id'],
+        ]);
+    }
+
+    // Capacity will be 1 with multiple passangers
+    public function test_order_edit_fails_on_vehicle_capacity_exceeded(): void
+    {  
+        $order = Order::factory()->create();
+
+        $placesData = $this->generateRandomPlacesAndKids($withKids = true);
+
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create();
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+     
+        $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'places' => $placesData,
+            
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['places.*.kid_id']);
+
+        $this->assertDatabaseMissing('orders', [
+            'expected_begin_date' => $updatedData['expected_begin_date'],
+            'expected_end_date' => $updatedData['expected_end_date'],
+            'trajectory' => $updatedData['trajectory'],
+            'order_type' => $updatedData['order_type'],
+            'vehicle_id' => $updatedData['vehicle_id'],
+            'driver_id' => $updatedData['driver_id'],
+            'technician_id' => $updatedData['technician_id'],
+        ]);
+    }
+
+    // Driver will not have heavy license while vehicle is heavy
+    public function test_order_edit_fails_on_wrong_driver_for_vehicle(): void
+    {
+        $order = Order::factory()->create();
+
+        $trajectory = $this->generateRandomTrajectory();
+    
+        //1 -> heavy vehicle with no heavy license
+        $updatedData_1 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData_1);
+
+        $response->assertSessionHasErrors(['driver_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData_1);
+
+        //2 -> heavy Passangers vehicle with heavy Goods license     
+        $updatedData_2 = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1'])->id,
+            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData_2);
+
+        $response->assertSessionHasErrors(['driver_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData_2);
+    }
+
+    // User is not a technician
+    public function test_order_edit_fails_on_wrong_technician(): void
+    {
+        $order = Order::factory()->create();
+
+        $trajectory = $this->generateRandomTrajectory();
+    
+        $updatedData = [
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'trajectory' => json_encode($trajectory),
+            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
+        ];
+        
+        $response = $this
+            ->actingAs($this->user)
+            ->put("/orders/edit/{$order->id}", $updatedData);
+
+        $response->assertSessionHasErrors(['technician_id']);
+
+        $this->assertDatabaseMissing('orders', $updatedData);
+    }
+
     public function test_user_can_delete_an_order(): void
     {
         $order = Order::factory()->create();
@@ -557,9 +805,7 @@ class OrderTest extends TestCase
 
     public function test_user_can_approve_a_order(): void
     {
-        $manager = User::factory()->create([
-            'user_type' => 'Gestor',
-        ]);
+        $manager = ManagerFactory::new()->create();
 
         $order = Order::factory()->create([
             'approved_date' => null,
@@ -610,24 +856,20 @@ class OrderTest extends TestCase
 
     public function test_order_creation_handles_exception()
     {
-        $placesData = $this->generateRandomPlacesAndKids();
+        $withKids = fake()->boolean();
+        $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
+        $placesData = $this->generateRandomPlacesAndKids($withKids);
 
-        $beginLatitude = fake()->latitude();
-        $beginLongitude = fake()->longitude();
-
-        $endLatitude = fake()->latitude();
-        $endLongitude = fake()->longitude();
-
-        $trajectory = $this->generateRandomTrajectory($beginLatitude, $beginLongitude, $endLatitude, $endLongitude);
+        $trajectory = $this->generateRandomTrajectory();
 
         $incomingFields = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
             'driver_id' => Driver::factory()->create()->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];        

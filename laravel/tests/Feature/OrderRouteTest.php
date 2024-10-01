@@ -134,6 +134,7 @@ class OrderRouteTest extends TestCase
         $orderRouteData = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
         ];
 
         $response = $this
@@ -150,6 +151,7 @@ class OrderRouteTest extends TestCase
 
         $this->assertDatabaseHas('order_routes', [
             'name' => $orderRouteData['name'],
+            'area_color' => $orderRouteData['area_color'],
         ]);
 
         $this->assertEquals($expectedArea,$orderRoute->area);
@@ -170,6 +172,7 @@ class OrderRouteTest extends TestCase
         $orderRouteData = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
             'usual_drivers' => $driverIds,
             'usual_technicians' => $technicianIds,
         ];
@@ -188,6 +191,7 @@ class OrderRouteTest extends TestCase
 
         $this->assertDatabaseHas('order_routes', [
             'name' => $orderRouteData['name'],
+            'area_color' => $orderRouteData['area_color'],
         ]);
 
         foreach ($driverIds as $driverId) {
@@ -222,6 +226,7 @@ class OrderRouteTest extends TestCase
         $orderRouteData = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
             'usual_technicians' => [$user_1->id, $user_2->id],
         ];
 
@@ -233,6 +238,7 @@ class OrderRouteTest extends TestCase
 
         $this->assertDatabaseMissing('order_routes', [
             'name' => $orderRouteData['name'],
+            'area_color' => $orderRouteData['area_color'],
         ]);
     }
 
@@ -253,6 +259,7 @@ class OrderRouteTest extends TestCase
         $updatedData = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
             'usual_drivers' => $driverIds,
             'usual_technicians' => $technicianIds,
         ];
@@ -271,6 +278,7 @@ class OrderRouteTest extends TestCase
 
         $this->assertDatabaseHas('order_routes', [
             'name' => $updatedData['name'],
+            'area_color' => $updatedData['area_color'],
         ]);
 
         foreach ($driverIds as $driverId) {
@@ -307,6 +315,7 @@ class OrderRouteTest extends TestCase
         $updatedData = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
             'usual_technicians' => [$user_1->id, $user_2->id],
         ];
         
@@ -318,6 +327,7 @@ class OrderRouteTest extends TestCase
 
         $this->assertDatabaseMissing('order_routes', [
             'name' => $updatedData['name'],
+            'area_color' => $updatedData['area_color'],
         ]);
     }
 
@@ -345,6 +355,7 @@ class OrderRouteTest extends TestCase
         $incomingFields = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
+            'area_color' => fake()->hexColor(),
         ];       
 
         // Mock the Order model to throw an exception

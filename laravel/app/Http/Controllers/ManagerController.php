@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\RoleUserTypeValidation;
 
 class ManagerController extends Controller
 {
@@ -42,15 +43,7 @@ class ManagerController extends Controller
             'id' => [
                 'required', 
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) use ($request) {
-                    $user = User::find($value);
-        
-                    if ($user && $user->user_type != 'Nenhum') {
-                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em gestores');
-                    }
-                },
-
+                new RoleUserTypeValidation(),
             ],
         ], $customErrorMessages);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Vehicle;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
@@ -53,7 +54,8 @@ class VehicleController extends Controller
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
-            'current_kilometrage' => ['required', 'integer', 'min:0']
+            'current_kilometrage' => ['required', 'integer', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -62,10 +64,40 @@ class VehicleController extends Controller
 
         if($incomingFields['heavy_vehicle'] == '0') {
             $incomingFields['heavy_type'] = null;
-        }
+        } 
 
         try {
-            $vehicle = Vehicle::create($incomingFields);
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+        
+                // Generate a random name for the image with the original extension
+                $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                
+                // Store the image in the private 'storage/app/vehicles' folder
+                $path = $file->storeAs('vehicles', $fileName); // Store in a private folder (not public)
+
+            } else {
+                $path = null;
+            }
+
+            $vehicle = Vehicle::create([
+                'make' => $incomingFields['make'],
+                'model' => $incomingFields['model'],
+                'license_plate' => $incomingFields['license_plate'],
+                'year' => $incomingFields['year'],
+                'heavy_vehicle' => $incomingFields['heavy_vehicle'],
+                'heavy_type' => $incomingFields['heavy_type'],
+                'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
+                'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'capacity' => $incomingFields['capacity'],
+                'fuel_consumption' => $incomingFields['fuel_consumption'],
+                'status' => $incomingFields['status'],
+                'current_month_fuel_requests' => $incomingFields['current_month_fuel_requests'],
+                'fuel_type' => $incomingFields['fuel_type'],
+                'current_kilometrage' => $incomingFields['current_kilometrage'],
+                'image_path' => $path,
+            ]);
+
             return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -103,7 +135,8 @@ class VehicleController extends Controller
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
-            'current_kilometrage' => ['required', 'integer', 'min:0']
+            'current_kilometrage' => ['required', 'integer', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -115,7 +148,37 @@ class VehicleController extends Controller
         }
 
         try {
-            $vehicle->update($incomingFields);
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+        
+                // Generate a random name for the image with the original extension
+                $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                
+                // Store the image in the private 'storage/app/vehicles' folder
+                $path = $file->storeAs('vehicles', $fileName); // Store in a private folder (not public)
+
+            } else {
+                $path = null;
+            }
+
+            $vehicle->update([
+                'make' => $incomingFields['make'],
+                'model' => $incomingFields['model'],
+                'license_plate' => $incomingFields['license_plate'],
+                'year' => $incomingFields['year'],
+                'heavy_vehicle' => $incomingFields['heavy_vehicle'],
+                'heavy_type' => $incomingFields['heavy_type'],
+                'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
+                'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'capacity' => $incomingFields['capacity'],
+                'fuel_consumption' => $incomingFields['fuel_consumption'],
+                'status' => $incomingFields['status'],
+                'current_month_fuel_requests' => $incomingFields['current_month_fuel_requests'],
+                'fuel_type' => $incomingFields['fuel_type'],
+                'current_kilometrage' => $incomingFields['current_kilometrage'],
+                'image_path' => $path,
+            ]);
+
             return redirect()->route('vehicles.index')->with('message', 'Dados do veículocom id ' . $vehicle->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {

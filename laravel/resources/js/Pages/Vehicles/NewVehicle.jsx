@@ -5,6 +5,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Grid } from '@mui/material';
 import { useState } from 'react';
 
+{/*TODO: VEHICLE IMAGE SELECT */}
 export default function NewVehicle( {auth} ) {
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
@@ -22,7 +23,7 @@ export default function NewVehicle( {auth} ) {
         status: '',
         current_month_fuel_requests: '',
         fuel_type: '',
-        current_kilometrage: ''
+        current_kilometrage: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -30,6 +31,15 @@ export default function NewVehicle( {auth} ) {
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('vehicles.create'));
+    };
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedImage(URL.createObjectURL(file)); // Create a URL for the selected image
+        }
     };
 
     return (
@@ -98,6 +108,22 @@ export default function NewVehicle( {auth} ) {
                                     helperText={errors.year && <InputError message={errors.year} />}
                                     margin="normal"
                                 />
+
+                                <div>
+                                    <label htmlFor="image">Foto do veículo (opcional)</label>
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        accept="image/*" // Accept only images
+                                        onChange={handleImageChange}
+                                    />
+                                </div>
+                                {selectedImage && (
+                                    <div>
+                                        <h4>Preview:</h4>
+                                        <img src={selectedImage} alt="Selected" style={{ maxWidth: '200px' }} />
+                                    </div>
+                                )}
 
                                 <Grid container>
                                     <Grid item xs={12} md={6}>

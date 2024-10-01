@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 //TODO: SHOULD KID HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES) -> YES!!!
-//TODO: KIDS RELATION TO ORDER STOPS
 class Kid extends Model
 {
     use HasFactory;

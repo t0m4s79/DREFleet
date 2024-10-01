@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\TechnicianUserTypeValidation;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
@@ -51,18 +52,13 @@ class OrderRouteController extends Controller
             'area_coordinates' => ['required', 'array'],
             'area_coordinates.*.lat' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'], // Latitude validation
             'area_coordinates.*.lng' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'], // Longitude validation
+            'area_color' => ['required', 'regex:/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/'],
             'usual_drivers' => ['array'], // Ensure it's an array first
             'usual_drivers.*' => ['exists:drivers,user_id'], // Check that each item in the array exists in the drivers table
             'usual_technicians' => ['array'],
             'usual_technicians.*' => [
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),
             ],        
         ], $customErrorMessages);
 
@@ -95,6 +91,7 @@ class OrderRouteController extends Controller
             $orderRoute = OrderRoute::create([
                 'name' => $incomingFields['name'],
                 'area' => $area,
+                'area_color' => $incomingFields['area_color'],
             ]);
             
             $orderRoute->drivers()->attach($usalDrivers);
@@ -127,18 +124,13 @@ class OrderRouteController extends Controller
             'area_coordinates' => ['required', 'array'],
             'area_coordinates.*.lat' => ['required', 'numeric', 'between:-90,90', 'regex:/^-?\d{1,2}\.\d{0,15}$/'], // Latitude validation
             'area_coordinates.*.lng' => ['required', 'numeric', 'between:-180,180', 'regex:/^-?\d{1,3}\.\d{0,15}$/'], // Longitude validation
+            'area_color' => ['required', 'regex:/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/'],
             'usual_drivers' => ['array'], // Ensure it's an array first
             'usual_drivers.*' => ['exists:drivers,user_id'], // Check that each item in the array exists in the drivers table
             'usual_technicians' => ['array'],
             'usual_technicians.*' => [
                 'exists:users,id',
-
-                function ($attribute, $value, $fail) {
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Técnico') {
-                        $fail('O valor selecionado para o campo do técnico é inválido');
-                    }
-                },
+                new TechnicianUserTypeValidation(),
             ],
         ], $customErrorMessages);
 
@@ -167,6 +159,7 @@ class OrderRouteController extends Controller
             $orderRoute->update([
                 'name' => $incomingFields['name'],
                 'area' => $area,
+                'area_color' => $incomingFields['area_color'],
             ]);
 
             $orderRoute->drivers()->sync($incomingFields['usual_drivers']);

@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-//TODO: NEW FORMS WITH NEW WHEELCHAIR CERTIFIED, HEAVY TYPE AND CURRENT KILOMETERAGE
 return new class extends Migration
 {
     /**
@@ -29,6 +28,7 @@ return new class extends Migration
             $table->tinyInteger('current_month_fuel_requests');
             $table->enum('fuel_type',['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']);
             $table->integer('current_kilometrage');
+            $table->string('image_path')->nullable();
         });
     }
 

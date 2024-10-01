@@ -25,8 +25,38 @@ class DriverFactory extends Factory
             'user_id' => User::factory()->state([
                 'user_type' => 'Condutor',
             ]),
+            'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
         ];    
+    }
+
+    /*
+        Aveiro - AV.
+        Beja - BE.
+        Braga - BR.
+        Bragança - BG.
+        Castelo Branco - CB.
+        Coimbra - C.
+        Évora - E.
+        Faro - FA.
+        Guarda - GD.
+        Leiria - LE.
+        Lisboa - L.
+        Portalegre - PT.
+        Porto - P.
+        Santarém - SA.
+        Setúbal - SE.
+        Viana do Castelo - VC.
+        Vila Real - VR.
+        Viseu - VS.
+        Angra do Heroísmo - AN.
+        Horta - H.
+        Ponta Delgada - A.
+        Funchal - M.
+    */
+    private function getRandomRegionIdentifier() :string
+    {
+        return Arr::random(['AV','BE','BR','BG','CB','C','E','FA','GD','LE','L','PT','P','SA','SE','VC','VR','VS','AN','H','A','M']);
     }
 }

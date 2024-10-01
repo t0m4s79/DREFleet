@@ -7,8 +7,6 @@ use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-//TODO: VEHCILES AND ROUTES RELATION???
-//TODO: LOGIC AND CODE IMPLEMENTATION
 class OrderRoute extends Model
 {
     use HasFactory;
@@ -16,6 +14,7 @@ class OrderRoute extends Model
     protected $fillable = [
         'name',
         'area',
+        'area_color',
     ];
 
     protected $casts = [
