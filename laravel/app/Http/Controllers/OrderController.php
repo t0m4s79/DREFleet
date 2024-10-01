@@ -70,7 +70,7 @@ class OrderController extends Controller
     public function createOrder(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
-        //dd($request);
+
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
