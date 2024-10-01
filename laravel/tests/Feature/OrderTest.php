@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
 use Illuminate\Support\Arr;
@@ -175,6 +176,7 @@ class OrderTest extends TestCase
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_route_id' => OrderRoute::factory()->create()->id,
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0'])->id,
@@ -196,6 +198,7 @@ class OrderTest extends TestCase
             'expected_end_date' => $orderData['expected_end_date'],
             'trajectory' => $orderData['trajectory'],
             'order_type' => $orderData['order_type'],
+            'order_route_id' => $orderData['order_route_id'],
             'vehicle_id' => $orderData['vehicle_id'],
             'driver_id' => $orderData['driver_id'],
             'technician_id' => $orderData['technician_id'],
