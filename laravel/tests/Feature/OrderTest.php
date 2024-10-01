@@ -318,8 +318,18 @@ class OrderTest extends TestCase
     public function test_order_creation_fails_on_vehicle_capacity_exceeded(): void
     {  
         $placesData = $this->generateRandomPlacesAndKids($withKids=true);
-        $trajectory = $this->generateRandomTrajectory();
      
+        $newPlace = Place::factory()->create();
+        $newKid = Kid::factory()->create();
+        $newKid->places()->attach($newPlace->id);
+
+        $placesData[] = [
+            'place_id' => $newPlace->id,
+            'kid_id' => $newKid->id,
+        ];
+
+        $trajectory = $this->generateRandomTrajectory();
+
         $orderData = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
