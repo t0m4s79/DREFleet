@@ -21,7 +21,7 @@ class Order extends Model
         'vehicle_id',
         'driver_id',
         'technician_id',
-        'route_id',
+        'order_route_id',
 
         'manager_id',
         'approved_date',
