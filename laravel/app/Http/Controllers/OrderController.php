@@ -29,7 +29,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::with(['orderStops'])->get();
 
         return Inertia::render('Orders/AllOrders',[
            'flash' => [
@@ -93,7 +93,7 @@ class OrderController extends Controller
                 },
             ],
             'technician_id' => [
-                'required',
+                'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
 
                 function ($attribute, $value, $fail) {
@@ -111,10 +111,15 @@ class OrderController extends Controller
                 'nullable', 'exists:kids,id',  // Validate that 'kid_id' is optional but must exist if provided
                 
                 function ($attribute, $value, $fail) use ($request) {
+                    $orderType = $request->input('order_type');
                     $vehicle = Vehicle::find($request->input('vehicle_id'));
         
                     if ($value) {
                         $kid = Kid::find($value);
+
+                        if ($kid && $orderType !== 'Transporte de Crianças') {
+                            $fail('Crianças não podem ser incluídas a menos que o tipo de ordem seja "Transporte de Crianças"');
+                        }
 
                         if ($kid && $kid->wheelchair) {
                             if (!$vehicle->wheelchair_adapted) {
@@ -124,7 +129,24 @@ class OrderController extends Controller
                     }
                 },
             ],
-        ], $customErrorMessages);
+        ], [
+            'after' => function ($validator) use ($request) {
+                $vehicle = Vehicle::find($request->input('vehicle_id'));
+        
+                if ($vehicle && $request->input('order_type') === 'Transporte de Crianças') {
+                    $technicianId = $request->input('technician_id');
+                    $kids = collect($request->input('places'))->filter(function ($place) {
+                        return isset($place['kid_id']);
+                    });
+        
+                    $totalPeople = $kids->count() + ($technicianId ? 1 : 0); // Kids count + technician (if exists)
+        
+                    if ($totalPeople > $vehicle->capacity) {
+                        $validator->errors()->add('vehicle_id', 'O número de crianças + técnico excede a capacidade do veículo.');
+                    }
+                }
+            },
+        ] ,$customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
@@ -219,7 +241,7 @@ class OrderController extends Controller
                 },
             ],
             'technician_id' => [
-                'required',
+                'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
 
                 function ($attribute, $value, $fail) {
@@ -240,7 +262,12 @@ class OrderController extends Controller
                     $vehicle = Vehicle::find($request->input('vehicle_id'));
         
                     if ($value) {
+                        $orderType = $request->input('order_type');
                         $kid = Kid::find($value);
+
+                        if ($kid && $orderType !== 'Transporte de Crianças') {
+                            $fail('Crianças não podem ser incluídas a menos que o tipo de ordem seja "Transporte de Crianças"');
+                        }
 
                         if ($kid && $kid->wheelchair) {
                             if (!$vehicle->wheelchair_adapted) {
@@ -251,6 +278,23 @@ class OrderController extends Controller
                 },
             ],
             'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
+        ], [
+            'after' => function ($validator) use ($request) {
+                $vehicle = Vehicle::find($request->input('vehicle_id'));
+        
+                if ($vehicle && $request->input('order_type') === 'Transporte de Crianças') {
+                    $technicianId = $request->input('technician_id');
+                    $kids = collect($request->input('places'))->filter(function ($place) {
+                        return isset($place['kid_id']);
+                    });
+        
+                    $totalPeople = $kids->count() + ($technicianId ? 1 : 0); // Kids count + technician (if exists)
+        
+                    if ($totalPeople > $vehicle->capacity) {
+                        $validator->errors()->add('vehicle_id', 'O número de crianças + técnico excede a capacidade do veículo.');
+                    }
+                }
+            },
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;

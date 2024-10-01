@@ -27,7 +27,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         $technician = TechnicianFactory::new()->create();
-        $vehicle = Vehicle::factory()->create(['wheelchair_adapted' => 1]);
+        $vehicle = Vehicle::factory()->create();
         $driver = Driver::factory()->create();
         
         $trajectory = $this->generateRandomTrajectory();

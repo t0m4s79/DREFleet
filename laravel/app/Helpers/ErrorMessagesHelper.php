@@ -29,6 +29,7 @@ class ErrorMessagesHelper
             'technician_id.exists' => 'Técnico selecionado não existe',
             'user_id.exists' => 'O utilizador especificado não existe',
             'vehicle_id.exists' => 'Veículo selecionado não existe',
+            'image' => 'Só são permitidas imagens neste campo',
 
             // Coordinates and Spatial Data
             'latitude.regex' => 'Este campo vai de -90 a 90 e permite até 15 casas decimais',
@@ -40,7 +41,7 @@ class ErrorMessagesHelper
 
             'license_region_identifier.in' => 
                 'Valor inválido inserido. Só são permitidas letras (máximo 2) identificadoras da região portuguesa que emitiu a carta:
-                    AveiroAV()<br>
+                    AV (Aveiro)<br>
                     BE (Beja)<br>
                     BR (Braga)<br>
                     BG (Bragança)<br>
@@ -71,6 +72,16 @@ class ErrorMessagesHelper
             'email.email' => 'Este campo deve ser um endereço email válido',
             'email.unique' => 'Este endereço email já está em uso',
             'email.lowercase' => 'Este campo só permite letras minúsculas',
+
+            // Images
+            'mimes' => 'Só as seguintes extensões são permitidas: :values',
+            'image.max' => 'O tamanha da imagem não pode exceder os :max kilobytes',
+
+            // Order Routes
+            'area_color.regex' => 'Só são permitidas cores no formato hexadecimal (ex: #FFFFFF)',
+
+            // Orders
+            'technician_id.required_if' => 'Técnicos são obrigatórios no transporte de crianças',
 
             // Password
             'current_password.current_password' => 'A password introduzida está incorreta',
