@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use InvalidArgumentDException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
@@ -85,13 +86,20 @@ class DriverController extends Controller
             $incomingFields['heavy_license_type'] = null;
         } 
 
+        $licenseNumber = $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'];
+
         DB::beginTransaction();
         try {
             $user = User::findOrFail($incomingFields['user_id']);
 
+            //TODO: SHOULD BE FRONT-END MESSAGE
+            if (DB::table('drivers')->where('license_number', $licenseNumber)->exists()) {
+                throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
+            }
+
             $driver = Driver::create([
                 'user_id' => $incomingFields['user_id'],
-                'license_number' => $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'],
+                'license_number' => $licenseNumber,
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
             ]);
@@ -102,6 +110,11 @@ class DriverController extends Controller
             DB::commit();
 
             return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
+        
+        } catch (\InvalidArgumentException $e) {
+            DB::rollBack();        
+            return redirect()->back()->with('error', $e->getMessage());
+        
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
@@ -164,14 +177,21 @@ class DriverController extends Controller
         $incomingFields['email'] = strip_tags($incomingFields['email']);
         $incomingFields['license_region_identifier'] = strip_tags($incomingFields['license_region_identifier']);
 
+        $licenseNumber = $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'];
+
         if($incomingFields['heavy_license'] == '0') {
             $incomingFields['heavy_license_type'] = null;
         }
-
+        
         DB::beginTransaction();
         try {
+            //TODO: SHOULD BE FRONT-END MESSAGE
+            if (DB::table('drivers')->where('license_number', $licenseNumber)->whereNot('user_id', $driver->user_id)->exists()) {
+                throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
+            }
+
             $driver->update([
-                'license_number' => $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'],
+                'license_number' => $licenseNumber,
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
             ]);
@@ -188,11 +208,15 @@ class DriverController extends Controller
 
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
 
+        } catch (\InvalidArgumentException $e) {
+            DB::rollBack();        
+            return redirect()->back()->with('error', $e->getMessage());
+        
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
-        }
+        } 
     }
 
     public function deleteDriver($id)

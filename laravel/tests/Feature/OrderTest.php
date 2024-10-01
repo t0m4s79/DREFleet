@@ -217,7 +217,7 @@ class OrderTest extends TestCase
         $this->assertEquals(count($placesData), $orderStopsCount);
     }
 
-    // Add kid that uses a wheelchair, vehicle will not be wheelchaor adapted
+    // Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
     public function test_order_creation_fails_on_wrong_vehicle_for_kid(): void
     {  
         $withKids = fake()->boolean();
@@ -266,7 +266,7 @@ class OrderTest extends TestCase
     }
 
     // Wrong order type for kid transportation
-    public function test_order_creation_fails_on_wrong_order_type_for_kid(): void
+    public function test_order_creation_fails_on_wrong_order_type_with_kid(): void
     {  
         $placesData = $this->generateRandomPlacesAndKids($withKids=true);
         
@@ -558,7 +558,7 @@ class OrderTest extends TestCase
         ]);
     }
 
-    // Add kid that uses a wheelchair, vehicle will not be wheelchaor adapted
+    // Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
     public function test_order_edit_fails_on_wrong_vehicle_for_kid(): void
     {  
         $order = Order::factory()->create();
@@ -567,7 +567,7 @@ class OrderTest extends TestCase
         $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
         $placesData = $this->generateRandomPlacesAndKids($withKids);
 
-        //Add kid that uses a wheelchair, vehicle will not be wheelchaor adapted
+        //Add kid that uses a wheelchair, vehicle will not be wheelchair adapted
         $newPlace = Place::factory()->create();
         $newKid = Kid::factory()->create(['wheelchair' => 1]);
         $newKid->places()->attach($newPlace->id);
@@ -610,7 +610,7 @@ class OrderTest extends TestCase
     }
 
     // Wrong order type for kid transportation
-    public function test_order_edit_fails_on_wrong_order_type_for_kid(): void
+    public function test_order_edit_fails_on_wrong_order_type_with_kid(): void
     {  
         $order = Order::factory()->create();
 

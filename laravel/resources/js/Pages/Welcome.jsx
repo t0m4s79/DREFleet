@@ -8,10 +8,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         document.getElementById('background')?.classList.add('!hidden');
     };
 
+    {/*TODO: DARK MODE?*/}
     return (
         <>
             <Head title="Welcome" />
-            <div className="bg-white text-black/50 dark:bg-black dark:text-white/50">
+            {/* <div className="bg-white text-black/50 dark:bg-black dark:text-white/50"> */}
+            <div className="bg-white text-black/50">
                 <img
                     id="background"
                     className="absolute top-0 min-w-full h-screen"
@@ -72,9 +74,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         <p className="text-xl font-normal text-black text-center w-2/4 text-wrap m-auto">
                                             Aplicação digital para os transportes realizados pela frota de veículos afetos à Direção Regional de Educação
                                         </p>
-                                        <button className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase">
+                                        <a
+                                            href="/login"
+                                            className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase inline-block text-center"
+                                            >
                                             Entrar
-                                        </button>
+                                            </a>
                             </div>
 
                             <div className='flex flex-col md:flex-row items-center mt-96 mb-56 gap-24'>
@@ -146,7 +151,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         </button>
                             </div>
 
-                            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+                            {/* <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
                                 <a
                                     href="https://laravel.com/docs"
                                     id="docs-card"
@@ -410,7 +415,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             
 
@@ -430,8 +435,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                              </div>
                                 
                         </main>
-
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
+                        
+                        {/*<footer className="py-16 text-center text-sm text-black dark:text-white/70">*/}
+                        <footer className="py-16 text-center text-sm text-black">
                             Laravel v{laravelVersion} (PHP v{phpVersion})
                         </footer>
                     </div>

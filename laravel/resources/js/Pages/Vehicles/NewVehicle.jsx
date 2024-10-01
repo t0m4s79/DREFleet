@@ -5,6 +5,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Grid } from '@mui/material';
 import { useState } from 'react';
 
+{/*TODO: VEHICLE IMAGE SELECT */}
 export default function NewVehicle( {auth} ) {
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
