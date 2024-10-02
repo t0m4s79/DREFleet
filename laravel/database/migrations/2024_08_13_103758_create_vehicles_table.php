@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('make');
             $table->string('model');
             $table->string('license_plate');
@@ -29,6 +28,7 @@ return new class extends Migration
             $table->enum('fuel_type',['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']);
             $table->integer('current_kilometrage');
             $table->string('image_path')->nullable();
+            $table->timestamps();
         });
     }
 

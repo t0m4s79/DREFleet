@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('order_stops', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->dateTime('planned_arrival_date')->nullable();
             $table->dateTime('actual_arrival_date')->nullable();
 
@@ -22,6 +21,8 @@ return new class extends Migration
 
             $table->unsignedBigInteger('place_id');
             $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade');
+
+            $table->timestamps();
 
             $table->primary(['id', 'place_id']);
         });
