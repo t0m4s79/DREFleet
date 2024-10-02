@@ -173,7 +173,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} md={6}>
 
-                                                <InputLabel>Rota</InputLabel>
+                                                <InputLabel sx={{ mb: 2 }}>Rota</InputLabel>
                                                 <Autocomplete
                                                     options={orderRoutes}
                                                     getOptionLabel={(orderRoute) => orderRoute.name} 
@@ -181,15 +181,21 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                                     onChange={(event, route) => handleRouteChange(route.id)}
                                                     //onChange={(event, value) => setData('order_route_id', value ? value.id : '')} // Set the id of the selected route
                                                     renderInput={(params) => <TextField {...params} label="Rota" />}
+                                                    error={errors.order_route_id}
+                                                    helperText={errors.order_route_id}
+                                                    sx={{ mb: 2 }}
                                                 />
 
-                                                <InputLabel>Tipo de Transporte</InputLabel>
+                                                <InputLabel sx={{ mb: 2 }}>Tipo de Transporte</InputLabel>
                                                 <Autocomplete
                                                     options={['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']}
                                                     value={data.order_type || null} // Bind the selected string
                                                     onChange={(event, value) => handleRouteType(value)}
                                                     //onChange={(event, value) => setData('order_type', value || '')} // Set the selected value (string)
                                                     renderInput={(params) => <TextField {...params} label="Tipo de Transporte" />}
+                                                    error={errors.order_type}
+                                                    helperText={errors.order_type}
+                                                    sx={{ mb: 2 }}
                                                 />
 
                                                 {/* <InputLabel value={'Pontos de paragem'} />
@@ -247,118 +253,123 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                                             lng: place.coordinates.coordinates[0],
                                                         }))} onUpdateWaypoints={updateWaypoints}
                                                     />
+                                                </Grid>
+
+                                            <Grid item xs={12} md={6}>
+                                                <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory}/>
                                             </Grid>
 
-                                         <Grid item xs={12} md={6}>
-                                            <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory}/>
+
                                         </Grid>
-
-
-                                    </Grid>
                     
-                                    <Grid container spacing={3}>
-                                        <Grid item xs={6}>
-                                            <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
-                                            <TextField
-                                                //label="Data e Hora de Início"
-                                                id='planned_begin_date'
-                                                name='planned_begin_date'
-                                                type="datetime-local"
-                                                fullWidth
-                                                value={data.begin_date}
-                                                onChange={(e) => setData('expected_begin_date', e.target.value)}
-                                                error={errors.begin_date ? true : false}
-                                                helperText={errors.begin_date}
-                                            />
-                                        </Grid>
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={6}>
+                                                <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
+                                                <TextField
+                                                    //label="Data e Hora de Início"
+                                                    id='planned_begin_date'
+                                                    name='planned_begin_date'
+                                                    type="datetime-local"
+                                                    fullWidth
+                                                    value={data.begin_date}
+                                                    onChange={(e) => setData('expected_begin_date', e.target.value)}
+                                                    error={errors.expected_begin_date}
+                                                    helperText={errors.expected_begin_date}
+                                                    sx={{ mb: 2 }}
+                                                />
+                                            </Grid>
 
-                                        <Grid item xs={6}>
-                                            <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
-                                            <TextField
-                                                // label="Data e Hora de Fim"
-                                                id='planned_end_date'
-                                                name='planned_end_date'
-                                                type="datetime-local"
-                                                fullWidth
-                                                value={data.end_date}
-                                                onChange={(e) => setData('expected_end_date', e.target.value)}
-                                                error={errors.end_date ? true : false}
-                                                helperText={errors.end_date}
-                                            />
+                                            <Grid item xs={6}>
+                                                <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
+                                                <TextField
+                                                    // label="Data e Hora de Fim"
+                                                    id='planned_end_date'
+                                                    name='planned_end_date'
+                                                    type="datetime-local"
+                                                    fullWidth
+                                                    value={data.end_date}
+                                                    onChange={(e) => setData('expected_end_date', e.target.value)}
+                                                    error={errors.expected_begin_date}
+                                                    helperText={errors.expected_end_date}
+                                                    sx={{ mb: 2 }}
+                                                />
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
                                    
-                                    <Grid item xs={12}>
-                                        <Autocomplete
-                                            id="vehicle"
-                                            options={vehicleList}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(e,value) => setData('vehicle_id', value.value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Veículo"
-                                                    fullWidth
-                                                    value={data.vehicle_id}
-                                                    error={errors.vehicle_id ? true : false}
-                                                    helperText={errors.vehicle_id}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
+                                        <Grid item xs={12}>
+                                            <Autocomplete
+                                                id="vehicle"
+                                                options={vehicleList}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(e,value) => setData('vehicle_id', value.value)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Veículo"
+                                                        fullWidth
+                                                        value={data.vehicle_id}
+                                                        error={errors.vehicle_id}
+                                                        helperText={errors.vehicle_id}
+                                                    />
+                                                )}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
+
+                                        
+                                        <Grid item xs={12} margin={'normal'}>
+                                            <Autocomplete
+                                                id="driver"
+                                                options={driversList}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(e,value) => setData('driver_id', value.value)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Condutor"
+                                                        fullWidth
+                                                        value={data.driver_id}
+                                                        error={errors.driver_id}
+                                                        helperText={errors.driver_id}
+                                                    />
+                                                )}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
+
+                                        
+                                        <Grid item xs={12} margin={'normal'}>
+                                            <Autocomplete
+                                                id="techician"
+                                                options={techniciansList}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(e,value) => setData('technician_id', value.value)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Técnico"
+                                                        fullWidth
+                                                        value={data.technician_id}
+                                                        error={errors.technician_id}
+                                                        helperText={errors.technician_id}
+                                                    />
+                                                )}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
 
                                     
-                                    <Grid item xs={12}>
-                                        <Autocomplete
-                                            id="driver"
-                                            options={driversList}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(e,value) => setData('driver_id', value.value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Condutor"
-                                                    fullWidth
-                                                    value={data.driver_id}
-                                                    error={errors.driver_id ? true : false}
-                                                    helperText={errors.driver_id}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-
-                                    
-                                    <Grid item xs={12}>
-                                        <Autocomplete
-                                            id="techician"
-                                            options={techniciansList}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(e,value) => setData('technician_id', value.value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Técnico"
-                                                    fullWidth
-                                                    value={data.technician_id}
-                                                    error={errors.technician_id ? true : false}
-                                                    helperText={errors.technician_id}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-
+                                        <Grid item xs={12}>
+                                            <Button type="submit" variant="outlined" color="primary" disabled={processing}>
+                                                Submeter
+                                            </Button>
+                                        </Grid>
                                 
-                                    <Grid item xs={12}>
-                                        <Button type="submit" variant="outlined" color="primary" disabled={processing}>
-                                            Submeter
-                                        </Button>
-                                    </Grid>
-                                
-                                </form> 
+                                    </form> 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </AuthenticatedLayout>
     );
