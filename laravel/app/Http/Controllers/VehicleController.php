@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Storage;
 
 class VehicleController extends Controller
 {
@@ -67,6 +68,7 @@ class VehicleController extends Controller
         } 
 
         try {
+            //TODO: IMAGE RESIZING BEFORE STORING
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
         
@@ -136,7 +138,7 @@ class VehicleController extends Controller
             'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
             'current_kilometrage' => ['required', 'integer', 'min:0'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimetypes:image/jpeg,image/png,image/jpg', 'max:2048'],
         ], $customErrorMessages);
 
         $incomingFields['make'] = strip_tags($incomingFields['make']);
@@ -148,14 +150,20 @@ class VehicleController extends Controller
         }
 
         try {
+            //TODO: IMAGE RESIZING BEFORE STORING
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
+
+                // Delete the old image if it exists
+                if ($vehicle->image_path) {
+                    Storage::disk('local')->delete($vehicle->image_path);
+                }
         
                 // Generate a random name for the image with the original extension
                 $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
                 
                 // Store the image in the private 'storage/app/vehicles' folder
-                $path = $file->storeAs('vehicles', $fileName); // Store in a private folder (not public)
+                $path = $file->storeAs('vehicles', $fileName); // Store in a private folder
 
             } else {
                 $path = null;

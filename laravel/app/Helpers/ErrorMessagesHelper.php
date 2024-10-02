@@ -76,6 +76,7 @@ class ErrorMessagesHelper
             // Images
             'mimes' => 'Só as seguintes extensões são permitidas: :values',
             'image.max' => 'O tamanha da imagem não pode exceder os :max kilobytes',
+            'image.mimetypes' => 'Só são permitidas imagens com os formatos jpeg, jpg e png',
 
             // Order Routes
             'area_color.regex' => 'Só são permitidas cores no formato hexadecimal (ex: #FFFFFF)',
