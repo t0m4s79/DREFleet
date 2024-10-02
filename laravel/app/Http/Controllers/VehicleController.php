@@ -69,6 +69,7 @@ class VehicleController extends Controller
 
         try {
             //TODO: IMAGE RESIZING BEFORE STORING
+            //TODO: IMAGE FIELD IN FRONT-END
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
         
@@ -151,6 +152,7 @@ class VehicleController extends Controller
 
         try {
             //TODO: IMAGE RESIZING BEFORE STORING
+            //TODO: IMAGE FIELD IN FRONT-END
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
 
