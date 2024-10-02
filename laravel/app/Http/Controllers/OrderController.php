@@ -154,7 +154,7 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
-        $places = Place::all();                     //TODO: TO BE CHANGED
+        $places = Place::all();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência');
         $routes = OrderRoute::all();

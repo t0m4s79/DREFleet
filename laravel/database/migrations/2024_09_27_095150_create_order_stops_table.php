@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_stops', function (Blueprint $table) {             //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (ORDER_STATUS)
-            $table->id();                                                       //TODO: CHECK CASCADES ON EVERY TABLE
+        Schema::create('order_stops', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
             $table->dateTime('planned_arrival_date')->nullable();
             $table->dateTime('actual_arrival_date')->nullable();

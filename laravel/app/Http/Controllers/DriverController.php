@@ -11,6 +11,7 @@ use InvalidArgumentDException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\DriverLicenseNumberValidation;
 use App\Rules\RoleUserTypeValidation;
 
 class DriverController extends Controller
@@ -35,7 +36,6 @@ class DriverController extends Controller
         return Inertia::render('Drivers/NewDriver', ['users' => $users]);
     }
 
-    //TODO: FRONT-END FOR LICENSE NUMBER
     public function createDriver(Request $request)
     {
         // Load custom error messages from helper
@@ -47,59 +47,33 @@ class DriverController extends Controller
                 'numeric',
                 new RoleUserTypeValidation(),
             ],
-            /*
-                Aveiro - AV.
-                Beja - BE.
-                Braga - BR.
-                Bragança - BG.
-                Castelo Branco - CB.
-                Coimbra - C.
-                Évora - E.
-                Faro - FA.
-                Guarda - GD.
-                Leiria - LE.
-                Lisboa - L.
-                Portalegre - PT.
-                Porto - P.
-                Santarém - SA.
-                Setúbal - SE.
-                Viana do Castelo - VC.
-                Vila Real - VR.
-                Viseu - VS.
-                Angra do Heroísmo - AN.
-                Horta - H.
-                Ponta Delgada - A.
-                Funchal - M.
-            */
-            'license_region_identifier' => ['required', 'min:1', 'max:2', Rule::in(['AV','BE','BR','BG','CB','C','E','FA','GD','LE','L','PT','P','SA','SE','VC','VR','VS','AN','H','A','M'])],
-            'license_middle_digits' => ['required', 'regex:/^[0-9]{6}$/'],
-            'license_last_digit' => ['required', 'regex:/^[0-9]{1}$/'],
+            'license_number' => [
+                'required', 
+                'regex:/^[A-Z]{1,2}-\d{6} \d$/',
+                new DriverLicenseNumberValidation(),
+            ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
         ], $customErrorMessages);
 
-        $incomingFields['license_region_identifier'] = strip_tags($incomingFields['license_region_identifier']);
-        $incomingFields['license_region_identifier'] = strip_tags($incomingFields['license_region_identifier']);
-        $incomingFields['license_region_identifier'] = strip_tags($incomingFields['license_region_identifier']);
+        $incomingFields['license_number'] = strip_tags($incomingFields['license_number']);
 
         if($incomingFields['heavy_license'] == '0') {
             $incomingFields['heavy_license_type'] = null;
         } 
-
-        $licenseNumber = $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'];
 
         DB::beginTransaction();
         try {
             $user = User::findOrFail($incomingFields['user_id']);
 
             //TODO: SHOULD BE FRONT-END MESSAGE
-            if (DB::table('drivers')->where('license_number', $licenseNumber)->exists()) {
+            if (DB::table('drivers')->where('license_number', $incomingFields['license_number'])->exists()) {
                 throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
             }
 
             $driver = Driver::create([
                 'user_id' => $incomingFields['user_id'],
-                'license_number' => $licenseNumber,
+                'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
             ]);
@@ -129,7 +103,6 @@ class DriverController extends Controller
         ]);
     }
 
-    //TODO: FRONT-END FOR LICENSE NUMBER
     public function editDriver(Driver $driver, Request $request)
     {
 
@@ -138,33 +111,11 @@ class DriverController extends Controller
 
         $incomingFields = $request->validate([
             'user_id' => 'required',
-            /*
-                Aveiro - AV.
-                Beja - BE.
-                Braga - BR.
-                Bragança - BG.
-                Castelo Branco - CB.
-                Coimbra - C.
-                Évora - E.
-                Faro - FA.
-                Guarda - GD.
-                Leiria - LE.
-                Lisboa - L.
-                Portalegre - PT.
-                Porto - P.
-                Santarém - SA.
-                Setúbal - SE.
-                Viana do Castelo - VC.
-                Vila Real - VR.
-                Viseu - VS.
-                Angra do Heroísmo - AN.
-                Horta - H.
-                Ponta Delgada - A.
-                Funchal - M.
-            */
-            'license_region_identifier' => ['required', 'min:1', 'max:2', Rule::in(['AV','BE','BR','BG','CB','C','E','FA','GD','LE','L','PT','P','SA','SE','VC','VR','VS','AN','H','A','M'])],
-            'license_middle_digits' => ['required', 'regex:/^[0-9]{6}$/'],
-            'license_last_digit' => ['required', 'regex:/^[0-9]{1}$/'],
+            'license_number' => [
+                'required', 
+                'regex:/^[A-Z]{1,2}-\d{6} \d$/',
+                new DriverLicenseNumberValidation(),
+            ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'name' => ['required', 'string', 'max:255'],
@@ -175,9 +126,7 @@ class DriverController extends Controller
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['license_region_identifier'] = strip_tags($incomingFields['license_region_identifier']);
-
-        $licenseNumber = $incomingFields['license_region_identifier'] . '-' . $incomingFields['license_middle_digits'] . ' ' .  $incomingFields['license_last_digit'];
+        $incomingFields['license_number'] = strip_tags($incomingFields['license_number']);
 
         if($incomingFields['heavy_license'] == '0') {
             $incomingFields['heavy_license_type'] = null;
@@ -186,12 +135,12 @@ class DriverController extends Controller
         DB::beginTransaction();
         try {
             //TODO: SHOULD BE FRONT-END MESSAGE
-            if (DB::table('drivers')->where('license_number', $licenseNumber)->whereNot('user_id', $driver->user_id)->exists()) {
+            if (DB::table('drivers')->where('license_number', $incomingFields['license_number'])->whereNot('user_id', $driver->user_id)->exists()) {
                 throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
             }
 
             $driver->update([
-                'license_number' => $licenseNumber,
+                'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
             ]);
