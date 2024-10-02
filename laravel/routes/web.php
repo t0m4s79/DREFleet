@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
     //DRIVERS
     Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET all page
-    Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.create');       //GET creation page
+    Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.showCreate');       //GET creation page
     Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE action
     Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditDriverForm'])->name('drivers.showEdit');    //GET edit page
     Route::put('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');            //EDIT action
@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
     
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
     Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
-    Route::get('/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.create');
+    Route::get('/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.showCreate');
     Route::post('/managers/create', [ManagerController::class, 'createManager'])->name('managers.create');
     Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
     Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
@@ -84,7 +84,7 @@ Route::middleware('auth')->group(function () {
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
-    Route::get('/places/create', [PlaceController::class, 'showCreatePlaceForm'])->name('places.create');
+    Route::get('/places/create', [PlaceController::class, 'showCreatePlaceForm'])->name('places.showCreate');
     Route::post('/places/create', [PlaceController::class, 'createPlace'])->name('places.create');
     Route::get('/places/edit/{place}', [PlaceController::class, 'showEditPlaceForm'])->name('places.showEdit');
     Route::put('/places/edit/{place}', [PlaceController::class, 'editPlace'])->name('places.edit');
@@ -97,7 +97,7 @@ Route::middleware('auth')->group(function () {
 
     //USERS
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.create');
+    Route::get('/users/create', [UserController::class, 'showCreateUserForm'])->name('users.showCreate');
     Route::post('/users/create', [UserController::class, 'createUser'])->name('users.create');
     Route::get('/users/edit/{user}', [UserController::class, 'showEditUserForm'])->name('users.showEdit');
     Route::put('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');
@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function () {
 
     //TECHNICIANS (USER MODEL WITH Técnico USER_TYPE)
     Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
-    Route::get('/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.create');
+    Route::get('/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.showCreate');
     Route::post('/technicians/create', [TechnicianController::class, 'createTechnician'])->name('technicians.create');
     Route::get('/technicians/edit/{user}', [TechnicianController::class, 'showEditTechnicianForm'])->name('technicians.showEdit');
     Route::put('/technicians/edit/{user}', [TechnicianController::class, 'editTechnician'])->name('technicians.edit');
@@ -113,7 +113,7 @@ Route::middleware('auth')->group(function () {
 
     //VEHICLES
     Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
-    Route::get('/vehicles/create', [VehicleController::class, 'showCreateVehicleForm'])->name('vehicles.create');
+    Route::get('/vehicles/create', [VehicleController::class, 'showCreateVehicleForm'])->name('vehicles.showCreate');
     Route::post('/vehicles/create', [VehicleController::class, 'createVehicle'])->name('vehicles.create');
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditVehicleForm'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');

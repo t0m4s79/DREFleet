@@ -108,7 +108,7 @@ export default function Authenticated({ user, header, children }) {
 
                                             <Dropdown.Content>
                                                 <Dropdown.Link  href={route('orders.index')} active={route().current('orders.index')}>Todos os Pedidos</Dropdown.Link>
-                                                <Dropdown.Link  href={route('orders.create')} active={route().current('orders.create')}>Criar Pedido</Dropdown.Link>
+                                                <Dropdown.Link  href={route('orders.showCreate')} active={route().current('orders.showCreate')}>Criar Pedido</Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>

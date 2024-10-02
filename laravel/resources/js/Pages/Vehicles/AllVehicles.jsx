@@ -69,7 +69,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Button href={route('vehicles.create')}>
+                    <Button href={route('vehicles.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Veículo
