@@ -45,6 +45,17 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
+            ->get("/managers/showApproved/{$manager->id}");
+
+        $response->assertOk();
+    }
+
+    public function test_manager_approved_orders_page_is_displayed(): void
+    {
+        $manager = ManagerFactory::new()->create();
+
+        $response = $this
+            ->actingAs($this->user)
             ->get("/managers/edit/{$manager->id}");
 
         $response->assertOk();
