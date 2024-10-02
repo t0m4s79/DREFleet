@@ -156,7 +156,7 @@ class OrderController extends Controller
         $managers = User::where('user_type', 'Gestor')->get();
         $places = Place::all();                     //TODO: TO BE CHANGED
         $kids = Kid::with('places')->get();
-        $otherPlaces = Place::whereNot('place_type', 'Residência');
+        $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::all();
 
         return Inertia::render('Orders/EditOrder', [
