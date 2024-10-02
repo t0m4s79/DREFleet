@@ -4,11 +4,26 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 
+const boundsSouthWestCorner = [32.269181, -17.735033];
+const boundsNorthEastCorner = [33.350247, -15.861279];
+
 function Routing({ waypoints, onTrajectoryChange }) {
 
     const map = useMap();
 
     useEffect(() => {
+        // Define the bounds (southwest and northeast corners)
+        const bounds = L.latLngBounds(
+            boundsSouthWestCorner, // Southwest corner
+            boundsNorthEastCorner  // Northeast corner
+        );
+
+        // Set max bounds to restrict map area
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds);
+        });
+
         if (!map || waypoints.length < 2) return;
 
         const routingControl = L.Routing.control({
