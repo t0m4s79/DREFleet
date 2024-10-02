@@ -17,6 +17,7 @@ class Order extends Model
         'expected_end_date',
         'trajectory',
         'order_type',
+        'status',
 
         'vehicle_id',
         'driver_id',

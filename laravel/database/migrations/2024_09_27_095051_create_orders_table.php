@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (ORDER_STATUS)
+        //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (STATUS)
         //TODO: IF A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->dateTime('expected_end_date')->nullable();
             $table->dateTime('approved_date')->nullable();
             $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);
+            $table->enum('status', ['Por aprovar', 'Cancelado/Não aprovado', 'Aprovado', 'Em curso', 'Finalizado', 'Interrompido']);
 
             $table->unsignedBigInteger('vehicle_id')->nullable();
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('set null');
