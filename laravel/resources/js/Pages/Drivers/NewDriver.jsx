@@ -1,8 +1,10 @@
 import InputError from '@/Components/InputError';
+import LicenseNumberInput from '@/Components/LicenseNumberInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
+import { useState } from 'react';
 
 {/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
 {/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
@@ -10,13 +12,13 @@ import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio,
 {/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
 export default function NewDriver( {auth, users} ) {
 
+    //const [license, setLicense] = useState('');
+
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
-        license_region_identifier: '',
-        license_middle_digits: '',
-        license_last_digit: '',
+        license: '',
         heavy_license: '',
         heavy_license_type: '',
     });
@@ -32,6 +34,11 @@ export default function NewDriver( {auth, users} ) {
     // Handle Autocomplete selection
     const handleUserChange = (event, newValue) => {
         setData('user_id', newValue?.value.toString() || ''); // Update form data with the selected user's ID
+    };
+
+    const handleLicenseChange = (license) => {
+        console.log('license', license)
+        setData('license', license)
     };
 
     const handleHeavyChange = () => {
@@ -81,7 +88,7 @@ export default function NewDriver( {auth, users} ) {
                                     sx={{ width: 500, marginBottom: 2 }}
                                 />
 
-                                <Typography variant="body1">Número da Carta de Condução</Typography>
+                                {/* <Typography variant="body1">Número da Carta de Condução</Typography>
                                 <Grid container>
                                     <TextField
                                         type="text"
@@ -123,7 +130,9 @@ export default function NewDriver( {auth, users} ) {
                                     {errors.license_last_digit && (
                                         <InputError message={errors.license_last_digit} />
                                     )}
-                                </Grid>
+                                </Grid> */}
+
+                                <LicenseNumberInput value={data.license} onChange={handleLicenseChange} />
 
                                 <Typography variant="body1">Carta de Pesados</Typography>
                                 {/* Radio buttons for heavy_license */}
