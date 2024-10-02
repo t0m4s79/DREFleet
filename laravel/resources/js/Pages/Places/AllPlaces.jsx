@@ -52,7 +52,7 @@ export default function AllPlaces( {auth, places, flash} ) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('places.create')}>
+                    <Button href={route('places.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Nova Morada

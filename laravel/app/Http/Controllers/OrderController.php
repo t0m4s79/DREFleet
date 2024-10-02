@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
 use App\Rules\OrderVehicleCapacityValidation;
@@ -123,6 +124,7 @@ class OrderController extends Controller
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
+                'status' => 'Por aprovar',
             ]);
 
             //TODO: PLANNED ARRIVAL DATE??
@@ -154,7 +156,7 @@ class OrderController extends Controller
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $managers = User::where('user_type', 'Gestor')->get();
-        $places = Place::all();                     //TODO: TO BE CHANGED
+        $places = Place::all();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::all();
@@ -176,7 +178,6 @@ class OrderController extends Controller
         ]);
     }
 
-    //TODO: IF EDITED AFTER APPROVED NEEDS REAPPROVAL
     public function editOrder(Order $order, Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -232,9 +233,10 @@ class OrderController extends Controller
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
+                'status' => 'Por aprovar'
             ]);
 
-            //TODO: PLANNED ARRIVAL DATE??
+            //TODO: PLANNED ARRIVAL DATE
             // Create the new order stops
             if($incomingFields['addPlaces'] != null) {
                 foreach ($incomingFields['addPlaces'] as $place) {
@@ -289,13 +291,7 @@ class OrderController extends Controller
             'manager_id' => [
                 'required', 
                 'exists:users,id', 
-                function ($attribute, $value, $fail) {
-                    // Check if the manager_id belongs to a user with 'Gestor' type
-                    $user = User::find($value);
-                    if (!$user || $user->user_type !== 'Gestor') {
-                        $fail('O utilizador com id ' . $value . ' selecionado não está autorizado a aprovar pedidos.');
-                    }
-                }
+                new ManagerUserTypeValidation(),
             ]
         ]);
 
@@ -303,6 +299,7 @@ class OrderController extends Controller
             $order->update([
                 'manager_id' => $incomingFields['manager_id'],
                 'approved_date' => now(),
+                'status' => 'Aprovado'
             ]);
 
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
@@ -310,6 +307,33 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function removeOrderApproval(Order $order, Request $request) 
+    {
+        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
+
+        $request->validate([
+            'manager_id' => [
+                'required', 
+                'exists:users,id', 
+                new ManagerUserTypeValidation(),
+            ]
+        ]);
+
+        try {
+            $order->update([
+                'manager_id' => null,
+                'approved_date' => null,
+                'status' => 'Por aprovar'
+            ]);
+
+            return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
+
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 }

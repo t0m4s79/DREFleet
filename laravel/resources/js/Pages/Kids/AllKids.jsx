@@ -58,7 +58,7 @@ export default function AllKids( {auth, kids, flash} ) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('kids.create')}>
+                    <Button href={route('kids.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Nova Criança

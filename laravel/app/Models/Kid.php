@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-//TODO: SHOULD KID HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES) -> YES!!!
+//TODO: SHOULD KID BE ALLOWED TO HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES)???
 class Kid extends Model
 {
     use HasFactory;

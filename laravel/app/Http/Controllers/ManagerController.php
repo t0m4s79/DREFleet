@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
@@ -116,6 +117,18 @@ class ManagerController extends Controller
             dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
         }
+    }
+
+    public function showManagerApprovedOrders(User $user) {
+        $orders = Order::where('manager_id', $user->id)->get();
+        
+        return Inertia::render('Managers/showApprovedOrders', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'orders' => $orders,
+        ]);
     }
 
     //TODO: MANAGERS FRONTEND TABLE SHOULD HAVE LINK FOR ALL APPROVED ORDERS BY HIM

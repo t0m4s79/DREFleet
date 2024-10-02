@@ -44,9 +44,26 @@ class OrderFactory extends Factory
 
         $route = $hasRoute? OrderRouteFactory::new()->create() : null;
 
+        $beginDate = fake()->dateTimeBetween('2024-01-01', '2025-12-31');
+        $endDate = (clone $beginDate)->modify('+1 day');
+
+        // Future Order
+        if ($beginDate > now()) {
+            $status = Arr::random(['Por aprovar', 'Cancelado/Não aprovado', 'Aprovado']);
+
+        // Past Order
+        } else if (now() > $endDate) {
+            $status = Arr::random(['Cancelado/Não aprovado', 'Finalizado', 'Interrompido']);
+
+        // Current Order
+        } else {
+            $status = 'Em curso';
+        }
+
         return [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
+            'expected_begin_date' => $beginDate,
+            'expected_end_date' => $endDate,
+            'status' => $status,
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
