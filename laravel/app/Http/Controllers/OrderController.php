@@ -309,4 +309,31 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
+
+    public function removeOrderApproval(Order $order, Request $request) 
+    {
+        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
+
+        $request->validate([
+            'manager_id' => [
+                'required', 
+                'exists:users,id', 
+                new ManagerUserTypeValidation(),
+            ]
+        ]);
+
+        try {
+            $order->update([
+                'manager_id' => null,
+                'approved_date' => null,
+                'status' => 'Por aprovar'
+            ]);
+
+            return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
+
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
 }

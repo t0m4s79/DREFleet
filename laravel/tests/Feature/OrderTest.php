@@ -813,13 +813,14 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('order_stops', ['order_id' => $order->id]);
     }
 
-    public function test_user_can_approve_a_order(): void
+    public function test_manager_can_approve_a_order(): void
     {
         $manager = ManagerFactory::new()->create();
 
         $order = Order::factory()->create([
             'approved_date' => null,
             'manager_id' => null,
+            'status' => 'Por aprovar'
         ]);
 
         $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
@@ -831,6 +832,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'manager_id' => $manager->id,
+            'status' => 'Aprovado'
         ]);
 
         $response->assertRedirect(route('orders.index'));      
@@ -845,6 +847,7 @@ class OrderTest extends TestCase
         $order = Order::factory()->create([
             'approved_date' => null,
             'manager_id' => null,
+            'status' => 'Por aprovar'
         ]);
         
         $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
@@ -858,10 +861,66 @@ class OrderTest extends TestCase
         $this->assertDatabaseMissing('orders', [
             'id' => $order->id,
             'manager_id' => $notManager->id,
+            'status' => 'Aprovado'
         ]);
 
         $this->assertNull($order->fresh()->approved_date);
         $this->assertNull($order->fresh()->manager_id);
+    }
+
+    public function test_manager_can_remove_order_approval(): void
+    {
+        $manager = ManagerFactory::new()->create();
+
+        $order = Order::factory()->create([
+            'approved_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
+            'manager_id' => $manager->id,
+        ]);
+
+        $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
+
+        $response = $this->put(route('orders.removeApproval', $order), [
+            'manager_id' => $manager->id,
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'manager_id' => null,
+            'approved_date' => null,
+            'status' => 'Por aprovar',
+        ]);
+
+        $response->assertRedirect(route('orders.index'));      
+    }
+
+    public function test_remove_order_approval_fails_with_invalid_manager_id(): void
+    {
+        $manager = ManagerFactory::new()->create();
+        $notManager = User::factory()->create([
+            'user_type' => Arr::random(['Condutor','Técnico','Nenhum']),
+        ]);
+
+        $order = Order::factory()->create([
+            'approved_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31'),
+            'manager_id' => $manager->id,
+            'status' => 'Aprovado'
+        ]);
+        
+        $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
+
+        $response = $this->put(route('orders.removeApproval', $order), [
+            'manager_id' => $notManager->id,
+        ]);
+
+        $response->assertSessionHasErrors(['manager_id']);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'manager_id' => $manager->id,
+            'status' => 'Aprovado',
+        ]);
+
+        $this->assertNotNull($order->fresh()->approved_date);
     }
 
     public function test_order_creation_handles_exception()

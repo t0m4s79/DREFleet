@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
     Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
     Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
+    Route::get('/managers/showApproved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.showApproved'); 
 
     //ORDERS
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -67,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::put('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
+    Route::put('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.removeApproval');
 
     //ORDER ROUTES
     Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
