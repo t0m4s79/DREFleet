@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Helpers\ErrorMessagesHelper;
+use App\Rules\RoleUserTypeValidation;
 
 class ManagerController extends Controller
 {
@@ -38,16 +41,14 @@ class ManagerController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
         $incomingFields = $request->validate([
-            'id' => ['required', 'exists:users,id'],
+            'id' => [
+                'required', 
+                'exists:users,id',
+                new RoleUserTypeValidation(),
+            ],
         ], $customErrorMessages);
 
-        $incomingFields['id'] = strip_tags($incomingFields['id']);
-
         $user = User::find($incomingFields['id']);
-
-        if ($user->user_type != 'Nenhum') {
-            return redirect('/managers')->with('error', 'Somente utilizadores de tipo "Nenhum" podem ser convertidos em gestores.');
-        }
 
         try {
             $user->update([
@@ -55,7 +56,9 @@ class ManagerController extends Controller
             ]);
 
             return redirect()->route('managers.index')->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de gestores. Tente novamente.');
         }
     }
@@ -71,22 +74,19 @@ class ManagerController extends Controller
     }
 
     public function editManager(User $user, Request $request) {
-        //dd($request);
 
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'email'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'status' => 'required',
+            'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
-        $incomingFields['status'] = strip_tags($incomingFields['status']);
 
         try {
             $user->update([
@@ -97,7 +97,9 @@ class ManagerController extends Controller
             ]);
 
             return redirect()->route('managers.index')->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao atualizar os dados do gestor com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -112,23 +114,24 @@ class ManagerController extends Controller
             return redirect()->route('managers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
 
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('managers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
         }
     }
 
-    //TODO: VERIFICATION MESSAGES
+    public function showManagerApprovedOrders(User $user) {
+        $orders = Order::where('manager_id', $user->id)->get();
+        
+        return Inertia::render('Managers/ShowApprovedOrders', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'orders' => $orders,
+        ]);
+    }
 
     //TODO: MANAGERS FRONTEND TABLE SHOULD HAVE LINK FOR ALL APPROVED ORDERS BY HIM
-
-    //TODO: DASHBOARD TESTS
-
-    //TODO: ERROR HELPER UNIT TESTS
-
-    //TODO: FIX TECHNICIAN FAILLING TEST
-
-    //TODO: IN ALL CONTROLLERS -> CHECK IF EVERY FIELDS SHOULD HAVE A STRIP TAGS
-
-    //TODO: ORDER STOPS SEEDER
 
     //TODO: MODEL INSTANCES VIEWER (CLICKING ON, FOR EXAMPLE, A DRIVER SHOULD TAKE YOU TO A PAGE WHERE YOU CAN VIEW THE DRIVER INSTEAD OF EDIT)
 }

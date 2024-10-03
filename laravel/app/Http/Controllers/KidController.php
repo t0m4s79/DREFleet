@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\Kid;
 use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Helpers\ErrorMessagesHelper;
+use App\Rules\KidPlaceTypeValidation;
 
 class KidController extends Controller
 {
@@ -43,7 +45,7 @@ class KidController extends Controller
             return $kid;
         });
 
-        $places = Place::all();
+        $places = Place::where('place_type', 'Residência')->get();
 
         return Inertia::render('Kids/NewKid', ['kids' => $kids, 'places' => $places]);
     }
@@ -56,23 +58,31 @@ class KidController extends Controller
         $incomingFields = $request->validate([
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email'],
-            'wheelchair' => 'required',
-            'places' => 'array',
+            'email' => ['required', 'email', 'lowercase'],
+            'wheelchair' => ['required', 'boolean'],
+            'places' => [
+                'array',
+                new KidPlaceTypeValidation(),
+            ],
         ], $customErrorMessages);
-
+        
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
         $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
+        DB::beginTransaction();
         try {
             $kid = Kid::create($incomingFields);
             $kid->places()->attach($addPlaces);
+            
+            DB::commit();
+
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
+        
         } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
@@ -83,7 +93,7 @@ class KidController extends Controller
         $kidPlaces = $kid->places;                                                  //Given kid places
 
         $associatedPlaceIds = $kid->places->pluck('id');
-        $availablePlaces = Place::whereNotIn('id', $associatedPlaceIds)->get();     //Places that dont belong to given kid
+        $availablePlaces = Place::whereNotIn('id', $associatedPlaceIds)->where('place_type', 'Residência')->get();     //Places that dont belong to given kid
 
         return Inertia::render('Kids/EditKid', ['kid' => $kid, 'kidPlaces' => $kidPlaces, 'availablePlaces' => $availablePlaces]);
     }
@@ -96,26 +106,34 @@ class KidController extends Controller
         $incomingFields = $request->validate([
             'name' => 'required',
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email'],
-            'wheelchair' => 'required',
-            'addPlaces' => 'array',
+            'email' => ['required', 'email', 'lowercase'],
+            'wheelchair' => ['required', 'boolean'],
+            'addPlaces' => [
+                'array',
+                new KidPlaceTypeValidation(),
+            ],
             'removePlaces' => 'array',
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['phone'] = strip_tags($incomingFields['phone']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
-        $incomingFields['wheelchair'] = strip_tags($incomingFields['wheelchair']);
 
         $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
         $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
 
+        DB::beginTransaction();
         try {
             $kid->update($incomingFields);
             $kid->places()->attach($addPlaces);
             $kid->places()->detach($removePlaces);
-            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');;
+
+            DB::commit();
+
+            return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
+        
         } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
@@ -129,6 +147,7 @@ class KidController extends Controller
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }

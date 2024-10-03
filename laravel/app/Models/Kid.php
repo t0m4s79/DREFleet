@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-//TODO: SHOULD KID HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES) -> YES!!!
+//TODO: SHOULD KID BE ALLOWED TO HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES)???
 class Kid extends Model
 {
     use HasFactory;
@@ -26,10 +26,8 @@ class Kid extends Model
         return $this->belongSToMany(Place::class, 'kid_place', 'kid_id', 'place_id')->withTimestamps();
     }
 
-    //TECHNICIAN-KID RELATION
-    //TECHNICIAN DOESN'T NEED A SEPARATE TABLE FROM USERS BECAUSE, UNLIKE THE DRIVERS, IT DOESN'T HAVE ANY SPECIFIC ATTRIBUTES
-    public function users(): BelongsToMany
+    public function orderStops(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('priority')->withTimestamps();
+        return $this->belongsToMany(OrderStop::class)->withPivot('place_id');
     }
 }

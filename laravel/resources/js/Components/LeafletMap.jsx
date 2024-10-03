@@ -150,6 +150,19 @@ function EditMarker({ initialPos, onPositionChange }) {
     }, []);
 
     useEffect(() => {
+
+        // Define the bounds (southwest and northeast corners)
+        const bounds = L.latLngBounds(
+            boundsSouthWestCorner, // Southwest corner
+            boundsNorthEastCorner  // Northeast corner
+        );
+
+        // Set max bounds to restrict map area
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
+        });
+        
         // Add geocoder search bar only for the edit page
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({

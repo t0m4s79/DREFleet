@@ -16,12 +16,16 @@ class Vehicle extends Model
         'license_plate',
         'year',
         'heavy_vehicle',
+        'heavy_type',
         'wheelchair_adapted',
+        'wheelchair_certified',
         'capacity',
         'fuel_consumption',
         'status',
         'current_month_fuel_requests',
         'fuel_type',
+        'current_kilometrage',
+        'image_path',
     ];
     
     protected $hidden = [
@@ -29,15 +33,20 @@ class Vehicle extends Model
         'updated_at',
     ];
 
-    public function getHeavyVehicleAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
+    // public function getHeavyVehicleAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
 
-    public function getWheelchairAdaptedAttribute($value)
-    {
-        return $value ? 'Sim' : 'Não';
-    }
+    // public function getWheelchairAdaptedAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
+
+    // public function getWheelchairCertifiedAttribute($value)
+    // {
+    //     return $value ? 'Sim' : 'Não';
+    // }
 
     public function orders(): HasMany
     {

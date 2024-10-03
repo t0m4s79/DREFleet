@@ -5,20 +5,25 @@ import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Grid } from '@mui/material';
 import { useState } from 'react';
 
-export default function NewDriver( {auth} ) {
+{/*TODO: VEHICLE IMAGE SELECT */}
+export default function NewVehicle( {auth} ) {
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         make: '',
         model: '',
         license_plate: '',
         year: '',
-        heavy_vehicle: '0',
-        wheelchair_adapted: '0',
-        capacity: '9',
+        heavy_vehicle: '',
+        heavy_type: '',
+        heavy_type:'',
+        wheelchair_adapted: '',
+        wheelchair_certified: '',
+        capacity: '',
         fuel_consumption: '',
-        status: 'Disponível',
-        current_month_fuel_requests: '0',
+        status: '',
+        current_month_fuel_requests: '',
         fuel_type: '',
+        current_kilometrage: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -26,6 +31,15 @@ export default function NewDriver( {auth} ) {
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('vehicles.create'));
+    };
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedImage(URL.createObjectURL(file)); // Create a URL for the selected image
+        }
     };
 
     return (
@@ -95,6 +109,22 @@ export default function NewDriver( {auth} ) {
                                     margin="normal"
                                 />
 
+                                <div>
+                                    <label htmlFor="image">Foto do veículo (opcional)</label>
+                                    <input
+                                        type="file"
+                                        id="image"
+                                        accept="image/*" // Accept only images
+                                        onChange={handleImageChange}
+                                    />
+                                </div>
+                                {selectedImage && (
+                                    <div>
+                                        <h4>Preview:</h4>
+                                        <img src={selectedImage} alt="Selected" style={{ maxWidth: '200px' }} />
+                                    </div>
+                                )}
+
                                 <Grid container>
                                     <Grid item xs={12} md={6}>
                                         <FormControl component="fieldset" margin="normal">
@@ -111,7 +141,22 @@ export default function NewDriver( {auth} ) {
                                             {errors.heavy_vehicle && <InputError message={errors.heavy_vehicle} />}
                                         </FormControl>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl component="fieldset" margin="normal">
+                                            <FormLabel component="legend">Tipo de Pesado</FormLabel>
+                                            <RadioGroup
+                                                aria-label="heavy_type"
+                                                name="heavy_type"
+                                                value={data.heavy_type}
+                                                onChange={(e) => setData('heavy_type', e.target.value)}
+                                            >
+                                                <FormControlLabel value="Mercadorias" control={<Radio />} label="Mercadorias" />
+                                                <FormControlLabel value="Passageiros" control={<Radio />} label="Passageiros" />
+                                            </RadioGroup>
+                                            {errors.heavy_type && <InputError message={errors.heavy_type} />}
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
                                         <FormControl component="fieldset" margin="normal">
                                             <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
                                             <RadioGroup
@@ -124,6 +169,21 @@ export default function NewDriver( {auth} ) {
                                                 <FormControlLabel value="1" control={<Radio />} label="Sim" />
                                             </RadioGroup>
                                             {errors.wheelchair_adapted && <InputError message={errors.wheelchair_adapted} />}
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <FormControl component="fieldset" margin="normal">
+                                            <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
+                                            <RadioGroup
+                                                aria-label="wheelchair_certified"
+                                                name="wheelchair_certified"
+                                                value={data.wheelchair_certified}
+                                                onChange={(e) => setData('wheelchair_certified', e.target.value)}
+                                            >
+                                                <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                                <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                            </RadioGroup>
+                                            {errors.wheelchair_certified && <InputError message={errors.wheelchair_certified} />}
                                         </FormControl>
                                     </Grid>
                                 </Grid>
@@ -204,6 +264,19 @@ export default function NewDriver( {auth} ) {
                                     {errors.fuel_type && <InputError message={errors.fuel_type} />}
                                 </FormControl>
                                 
+                                <TextField
+                                label="Kilometragem Atual"
+                                name="current_kilometrage"
+                                type="number"
+                                value={data.current_kilometrage}
+                                onChange={(e) => setData('current_kilometrage', e.target.value)}
+                                fullWidth
+                                margin="normal"
+                                inputProps={{ min: 0}}
+                                error={!!errors.current_kilometrage}
+                                helperText={errors.current_kilometrage}
+                                />
+
                                 <br />
 
                                 <Button variant="outlined" type="submit" disabled={processing}>

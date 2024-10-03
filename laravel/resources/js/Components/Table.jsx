@@ -1,7 +1,9 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { Button, Modal } from '@mui/material';
 import {  ptPT } from '@mui/x-data-grid/locales';
+import LeafletMap from './LeafletMap';
+import MapModal from './MapModal';
 
 // Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
@@ -87,6 +89,14 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            // Display trajectory using a Modal
+            // Shown in Orders 'table'
+            if(key == 'trajectory'){
+                return (
+                    <MapModal trajectory={params.value}/>
+                )
+            }
+
             return params.value;
         }
     }));
@@ -96,18 +106,22 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         headerName: 'Ações',
         renderCell: (params) => (
             <div>
-                <a
-                    href={route(editAction, params.row.id)}
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                    Editar
-                </a>
-                <button
-                    onClick={() => handleDelete(params.row.id)}
-                    className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
-                >
-                    Eliminar
-                </button>
+                {editAction && 
+                    <a
+                        href={route(editAction, params.row.id)}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                        Editar
+                    </a>
+                }
+                {deleteAction && 
+                    <button
+                        onClick={() => handleDelete(params.row.id)}
+                        className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
+                    >
+                        Eliminar
+                    </button>
+                }
             </div>
         ),
         sortable: false, // Disable sorting for actions column
@@ -153,7 +167,11 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 rows={rows}
                 columns={columns}
                 pageSize={10}
-                rowsPerPageOptions={[5, 10, 25]}
+                initialState={{
+                    pagination: {
+                        paginationModel: { pageSize: 25,},
+                    },
+                }}
                 pagination
                 disableSelectionOnClick
                 autosizeOnMount

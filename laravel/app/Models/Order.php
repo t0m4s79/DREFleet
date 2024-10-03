@@ -13,16 +13,16 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'begin_address',
-        'end_address',
-        'begin_date',
-        'end_date',
-        'begin_coordinates',
-        'end_coordinates',
+        'expected_begin_date',
+        'expected_end_date',
         'trajectory',
+        'order_type',
+        'status',
+
         'vehicle_id',
         'driver_id',
         'technician_id',
+        'order_route_id',
 
         'manager_id',
         'approved_date',
@@ -55,6 +55,6 @@ class Order extends Model
 
     public function driver(): BelongsTo
     {
-        return $this->belongsTo(Driver::class);
+        return $this->belongsTo(Driver::class, 'driver_id', 'user_id');
     }
 }

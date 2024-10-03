@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Kid;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Place;
+use App\Models\OrderStop;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -12,12 +14,46 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlaceTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected $user;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
+    }
+
+    public function test_place_belongs_to_many_kids(): void
+    {
+        $place = Place::factory()->create();
+
+        $kids = Kid::factory()->count(3)->create();
+
+        foreach ($kids as $kid) {
+            $place->kids()->attach($kid->id);
+        }
+
+        $this->assertCount(3, $place->kids);
+
+        foreach ($kids as $kid) {
+            $this->assertTrue($place->kids->contains($kid));
+        }
+    }
+
+    public function test_place_has_many_order_stops(): void
+    {
+        $place = Place::factory()->create();
+
+        $orderStops = OrderStop::factory()->count(3)->create([
+            'place_id' => $place->id,
+        ]);
+
+        $this->assertCount(3, $place->orderStops);
+
+        foreach ($orderStops as $orderStop) {
+            $this->assertTrue($place->orderStops->contains($orderStop));
+        }
     }
 
     public function test_places_page_is_displayed(): void
@@ -55,6 +91,7 @@ class PlaceTest extends TestCase
         $placeData = [
             'address' => fake()->address(),
             'known_as' => Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];
@@ -92,6 +129,7 @@ class PlaceTest extends TestCase
         $updatedData = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];
@@ -139,6 +177,7 @@ class PlaceTest extends TestCase
         $incomingFields = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
+            'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];

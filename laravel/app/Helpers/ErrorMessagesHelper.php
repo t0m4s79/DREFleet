@@ -8,49 +8,102 @@ class ErrorMessagesHelper
     public static function getErrorMessages()
     {
         return [
-            'required' => 'Este campo é obrigatório.',
-            'user_id.unique' => 'Este utilizador já é um condutor.',
-            // Phone
-            'phone.required' => 'O campo telefone é obrigatório.',
-            'phone.numeric' => 'O campo telefone deve conter apenas números.',
-            'phone.digits_between' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos.',
-            'phone.unique' => 'Este número de telefone já está em uso.',
-            'numeric' => 'Apenas são permitidos números.',
-            // Places
-            'latitude.between' => 'A latitude deve estar entre -90 e 90 graus.',
-            'longitude.between' => 'A longitude deve estar entre -180 e 180 graus.',
-            'latitude.regex' => 'O formato da latitude é inválido. Deve ter 1 a 10 casas decimais.',
-            'longitude.regex' => 'O formato da longitude é inválido. Deve ter 1 a 10 casas decimais.',
-            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços.',
-            // Name
-            'name.required' => 'O campo nome é obrigatório.',
-            'name.max' => 'O campo nome não pode mais de 255 carateres',
+            // Not Specific
+            'array' => 'Formato inválido (array)',
+            'boolean' => 'Este campo só permite valores que que representem verdadeiro (1) ou falso (0)',
+            'between' => 'O valor deve estar entre :min e :max',
+            'date' => 'Data encontra-se num formato inválido',
+            'digits' => 'O campo deve ter exatamente :digits dígitos.',
+            'driver_id.exists' => 'Condutor selecionado não existe',
+            'email' => 'Este campo só permite emails',
+            'id.exists' => 'O utilizador especificado não existe',
+            'in' => 'O valor do campo não corresponde aos valores permitidos',
+            'integer' => 'Apenas são permitidos números positivos neste campo',
+            'json' => 'Formato inválido (json)',
+            'max' => 'O campo não pode ultrapassar :max caracteres',
+            'min' => 'O campo deve ter pelo menos :min caracteres',
+            'numeric' => 'Apenas são permitidos números positivos neste campo',
+            'required' => 'Este campo é obrigatório',
+            'status.in' => 'Este campo contém valores não permitidos',
+            'string' => 'Formato inválido (string)',
+            'technician_id.exists' => 'Técnico selecionado não existe',
+            'user_id.exists' => 'O utilizador especificado não existe',
+            'vehicle_id.exists' => 'Veículo selecionado não existe',
+            'image' => 'Só são permitidas imagens neste campo',
+
+            // Coordinates and Spatial Data
+            'latitude.regex' => 'Este campo vai de -90 a 90 e permite até 15 casas decimais',
+            'longitude.regex' => 'Este campo vai de -180 a 180 e permite até 15 casas decimais',
+
+            // Drivers
+            'heavy_license_type.in' => 'Este campo contém valores fora dos permitidos',
+            'heavy_license_type.required_if' => 'Tipo de Carta deve ser especificado caso o condutor tenha carta de pesados',
+
+            'license_region_identifier.in' => 
+                'Valor inválido inserido. Só são permitidas letras (máximo 2) identificadoras da região portuguesa que emitiu a carta:
+                    AV (Aveiro)
+                    BE (Beja)
+                    BR (Braga)
+                    BG (Bragança)
+                    CB (Castelo Branco)
+                    C (Coimbra)
+                    E (Évora)
+                    FA (Faro)
+                    GD (Guarda)
+                    LE (Leiria)
+                    L (Lisboa)
+                    PT (Portalegre)
+                    P (Porto)
+                    SA (Santarém)
+                    SE (Setúbal)
+                    VC (Viana do Castelo)
+                    VR (Vila Real)
+                    VS (Viseu)
+                    AN (Angra do Heroísmo)
+                    H (Horta)
+                    A (Ponta Delgada)
+                    M (Funchal)
+            ',
+
+            'license_middle_digits.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 6 dígitos',
+            'license_last_digit.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 1 dígito',
+
             // Email
-            'email.required' => 'O campo e-mail é obrigatório.',
-            'email.email' => 'O campo e-mail deve ser um endereço de e-mail válido.',
-            'email.unique' => 'Este endereço de e-mail já está em uso.',
+            'email.email' => 'Este campo deve ser um endereço email válido',
+            'email.unique' => 'Este endereço email já está em uso',
+            'email.lowercase' => 'Este campo só permite letras minúsculas',
+
+            // Images
+            'mimes' => 'Só as seguintes extensões são permitidas: :values',
+            'image.max' => 'O tamanha da imagem não pode exceder os :max kilobytes',
+            'image.mimetypes' => 'Só são permitidas imagens com os formatos jpeg, jpg e png',
+
+            // Order Routes
+            'area_color.regex' => 'Só são permitidas cores no formato hexadecimal (ex: #FFFFFF)',
+
+            // Orders
+            'technician_id.required_if' => 'Técnicos são obrigatórios no transporte de crianças',
+
             // Password
-            'password.required' => 'O campo senha é obrigatório.',
-            'password.confirmed' => 'As senhas não coincidem.',
-            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
-            'password.mixed_case' => 'A senha deve conter pelo menos uma letra maiúscula e uma letra minúscula.',
-            'password.numbers' => 'A senha deve conter pelo menos um número.',
-            'password.symbols' => 'A senha deve conter pelo menos um caracter especial.',
-            'password.confirmed' => 'As senhas não coincidem.',
+            'current_password.current_password' => 'A password introduzida está incorreta',
+            'password.confirmed' => 'As senhas não coincidem',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres',
+            'password.mixed_case' => 'A senha deve conter pelo menos uma letra maiúscula e uma letra minúscula',
+            'password.numbers' => 'A senha deve conter pelo menos um número',
+            'password.symbols' => 'A senha deve conter pelo menos um caracter especial',
+
+            // Places
+            'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços',
+
+            // Phone
+            'phone.digits_between' => 'O campo telefone deve ter entre 9 e 15 dígitos',
+            'phone.unique' => 'Este número de telefone já está em uso',
+            'phone.regex' => 'O campo telefone deve ter entre 9 e 15 dígitos',
+
             // Vehicles
-            'license_plate.unique' => 'Já existe um veículo com esta matrícula.',
-            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números.',
-            'year.integer' => 'O campo ano deve ser um número inteiro.',
-            'year.digits' => 'O campo ano deve ter 4 dígitos.',
-            'heavy_vehicle.boolean' => 'O campo veículo pesado deve ser verdadeiro ou falso.',
-            'wheelchair_adapted.boolean' => 'O campo adaptação para cadeiras de rodas deve ser verdadeiro ou falso.',
-            'capacity.integer' => 'O campo capacidade deve ser um número inteiro.',
-            'capacity.min' => 'A capacidade deve ser no mínimo :min.',
-            'fuel_consumption.numeric' => 'O campo consumo deve ser um número.',
-            'fuel_consumption.min' => 'O campo consumo deve ser no mínimo :min.',
-            'status.in' => 'O campo estado deve ser um dos seguintes: ativo, inativo, manutenção.',
-            'current_month_fuel_requests.integer' => 'O campo pedidos de reabastecimento deve ser um número inteiro.',
+            'heavy_type.required_if' => 'Tipo de Pesado deve ser especificado caso o veículo seja pesado',
+            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números',
+            'license_plate.unique' => 'Já existe um veículo com esta matrícula',
         ];
     }
 }

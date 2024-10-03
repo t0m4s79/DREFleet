@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Driver extends Model
 {
@@ -17,7 +18,9 @@ class Driver extends Model
 
     protected $fillable = [
         'user_id',
-        'heavy_license'
+        'license_number',
+        'heavy_license',
+        'heavy_license_type',
     ];
 
     protected $appends = [
@@ -58,6 +61,11 @@ class Driver extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'driver_id'); // Specify the foreign key explicitly
     }
+
+    public function orderRoutes(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
+    }    
 }

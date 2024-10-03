@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-//TODO: SHOULD USER BE ALLOWED TO HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES)
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -58,14 +57,6 @@ class User extends Authenticatable
         return $this->hasOne(Driver::class);
     }
 
-    //TECHNICIAN-KID RELATION
-    //TECHNICIAN DOESN'T NEED A SEPARATE TABLE FROM USERS BECAUSE, UNLIKE THE DRIVERS, IT DOESN'T HAVE ANY SPECIFIC ATTRIBUTES
-    public function kids(): BelongsToMany
-    {
-        return $this->belongsToMany(Kid::class)->withPivot('priority')->withTimestamps();
-    }
-
-    //TODO: CHECK IF THIS IS CORRECT
     public function ordersTechnician(): HasMany
     {
         return $this->hasMany(Order::class, 'technician_id');
@@ -74,5 +65,10 @@ class User extends Authenticatable
     public function ordersManager(): HasMany
     {
         return $this->hasMany(Order::class, 'manager_id');
+    }
+
+    public function orderRoutes(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
 }

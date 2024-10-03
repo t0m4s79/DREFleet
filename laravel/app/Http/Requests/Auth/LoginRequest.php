@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -32,6 +33,13 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
+
+        return $customErrorMessages;
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -44,8 +52,12 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            // throw ValidationException::withMessages([
+            //     'email' => trans('auth.failed'),         //TODO: LANG FILES?
+            // ]);
+
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'password' => "Estas credenciais não correspondem a nenhum utilizador existente",
             ]);
         }
 

@@ -21,7 +21,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
 
     //Deconstruct data to send to table component
     let driverInfo = drivers.map((driver) => (
-        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license , status: driver.status }
+        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license, license_number: driver.license_number, heavy_license_type: driver.heavy_license_type , status: driver.status }
     ))
 
     const driverColumnLabels = {
@@ -29,7 +29,9 @@ export default function AllDrivers( {auth, drivers, flash} ) {
         name: 'Nome',
         email: 'Email',
         phone: 'Numero de Telefone',
-        heavy_license: 'Carta de pesados',
+        license_number: 'Nº da Carta de Condução',
+        heavy_license: 'Carta de Pesados',
+        heavy_license_type: 'Tipo de Carta de Pesados',
         status: 'Estado'
     };
     
@@ -45,7 +47,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('drivers.create')}>
+                    <Button href={route('drivers.showCreate')}>
                         <AddIcon />
                         <a  className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Condutor

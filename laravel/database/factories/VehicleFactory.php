@@ -17,18 +17,24 @@ class VehicleFactory extends Factory
      */
     public function definition(): array
     {
+        $heavyVehicle = fake()->boolean();
+        $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+
         return [
             'make' => Arr::random(['Ford','Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(111111,999999),
             'year' => rand(1960,2024),
-            'heavy_vehicle' => rand(0,1),
-            'wheelchair_adapted' => rand(0,1),
+            'heavy_vehicle' => $heavyVehicle,
+            'heavy_type' => $heavyType,
+            'wheelchair_adapted' => fake()->boolean(),
+            'wheelchair_certified' => fake()->boolean(),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
             'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0,6),
             'fuel_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
+            'current_kilometrage' => rand(1,200000),
         ];
     }
 }

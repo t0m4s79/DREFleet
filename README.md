@@ -23,9 +23,7 @@
    - frontend: npm run dev
   
 
-
-# Entity Relationship Diagram
-
-![Diagrama Relações](https://github.com/user-attachments/assets/c6c15152-f48e-4fbd-943c-e86f6a96cb76)
+# Updated Entity Relationship Diagram
+![Diagrama Relações](https://github.com/user-attachments/assets/ce139e38-8614-4a6f-a0e8-44670f6f3e79)
 
 

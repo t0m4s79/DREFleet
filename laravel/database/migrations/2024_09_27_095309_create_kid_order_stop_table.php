@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kid_user', function (Blueprint $table) {
-            $table->tinyInteger('priority');
+        Schema::create('kid_order_stop', function (Blueprint $table) {
+            $table->foreignId('order_stop_id')->constrained()->onDelete('cascade');
             $table->foreignId('kid_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('place_id')->constrained()->onDelete('cascade');
+
+            $table->primary(['kid_id', 'place_id', 'order_stop_id']); // Composite primary key            
+
             $table->timestamps();
-        
-            $table->primary(['kid_id', 'user_id']); // Composite primary key 
-            //$table->index(['kid_id', 'user_id', 'priority']);
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kid_user');
+        Schema::dropIfExists('kid_order_stop');
     }
 };

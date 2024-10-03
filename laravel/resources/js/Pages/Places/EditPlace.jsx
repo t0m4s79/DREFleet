@@ -1,6 +1,6 @@
 import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { Head, useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
@@ -15,6 +15,7 @@ export default function EditPlace({auth, place, kids}) {
     const { data, setData, put, errors, processing } = useForm({    //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
         address: place.address,
         known_as: place.known_as,
+        place_type: place.place_type,
         latitude: place.coordinates.coordinates[1],
         longitude: place.coordinates.coordinates[0],
     });
@@ -79,6 +80,20 @@ export default function EditPlace({auth, place, kids}) {
                                 error={Boolean(errors.known_as)}
                                 helperText={errors.known_as}
                             />
+
+                            <FormControl component="fieldset" margin="normal">
+                                <FormLabel component="legend">Estado</FormLabel>
+                                <RadioGroup
+                                    name="place_type"
+                                    value={data.place_type}
+                                    onChange={handleChange}
+                                >
+                                    <FormControlLabel value="Residência" control={<Radio />} label="Residência" />
+                                    <FormControlLabel value="Escola" control={<Radio />} label="Escola" />
+                                    <FormControlLabel value="Outros" control={<Radio />} label="Outros" />
+                                </RadioGroup>
+                            </FormControl>
+
 
                             <TextField
                                 fullWidth

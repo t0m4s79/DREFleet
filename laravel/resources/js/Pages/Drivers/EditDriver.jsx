@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Typography, Grid } from '@mui/material';
 import { useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
+import LicenseNumberInput from '@/Components/LicenseNumberInput';
 
+{/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
+{/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
+{/*TODO: LICENSE NUMBER FIELDS ERROR POSITIONS*/}
+{/*TODO: LICENSE NUMBER FIELDS SHOWING CORRECTLY*/}
+{/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
 export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
@@ -14,7 +20,9 @@ export default function EditDriver({ auth, driver }) {
         name: driver.name,
         email: driver.email,
         phone: driver.phone,
+        license_number: driver.license_number,
         heavy_license: driver.heavy_license,
+        heavy_license_type: driver.heavy_license_type,
         status: driver.status,
     });
 
@@ -25,9 +33,20 @@ export default function EditDriver({ auth, driver }) {
         const { name, value, type, checked } = e.target;
         setData(name, type === 'radio' ? value : value);
     };
+
+    const handleLicenseChange = (license) => {
+        console.log('license', license)
+        setData('license_number', license)
+    };
+
+    const handleHeavyChange = () => {
+        if(data.heavy_license != 1)
+            setData('heavy_license_type', null)
+    }
     
     const handleSubmit = (e) => {
         e.preventDefault();
+        handleHeavyChange();
         put(route('drivers.edit', driver.user_id));
     };
 
@@ -88,8 +107,10 @@ export default function EditDriver({ auth, driver }) {
                                 helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
+                            <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
+                            
                             <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Licença de Pesados?</FormLabel>
+                                <FormLabel component="legend">Carta de Pesados</FormLabel>
                                 <RadioGroup
                                     name="heavy_license"
                                     value={data.heavy_license}
@@ -105,6 +126,28 @@ export default function EditDriver({ auth, driver }) {
                                         value="1"
                                         control={<Radio />}
                                         label="Sim"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            <br/>
+
+                            <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
+                                <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
+                                <RadioGroup
+                                    name="heavy_license_type"
+                                    value={data.heavy_license_type}
+                                    onChange={handleChange}
+                                    row
+                                >
+                                    <FormControlLabel
+                                        value="Mercadorias"
+                                        control={<Radio />}
+                                        label="Mercadorias"
+                                    />
+                                    <FormControlLabel
+                                        value="Passageiros"
+                                        control={<Radio />}
+                                        label="Passageiros"
                                     />
                                 </RadioGroup>
                             </FormControl>

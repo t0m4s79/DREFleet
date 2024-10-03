@@ -21,6 +21,26 @@ export default function AllVehicles( {auth, vehicles, flash}) {
 
     //console.log('vehicles', vehicles)
 
+    const vehicleInfo = vehicles.map((vehicle) => {
+        return {
+            id: vehicle.id,
+            make: vehicle.make,
+            model: vehicle.model,
+            license_plate: vehicle.license_plate,
+            year: vehicle.year,
+            heavy_vehicle: vehicle.heavy_vehicle ? 'Sim' : 'Não',
+            heavy_type: vehicle.heavy_type,
+            wheelchair_adapted: vehicle.wheelchair_adapted ? 'Sim' : 'Não' ,
+            wheelchair_certified: vehicle.wheelchair_certified ? 'Sim' : 'Não',
+            capacity: vehicle.capacity,
+            fuel_consumption: vehicle.fuel_consumption,
+            status: vehicle.status,
+            current_month_fuel_requests: vehicle.current_month_fuel_requests,
+            fuel_type: vehicle.fuel_type,
+            current_kilometrage: vehicle.current_kilometrage,
+        }
+    })
+
     const VehicleColumnLabels = {
         id: 'ID',
         make: 'Marca',
@@ -28,12 +48,15 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         license_plate: 'Matrícula',
         year: 'Ano',
         heavy_vehicle: 'Veículo Pesado',
+        heavy_type: 'Tipo de Pesado',
         wheelchair_adapted: 'Adapto a Cadeiras de Rodas',
+        wheelchair_certified: 'Certificado para Cadeira de Rodas',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
         current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)',
         fuel_type: 'Tipo de Combustível',
+        current_kilometrage: 'Kilometragem Atual',
     };
 
     return (
@@ -46,7 +69,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Button href={route('vehicles.create')}>
+                    <Button href={route('vehicles.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Veículo
@@ -54,7 +77,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                     </Button>
 
                     <Table
-                        data={vehicles}
+                        data={vehicleInfo}
                         columnsLabel={VehicleColumnLabels}
                         editAction="vehicles.showEdit"
                         deleteAction="vehicles.delete"

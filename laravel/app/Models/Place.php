@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 //SELECT id, address, known_as, ST_AsText(coordinates) AS coordinates_text FROM places; -> READ BIN FILE OF COORDINATES DIRECTLY IN PHPMYADMIN
 //UPDATE places SET coordinates = ST_GeomFromText('POINT(77 21)') WHERE id = 1; -> UPDATE COORDINATES DIRECTLY IN PHPMYADMIN
-//TODO: check if a place should always belong to a kid
 class Place extends Model
 {
     use HasFactory;
@@ -19,6 +18,7 @@ class Place extends Model
     protected $fillable = [
         'address',
         'known_as',
+        'place_type',
         'coordinates',
     ];
 
