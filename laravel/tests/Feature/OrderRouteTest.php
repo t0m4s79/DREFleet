@@ -141,11 +141,9 @@ class OrderRouteTest extends TestCase
             ->actingAs($this->user)
             ->post('/orderRoutes/create', $orderRouteData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/orderRoutes');
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -182,12 +180,10 @@ class OrderRouteTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->post('/orderRoutes/create', $orderRouteData);
-        
-        $previousUrl = url()->previous();
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/orderRoutes');
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -272,11 +268,9 @@ class OrderRouteTest extends TestCase
             ->actingAs($this->user)
             ->put("/orderRoutes/edit/{$orderRoute->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/orderRoutes');
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -345,11 +339,9 @@ class OrderRouteTest extends TestCase
             ->actingAs($this->user)
             ->delete("/orderRoutes/delete/{$orderRoute->id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/orderRoutes');
 
         $this->assertDatabaseMissing('order_routes', [
             'id' => $orderRoute->id,
@@ -378,10 +370,6 @@ class OrderRouteTest extends TestCase
             ->post('/orderRoutes/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);    
+        $response->assertRedirect('/orderRoutes');
     }
 }

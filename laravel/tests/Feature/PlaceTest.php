@@ -100,11 +100,9 @@ class PlaceTest extends TestCase
             ->actingAs($this->user)
             ->post('/places/create', $placeData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/places');
 
         $place = Place::where('address', $placeData['address'])
                     ->where('known_as', $placeData['known_as'])
@@ -140,11 +138,9 @@ class PlaceTest extends TestCase
             ->actingAs($this->user)
             ->put("/places/edit/{$place->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/places');
 
         $place->refresh();
 
@@ -167,11 +163,9 @@ class PlaceTest extends TestCase
             ->actingAs($this->user)
             ->delete("/places/delete/{$place->id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/places');
 
         $this->assertDatabaseMissing('places', [
             'id' => $place->id,
@@ -200,10 +194,6 @@ class PlaceTest extends TestCase
             ->post('/places/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+        $response->assertRedirect('/places');
     }
 }

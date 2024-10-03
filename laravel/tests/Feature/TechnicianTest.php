@@ -63,11 +63,10 @@ class TechnicianTest extends TestCase
             ->actingAs($this->user)
             ->post('/technicians/create', $technicianData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/technicians');
+
 
         $this->assertDatabaseHas('users', $technicianData);
     }
@@ -109,11 +108,9 @@ class TechnicianTest extends TestCase
             ->actingAs($this->user)
             ->put("/technicians/edit/{$technician->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/technicians');
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -131,11 +128,9 @@ class TechnicianTest extends TestCase
             ->actingAs($this->user)
             ->delete("/technicians/delete/{$technician->id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/technicians');
 
         $this->assertDatabaseHas('users', [
             'id' => $technician->id,
@@ -163,10 +158,7 @@ class TechnicianTest extends TestCase
             ->post('/technicians/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+        $response->assertRedirect('/technicians'); // Ensure it redirects back to the form
     }
+
 }

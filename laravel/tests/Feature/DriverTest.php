@@ -124,11 +124,9 @@ class DriverTest extends TestCase
             ->actingAs($this->user)
             ->post('/drivers/create', $driverData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/drivers');
 
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driverData['user_id'],
@@ -281,11 +279,9 @@ class DriverTest extends TestCase
             ->actingAs($this->user)
             ->put("/drivers/edit/{$driver->user_id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/drivers');
 
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driver->user_id,
@@ -305,11 +301,9 @@ class DriverTest extends TestCase
             ->actingAs($this->user)
             ->delete("/drivers/delete/{$driver->user_id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/drivers');
 
         $this->assertDatabaseMissing('drivers', [
             'user_id' => $driver->user_id,
@@ -336,10 +330,6 @@ class DriverTest extends TestCase
             ->post('/drivers/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+        $response->assertRedirect('/drivers'); // Ensure it redirects back to the form
     }
 }

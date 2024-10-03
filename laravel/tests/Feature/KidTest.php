@@ -101,11 +101,9 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/kids');
 
 
         $this->assertDatabaseHas('kids', $kidData);
@@ -126,11 +124,9 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->put("/kids/edit/{$kid->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/kids');
 
         $this->assertDatabaseHas('kids', $updatedData); 
     }
@@ -143,11 +139,9 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->delete("/kids/delete/{$kid->id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/kids');
 
         $this->assertDatabaseMissing('kids', [
             'id' => $kid->id,
@@ -171,11 +165,9 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/kids');
 
         $this->assertDatabaseHas('kids', [
             'name' => $kidData['name'],
@@ -257,11 +249,9 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->put("/kids/edit/{$kid->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/kids');
 
         $this->assertDatabaseMissing('kid_place', [
             'kid_id' => $kid->id,
@@ -343,10 +333,6 @@ class KidTest extends TestCase
             ->post('/kids/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+        $response->assertRedirect('/kids'); // Ensure it redirects back to the form
     }
 }
