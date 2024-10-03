@@ -13,7 +13,7 @@ class VehicleDocumentController extends Controller
     {
         $vehicleDocuments = VehicleDocument::All();
 
-        return Inertia::render('VehicleDocuments/AllDocuments', [
+        return Inertia::render('VehicleDocuments/AllVehicleDocuments', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
