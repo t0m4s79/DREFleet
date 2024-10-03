@@ -5,28 +5,32 @@ import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
 import Table from '@/Components/Table';
+import { useEffect, useState } from 'react';
 
-export default function AllOrders({auth, orders}) {
-    console.log('orders', orders);
+export default function AllOrders({auth, orders, flash}) {
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
+    const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {                                 // if there is a flash message/error
+            setSnackbarMessage(flash.message || flash.error);               // set the message
+            setSnackbarSeverity(flash.error ? 'error' : 'success');         // defines background color of snackbar
+            setOpenSnackbar(true);                                          // show snackbar
+        }
+    }, [flash]);
 
     const OrderInfo = orders.map((order)=>{
-        // const beginLat = order.begin_coordinates.coordinates[1]
-        // const beginLng = order.begin_coordinates.coordinates[0]
-
-        // const endLat = order.end_coordinates.coordinates[1]
-        // const endLng = order.end_coordinates.coordinates[0]
         
         return {
             id: order.id,
             vehicle_id: order.vehicle_id,
             driver_id: order.driver_id,
             technician_id: order.technician_id,
-            begin_date: order.begin_date,
-            end_date: order.begin_date,
-            begin_address: order.begin_address,
-            //begin_coordinates: {lat: beginLat, lng: beginLng},            
-            end_address: order.end_address,
-            //end_coordinates: {lat: endLat, lng: endLng},
+            expected_begin_date: order.expected_begin_date,
+            expected_end_date: order.expected_end_date,
+            route: order.order_route_id,
             trajectory: order.trajectory,
             approved_by: order.manager_id,
             approved_date: order.approved_date,
@@ -38,13 +42,10 @@ export default function AllOrders({auth, orders}) {
         vehicle_id: 'Veículo',
         driver_id: 'Condutor',
         technician_id: 'Técnico',
-        begin_date: 'Data de início',
-        end_date: 'Data de fim',
-        begin_address: 'Local de início',
-        //begin_coordinates: 'Coordenadas de início',            
-        end_address: 'Local de fim',
-        //end_coordinates: 'Coordenadas de fim',
-        trajectory: 'Rota',
+        expected_begin_date: 'Data de início',
+        expected_end_date: 'Data de fim',
+        route: 'Rota',
+        trajectory: 'Trajeto',
         approved_by: 'Approvado por',
         approved_date: 'Data de aprovação',
     }
@@ -70,6 +71,18 @@ export default function AllOrders({auth, orders}) {
                     <Table data={OrderInfo} columnsLabel={orderColumnLabels} editAction={'orders.edit'} deleteAction={'orders.delete'} dataId={'id'}/>
                 </div>
             </div>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
         </AuthenticatedLayout>
     );
 }
