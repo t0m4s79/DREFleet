@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -62,10 +63,12 @@ class VehicleDocumentTest extends TestCase
 
     public function test_user_can_create_a_vehicle_document(): void
     {
+        $issueDate = Carbon::instance(fake()->dateTime());
+        
         $vehicleDocumentData = [
             'name' => fake()->name(),
-            'issue_date' => fake()->dateTime()->format('Y-m-d'),
-            'expiration_date' => fake()->dateTime()->format('Y-m-d'),
+            'issue_date' => $issueDate->format('Y-m-d'),
+            'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
             'vehicle_id' => Vehicle::factory()->create()->id,
         ];
 
@@ -82,12 +85,13 @@ class VehicleDocumentTest extends TestCase
 
     public function test_user_can_edit_a_vehicle_document(): void
     {
+        $issueDate = Carbon::instance(fake()->dateTime());
         $vehicleDocument = VehicleDocument::factory()->create();
 
         $updatedData = [
             'name' => fake()->name(),
-            'issue_date' => fake()->dateTime()->format('Y-m-d'),
-            'expiration_date' => fake()->dateTime()->format('Y-m-d'),
+            'issue_date' => $issueDate->format('Y-m-d'),
+            'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
             'vehicle_id' => $vehicleDocument->vehicle_id,
         ];
 
@@ -121,11 +125,12 @@ class VehicleDocumentTest extends TestCase
 
     public function test_vehicle_creation_handles_exception()
     {
-        // Prepare the incoming fields
+        $issueDate = Carbon::instance(fake()->dateTime());
+
         $incomingFields = [
             'name' => fake()->name(),
-            'issue_date' => fake()->dateTime()->format('Y-m-d'),
-            'expiration_date' => fake()->dateTime()->format('Y-m-d'),
+            'issue_date' => $issueDate->format('Y-m-d'),
+            'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
             'vehicle_id' => Vehicle::factory()->create()->id,
         ];
 
