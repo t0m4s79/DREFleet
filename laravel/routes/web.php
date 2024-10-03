@@ -123,6 +123,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
 
+    //VEHICLES ACCESSORIES
+    Route::get('/vehicleAccessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
+    Route::get('/vehicleAccessories/create', [VehicleAccessoryController::class, 'showCreateVehicleAccessoryForm'])->name('vehicleAccessories.showCreate');
+    Route::post('/vehicleAccessories/create', [VehicleAccessoryController::class, 'createVehicleAccessory'])->name('vehicleAccessories.create');
+    Route::get('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'showEditVehicleAccessoryForm'])->name('vehicleAccessories.showEdit');
+    Route::put('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'editVehicleAccessory'])->name('vehicleAccessories.edit');
+    Route::delete('/vehicleAccessories/delete/{vehicleAccessory}', [VehicleAccessoryController::class, 'deleteVehicleAccessory'])->name('vehicleAccessories.delete');
+    
     //VEHICLES DOCUMENTS
     Route::get('/vehicleDocuments', [VehicleDocumentController::class, 'index'])->name('vehicleDocuments.index');
     Route::get('/vehicleDocuments/create', [VehicleDocumentController::class, 'showCreateVehicleDocumentForm'])->name('vehicleDocuments.showCreate');
