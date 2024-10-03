@@ -99,12 +99,12 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
+            return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
+            return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
         }
     }
 
@@ -167,12 +167,12 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('message', 'Dados da rota com id ' . $orderRoute->id . ' atualizados com sucesso!');
+            return redirect()->route('orderRoutes.index')->with('message', 'Dados da rota com id ' . $orderRoute->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao atualizar os dados da rota com id ' . $orderRoute->user_id . '. Tente novamente.');
+            return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao atualizar os dados da rota com id ' . $orderRoute->user_id . '. Tente novamente.');
         }
     }
 
@@ -182,11 +182,11 @@ class OrderRouteController extends Controller
             $orderRoute = OrderRoute::findOrFail($id);
             $orderRoute->delete();
             
-            return redirect()->back()->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');
+            return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao eliminar a rota com id ' . $id . '. Tente novamente.');
+            return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao eliminar a rota com id ' . $id . '. Tente novamente.');
         }
     }
 }

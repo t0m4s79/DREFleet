@@ -141,12 +141,12 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
 
@@ -261,12 +261,12 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -276,11 +276,11 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
-            return redirect()->back()->with('message', 'Pedido com id ' . $order->id . 'apagado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -304,11 +304,11 @@ class OrderController extends Controller
                 'status' => 'Aprovado'
             ]);
 
-            return redirect()->back()->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
@@ -331,11 +331,11 @@ class OrderController extends Controller
                 'status' => 'Por aprovar'
             ]);
 
-            return redirect()->back()->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 }

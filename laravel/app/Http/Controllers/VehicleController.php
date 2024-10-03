@@ -101,11 +101,11 @@ class VehicleController extends Controller
                 'image_path' => $path,
             ]);
 
-            return redirect()->back()->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
         }
     }
 
@@ -189,11 +189,11 @@ class VehicleController extends Controller
                 'image_path' => $path,
             ]);
 
-            return redirect()->back()->with('message', 'Dados do veículo com id ' . $vehicle->id . ' atualizados com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Dados do veículocom id ' . $vehicle->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao atualizar os dados do veículo com id ' . $vehicle->id . '. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao atualizar os dados do veículo com id ' . $vehicle->id . '. Tente novamente.');
         }
     }
 
@@ -203,11 +203,11 @@ class VehicleController extends Controller
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
     
-            return redirect()->back()->with('message', 'Veículo com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . 'apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
         }
     }
 }
