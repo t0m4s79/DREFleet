@@ -14,7 +14,7 @@ class VehicleAccessoryController extends Controller
     {
         $vehicleAccessories = VehicleAccessory::All();
 
-        return Inertia::render('VehicleAccessories/AllAccessories', [
+        return Inertia::render('VehicleAccessories/AllVehicleAccessories', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
