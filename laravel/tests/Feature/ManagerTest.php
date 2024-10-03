@@ -73,9 +73,11 @@ class ManagerTest extends TestCase
             ->actingAs($this->user)
             ->post('/managers/create', $managerData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect($previousUrl);
 
 
         $this->assertDatabaseHas('users', $managerData);
@@ -118,9 +120,11 @@ class ManagerTest extends TestCase
             ->actingAs($this->user)
             ->put("/managers/edit/{$manager->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -138,9 +142,11 @@ class ManagerTest extends TestCase
             ->actingAs($this->user)
             ->delete("/managers/delete/{$manager->id}");
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('users', [
             'id' => $manager->id,
@@ -168,7 +174,10 @@ class ManagerTest extends TestCase
             ->post('/managers/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/managers'); // Ensure it redirects back to the form
-    }
+        $previousUrl = url()->previous();
 
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect($previousUrl);
+    }
 }

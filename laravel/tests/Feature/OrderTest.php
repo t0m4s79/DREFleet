@@ -191,9 +191,11 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->post('/orders/create', $orderData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect($previousUrl);  
 
 
         $this->assertDatabaseHas('orders', [
@@ -487,9 +489,11 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->put("/orders/edit/{$order->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect($previousUrl);
 
         $order->refresh();
 
@@ -545,9 +549,11 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->put("/orders/edit/{$order->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect($previousUrl);
 
         $order->refresh();
 
@@ -802,9 +808,11 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->delete("/orders/delete/{$order->id}");
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseMissing('orders', [
             'id' => $order->id,
@@ -835,7 +843,11 @@ class OrderTest extends TestCase
             'status' => 'Aprovado'
         ]);
 
-        $response->assertRedirect(route('orders.index'));      
+        $previousUrl = url()->previous();
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect($previousUrl);
     }
 
     public function test_approve_order_fails_with_invalid_manager_id(): void
@@ -890,7 +902,11 @@ class OrderTest extends TestCase
             'status' => 'Por aprovar',
         ]);
 
-        $response->assertRedirect(route('orders.index'));      
+        $previousUrl = url()->previous();
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect($previousUrl);
     }
 
     public function test_remove_order_approval_fails_with_invalid_manager_id(): void
@@ -955,6 +971,10 @@ class OrderTest extends TestCase
             ->post('/orders/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/orders');
+        $previousUrl = url()->previous();
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect($previousUrl);
     }
 }

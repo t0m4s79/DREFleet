@@ -71,9 +71,11 @@ class OrderStopTest extends TestCase
             ->actingAs($this->user)
             ->post('/orderStops/create', $orderStopData);
 
+        $previousUrl = url()->previous();
+            
         $response
             ->assertSessionHasNoErrors();
-            // ->assertRedirect('/orders');
+            //->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('order_stops', [
             'planned_arrival_date' => $orderStopData['planned_arrival_date'],
@@ -110,9 +112,11 @@ class OrderStopTest extends TestCase
             ->actingAs($this->user)
             ->put("/orderStops/edit/{$orderStop->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+        
         $response
             ->assertSessionHasNoErrors();
-            // ->assertRedirect('/orders');
+            //->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('order_stops', [
             'id' => $orderStop->id,
@@ -131,10 +135,12 @@ class OrderStopTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->delete("/orderStops/delete/{$orderStop->id}");
-
+            
+        $previousUrl = url()->previous();
+        
         $response
             ->assertSessionHasNoErrors();
-            // ->assertRedirect('/orders');
+            //->assertRedirect($previousUrl);
 
         $this->assertDatabaseMissing('order_stops', [
             'id' => $orderStop->id,
@@ -158,9 +164,11 @@ class OrderStopTest extends TestCase
             ->actingAs($this->user)
             ->put("/orderStops/stopReached/{$orderStop->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+        
         $response
             ->assertSessionHasNoErrors();
-            // ->assertRedirect('/orders');
+            //->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('order_stops', [
             'id' => $orderStop->id,

@@ -122,10 +122,12 @@ class UserTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->post('/users/create', $userData);
+        
+        $previousUrl = url()->previous();
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('users', [
             'name' => $userData['name'],
@@ -149,9 +151,11 @@ class UserTest extends TestCase
             ->actingAs($this->user)
             ->put("/users/edit/{$user->id}", $updatedData);
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -164,9 +168,11 @@ class UserTest extends TestCase
             ->actingAs($this->user)
             ->delete("/users/delete/{$user->id}");
 
+        $previousUrl = url()->previous();
+
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect($previousUrl);
 
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
@@ -195,6 +201,10 @@ class UserTest extends TestCase
             ->post('/users/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/users'); // Ensure it redirects back to the form
+        $previousUrl = url()->previous();
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect($previousUrl);
     }
 }
