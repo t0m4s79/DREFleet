@@ -40,7 +40,7 @@ class VehicleDocumentController extends Controller
         $incomingFields = $request->validate([
             'name' => ['required','string', 'max: 255'],
             'issue_date' => ['required', 'date'],
-            'expiration_date' => ['required', 'date'],
+            'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
         ], $customErrorMessages);
 
