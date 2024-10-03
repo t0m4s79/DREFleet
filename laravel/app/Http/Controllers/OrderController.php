@@ -152,7 +152,7 @@ class OrderController extends Controller
 
     public function showEditOrderForm(Order $order)
     {
-        $order->load('stops');
+        $order->load('orderStops');
         
         $drivers = Driver::all();
         $vehicles = Vehicle::all();

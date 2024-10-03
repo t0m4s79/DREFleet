@@ -18,10 +18,10 @@ class VehicleDocumentFactory extends Factory
      */
     public function definition(): array
     {
-        $issueDate = fake()->dateTimeBetween(now()->subYear(), now()->addYear());
+        $issueDate = fake()->dateTimeBetween(now()->subYears(2), now());
         $expirationDate = (clone $issueDate)->modify('+1 year');
 
-        $expired = $expirationDate > now() ? 1 : 0;
+        $expired = $expirationDate < now() ? 1 : 0;
 
         return [
             'name' => Arr::random(["Seguro", "Documento único", "Ficha de Inspeção"]),

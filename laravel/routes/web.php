@@ -13,10 +13,12 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderStopController;
 use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\VehicleDocumentController;
+use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\OrderStopController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -121,6 +123,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
 
+    //VEHICLES DOCUMENTS
+    Route::get('/vehicleDocuments', [VehicleDocumentController::class, 'index'])->name('vehicleDocuments.index');
+    Route::get('/vehicleDocuments/create', [VehicleDocumentController::class, 'showCreateVehicleDocumentForm'])->name('vehicleDocuments.showCreate');
+    Route::post('/vehicleDocuments/create', [VehicleDocumentController::class, 'createVehicleDocument'])->name('vehicleDocuments.create');
+    Route::get('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'showEditVehicleDocumentForm'])->name('vehicleDocuments.showEdit');
+    Route::put('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'editVehicleDocument'])->name('vehicleDocuments.edit');
+    Route::delete('/vehicleDocuments/delete/{vehicleDocument}', [VehicleDocumentController::class, 'deleteVehicleDocument'])->name('vehicleDocuments.delete');
 });
 
 require __DIR__.'/auth.php';
