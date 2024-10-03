@@ -83,7 +83,7 @@ class DriverController extends Controller
             
             DB::commit();
 
-            return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
+            return redirect()->back()->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         
         } catch (\InvalidArgumentException $e) {
             DB::rollBack();        
@@ -92,7 +92,7 @@ class DriverController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
         }
     }
 
@@ -155,7 +155,7 @@ class DriverController extends Controller
 
             DB::commit();
 
-            return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
+            return redirect()->back()->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
 
         } catch (\InvalidArgumentException $e) {
             DB::rollBack();        
@@ -164,7 +164,7 @@ class DriverController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
         } 
     }
 
@@ -182,12 +182,12 @@ class DriverController extends Controller
 
             DB::commit();
 
-            return redirect()->route('drivers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
+            return redirect()->back()->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
-            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }
     }
 }

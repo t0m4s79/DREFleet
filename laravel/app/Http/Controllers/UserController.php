@@ -66,11 +66,11 @@ class UserController extends Controller
                 'password' => Hash::make($incomingFields['password']),
             ]);
 
-            return redirect()->route('users.index')->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
+            return redirect()->back()->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('users.index')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
         }
     }
 
@@ -103,11 +103,11 @@ class UserController extends Controller
 
         try {
             $user->update($incomingFields);
-            return redirect()->route('users.index')->with('message', 'Dados do/a utilizador/a com id ' . $user->id . ' atualizados com sucesso!');
+            return redirect()->back()->with('message', 'Dados do/a utilizador/a com id ' . $user->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('users.index')->with('error', 'Houve um problema ao atualizar os dados do utilizador com id ' . $user->id . '. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao atualizar os dados do utilizador com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -117,11 +117,11 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
     
-            return redirect()->route('users.index')->with('message', 'Utilizador com ' . $id . ' apagado com sucesso!');
+            return redirect()->back()->with('message', 'Utilizador com ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('users.index')->with('error', 'Houve um  problema ao eliminar os dados do utilizador com id ' . $id . '. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um  problema ao eliminar os dados do utilizador com id ' . $id . '. Tente novamente.');
         }
     }
 }

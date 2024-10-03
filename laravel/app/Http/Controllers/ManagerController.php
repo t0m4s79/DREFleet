@@ -55,11 +55,11 @@ class ManagerController extends Controller
                 'user_type' => "Gestor",
             ]);
 
-            return redirect()->route('managers.index')->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
+            return redirect()->back()->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('managers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de gestores. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de gestores. Tente novamente.');
         }
     }
 
@@ -96,11 +96,11 @@ class ManagerController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
-            return redirect()->route('managers.index')->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
+            return redirect()->back()->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('managers.index')->with('error', 'Houve um problema ao atualizar os dados do gestor com id ' . $user->id . '. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao atualizar os dados do gestor com id ' . $user->id . '. Tente novamente.');
         }
     }
 
@@ -111,11 +111,11 @@ class ManagerController extends Controller
                 'user_type' => "Nenhum",
             ]);
 
-            return redirect()->route('managers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
+            return redirect()->back()->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('managers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
+            return redirect()->back()->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de gestores. Tente novamente.');
         }
     }
 
