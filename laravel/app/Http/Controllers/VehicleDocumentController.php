@@ -65,9 +65,14 @@ class VehicleDocumentController extends Controller
         }
     }
 
-    public function showEditVehicleDocumentForm(VehicleDocument $vehicleDoocument)
+    public function showEditVehicleDocumentForm(VehicleDocument $vehicleDocument)
     {
-        return Inertia::render('VehicleDocuments/EditVehicleDocument', ['vehicleDoocument' => $vehicleDoocument]);
+        $vehicles = Vehicle::all();
+
+        return Inertia::render('VehicleDocuments/EditVehicleDocument', [
+            'vehicleDocument' => $vehicleDocument,
+            'vehicles' => $vehicles,
+        ]);
     }
 
     public function editVehicleDocument(VehicleDocument $vehicleDocument, Request $request)
@@ -87,7 +92,7 @@ class VehicleDocumentController extends Controller
         try {
             $expired = now()->toDateTimeString() > $incomingFields['expiration_date'] ? 1 : 0;
 
-            $document = VehicleDocument::create([
+            $vehicleDocument->update([
                 'name' => $incomingFields['name'],
                 'issue_date' => $incomingFields['issue_date'],
                 'expiration_date' => $incomingFields['expiration_date'],
@@ -95,7 +100,7 @@ class VehicleDocumentController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->route('vehicleDocuments.index')->with('message', 'Dados do documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
+            return redirect()->route('vehicleDocuments.index')->with('message', 'Dados do documento com id ' . $vehicleDocument->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);

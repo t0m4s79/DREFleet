@@ -38,7 +38,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                         <div className='p-6'>
 
                             <h2>Criar documento de veículo</h2>
-                            <form onSubmit={handleSubmit} id="newVehicleForm">
+                            <form onSubmit={handleSubmit} id="newVehicleForm" noValidate>
                                 <input type="hidden" name="_token" value={csrfToken} />
 
                                 <TextField
@@ -55,7 +55,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
 
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
-                                    <InputLabel htmlFor="issue_date" value="Data de Emissão" />
+                                        <InputLabel htmlFor="issue_date" value="Data de Emissão" />
                                         <TextField
                                             //label="Data e Hora de Início"
                                             id='issue_date'
@@ -76,7 +76,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                             //label="Data e Hora de Início"
                                             id='expiration_date'
                                             name='expiration_date'
-                                            type="datetime-local"
+                                            type="date"
                                             fullWidth
                                             value={data.expiration_date}
                                             onChange={(e) => setData('expiration_date', e.target.value)}
