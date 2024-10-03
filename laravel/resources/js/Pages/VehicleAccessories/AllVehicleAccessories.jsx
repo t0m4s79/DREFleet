@@ -19,8 +19,6 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
         }
     }, [flash]);
 
-    //console.log('vehicles', vehicles)
-
     const vehicleAccessoryInfo = vehicleAccessories.map((vehicleAccessory) => {
         return {
             id: vehicleAccessory.id,
@@ -42,14 +40,14 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Veículos</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Acessórios de Veículos</h2>}
         >
 
             <Head title="Veículos" />
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Button href={route('vehicles.showCreate')}>
+                    <Button href={route('vehicleAccessories.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
                             Novo Acessório
@@ -59,8 +57,8 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
                     <Table
                         data={vehicleAccessoryInfo}
                         columnsLabel={VehicleAccessoryColumnLabels}
-                        editAction="vehicles.showEdit"
-                        deleteAction="vehicles.delete"
+                        editAction="vehicleAccessories.showEdit"
+                        deleteAction="vehicleAccessories.delete"
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                     />
                 </div>

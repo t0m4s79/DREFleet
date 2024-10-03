@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Models\VehicleDocument;
 use App\Helpers\ErrorMessagesHelper;
@@ -24,7 +25,11 @@ class VehicleDocumentController extends Controller
 
     public function showCreateVehicleDocumentForm()
     {
-        return Inertia::render('VehicleDocuments/NewVehicleDocument');
+        $vehicles = Vehicle::all();
+
+        return Inertia::render('VehicleDocuments/NewVehicleDocument', [
+            'vehicles' => $vehicles,
+        ]);
     }
 
     public function createVehicleDocument(Request $request)
@@ -52,11 +57,11 @@ class VehicleDocumentController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->back()->with('message', 'Documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
+            return redirect()->route('vehicleDocuments.index')->with('message', 'Documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao criar o documento para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicleDocuments.index')->with('error', 'Houve um problema ao criar o documento para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -73,7 +78,7 @@ class VehicleDocumentController extends Controller
         $incomingFields = $request->validate([
             'name' => ['required','string', 'max: 255'],
             'issue_date' => ['required', 'date'],
-            'expiration_date' => ['required', 'date'],
+            'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
         ], $customErrorMessages);
 
@@ -90,11 +95,11 @@ class VehicleDocumentController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->back()->with('message', 'Dados do documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
+            return redirect()->route('vehicleDocuments.index')->with('message', 'Dados do documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao atualizar o documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicleDocuments.index')->with('error', 'Houve um problema ao atualizar o documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -104,11 +109,11 @@ class VehicleDocumentController extends Controller
             $vehicleDocument = VehicleDocument::findOrFail($id);
             $vehicleDocument->delete();
     
-            return redirect()->back()->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicleDocuments.index')->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicleDocuments.index')->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
         }
     }
 }

@@ -73,11 +73,9 @@ class VehicleDocumentTest extends TestCase
             ->actingAs($this->user)
             ->post('/vehicleDocuments/create', $vehicleDocumentData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/vehicleDocuments');
 
         $this->assertDatabaseHas('vehicle_documents', $vehicleDocumentData);
     }
@@ -97,11 +95,9 @@ class VehicleDocumentTest extends TestCase
             ->actingAs($this->user)
             ->put("/vehicleDocuments/edit/{$vehicleDocument->id}", $updatedData);
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/vehicleDocuments');
 
         $this->assertDatabaseHas('vehicle_documents', $updatedData);
     }
@@ -114,11 +110,9 @@ class VehicleDocumentTest extends TestCase
             ->actingAs($this->user)
             ->delete("/vehicleDocuments/delete/{$vehicleDocument->id}");
 
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/vehicleDocuments');
 
         $this->assertDatabaseMissing('vehicle_documents', [
             'id' => $vehicleDocument->id,
@@ -147,10 +141,8 @@ class VehicleDocumentTest extends TestCase
             ->post('/vehicleDocuments/create', $incomingFields);
 
         // Assert: Check if the catch block was executed
-        $previousUrl = url()->previous();
-
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect($previousUrl);
+            ->assertRedirect('/vehicleDocuments');
     }
 }

@@ -19,14 +19,13 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
         }
     }, [flash]);
 
-    //console.log('vehicles', vehicles)
-
     const vehicleDocumentInfo = vehicleDocuments.map((vehicleDocument) => {
         return {
             id: vehicleDocument.id,
             name: vehicleDocument.name,
             issue_date: vehicleDocument.issue_date,
             expiration_date: vehicleDocument.expiration_date,
+            expired: vehicleDocument.expired,
             vehicle_id: vehicleDocument.vehicle_id,
         }
     })
@@ -36,31 +35,32 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
         name: 'Nome',
         issue_date: 'Data de Emissão',
         expiration_date: 'Data de Validade',
+        expired: 'Expirado',
         vehicle_id: 'Id do Veículo',
     };
 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Veículos</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Documentos de Veículos</h2>}
         >
 
             <Head title="Veículos" />
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Button href={route('vehicles.showCreate')}>
+                    <Button href={route('vehicleDocuments.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Novo Acessório
+                            Novo Documento
                         </a>
                     </Button>
 
                     <Table
                         data={vehicleDocumentInfo}
                         columnsLabel={VehicleDocumentColumnLabels}
-                        editAction="vehicles.showEdit"
-                        deleteAction="vehicles.delete"
+                        editAction="vehicleDocuments.showEdit"
+                        deleteAction="vehicleDocuments.delete"
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                     />
                 </div>

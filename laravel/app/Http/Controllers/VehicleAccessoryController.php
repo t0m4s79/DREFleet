@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\VehicleAccessory;
@@ -25,7 +26,11 @@ class VehicleAccessoryController extends Controller
 
     public function showCreateVehicleAccessoryForm()
     {
-        return Inertia::render('VehicleAccessories/NewVehicleAccessory');
+        $vehicles = Vehicle::all();
+        
+        return Inertia::render('VehicleAccessories/NewVehicleAccessory', [
+            'vehicles' => $vehicles
+        ]);
     }
 
     public function createVehicleAccessory(Request $request)
@@ -52,11 +57,11 @@ class VehicleAccessoryController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->back()->with('message', 'Acessorio com id ' . $accessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
+            return redirect()->route('vehicleAccessories.index')->with('message', 'Acessorio com id ' . $accessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao criar o acessorio para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicleAccessories.index')->with('error', 'Houve um problema ao criar o acessorio para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -89,11 +94,11 @@ class VehicleAccessoryController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->back()->with('message', 'Dados do acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
+            return redirect()->route('vehicleAccessories.index')->with('message', 'Dados do acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao atualizar o acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicleAccessories.index')->with('error', 'Houve um problema ao atualizar o acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -103,11 +108,11 @@ class VehicleAccessoryController extends Controller
             $vehicleAccessory = VehicleAccessory::findOrFail($id);
             $vehicleAccessory->delete();
     
-            return redirect()->back()->with('message', 'Acessorio com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicleAccessories.index')->with('message', 'Acessorio com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->back()->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicleAccessories.index')->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
         }
     }
 }
