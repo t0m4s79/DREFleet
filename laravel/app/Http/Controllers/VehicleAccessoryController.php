@@ -65,9 +65,14 @@ class VehicleAccessoryController extends Controller
         }
     }
 
-    public function showEditVehicleAccessoryForm(VehicleAccessory $vehicleDoocument)
+    public function showEditVehicleAccessoryForm(VehicleAccessory $vehicleAccessory)
     {
-        return Inertia::render('VehicleAccessories/EditVehicleAccessory', ['vehicleDoocument' => $vehicleDoocument]);
+        $vehicles = Vehicle::all();
+
+        return Inertia::render('VehicleAccessories/EditVehicleAccessory', [
+            'vehicleAccessory' => $vehicleAccessory,
+            'vehicles' => $vehicles,
+        ]);
     }
 
     public function editVehicleAccessory(VehicleAccessory $vehicleAccessory, Request $request)

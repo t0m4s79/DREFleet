@@ -38,7 +38,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                         <div className='p-6'>
 
                             <h2>Criar acessório de veículo</h2>
-                            <form onSubmit={handleSubmit} id="newVehicleForm">
+                            <form onSubmit={handleSubmit} id="newVehicleForm" noValidate>
                                 <input type="hidden" name="_token" value={csrfToken} />
 
                                 <TextField
@@ -58,9 +58,9 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                     //label="Data e Hora de Início"
                                     id='expiration_date'
                                     name='expiration_date'
-                                    type="datetime-local"
+                                    type="date"
                                     fullWidth
-                                    value={data.begin_date}
+                                    value={data.expiration_date}
                                     onChange={(e) => setData('expiration_date', e.target.value)}
                                     error={errors.expected_begin_date}
                                     helperText={errors.expected_begin_date}
