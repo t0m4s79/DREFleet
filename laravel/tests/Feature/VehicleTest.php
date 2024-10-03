@@ -6,6 +6,8 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Vehicle;
+use App\Models\VehicleAccessory;
+use App\Models\VehicleDocument;
 use Illuminate\Support\Arr;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -37,6 +39,38 @@ class VehicleTest extends TestCase
 
         foreach ($orders as $order) {
             $this->assertTrue($vehicle->orders->contains($order));
+        }
+    }
+
+    public function test_vehicle_has_many_documents(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $documents = VehicleDocument::factory()->count(3)->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+    
+        //Greater or equal because the vehicle factory already creates documents
+        $this->assertGreaterThanOrEqual(3, $vehicle->vehicleDocuments->count());
+    
+        foreach ($documents as $document) {
+            $this->assertTrue($vehicle->vehicleDocuments->contains($document));
+        }
+    }
+
+    public function test_vehicle_has_many_accessories(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $accessories = VehicleAccessory::factory()->count(3)->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        //Greater or equal because the vehicle factory already creates accessories
+        $this->assertGreaterThanOrEqual(3, $vehicle->vehicleAccessories->count());
+
+        foreach ($accessories as $accessory) {
+            $this->assertTrue($vehicle->vehicleAccessories->contains($accessory));
         }
     }
 
