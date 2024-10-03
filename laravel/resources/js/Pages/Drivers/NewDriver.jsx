@@ -18,7 +18,7 @@ export default function NewDriver( {auth, users} ) {
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
-        license: '',
+        license_number: '',
         heavy_license: '',
         heavy_license_type: '',
     });
@@ -38,7 +38,7 @@ export default function NewDriver( {auth, users} ) {
 
     const handleLicenseChange = (license) => {
         console.log('license', license)
-        setData('license', license)
+        setData('license_number', license)
     };
 
     const handleHeavyChange = () => {
@@ -132,7 +132,7 @@ export default function NewDriver( {auth, users} ) {
                                     )}
                                 </Grid> */}
 
-                                <LicenseNumberInput value={data.license} onChange={handleLicenseChange} />
+                                <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
 
                                 <Typography variant="body1">Carta de Pesados</Typography>
                                 {/* Radio buttons for heavy_license */}
