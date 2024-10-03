@@ -334,7 +334,7 @@ class OrderTest extends TestCase
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'order_type' => 'Transporte de Crianças',
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
@@ -346,7 +346,7 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->post('/orders/create', $orderData);
 
-        $response->assertSessionHasErrors(['places.*.kid_id']);
+        $response->assertSessionHasErrors(['vehicle_id']);
 
         $this->assertDatabaseMissing('orders', [
             'expected_begin_date' => $orderData['expected_begin_date'],
@@ -692,7 +692,7 @@ class OrderTest extends TestCase
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'trajectory' => json_encode($trajectory),
-            'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
+            'order_type' => 'Transporte de Crianças',
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
@@ -704,7 +704,7 @@ class OrderTest extends TestCase
             ->actingAs($this->user)
             ->put("/orders/edit/{$order->id}", $updatedData);
 
-        $response->assertSessionHasErrors(['places.*.kid_id']);
+        $response->assertSessionHasErrors(['vehicle_id']);
 
         $this->assertDatabaseMissing('orders', [
             'expected_begin_date' => $updatedData['expected_begin_date'],

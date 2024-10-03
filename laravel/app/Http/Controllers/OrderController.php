@@ -76,12 +76,20 @@ class OrderController extends Controller
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
+        $kidsCount = count($request->input('places.*.kid_id', []));
+        $hasTechnician = $request->input('technician_id') ? 1 : 0;
+        $totalPassengers = $kidsCount + $hasTechnician;
+
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
-            'vehicle_id' => ['required','exists:vehicles,id'],
+            'vehicle_id' => [
+                'required',
+                'exists:vehicles,id',
+                new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
+            ],
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
@@ -101,13 +109,6 @@ class OrderController extends Controller
                 'exists:kids,id',
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
-
-            new OrderVehicleCapacityValidation(
-                $request->input('order_type'),
-                $request->input('vehicle_id'),
-                $request->input('places'),
-                $request->input('technician_id')
-            ),
             
         ] ,$customErrorMessages);
 
@@ -184,12 +185,20 @@ class OrderController extends Controller
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
+        $kidsCount = count($request->input('places.*.kid_id', []));
+        $hasTechnician = $request->input('technician_id') ? 1 : 0;
+        $totalPassengers = $kidsCount + $hasTechnician;
+
         $incomingFields = $request->validate([
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
-            'vehicle_id' => ['required','exists:vehicles,id'],
+            'vehicle_id' => [
+                'required',
+                'exists:vehicles,id',
+                new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
+            ],            
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
@@ -210,13 +219,6 @@ class OrderController extends Controller
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
             'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
-
-            new OrderVehicleCapacityValidation(
-                $request->input('order_type'),
-                $request->input('vehicle_id'),
-                $request->input('places'),
-                $request->input('technician_id')
-            ),
 
         ], $customErrorMessages);
 
