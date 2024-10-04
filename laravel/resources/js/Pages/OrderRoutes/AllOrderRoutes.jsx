@@ -21,13 +21,14 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
     }, [flash]);
 
     const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
-        return {id: orderRoute.id, name: orderRoute.name, area: JSON.stringify(orderRoute.area)}
+        const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
+        return {id: orderRoute.id, name: orderRoute.name, orderArea}
     })
 
     const orderRoutesLabels = {
         id: 'ID',
         name: 'Rota',
-        area: 'Área',
+        orderArea: 'Área',
     }
 
     return (
