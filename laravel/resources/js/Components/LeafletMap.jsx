@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polygon } from 'react-leaflet';
+import L, { latLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
@@ -166,7 +166,14 @@ function EditMarker({ initialPos, onPositionChange }) {
         // Add geocoder search bar only for the edit page
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({
-                defaultMarkGeocode: false
+                defaultMarkGeocode: false,
+                geocoder: L.Control.Geocoder.nominatim({
+					geocodingQueryParams: {
+                        countrycodes: 'pt', // Still restrict by country
+                        bounded: 1,
+                        viewbox: `${boundsSouthWestCorner[1]},${boundsSouthWestCorner[0]},${boundsNorthEastCorner[1]},${boundsNorthEastCorner[0]}`
+                    }
+				}),
             })
                 .once('markgeocode', function (e) {
                     const latlng = e.geocode.center;
@@ -205,7 +212,19 @@ function EditMarker({ initialPos, onPositionChange }) {
     );
 }
 
-export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange, initialPosition, edditing}) {  // routing -> activate (true) routing or not (false)
+export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange, initialPosition, edditing, polygonCoordinates, polygonColor}) {  // routing -> activate (true) routing or not (false)
+    
+    let polyCoords
+    if(polygonCoordinates) {
+        polyCoords = polygonCoordinates.coordinates[0].map((coords)=>{
+            return latLng({
+                lat: coords[1],
+                lng: coords[0]
+            })
+        })
+        console.log(polyCoords)
+    }
+    
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
             <TileLayer
@@ -215,6 +234,14 @@ export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChan
             {routing && <Routing routing={routing} onLocationSelect={onLocationSelect} onTrajectoryChange={onTrajectoryChange} />}
 
             {edditing && <EditMarker initialPos={initialPosition} onPositionChange={onLocationSelect} />}
+
+            {polygonCoordinates && (
+                <Polygon 
+                    positions={polyCoords}
+                    pathOptions={{ color: polygonColor }}
+                />
+            )}
+            
         </MapContainer>
     );
 }

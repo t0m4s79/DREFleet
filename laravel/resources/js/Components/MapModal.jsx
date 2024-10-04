@@ -3,15 +3,22 @@ import { Button, Modal } from '@mui/material';
 import { useEffect } from 'react';
 import LeafletMap from './LeafletMap';
 
-export default function MapModal({ trajectory }) {
+export default function MapModal({ trajectory, route }) {
 
     const [open, setOpen] = useState(false);
     //const [selectedRoute, setSelectedRoute] = useState([])
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    let traject;
+    let routeArea;
     // useEffect(()=>{
-    const traject = JSON.parse(trajectory);
+    if (trajectory) {
+        traject = JSON.parse(trajectory);
+    }
+    if (route) {
+        routeArea = JSON.parse(route.area)
+    }
     //     console.log(traject)
     //     setSelectedRoute(traject)
     // }, trajectory)
@@ -27,7 +34,7 @@ export default function MapModal({ trajectory }) {
                 style={{ display:'flex', alignItems:'center', justifyContent:'center' }}
             >
                 <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px' }}>
-                    <LeafletMap routing={true} onTrajectoryChange={trajectory}/>
+                    <LeafletMap routing={true} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={route.color}/>
                 </div>
 
             </Modal>
