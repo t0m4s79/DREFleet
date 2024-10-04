@@ -39,6 +39,14 @@ return new class extends Migration
             $table->foreign('order_route_id')->references('id')->on('order_routes')->onDelete('set null');
 
             $table->timestamps();
+
+            $table->index('vehicle_id');
+            $table->index('driver_id');
+            $table->index('manager_id');
+            $table->index('technician_id');
+            $table->index('order_route_id');
+            $table->index('status');
+            $table->index('order_type');
         });
     }
 

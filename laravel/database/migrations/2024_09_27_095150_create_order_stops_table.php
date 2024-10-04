@@ -25,6 +25,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->primary(['id', 'place_id']);
+
+            $table->index('order_id');
         });
     }
 

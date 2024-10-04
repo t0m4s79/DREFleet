@@ -18,6 +18,9 @@ return new class extends Migration
             $table->boolean('heavy_license');
             $table->enum('heavy_license_type',['Mercadorias', 'Passageiros'])->nullable();
             $table->timestamps();
+
+            $table->index('license_number');
+            $table->index(['heavy_license','heavy_license_type']);
         });
     }
 

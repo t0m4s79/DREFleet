@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('make');
             $table->string('model');
-            $table->string('license_plate');
+            $table->string('license_plate')->unique();
             $table->integer('year');
             $table->boolean('heavy_vehicle');
             $table->enum('heavy_type',['Mercadorias', 'Passageiros'])->nullable();
@@ -29,6 +29,10 @@ return new class extends Migration
             $table->integer('current_kilometrage');
             $table->string('image_path')->nullable();
             $table->timestamps();
+
+            $table->index('status');
+            $table->index(['heavy_vehicle', 'heavy_type']);
+            $table->index('capacity');
         });
     }
 
