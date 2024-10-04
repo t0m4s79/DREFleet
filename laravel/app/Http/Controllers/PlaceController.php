@@ -18,8 +18,13 @@ class PlaceController extends Controller
 
         // Add a new attribute for place IDs
         $places->transform(function ($place) {
-            $place->kid_ids = $place->kids->pluck('id')->toArray(); // Collect place IDs
+            $place->kid_ids = $place->kids->pluck('id')->toArray(); // Collect kid IDs
             return $place;
+        });
+
+        $places->each(function ($place) {
+            $place->created_at = \Carbon\Carbon::parse($place->created_at)->format('d-m-Y H:i');
+            $place->updated_at = \Carbon\Carbon::parse($place->updated_at)->format('d-m-Y H:i');
         });
 
         return Inertia::render('Places/AllPlaces', [

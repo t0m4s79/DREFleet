@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('order_routes', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
             $table->geography('area', subtype: 'polygon', srid: 4326);
             $table->string('area_color');
+            $table->timestamps();
         });
     }
 

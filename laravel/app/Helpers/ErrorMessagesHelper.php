@@ -104,6 +104,9 @@ class ErrorMessagesHelper
             'heavy_type.required_if' => 'Tipo de Pesado deve ser especificado caso o veículo seja pesado',
             'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula',
+
+            // Vehicle Documents
+            'expiration_date.after' => 'A data de validade não pode ser antes da data de emissão',
         ];
     }
 }

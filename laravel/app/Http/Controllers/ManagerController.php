@@ -15,6 +15,11 @@ class ManagerController extends Controller
     public function index() {
         $managers = User::where('user_type', 'Gestor')->get();
 
+        $managers->each(function ($manager) {
+            $manager->created_at = \Carbon\Carbon::parse($manager->created_at)->format('d-m-Y H:i');
+            $manager->updated_at = \Carbon\Carbon::parse($manager->updated_at)->format('d-m-Y H:i');
+        });
+
         return Inertia::render('Managers/AllManagers', [
             'flash' => [
                 'message' => session('message'),

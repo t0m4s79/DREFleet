@@ -13,10 +13,12 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderStopController;
 use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\VehicleDocumentController;
+use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\OrderStopController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -46,7 +48,7 @@ Route::middleware('auth')->group(function () {
     //KIDS
     Route::get('/kids', [KidController::class, 'index'])->name('kids.index');
     Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.create');
-    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.create');
+    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.showCreate');
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditKidForm'])->name('kids.showEdit');
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
@@ -121,6 +123,21 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
 
+    //VEHICLES ACCESSORIES
+    Route::get('/vehicleAccessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
+    Route::get('/vehicleAccessories/create', [VehicleAccessoryController::class, 'showCreateVehicleAccessoryForm'])->name('vehicleAccessories.showCreate');
+    Route::post('/vehicleAccessories/create', [VehicleAccessoryController::class, 'createVehicleAccessory'])->name('vehicleAccessories.create');
+    Route::get('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'showEditVehicleAccessoryForm'])->name('vehicleAccessories.showEdit');
+    Route::put('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'editVehicleAccessory'])->name('vehicleAccessories.edit');
+    Route::delete('/vehicleAccessories/delete/{vehicleAccessory}', [VehicleAccessoryController::class, 'deleteVehicleAccessory'])->name('vehicleAccessories.delete');
+    
+    //VEHICLES DOCUMENTS
+    Route::get('/vehicleDocuments', [VehicleDocumentController::class, 'index'])->name('vehicleDocuments.index');
+    Route::get('/vehicleDocuments/create', [VehicleDocumentController::class, 'showCreateVehicleDocumentForm'])->name('vehicleDocuments.showCreate');
+    Route::post('/vehicleDocuments/create', [VehicleDocumentController::class, 'createVehicleDocument'])->name('vehicleDocuments.create');
+    Route::get('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'showEditVehicleDocumentForm'])->name('vehicleDocuments.showEdit');
+    Route::put('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'editVehicleDocument'])->name('vehicleDocuments.edit');
+    Route::delete('/vehicleDocuments/delete/{vehicleDocument}', [VehicleDocumentController::class, 'deleteVehicleDocument'])->name('vehicleDocuments.delete');
 });
 
 require __DIR__.'/auth.php';

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('kid_id')->constrained()->onDelete('cascade');
             $table->foreignId('place_id')->constrained()->onDelete('cascade');
 
-            $table->primary(['kid_id', 'place_id', 'order_stop_id']); // Composite primary key            
-
             $table->timestamps();
+
+            $table->primary(['kid_id', 'place_id', 'order_stop_id']); // Composite primary key
         });
     }
 

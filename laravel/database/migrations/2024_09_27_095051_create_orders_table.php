@@ -15,7 +15,6 @@ return new class extends Migration
         //TODO: IF A USER IS DELETED WHAT HAPPENS TO A ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
 
             $table->json('trajectory');
             $table->dateTime('expected_begin_date')->nullable();
@@ -38,6 +37,8 @@ return new class extends Migration
 
             $table->unsignedBigInteger('order_route_id')->nullable();
             $table->foreign('order_route_id')->references('id')->on('order_routes')->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 

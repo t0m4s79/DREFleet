@@ -31,7 +31,7 @@ class KidVehicleValidation implements ValidationRule
         if ($value) {
             // Check if the order type allows kids
             if ($kid && $this->orderType !== 'Transporte de Crianças') {
-                $fail('Crianças não podem ser incluídas a menos que o tipo de ordem seja "Transporte de Crianças"');
+                $fail('Crianças não podem ser incluídas a menos que o tipo de pedido seja "Transporte de Crianças"');
             }
 
             // Check if the vehicle is wheelchair-adapted for kids with a wheelchair
