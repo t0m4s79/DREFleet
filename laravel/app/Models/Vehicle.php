@@ -28,6 +28,7 @@ class Vehicle extends Model
         'image_path',
     ];
     
+    // This array tells what attributes shouldn't be showed when calling the model instance
     protected $hidden = [
         'created_at',
         'updated_at',
@@ -51,6 +52,16 @@ class Vehicle extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function vehicleDocuments(): HasMany
+    {
+        return $this->hasMany(VehicleDocument::class);
+    }
+
+    public function vehicleAccessories(): HasMany
+    {
+        return $this->hasMany(VehicleAccessory::class);
     }
 }
 

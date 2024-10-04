@@ -44,7 +44,7 @@ class OrderFactory extends Factory
 
         $route = $hasRoute? OrderRouteFactory::new()->create() : null;
 
-        $beginDate = fake()->dateTimeBetween('2024-01-01', '2025-12-31');
+        $beginDate = fake()->dateTimeBetween(now()->subYear(), now()->addYear());
         $endDate = (clone $beginDate)->modify('+1 day');
 
         // Future Order

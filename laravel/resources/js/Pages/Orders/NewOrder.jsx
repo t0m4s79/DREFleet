@@ -264,14 +264,14 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                     
                                         <Grid container spacing={3}>
                                             <Grid item xs={6}>
-                                                <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
+                                                <InputLabel htmlFor="expected_begin_date" value="Data e Hora de Início" />
                                                 <TextField
                                                     //label="Data e Hora de Início"
-                                                    id='planned_begin_date'
-                                                    name='planned_begin_date'
+                                                    id='expected_begin_date'
+                                                    name='expected_begin_date'
                                                     type="datetime-local"
                                                     fullWidth
-                                                    value={data.begin_date}
+                                                    value={data.expected_begin_date}
                                                     onChange={(e) => setData('expected_begin_date', e.target.value)}
                                                     error={errors.expected_begin_date}
                                                     helperText={errors.expected_begin_date}
@@ -280,16 +280,16 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
                                             </Grid>
 
                                             <Grid item xs={6}>
-                                                <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
+                                                <InputLabel htmlFor="expected_end_date" value="Data e Hora de Fim" />
                                                 <TextField
                                                     // label="Data e Hora de Fim"
-                                                    id='planned_end_date'
-                                                    name='planned_end_date'
+                                                    id='expected_end_date'
+                                                    name='expected_end_date'
                                                     type="datetime-local"
                                                     fullWidth
-                                                    value={data.end_date}
+                                                    value={data.expected_end_date}
                                                     onChange={(e) => setData('expected_end_date', e.target.value)}
-                                                    error={errors.expected_begin_date}
+                                                    error={errors.expected_end_date}
                                                     helperText={errors.expected_end_date}
                                                     sx={{ mb: 2 }}
                                                 />

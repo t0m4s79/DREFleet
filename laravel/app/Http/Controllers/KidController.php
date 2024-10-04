@@ -22,6 +22,11 @@ class KidController extends Controller
             return $kid;
         });
 
+        $kids->each(function ($kid) {
+            $kid->created_at = \Carbon\Carbon::parse($kid->created_at)->format('d-m-Y H:i');
+            $kid->updated_at = \Carbon\Carbon::parse($kid->updated_at)->format('d-m-Y H:i');
+        });
+
         $places = Place::all();
 
         return Inertia::render('Kids/AllKids', [
