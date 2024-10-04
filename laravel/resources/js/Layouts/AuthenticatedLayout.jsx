@@ -113,6 +113,10 @@ export default function Authenticated({ user, header, children }) {
                                         </Dropdown>
                                     </div>
                                 </div>
+
+                                <NavLink href={route('orderRoutes.index')} active={route().current('orderRoutes.index')}>
+                                    Rotas
+                                </NavLink>
                             </div>
                         </div>
 
