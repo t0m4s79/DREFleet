@@ -47,7 +47,7 @@ export default function AllOrders({auth, orders, flash}) {
         expected_begin_date: 'Data de início',
         expected_end_date: 'Data de fim',
         route: 'Rota',
-        number_of_stops: 'Número de Paragens',
+        number_of_stops: 'Número de Pontos',
         trajectory: 'Trajeto',
         approved_by: 'Approvado por',
         approved_date: 'Data de aprovação',

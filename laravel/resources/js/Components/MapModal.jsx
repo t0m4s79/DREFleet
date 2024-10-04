@@ -34,7 +34,7 @@ export default function MapModal({ trajectory, route }) {
                 style={{ display:'flex', alignItems:'center', justifyContent:'center' }}
             >
                 <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px' }}>
-                    <LeafletMap routing={true} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={route.color}/>
+                    <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={route.color}/>
                 </div>
 
             </Modal>
