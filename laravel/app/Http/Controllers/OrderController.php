@@ -256,8 +256,8 @@ class OrderController extends Controller
             ]);
 
             //TODO: PLANNED ARRIVAL DATE
-            //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED, UPDATE EXISTING AND CREATING NEW ONES ALL AT ONCE
-            //TODO:               -> RIGHT NOW IT DELETES EVERY STOP EXISTING IN THE ORDER AND THEN CREATES EVERY STOP (INCLUDING ONES THAT ALREADY EXISTED)
+            //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
+            //TODO:               -> RIGHT NOW IT DELETES EVERY STOP IN THE ORDER AND THEN CREATES EVERY STOP AGAIN(INCLUDING ONES THAT ALREADY EXISTED)
             if($incomingFields['places_changed']) {
                 
                 OrderStop::where('order_id', $order->id)->delete();
