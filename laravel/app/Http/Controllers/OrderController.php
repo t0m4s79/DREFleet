@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -36,13 +37,15 @@ class OrderController extends Controller
     {
         $orders = Order::with(['orderStops'])->get();
 
-        // Format the dates as dd-mm-yyyy
         $orders->each(function ($order) {
+            // Format the dates as dd-mm-yyyy
             $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
             $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
             $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : null;
             $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d-m-Y H:i');
             $order->updated_at = \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y H:i');
+
+            $order->order_route_id = $order->order_route_id ?? '-';
         });
 
         // Render the view with the formatted orders and flash messages
@@ -113,6 +116,7 @@ class OrderController extends Controller
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
+            'places.*.stop_number' => ['required', 'integer', 'min:0'],
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
@@ -143,6 +147,7 @@ class OrderController extends Controller
             foreach ($incomingFields['places'] as $place) {
                 $orderStopRequest = new Request([
                     'order_id' => $order->id,
+                    'stop_number' => $place['stop_number'],
                     'place_id' => $place['place_id'],
                     'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                 ]);
@@ -221,21 +226,20 @@ class OrderController extends Controller
                 new TechnicianUserTypeValidation(),                
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
-            'addPlaces' => ['nullable', 'array'], // Ensure 'places' is an array
-            'addPlaces.*' => ['array'],           // Ensure each item in 'places' is an array
-            'addPlaces.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
+            'places_changed' => ['required', 'boolean'],
+            'places' => ['nullable', 'array'], // Ensure 'places' is an array
+            'places.*' => ['array'],           // Ensure each item in 'places' is an array
+            'places.*.stop_number' => ['required', 'integer', 'min:0'],
+            'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
                 'exists:kids,id',
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
-            'removePlaces' => ['nullable', 'array'], // Ensure 'places' is an array
 
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
-        $incomingFields['addPlaces'] = $incomingFields['addPlaces'] ?? null;
-        $incomingFields['removePlaces'] = $incomingFields['removePlaces'] ?? null;
 
         DB::beginTransaction();
         try {
@@ -252,23 +256,21 @@ class OrderController extends Controller
             ]);
 
             //TODO: PLANNED ARRIVAL DATE
-            // Create the new order stops
-            if($incomingFields['addPlaces'] != null) {
-                foreach ($incomingFields['addPlaces'] as $place) {
+            //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
+            //TODO:               -> RIGHT NOW IT DELETES EVERY STOP IN THE ORDER AND THEN CREATES EVERY STOP AGAIN(INCLUDING ONES THAT ALREADY EXISTED)
+            if($incomingFields['places_changed']) {
+                
+                OrderStop::where('order_id', $order->id)->delete();
+
+                foreach ($incomingFields['places'] as $place) {
                     $orderStopRequest = new Request([
                         'order_id' => $order->id,
+                        'stop_number' => $place['place_id'],
                         'place_id' => $place['place_id'],
                         'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                     ]);
 
                     $this->orderStopController->createOrderStop($orderStopRequest);
-                }
-            }
-
-            // Delete the removed order stops
-            if($incomingFields['removePlaces'] != null){
-                foreach ($incomingFields['removePlaces'] as $placeId) {
-                    $this->orderStopController->deleteOrderStop($placeId);
                 }
             }
 

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('order_stops', function (Blueprint $table) {
             $table->id();
+            $table->integer('stop_number');
             $table->dateTime('planned_arrival_date')->nullable();
             $table->dateTime('actual_arrival_date')->nullable();
 
@@ -25,6 +26,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->primary(['id', 'place_id']);
+
+            $table->index('order_id');
         });
     }
 

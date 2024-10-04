@@ -1,55 +1,99 @@
-import { useEffect } from 'react';
-import L from 'leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useEffect, useRef } from 'react';
+import L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
-export default function OrderRoutePolygon( {onAreaChange, color} ) {
-    console.log(color)
+// Component to initialize Leaflet-Geoman controls and apply boundaries
+function GeomanControls({ onAreaChange, color, bounds }) {
+    const map = useMap();
+    const polygonLayerRef = useRef(null);
 
     useEffect(() => {
-        const map = L.map('map').setView([32.6443385, -16.9167589], 13);
-
-        // map.pm.setPathOptions({
-        //     color: color,
-        //     fillColor: color,
-        //     fillOpacity: 0.4,
-        //   });
-
-        // Add tile layer to the map
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-        }).addTo(map);
-
-        // Initialize Leaflet-Geoman controls
+        // Add Leaflet-Geoman controls
         map.pm.addControls({
-            position: 'topleft', // Position of the control buttons
-            drawPolygon: true, // Enable polygon drawing
-            drawMarker: false, // Disable marker tool
-            drawPolyline: false, // Disable polyline tool
-            drawCircle: false, // Disable circle tool
-            drawRectangle: false, // Disable rectangle tool
-            editMode: true, // Enable editing mode for shapes
-            dragMode: false, // Disable drag mode for markers/shapes
-            cutPolygon: false, // Disable cutting polygons
-            removalMode: true, // Enable delete mode for shapes
+            position: 'topleft',
+            drawPolygon: true,
+            drawMarker: false,
+            drawPolyline: false,
+            drawCircle: false,
+            drawRectangle: false,
+            editMode: true,
+            dragMode: false,
+            cutPolygon: false,
+            removalMode: true,
         });
-        map.pm.setLang("pt-br");
+        map.pm.setLang('pt-br');
 
-        // Listen for the creation of new polygons
+        // Restrict drawing to the defined boundaries
+        map.on('pm:drawstart', (e) => {
+            map.pm.setGlobalOptions({
+                limitMarkersToCount: 50, // Example: Limit marker count
+                limitMarkersToBoundary: true,
+            });
+        });
+
+        // Enforce boundary restriction when drawing a polygon
         map.on('pm:create', (e) => {
             const layer = e.layer;
             const polygonCoordinates = layer.getLatLngs();
-            console.log('Polygon coordinates:', polygonCoordinates);
-            onAreaChange(polygonCoordinates);
+            polygonLayerRef.current = layer; // Save reference to the polygon
+
+            // Apply the selected color to the polygon
+            layer.setStyle({
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.4,
+            });
+
+            // Check if the polygon is within the boundary
+            if (bounds && !bounds.contains(layer.getBounds())) {
+                map.removeLayer(layer); // Remove the polygon if it's outside the boundary
+                alert('Polygon must be within the defined area!');
+            } else {
+                onAreaChange(polygonCoordinates); // Send coordinates back to parent
+            }
         });
 
-        // Center map on specific coordinates
-        map.setView([32.6443385, -16.9167589], 10);
+    }, [map, color, bounds, onAreaChange]);
 
-    }, []);
+    useEffect(() => {
+        // Update the polygon color whenever the color changes
+        if (polygonLayerRef.current) {
+            polygonLayerRef.current.setStyle({
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.4,
+            });
+        }
+    }, [color]); // This effect runs whenever the color changes
+
+    return null;
+}
+
+// Main component to render the map
+export default function OrderRoutePolygon({ onAreaChange, color }) {
+    // Define the boundary as LatLngBounds (southwest corner and northeast corner)
+    const bounds = L.latLngBounds(
+        [32.269181, -17.735033], // Southwest boundary
+        [33.350247, -15.861279]  // Northeast boundary
+    );
 
     return (
-        <div id="map" style={{ height: '500px', width: '100%' }} />
+        <MapContainer
+            center={[32.6443385, -16.9167589]}
+            zoom={13}
+            style={{ height: '500px', width: '100%' }}
+            maxBounds={bounds} // Limit map panning and zooming to this area
+            maxBoundsViscosity={1.0} // Make boundary strict
+        >
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; OpenStreetMap contributors"
+            />
+            {/* GeomanControls to manage drawing and polygon creation */}
+            <GeomanControls onAreaChange={onAreaChange} color={color} bounds={bounds} />
+        </MapContainer>
     );
-};
+}

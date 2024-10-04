@@ -23,6 +23,9 @@ return new class extends Migration
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
 
             $table->timestamps();
+
+            $table->index('vehicle_id');
+            $table->index('expired');
         });
     }
 

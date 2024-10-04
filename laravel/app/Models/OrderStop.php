@@ -17,6 +17,7 @@ class OrderStop extends Model
     protected $fillable = [
         'planned_arrival_date',
         'actual_arrival_date',
+        'stop_number',
         'order_id',
         'place_id'
     ];

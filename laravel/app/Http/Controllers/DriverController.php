@@ -23,7 +23,7 @@ class DriverController extends Controller
         $drivers->each(function ($driver) {
             $driver->created_at = \Carbon\Carbon::parse($driver->created_at)->format('d-m-Y H:i');
             $driver->updated_at = \Carbon\Carbon::parse($driver->updated_at)->format('d-m-Y H:i');
-            $driver->heavy_license_type = $driver->heavy_license_type ? $driver->heavy_license_type : '-';
+            $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
         });
 
         return Inertia::render('Drivers/AllDrivers', [

@@ -96,6 +96,11 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     <MapModal trajectory={params.value}/>
                 )
             }
+            if(key == 'orderArea'){
+                return (
+                    <MapModal route={params.value}/>
+                )
+            }
 
             return params.value;
         }
