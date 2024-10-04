@@ -1,55 +1,94 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 import { TextField, Button, Grid, Autocomplete } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
 import { useState } from 'react';
+import WaypointManager from './Partials/WaypointManager';
+import ExperimentalMap from '@/Components/ExperimentalMap';
 
 
-export default function EditOrder({auth, order, drivers, vehicles, technicians, managers, kids, places}) {
-    console.log('order', order);
-    // console.log(drivers);
-    // console.log(vehicles);
-    // console.log(technicians);
-    // console.log(managers);
-    // console.log(kids);
-    // console.log(places)
+export default function EditOrder({auth, order, drivers, vehicles, technicians,  kids, otherPlaces, orderRoutes}) {
+    console.log('editOrder', order);
+
+    const orderStops = order.order_stops.map((stop)=> {
+        return { 
+            id: stop.place_id,
+            label: `#${stop.place.id} - ${stop.place.address}`,
+            lat: stop.place.coordinates.coordinates[1],
+            lng: stop.place.coordinates.coordinates[0],
+        }
+    })
+
+    const [selectedRouteType, setSelectedRouteType]= useState('');
+    const [selectedRouteID, setSelectedRouteID] =useState('');
+    const [trajectory, setTrajectory] = useState([]);
+    const [selectedKid, setSelectedKid] = useState({});
+    const [selectedKidPlace, setSelectedKidPlace] = useState({});
+    const [selectedOtherPlace, setSelectedOtherPlace] = useState({});
+    const [waypoints, setWaypoints] = useState(orderStops);
+    const [places, setPlaces] = useState([]);
 
     // Deconstruct places to change label display
-    const placesList = places.map((place) => {
-        return {value: place.id, label: `#${place.id} - ${place.address}`}
+    const otherPlacesList = otherPlaces.map((place) => ({
+        id: place.id,
+        label: `#${place.id} - ${place.address}`,
+        lat: place.coordinates.coordinates[1],
+        lng: place.coordinates.coordinates[0],
+    }));
+
+    const driversList = drivers.map((driver) => {
+        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`}
+    })
+
+    const vehicleList = vehicles.map((vehicle) => {
+        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
+    })
+
+    const techniciansList = technicians.map((technician) => {
+        return {value: technician.id, label: `#${technician.id} - ${technician.name}`}
     })
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const { data, setData, put, errors, processing} = useForm({
-        begin_address: order.begin_address,
-        begin_latitude: order.begin_latitude,
-        begin_longitude: order.begin_longitude,
-        end_address: order.end_address,
-        end_latitude: order.end_latitude,
-        end_longitude: order.end_longitude,
-        begin_date: order.begin_date,
-        end_date: order.end_date,
+        expected_begin_date: order.expected_begin_date,
+        expected_end_date: order.expected_end_date,
+        order_type: order.order_type,
         vehicle_id: order.vehicle_id,
         driver_id: order.driver_id,
         technician_id: order.technician_id,
-        trajectory: order.trajectory
+        trajectory: order.trajectory,
+        order_route_id: order.order_route_id,
+        places: orderStops,
+        //order_stops: 
     })
 
-    const formatPlaceInfo = (place) => {
-        return {value: place.id, label: `#${place.id} - ${place.address}`}
+    const handleRouteChange =(route) => {
+        setSelectedRouteID(route)
+        setData('order_route_id',route)
     }
 
-    const beginAddress = formatPlaceInfo(order.begin_address);
-    console.log('beginAddress', beginAddress)
-    const endAddress = formatPlaceInfo(order.end_address);
-    console.log('endAddres', endAddress)
+    const handleRouteType = (type) => {
+        setSelectedRouteType(type)
+        setData('order_type', type)
+    }
+
+    const updateWaypoints = (newWaypoints, newPlaces) => {
+        setWaypoints(newWaypoints);
+        setPlaces(newPlaces);
+        setData('places', newPlaces);
+    };
+
+    const updateTrajectory= (newTraj) => {
+        console.log(newTraj)
+        setTrajectory(newTraj)
+        setData('trajectory', JSON.stringify(newTraj))
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('orders.create'));
+        put(route('orders.edit'));
     };
 
     return (
@@ -64,167 +103,158 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className='p-6'>
-                            <div className='my-6'>    
-                                <LeafletMap routing={true} onTrajectoryChange={(trajectory) => document.getElementById('trajectory').value = JSON.stringify(trajectory)} />
-                            </div>
 
                             <form onSubmit={handleSubmit}>
                                 <input type="hidden" name="_token" value={csrfToken} />
                                 <input type="hidden" name="_method" value="PUT" />
 
                                 <Grid container spacing={3}>
-                                    {/* Begin Address */}
-                                    <Grid item xs={12}>
-                                        <InputLabel htmlFor='morada-origem' value={'Morada da Origem'}/>
+                                    <Grid item xs={12} md={6}>
+
+                                        <InputLabel sx={{ mb: 2 }}>Rota</InputLabel>
                                         <Autocomplete
-                                            label="Morada da Origem"
-                                            id='morada-origem'
-                                            name='morada-origem'
-                                            options={placesList}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(e) => setData('begin_address', e.target.value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    fullWidth
-                                                    value={beginAddress.value}
-                                                    error={errors.begin_address ? true : false}
-                                                    helperText={errors.begin_address}
-                                                />
-                                            )}
+                                            options={orderRoutes}
+                                            getOptionLabel={(option) => option.name}
+                                            value={orderRoutes.find(route => route.id === data.order_route_id) || null}
+                                            onChange={(event, route) => handleRouteChange(route?.id)}
+                                            renderInput={(params) => <TextField {...params} label="Rota" />}
+                                            error={errors.order_route_id}
+                                            helperText={errors.order_route_id}
+                                            sx={{ mb: 2 }}
                                         />
-                                    </Grid>
 
-                                    {/* Begin Latitude */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Latitude da Origem"
-                                            id='latitude-origem'
-                                            name='latitude-origem'
-                                            type="number"
-                                            fullWidth
-                                            inputProps={{ step: '0.0000000001', min: '-90', max: '90' }}
-                                            value={data.begin_latitude}
-                                            onChange={(e) => setData('begin_latitude', e.target.value)}
-                                            error={errors.begin_latitude ? true : false}
-                                            helperText={errors.begin_latitude}
-                                        />
-                                    </Grid>
-
-                                    {/* Begin Longitude */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Longitude da Origem"
-                                            id='longitude-origem'
-                                            name='longitude-origem'
-                                            type="number"
-                                            fullWidth
-                                            inputProps={{ step: '0.0000000001', min: '-180', max: '180' }}
-                                            value={data.begin_longitude}
-                                            onChange={(e) => setData('begin_longitude', e.target.value)}
-                                            error={errors.begin_longitude ? true : false}
-                                            helperText={errors.begin_longitude}
-                                        />
-                                    </Grid>
-
-                                    {/* End Address */}
-                                    <Grid item xs={12}>
-                                        <InputLabel htmlFor='morada-destino' value={'Morada de Destino'}/>
+                                        <InputLabel sx={{ mb: 2 }}>Tipo de Transporte</InputLabel>
                                         <Autocomplete
-                                            label="Morada de Destino"
-                                            id='morada-destino'
-                                            name='morada-destino'
-                                            options={placesList}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(e) => setData('end_address', e.target.value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    fullWidth
-                                                    value={endAddress.value}
-                                                    error={errors.begin_address ? true : false}
-                                                    helperText={errors.begin_address}
-                                                />
-                                            )}
+                                            options={['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']}
+                                            value={data.order_type} // Bind the selected string
+                                            onChange={(event, value) => handleRouteType(value)}
+                                            //onChange={(event, value) => setData('order_type', value || '')} // Set the selected value (string)
+                                            renderInput={(params) => <TextField {...params} label="Tipo de Transporte" />}
+                                            error={errors.order_type}
+                                            helperText={errors.order_type}
+                                            sx={{ mb: 2 }}
+                                        />
+
+                                        <WaypointManager kids={kids} otherPlacesList={otherPlaces.map(place => ({
+                                                id: place.id,
+                                                label: `#${place.id} - ${place.address}`,
+                                                lat: place.coordinates.coordinates[1],
+                                                lng: place.coordinates.coordinates[0],
+                                            }))} onUpdateWaypoints={updateWaypoints} waypointsList={waypoints}
                                         />
                                     </Grid>
 
-                                    {/* End Latitude */}
+                                    <Grid item xs={12} md={6}>
+                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory}/>
+                                    </Grid>
+
+
+                                </Grid>
+            
+                                <Grid container spacing={3}>
                                     <Grid item xs={6}>
+                                        <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
                                         <TextField
-                                            label="Latitude do Destino"
-                                            type="number"
+                                            //label="Data e Hora de Início"
+                                            id='planned_begin_date'
+                                            name='planned_begin_date'
+                                            type="datetime-local"
                                             fullWidth
-                                            inputProps={{ step: '0.0000000001', min: '-90', max: '90' }}
-                                            value={data.end_latitude}
-                                            onChange={(e) => setData('end_latitude', e.target.value)}
-                                            error={errors.end_latitude ? true : false}
-                                            helperText={errors.end_latitude}
+                                            value={data.expected_begin_date}
+                                            onChange={(e) => setData('expected_begin_date', e.target.value)}
+                                            error={errors.expected_begin_date}
+                                            helperText={errors.expected_begin_date}
+                                            sx={{ mb: 2 }}
                                         />
                                     </Grid>
 
-                                    {/* End Longitude */}
                                     <Grid item xs={6}>
+                                        <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
                                         <TextField
-                                            label="Longitude do Destino"
-                                            type="number"
+                                            // label="Data e Hora de Fim"
+                                            id='planned_end_date'
+                                            name='planned_end_date'
+                                            type="datetime-local"
                                             fullWidth
-                                            inputProps={{ step: '0.0000000001', min: '-180', max: '180' }}
-                                            value={data.end_longitude}
-                                            onChange={(e) => setData('end_longitude', e.target.value)}
-                                            error={errors.end_longitude ? true : false}
-                                            helperText={errors.end_longitude}
+                                            value={data.expected_end_date}
+                                            onChange={(e) => setData('expected_end_date', e.target.value)}
+                                            error={errors.expected_end_date}
+                                            helperText={errors.expected_end_date}
+                                            sx={{ mb: 2 }}
                                         />
                                     </Grid>
+                                </Grid>
+                            
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        id="vehicle"
+                                        options={vehicleList}
+                                        getOptionLabel={(option) => option.label}
+                                        value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
+                                        onChange={(e,value) => setData('vehicle_id', value.value)}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Veículo"
+                                                fullWidth
+                                                value={data.vehicle_id}
+                                                error={errors.vehicle_id}
+                                                helperText={errors.vehicle_id}
+                                            />
+                                        )}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </Grid>
 
-                        <label htmlFor="planned_begin_date">Data e Hora de Início</label><br/>
-                        <input type="datetime-local" id="planned_begin_date" name="planned_begin_date" value="2024-09-19T10:30"/><br/>
+                                
+                                <Grid item xs={12} margin={'normal'}>
+                                    <Autocomplete
+                                        id="driver"
+                                        options={driversList}
+                                        getOptionLabel={(option) => option.label}
+                                        value={driversList.find(driver => driver.value === data.driver_id) || null}
+                                        onChange={(e,value) => setData('driver_id', value.value)}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Condutor"
+                                                fullWidth
+                                                value={data.driver_id}
+                                                error={errors.driver_id}
+                                                helperText={errors.driver_id}
+                                            />
+                                        )}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </Grid>
 
-                        <label htmlFor="planned_end_date">Data e Hora de Fim</label><br />
-                        <input type="datetime-local" id="planned_end_date" name="planned_end_date" value="2024-09-19T10:30"/><br/>
+                                
+                                <Grid item xs={12} margin={'normal'}>
+                                    <Autocomplete
+                                        id="techician"
+                                        options={techniciansList}
+                                        getOptionLabel={(option) => option.label}
+                                        value={techniciansList.find(technician => technician.value === data.technician_id) || null}
+                                        onChange={(e,value) => setData('technician_id', value.value)}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Técnico"
+                                                fullWidth
+                                                value={data.technician_id}
+                                                error={errors.technician_id}
+                                                helperText={errors.technician_id}
+                                            />
+                                        )}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </Grid>
 
-                                    {/* Vehicle */}
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            label="Veículo"
-                                            fullWidth
-                                            value={data.vehicle_id}
-                                            onChange={(e) => setData('vehicle_id', e.target.value)}
-                                            error={errors.vehicle_id ? true : false}
-                                            helperText={errors.vehicle_id}
-                                        />
-                                    </Grid>
-
-                                    {/* Driver */}
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            label="Condutor"
-                                            fullWidth
-                                            value={data.driver_id}
-                                            onChange={(e) => setData('driver_id', e.target.value)}
-                                            error={errors.driver_id ? true : false}
-                                            helperText={errors.driver_id}
-                                        />
-                                    </Grid>
-
-                                    {/* Technician */}
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            label="Técnico"
-                                            fullWidth
-                                            value={data.technician_id}
-                                            onChange={(e) => setData('technician_id', e.target.value)}
-                                            error={errors.technician_id ? true : false}
-                                            helperText={errors.technician_id}
-                                        />
-                                    </Grid>
-
-                                    {/* Submit Button */}
-                                    <Grid item xs={12}>
-                                        <Button type="submit" variant="outlined" color="primary" disabled={processing}>
-                                            Submeter
-                                        </Button>
-                                    </Grid>
+                            
+                                <Grid item xs={12}>
+                                    <Button type="submit" variant="outlined" color="primary" disabled={processing}>
+                                        Submeter
+                                    </Button>
                                 </Grid>
                             </form>
                         </div>

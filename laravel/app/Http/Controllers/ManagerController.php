@@ -127,7 +127,7 @@ class ManagerController extends Controller
     public function showManagerApprovedOrders(User $user) {
         $orders = Order::where('manager_id', $user->id)->get();
         
-        return Inertia::render('Managers/showApprovedOrders', [
+        return Inertia::render('Managers/ShowApprovedOrders', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),

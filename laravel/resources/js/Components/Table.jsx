@@ -106,18 +106,22 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         headerName: 'Ações',
         renderCell: (params) => (
             <div>
-                <a
-                    href={route(editAction, params.row.id)}
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                    Editar
-                </a>
-                <button
-                    onClick={() => handleDelete(params.row.id)}
-                    className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
-                >
-                    Eliminar
-                </button>
+                {editAction && 
+                    <a
+                        href={route(editAction, params.row.id)}
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                        Editar
+                    </a>
+                }
+                {deleteAction && 
+                    <button
+                        onClick={() => handleDelete(params.row.id)}
+                        className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
+                    >
+                        Eliminar
+                    </button>
+                }
             </div>
         ),
         sortable: false, // Disable sorting for actions column
@@ -163,7 +167,11 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 rows={rows}
                 columns={columns}
                 pageSize={10}
-                rowsPerPageOptions={[5, 10, 25]}
+                initialState={{
+                    pagination: {
+                        paginationModel: { pageSize: 25,},
+                    },
+                }}
                 pagination
                 disableSelectionOnClick
                 autosizeOnMount

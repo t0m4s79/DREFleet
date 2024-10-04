@@ -163,8 +163,9 @@ class OrderController extends Controller
 
     public function showEditOrderForm(Order $order)
     {
-        $order->load('orderStops');
-        
+
+        $order->load('orderStops.place')->get();
+
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
