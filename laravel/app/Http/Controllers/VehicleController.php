@@ -17,6 +17,12 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::All();
 
+        $vehicles->each(function ($vehicle) {
+            $vehicle->created_at = \Carbon\Carbon::parse($vehicle->created_at)->format('d-m-Y H:i');
+            $vehicle->updated_at = \Carbon\Carbon::parse($vehicle->updated_at)->format('d-m-Y H:i');
+            $vehicle->heavy_type = $vehicle->heavy_type ? $vehicle->heavy_type : '-';
+        });
+
         return Inertia::render('Vehicles/AllVehicles', [
             'flash' => [
                 'message' => session('message'),

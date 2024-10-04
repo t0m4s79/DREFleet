@@ -14,6 +14,14 @@ class VehicleDocumentController extends Controller
     {
         $vehicleDocuments = VehicleDocument::All();
 
+        $vehicleDocuments->each(function ($document) {
+            $document->issue_date = \Carbon\Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = \Carbon\Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->created_at = \Carbon\Carbon::parse($document->created_at)->format('d-m-Y H:i');
+            $document->updated_at = \Carbon\Carbon::parse($document->updated_at)->format('d-m-Y H:i');
+            $document->expired = $document->expired ? 'Sim' : 'Não';
+        });
+
         return Inertia::render('VehicleDocuments/AllVehicleDocuments', [
             'flash' => [
                 'message' => session('message'),

@@ -36,8 +36,18 @@ class OrderController extends Controller
     {
         $orders = Order::with(['orderStops'])->get();
 
-        return Inertia::render('Orders/AllOrders',[
-           'flash' => [
+        // Format the dates as dd-mm-yyyy
+        $orders->each(function ($order) {
+            $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+            $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+            $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : null;
+            $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d-m-Y H:i');
+            $order->updated_at = \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y H:i');
+        });
+
+        // Render the view with the formatted orders and flash messages
+        return Inertia::render('Orders/AllOrders', [
+            'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
             ],

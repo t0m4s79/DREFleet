@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel';
 import { TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Autocomplete } from '@mui/material';
 import { useForm } from '@inertiajs/react';
 
-{/*TODO: VEHICLE IMAGE SELECT */}
+{/*TODO: Condition should turn grey and auto select expired if present date is bigger than expiration_date */}
 export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}) {
 
     const { data, setData, put, processing, errors } = useForm({
