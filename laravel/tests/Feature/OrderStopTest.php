@@ -62,6 +62,7 @@ class OrderStopTest extends TestCase
     {
         $orderStopData = [
             'planned_arrival_date' => now(),
+            'stop_number' => rand(1,10),
             'order_id' => Order::factory()->create()->id,
             'place_id' => Place::factory()->create()->id,
             'kid_id' => Kid::factory()->create()->id,
@@ -77,6 +78,7 @@ class OrderStopTest extends TestCase
 
         $this->assertDatabaseHas('order_stops', [
             'planned_arrival_date' => $orderStopData['planned_arrival_date'],
+            'stop_number' => $orderStopData['stop_number'],
             'order_id' => $orderStopData['order_id'],
             'place_id' => $orderStopData['place_id'],
         ]);

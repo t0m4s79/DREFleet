@@ -105,8 +105,10 @@ class OrderFactory extends Factory
         return $this->afterCreating(function (Order $order) {
             $trajectory = json_decode($order->trajectory, true);
 
+            $stopNumber = 0;
             // Create stops for each point
             foreach ($trajectory as $point) {
+                $stopNumber++;
                 $lat = $point['lat'];
                 $lng = $point['lng'];
 
@@ -120,6 +122,7 @@ class OrderFactory extends Factory
                 $orderStop = OrderStop::factory()->create([
                     'order_id' => $order->id,
                     'place_id' => $place->id,
+                    'stop_number' => $stopNumber,
                 ]);
 
                 if (rand(0, 1) === 1) {
