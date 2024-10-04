@@ -67,6 +67,7 @@ class User extends Authenticatable
         return $this->hasMany(Order::class, 'manager_id');
     }
 
+    // Order routes usual technician table (order_route_user)
     public function orderRoutes(): BelongsToMany
     {
         return $this->belongsToMany(OrderRoute::class)->withTimestamps();
