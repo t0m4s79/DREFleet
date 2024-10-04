@@ -18,7 +18,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     className="absolute top-0 min-w-full h-32 max-h-32 md:h-[800px] md:max-h-[800px]"
                     src="/img/welcome_image.png"
                 />
-                <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-sky-500 selection:text-white">
+                <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-sky-600 selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                         <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                             <div className="flex lg:justify-center lg:col-start-2">
@@ -32,7 +32,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 {auth.user ? (
                                     <Link
                                         href={route('dashboard.index')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                     >
                                         Painel de Controlo
                                     </Link>
@@ -40,13 +40,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     <>
                                         <Link
                                             href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                         >
                                             Log in
                                         </Link>
                                         <Link
                                             href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                         >
                                             Register
                                         </Link>
@@ -93,7 +93,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </div>
 
                             <div className='flex flex-col lg:flex-row items-center mt-1 mb-56 gap-16'>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/student_icon.svg"
                                     alt="img" 
@@ -105,7 +105,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         A aplicação simplifica a gestão logística e operacional do transporte de crianças e jovens de e para as escolas.
                                     </p>
                                 </div>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/driver_icon.svg"
                                     alt="img" 
@@ -117,7 +117,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         A aplicação permite a visualização rápida das rotas em tempo real para os condutores dos veículos em serviço.
                                     </p>
                                 </div>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/tech_icon.svg"
                                     alt="img" 
