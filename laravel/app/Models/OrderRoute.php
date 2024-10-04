@@ -23,7 +23,7 @@ class OrderRoute extends Model
 
     public function drivers(): BelongsToMany
     {
-        return $this->belongsToMany(Driver::class);
+        return $this->belongsToMany(Driver::class)->withTimestamps();
     }
 
     public function technicians(): BelongsToMany

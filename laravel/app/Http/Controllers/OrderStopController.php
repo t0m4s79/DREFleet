@@ -16,6 +16,7 @@ class OrderStopController extends Controller
 
         $incomingFields = $request->validate([
             'planned_arrival_date' => ['nullable', 'date'],
+            'stop_number' => ['required', 'integer', 'min:0'],
             'order_id' => ['required','exists:orders,id'],
             'place_id' => ['required','exists:places,id'],
             'kid_id' => ['nullable', 'exists:kids,id'],
@@ -26,6 +27,7 @@ class OrderStopController extends Controller
         try {
             $orderStop = OrderStop::create([
                 'planned_arrival_date' => $incomingFields['planned_arrival_date'],
+                'stop_number' => $incomingFields['stop_number'],
                 'order_id' => $incomingFields['order_id'],
                 'place_id' => $incomingFields['place_id'],
             ]);

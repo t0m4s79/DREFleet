@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('phone')->nullable()->unique();
             $table->enum('user_type',['Nenhum','Condutor','Gestor','Técnico','Administrador'])->default('Nenhum');
             $table->enum('status', ['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']);
+
+            $table->index('user_type');
+            $table->index('status');
         });
     }
 
