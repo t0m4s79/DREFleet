@@ -21,6 +21,7 @@ export default function AllOrders({auth, orders, flash}) {
         }
     }, [flash]);
 
+    console.log(orders);
     const OrderInfo = orders.map((order)=>{
         
         return {
@@ -31,6 +32,7 @@ export default function AllOrders({auth, orders, flash}) {
             expected_begin_date: order.expected_begin_date,
             expected_end_date: order.expected_end_date,
             route: order.order_route_id,
+            number_of_stops: order.order_stops.length,
             trajectory: order.trajectory,
             approved_by: order.manager_id,
             approved_date: order.approved_date,
@@ -45,6 +47,7 @@ export default function AllOrders({auth, orders, flash}) {
         expected_begin_date: 'Data de início',
         expected_end_date: 'Data de fim',
         route: 'Rota',
+        number_of_stops: 'Número de Paragens',
         trajectory: 'Trajeto',
         approved_by: 'Approvado por',
         approved_date: 'Data de aprovação',
