@@ -20,8 +20,8 @@ class PlaceFactory extends Factory
     public function definition(): array
     {
 
-        $latitude = fake()->latitude();
-        $longitude = fake()->longitude();
+        $latitude = rand(32269181, 33350247) / 1000000; // Dividing by 1,000,000 to get the decimal
+        $longitude = rand(-17735033, -15861279) / 1000000; // Dividing by 1,000,000 to get the decimal
 
         $firstPart = ['Casa', 'Restaurante', 'Bar', 'Café'];
         $secondPart = ['do Avô', 'da Avó', 'do Pai', 'da Mãe', 'do Primo', 'da Tia', 'do Tio'];

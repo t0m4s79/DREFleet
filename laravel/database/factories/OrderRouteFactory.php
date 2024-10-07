@@ -29,12 +29,18 @@ class OrderRouteFactory extends Factory
 
     private function generateRandomPolygon(): Polygon
     {
-        $points = [];
+        $boundsSouthWestCorner = [32.269181, -17.735033];
+        $boundsNorthEastCorner = [33.350247, -15.861279];
 
+        $points = [];
         $numPoints = rand(3, 10);
 
         for ($i = 0; $i < $numPoints; $i++) {
-            $points[] = new Point(fake()->latitude(), fake()->longitude());
+            // Generate a random latitude and longitude within the bounds
+            $lat = fake()->latitude($boundsSouthWestCorner[0], $boundsNorthEastCorner[0]);
+            $lng = fake()->longitude($boundsSouthWestCorner[1], $boundsNorthEastCorner[1]);
+
+            $points[] = new Point($lat, $lng);
         }
         
         // Ensure the polygon is closed by adding the first point at the end
