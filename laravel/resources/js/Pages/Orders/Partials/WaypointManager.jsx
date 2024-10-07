@@ -12,9 +12,10 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
     useEffect(() => {
         if (waypointsList && waypointsList.length > 0) {
             setWaypoints(waypointsList);
-            const initialPlaces = waypointsList.map((waypoint) => ({
+            const initialPlaces = waypointsList.map((waypoint, index) => ({
                 place_id: waypoint.id,
                 kid_id: waypoint.kid ? waypoint.kid.id : null,
+                stop_number: index + 1, // Initialize the stop_number
             }));
             setPlaces(initialPlaces);
         }
@@ -44,7 +45,7 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
                 lng: selectedKidPlace.coordinates.coordinates[0],
             };
             const updatedWaypoints = [...waypoints, newWaypoint];
-            const updatedPlaces = [...places, { place_id: selectedKidPlace.id, kid_id: selectedKid.id }];
+            const updatedPlaces = [...places, { place_id: selectedKidPlace.id, kid_id: selectedKid.id, stop_number: places.length + 1 }];
             setWaypoints(updatedWaypoints);
             setPlaces(updatedPlaces);
             onUpdateWaypoints(updatedWaypoints, updatedPlaces);
@@ -62,7 +63,7 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
                 lng: selectedOtherPlace.lng,
             };
             const updatedWaypoints = [...waypoints, newWaypoint];
-            const updatedPlaces = [...places, { place_id: selectedOtherPlace.id }];
+            const updatedPlaces = [...places, { place_id: selectedOtherPlace.id, stop_number: places.length + 1 }];
             setWaypoints(updatedWaypoints);
             setPlaces(updatedPlaces);
             onUpdateWaypoints(updatedWaypoints, updatedPlaces);
@@ -78,17 +79,27 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
         onUpdateWaypoints(updatedWaypoints, updatedPlaces);
     };
 
-    // Handle drag end event to reorder waypoints
     const onDragEnd = (result) => {
-        const { destination, source } = result;
-        if (!destination) return; // Dropped outside the list
+        if (!result.destination) return;
 
         const reorderedWaypoints = Array.from(waypoints);
-        const [movedWaypoint] = reorderedWaypoints.splice(source.index, 1);
-        reorderedWaypoints.splice(destination.index, 0, movedWaypoint);
+        const reorderedPlaces = Array.from(places);
+        
+        // Reorder waypoints and places
+        const [removedWaypoint] = reorderedWaypoints.splice(result.source.index, 1);
+        const [removedPlace] = reorderedPlaces.splice(result.source.index, 1);
+        reorderedWaypoints.splice(result.destination.index, 0, removedWaypoint);
+        reorderedPlaces.splice(result.destination.index, 0, removedPlace);
+
+        // Update stop_number based on new order
+        const updatedPlacesWithStopNumber = reorderedPlaces.map((place, index) => ({
+            ...place,
+            stop_number: index + 1, // Set stop_number based on the new index
+        }));
 
         setWaypoints(reorderedWaypoints);
-        onUpdateWaypoints(reorderedWaypoints, places);
+        setPlaces(updatedPlacesWithStopNumber);
+        onUpdateWaypoints(reorderedWaypoints, updatedPlacesWithStopNumber);
     };
 
     return (
@@ -96,24 +107,25 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
             <Grid item xs={12}>
                 <Typography>Pontos de Paragem:</Typography>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="waypointsList">
+                    <Droppable droppableId="waypoints-list">
                         {(provided) => (
                             <List
+                                style={{ minHeight: '200px', maxHeight: '500px', overflowY: 'scroll' }}
                                 {...provided.droppableProps}
                                 ref={provided.innerRef}
-                                style={{ minHeight: '200px', maxHeight: '500px', overflowY: 'scroll' }}
                             >
                                 {waypoints.map((waypoint, index) => (
-                                    <Draggable key={waypoint.id} draggableId={`${waypoint.id}`} index={index}>
+                                    <Draggable key={index} draggableId={index.toString()} index={index}>
                                         {(provided) => (
                                             <ListItem
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
-												sx={{ marginY: 1, }}
                                             >
                                                 <Typography>
-                                                    {waypoint.kid ? `${waypoint.kid.name} - ${waypoint.label}` : waypoint.label}
+                                                    {waypoint.kid
+                                                        ? `${waypoint.kid.name} - ${waypoint.label}`
+                                                        : waypoint.label}
                                                 </Typography>
                                             </ListItem>
                                         )}
@@ -130,7 +142,7 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
             <Grid item xs={12}>
                 <Autocomplete
                     options={kids}
-                    getOptionLabel={(kid) => kid.name}
+                    getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
                     onChange={(event, kid) => handleKidChange(kid)}
                     renderInput={(params) => <TextField {...params} label="Criança" />}
                 />

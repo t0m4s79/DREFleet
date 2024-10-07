@@ -101,6 +101,7 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
     };
 
     console.log('waypoints', waypoints)
+    console.log('places', places)
     console.log('trajectory', trajectory)
     return (
         <AuthenticatedLayout
