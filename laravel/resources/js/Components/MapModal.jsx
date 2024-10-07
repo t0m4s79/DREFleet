@@ -12,12 +12,15 @@ export default function MapModal({ trajectory, route }) {
 
     let traject;
     let routeArea;
+    let color;
+
     // useEffect(()=>{
     if (trajectory) {
         traject = JSON.parse(trajectory);
     }
     if (route) {
         routeArea = JSON.parse(route.area)
+        color = route.color
     }
     //     console.log(traject)
     //     setSelectedRoute(traject)
@@ -34,7 +37,7 @@ export default function MapModal({ trajectory, route }) {
                 style={{ display:'flex', alignItems:'center', justifyContent:'center' }}
             >
                 <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px' }}>
-                    <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={route.color}/>
+                    <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={color}/>
                 </div>
 
             </Modal>

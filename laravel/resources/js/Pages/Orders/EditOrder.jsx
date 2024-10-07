@@ -54,6 +54,8 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
     const { data, setData, put, errors, processing} = useForm({
         expected_begin_date: order.expected_begin_date,
         expected_end_date: order.expected_end_date,
+        expected_time: '',
+        distance: '',
         order_type: order.order_type,
         vehicle_id: order.vehicle_id,
         driver_id: order.driver_id,
@@ -145,7 +147,7 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                     </Grid>
 
                                     <Grid item xs={12} md={6}>
-                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory}/>
+                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory} updateSummary={updateSummary}/>
                                     </Grid>
 
 
