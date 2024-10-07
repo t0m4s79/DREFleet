@@ -3,7 +3,7 @@ import { Button, Modal } from '@mui/material';
 import { useEffect } from 'react';
 import LeafletMap from './LeafletMap';
 
-export default function MapModal({ trajectory }) {
+export default function MapModal({ trajectory, route }) {
 
     const [open, setOpen] = useState(false);
     //const [selectedRoute, setSelectedRoute] = useState([])
