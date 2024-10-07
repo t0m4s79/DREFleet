@@ -204,7 +204,7 @@ function EditMarker({ initialPos, onPositionChange }) {
             <Popup minWidth={90}>
                 <span onClick={toggleDraggable}>
                     {draggable
-                        ? 'Pode arrastar o marcador'
+                        ? 'Pode arrastar o marcador, clique novamente para fixá-lo'
                         : 'Clique aqui para arrastar o marcador'}
                 </span>
             </Popup>
