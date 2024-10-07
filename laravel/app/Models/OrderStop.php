@@ -15,11 +15,13 @@ class OrderStop extends Model
     use HasFactory;
 
     protected $fillable = [
-        'planned_arrival_date',
+        'expected_arrival_date',
         'actual_arrival_date',
+        'time_from_previous_stop',
+        'distance_from_previous_stop',
         'stop_number',
         'order_id',
-        'place_id'
+        'place_id',
     ];
 
     public function order(): BelongsTo

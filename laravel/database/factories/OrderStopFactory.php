@@ -20,7 +20,9 @@ class OrderStopFactory extends Factory
     {
         return [
             'stop_number' => rand(1,20),
-            'planned_arrival_date' => null,
+            'expected_arrival_date' => null,
+            'time_from_previous_stop' => rand(300,2000),
+            'distance_from_previous_stop' => rand(100,2000),
             'order_id' => Order::factory(),
             'place_id' => Place::factory(),
         ];

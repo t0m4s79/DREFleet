@@ -15,6 +15,8 @@ class Order extends Model
     protected $fillable = [
         'expected_begin_date',
         'expected_end_date',
+        'expected_time',
+        'distance',
         'trajectory',
         'order_type',
         'status',
