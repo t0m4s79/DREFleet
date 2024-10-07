@@ -7,7 +7,7 @@ import 'leaflet-routing-machine';
 const boundsSouthWestCorner = [32.269181, -17.735033];
 const boundsNorthEastCorner = [33.350247, -15.861279];
 
-function Routing({ waypoints, onTrajectoryChange }) {
+function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
 
     const map = useMap();
 
@@ -28,7 +28,6 @@ function Routing({ waypoints, onTrajectoryChange }) {
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
-            routeWhileDragging: true,
             showAlternatives: true,
             altLineOptions: {
                 styles: [
@@ -43,14 +42,17 @@ function Routing({ waypoints, onTrajectoryChange }) {
                     }
                 ],
             },
+            draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
 
         routingControl.on('routesfound', function (e) {
             console.log('routes found ', e.routes)                      // TODO: CHECK THIS CONSOLE.LOG
             const trajectory = e.routes[0].coordinates;
+            const summary = e.routes[0].summary;
 
             // Pass the trajectory waypoints back to the form through the callback
             onTrajectoryChange(trajectory);
+            updateSummary(summary);
         });
 
         return () => map.removeControl(routingControl);
@@ -59,7 +61,7 @@ function Routing({ waypoints, onTrajectoryChange }) {
     return null;
 }
 
-export default function ExperimentalMap({ waypoints, onTrajectoryChange }) {
+export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateSummary }) {
     console.log(waypoints)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%' }}>
@@ -67,7 +69,7 @@ export default function ExperimentalMap({ waypoints, onTrajectoryChange }) {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange}/>
+            <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange} updateSummary={updateSummary}/>
         </MapContainer>
     );
 }
