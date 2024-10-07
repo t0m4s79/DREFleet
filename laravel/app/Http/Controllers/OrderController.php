@@ -97,6 +97,8 @@ class OrderController extends Controller
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
+            'expected_time' => ['required', 'integer'], //in seconds
+            'distance' => ['required', 'integer'],      //in meters
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
                 'required',
@@ -117,6 +119,8 @@ class OrderController extends Controller
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.stop_number' => ['required', 'integer', 'min:0'],
+            'places.*.time' => ['required', 'integer', 'min:0'],                 //time from previous stop
+            'places.*.distance' => ['required', 'integer', 'min:0'],             //distance from previous stop
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
@@ -133,6 +137,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'expected_begin_date' => $incomingFields['expected_begin_date'],
                 'expected_end_date' => $incomingFields['expected_end_date'],
+                'expected_time' => $incomingFields['expected_time'],
+                'distance' => $incomingFields['distance'],
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
@@ -149,6 +155,8 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'stop_number' => $place['stop_number'],
                     'place_id' => $place['place_id'],
+                    'time_from_previous_stop' => $place['time'],
+                    'distance_from_previous_stop' => $place['distance'],
                     'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                 ]);
 
@@ -208,6 +216,8 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
+            'expected_time' => ['required', 'integer'],
+            'distance' => ['required', 'integer'],
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
@@ -230,6 +240,8 @@ class OrderController extends Controller
             'places' => ['nullable', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.stop_number' => ['required', 'integer', 'min:0'],
+            'places.*.time' => ['required', 'integer', 'min:0'],                 //time from previous stop
+            'places.*.distance' => ['required', 'integer', 'min:0'],             //distance from previous stop
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
@@ -246,6 +258,8 @@ class OrderController extends Controller
             $order->update([
                 'expected_begin_date' => $incomingFields['expected_begin_date'],
                 'expected_end_date' => $incomingFields['expected_end_date'],
+                'expected_time' => $incomingFields['expected_time'],
+                'distance' => $incomingFields['distance'],
                 'trajectory' => $incomingFields['trajectory'],
                 'order_type' => $incomingFields['order_type'],
                 'vehicle_id' => $incomingFields['vehicle_id'],
@@ -267,6 +281,8 @@ class OrderController extends Controller
                         'order_id' => $order->id,
                         'stop_number' => $place['place_id'],
                         'place_id' => $place['place_id'],
+                        'time_from_previous_stop' => $place['time'],
+                        'distance_from_previous_stop' => $place['distance'],
                         'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                     ]);
 

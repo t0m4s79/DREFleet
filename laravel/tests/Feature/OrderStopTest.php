@@ -61,10 +61,12 @@ class OrderStopTest extends TestCase
     public function test_order_stop_creation(): void
     {
         $orderStopData = [
-            'expected_arrival_date' => now(),
+            'expected_arrival_date' => now()->toDateTimeString(),
             'stop_number' => rand(1,10),
             'order_id' => Order::factory()->create()->id,
             'place_id' => Place::factory()->create()->id,
+            'time_from_previous_stop' => rand(1,200),
+            'distance_from_previous_stop' => rand(1,200),
             'kid_id' => Kid::factory()->create()->id,
         ];
 
@@ -79,6 +81,8 @@ class OrderStopTest extends TestCase
         $this->assertDatabaseHas('order_stops', [
             'expected_arrival_date' => $orderStopData['expected_arrival_date'],
             'stop_number' => $orderStopData['stop_number'],
+            'time_from_previous_stop' => $orderStopData['time_from_previous_stop'],
+            'distance_from_previous_stop' => $orderStopData['distance_from_previous_stop'],
             'order_id' => $orderStopData['order_id'],
             'place_id' => $orderStopData['place_id'],
         ]);

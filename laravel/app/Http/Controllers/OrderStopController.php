@@ -19,6 +19,8 @@ class OrderStopController extends Controller
             'stop_number' => ['required', 'integer', 'min:0'],
             'order_id' => ['required','exists:orders,id'],
             'place_id' => ['required','exists:places,id'],
+            'time_from_previous_stop' => ['required', 'numeric', 'min:0'],
+            'distance_from_previous_stop' => ['required', 'numeric', 'min:0'],
             'kid_id' => ['nullable', 'exists:kids,id'],
         ], $customErrorMessages);
 
@@ -28,6 +30,8 @@ class OrderStopController extends Controller
             $orderStop = OrderStop::create([
                 'expected_arrival_date' => $incomingFields['expected_arrival_date'],
                 'stop_number' => $incomingFields['stop_number'],
+                'time_from_previous_stop' => $incomingFields['time_from_previous_stop'],
+                'distance_from_previous_stop' => $incomingFields['distance_from_previous_stop'],
                 'order_id' => $incomingFields['order_id'],
                 'place_id' => $incomingFields['place_id'],
             ]);
@@ -47,7 +51,7 @@ class OrderStopController extends Controller
         }
     }
 
-    // Can only edit the expected arrival time, the rest is only editable in the order itself
+    // TODO: WHAT ELSE SHOULD THIS EDIT INCLUDE?
     public function editOrderStop(OrderStop $orderStop, Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();

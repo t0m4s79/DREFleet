@@ -19,6 +19,8 @@ return new class extends Migration
             $table->json('trajectory');
             $table->dateTime('expected_begin_date')->nullable();
             $table->dateTime('expected_end_date')->nullable();
+            $table->decimal('expected_time');                       //in seconds
+            $table->decimal('distance');                            //in meters
             $table->dateTime('approved_date')->nullable();
             $table->enum('order_type', ['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']);
             $table->enum('status', ['Por aprovar', 'Cancelado/Não aprovado', 'Aprovado', 'Em curso', 'Finalizado', 'Interrompido']);

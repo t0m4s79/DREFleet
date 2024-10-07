@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('stop_number');
             $table->dateTime('expected_arrival_date')->nullable();
             $table->dateTime('actual_arrival_date')->nullable();
+            $table->decimal('time_from_previous_stop');
+            $table->decimal('distance_from_previous_stop');
 
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
