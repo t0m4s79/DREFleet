@@ -15,7 +15,7 @@ class OrderStop extends Model
     use HasFactory;
 
     protected $fillable = [
-        'planned_arrival_date',
+        'expected_arrival_date',
         'actual_arrival_date',
         'stop_number',
         'order_id',

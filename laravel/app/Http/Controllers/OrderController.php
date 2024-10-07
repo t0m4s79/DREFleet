@@ -142,7 +142,7 @@ class OrderController extends Controller
                 'status' => 'Por aprovar',
             ]);
 
-            //TODO: PLANNED ARRIVAL DATE??
+            //TODO: EXPECTED ARRIVAL DATE??
             // Create the order stops
             foreach ($incomingFields['places'] as $place) {
                 $orderStopRequest = new Request([
@@ -255,7 +255,7 @@ class OrderController extends Controller
                 'status' => 'Por aprovar'
             ]);
 
-            //TODO: PLANNED ARRIVAL DATE
+            //TODO: EXPECTED ARRIVAL DATE
             //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
             //TODO:               -> RIGHT NOW IT DELETES EVERY STOP IN THE ORDER AND THEN CREATES EVERY STOP AGAIN(INCLUDING ONES THAT ALREADY EXISTED)
             if($incomingFields['places_changed']) {

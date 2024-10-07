@@ -61,7 +61,7 @@ class OrderStopTest extends TestCase
     public function test_order_stop_creation(): void
     {
         $orderStopData = [
-            'planned_arrival_date' => now(),
+            'expected_arrival_date' => now(),
             'stop_number' => rand(1,10),
             'order_id' => Order::factory()->create()->id,
             'place_id' => Place::factory()->create()->id,
@@ -77,7 +77,7 @@ class OrderStopTest extends TestCase
             // ->assertRedirect('/orders');
 
         $this->assertDatabaseHas('order_stops', [
-            'planned_arrival_date' => $orderStopData['planned_arrival_date'],
+            'expected_arrival_date' => $orderStopData['expected_arrival_date'],
             'stop_number' => $orderStopData['stop_number'],
             'order_id' => $orderStopData['order_id'],
             'place_id' => $orderStopData['place_id'],
@@ -85,7 +85,7 @@ class OrderStopTest extends TestCase
 
         $orderStop = OrderStop::where('order_id', $orderStopData['order_id'])
                         ->where('place_id', $orderStopData['place_id'])
-                        ->where('planned_arrival_date', $orderStopData['planned_arrival_date'])
+                        ->where('expected_arrival_date', $orderStopData['expected_arrival_date'])
                         ->first();
 
 
@@ -101,11 +101,11 @@ class OrderStopTest extends TestCase
         $orderStop = OrderStop::factory()->create();
 
         $this->assertDatabaseHas('order_stops', [
-            'planned_arrival_date' => null,
+            'expected_arrival_date' => null,
         ]);
 
         $updatedData = [
-            'planned_arrival_date' => now(),
+            'expected_arrival_date' => now(),
         ];
 
         $response = $this
@@ -118,7 +118,7 @@ class OrderStopTest extends TestCase
 
         $this->assertDatabaseHas('order_stops', [
             'id' => $orderStop->id,
-            'planned_arrival_date' => $updatedData['planned_arrival_date'],
+            'expected_arrival_date' => $updatedData['expected_arrival_date'],
         ]);
     }
 

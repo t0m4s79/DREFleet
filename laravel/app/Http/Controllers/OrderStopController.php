@@ -15,18 +15,18 @@ class OrderStopController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'planned_arrival_date' => ['nullable', 'date'],
+            'expected_arrival_date' => ['nullable', 'date'],
             'stop_number' => ['required', 'integer', 'min:0'],
             'order_id' => ['required','exists:orders,id'],
             'place_id' => ['required','exists:places,id'],
             'kid_id' => ['nullable', 'exists:kids,id'],
         ], $customErrorMessages);
 
-        $incomingFields['planned_arrival_date'] = $incomingFields['planned_arrival_date'] ?? null;
+        $incomingFields['expected_arrival_date'] = $incomingFields['expected_arrival_date'] ?? null;
         
         try {
             $orderStop = OrderStop::create([
-                'planned_arrival_date' => $incomingFields['planned_arrival_date'],
+                'expected_arrival_date' => $incomingFields['expected_arrival_date'],
                 'stop_number' => $incomingFields['stop_number'],
                 'order_id' => $incomingFields['order_id'],
                 'place_id' => $incomingFields['place_id'],
@@ -47,18 +47,18 @@ class OrderStopController extends Controller
         }
     }
 
-    // Can only edit the planned arrival time, the rest is only editable in the order itself
+    // Can only edit the expected arrival time, the rest is only editable in the order itself
     public function editOrderStop(OrderStop $orderStop, Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'planned_arrival_date' => ['required', 'date'],
+            'expected_arrival_date' => ['required', 'date'],
         ], $customErrorMessages);
 
         try {
             $orderStop->update([
-                'planned_arrival_date' => $incomingFields['planned_arrival_date'],
+                'expected_arrival_date' => $incomingFields['expected_arrival_date'],
             ]);
 
             // return redirect()->route('orders.index')->with('message', 'Dados do da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
