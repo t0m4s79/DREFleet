@@ -88,6 +88,12 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
         setData('trajectory', JSON.stringify(newTraj))
     }
 
+    const updateSummary = ( summary ) => {
+        console.log('summary',summary);
+        setData('distance', summary.totalDistance);
+        setData('expected_time', summary.totalTime);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         put(route('orders.edit'));
