@@ -15,10 +15,10 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
              <div className="bg-white text-black/50">
                 <img
                     id="background"
-                    className="absolute top-0 min-w-full h-32 max-h-32 lg:h-[800px] lg:max-h-[800px]"
+                    className="absolute top-0 min-w-full h-32 max-h-32 md:h-[800px] md:max-h-[800px]"
                     src="/img/welcome_image.png"
                 />
-                <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-sky-500 selection:text-white">
+                <div className="relative min-h-screen flex flex-col items-center justify-center selection:bg-sky-600 selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                         <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                             <div className="flex lg:justify-center lg:col-start-2">
@@ -32,7 +32,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 {auth.user ? (
                                     <Link
                                         href={route('dashboard.index')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                     >
                                         Painel de Controlo
                                     </Link>
@@ -40,13 +40,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     <>
                                         <Link
                                             href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                         >
                                             Log in
                                         </Link>
                                         <Link
                                             href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none"
                                         >
                                             Register
                                         </Link>
@@ -84,16 +84,16 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
                                 <div className='basis-7/12 pt-6'>
                                     <h2 className="text-4xl font-bold text-gray-800 mb-5">
-                                        Sobre as frotas
+                                        Sobre a frota
                                     </h2>
                                     <p className="text-lg font-normal text-gray-800 text-balance m-auto">
-                                    A frota automóvel afeta à Direção Regional de Educação (DRE) é gerida pelo Núcleo de Equipamento e Conservação (NEC). O NEC é responsável, entre outras funções, por proceder à organização dos transportes e a escala dos assistentes operacionais afetos ao serviço de forma a assegurar, e com prioridade, o apoio ao transporte de crianças e jovens com necessidades educativas especiais. O NEC coordena também o transporte de trabalhadores e mercadorias. 
+                                        A frota automóvel afeta à Direção Regional de Educação (DRE) é gerida pelo Núcleo de Equipamento e Conservação (NEC). O NEC é responsável, entre outras funções, por proceder à organização dos transportes e a escala dos assistentes operacionais afetos ao serviço de forma a assegurar, e com prioridade, o apoio ao transporte de crianças e jovens com necessidades educativas especiais. O NEC coordena também o transporte de trabalhadores e mercadorias. 
                                     </p>
                                 </div>
                             </div>
 
                             <div className='flex flex-col lg:flex-row items-center mt-1 mb-56 gap-16'>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/student_icon.svg"
                                     alt="img" 
@@ -105,7 +105,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         A aplicação simplifica a gestão logística e operacional do transporte de crianças e jovens de e para as escolas.
                                     </p>
                                 </div>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/driver_icon.svg"
                                     alt="img" 
@@ -117,7 +117,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         A aplicação permite a visualização rápida das rotas em tempo real para os condutores dos veículos em serviço.
                                     </p>
                                 </div>
-                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 rounded-lg py-16 px-5 shadow-sm'>
+                                <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/tech_icon.svg"
                                     alt="img" 
@@ -137,7 +137,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             A Direção Regional de Educação
                                         </h2>
                                         <p className="text-lg font-normal text-gray-800 text-center w-4/5 text-pretty m-auto">
-                                        A Direção Regional de Educação (DRE) é o serviço da administração direta da Região Autónoma da Madeira integrado na Secretaria Regional de Educação, Ciência e Tecnologia (SRE), que promove, desenvolve, aplica e presta apoio às políticas educativas no âmbito pedagógico e didático da educação pré-escolar, dos ensinos básico e secundário, da educação extraescolar e da educação especial de toda a Região. A Direção de Serviços de Apoio à Gestão e Organização (DSAGO) é uma das unidades da DRE com funções de carácter predominantemente administrativo, na qual se integra o Núcleo de Equipamento e Conservação (NEC).
+                                            A Direção Regional de Educação (DRE) é o serviço da administração direta da Região Autónoma da Madeira integrado na Secretaria Regional de Educação, Ciência e Tecnologia (SRE), que promove, desenvolve, aplica e presta apoio às políticas educativas no âmbito pedagógico e didático da educação pré-escolar, dos ensinos básico e secundário, da educação extraescolar e da educação especial de toda a Região. A Direção de Serviços de Apoio à Gestão e Organização (DSAGO) é uma das unidades da DRE com funções de carácter predominantemente administrativo, na qual se integra o Núcleo de Equipamento e Conservação (NEC).
                                         </p>
                                         <a href='https://www.madeira.gov.pt/dre'> <button className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 focus:ring focus:ring-offset-1 focus:ring-sky-400 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase">
                                             Visitar site
@@ -153,13 +153,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <footer className="py-16 text-center border-t border-gray-300 mt-10">
                             
                             <div className='text-base flex flex-col md:flex-row justify-center mb-10 gap-1 w-2/4 mx-auto text-gray-800'>
-                                <a className='basis-1/3 grow-0 hover:underline hover:text-gray-600' href='https://canaldenuncias.madeira.gov.pt/'>
+                                <a className='basis-1/3 grow-0 hover:underline decoration-gray-400 decoration-1 underline-offset-4' href='https://canaldenuncias.madeira.gov.pt/'>
                                     Canal de Denúncias
                                 </a>
-                                <a className='basis-1/3 grow-0 hover:underline hover:text-gray-600' href='mailto:rgpd.dre@madeira.gov.pt'>
+                                <a className='basis-1/3 grow-0 hover:underline decoration-gray-400 decoration-1 underline-offset-4' href='mailto:rgpd.dre@madeira.gov.pt'>
                                     Ponto de Contacto RGPD
                                 </a>
-                                <a className='basis-1/3 grow-0 hover:underline hover:text-gray-600' href='https://privacidade.madeira.gov.pt/'>
+                                <a className='basis-1/3 grow-0 hover:underline decoration-gray-400 decoration-1 underline-offset-4' href='https://privacidade.madeira.gov.pt/'>
                                     Política de Privacidade
                                 </a>
                                 

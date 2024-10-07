@@ -115,8 +115,14 @@ class OrderRouteController extends Controller
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
+        $orderRoute->load(['drivers', 'technicians']);
+        $technicians = User::where('user_type', 'Técnico')->get();
+        $drivers = Driver::all();
+
         return Inertia::render('OrderRoutes/EditOrderRoute', [
             'orderRoute' => $orderRoute,
+            'technicians' => $technicians,
+            'drivers' => $drivers,
         ]);
     }
 
