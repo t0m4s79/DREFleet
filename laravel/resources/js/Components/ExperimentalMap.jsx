@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+
 
 const boundsSouthWestCorner = [32.269181, -17.735033];
 const boundsNorthEastCorner = [33.350247, -15.861279];
@@ -28,19 +30,10 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
+
             showAlternatives: true,
             altLineOptions: {
-                styles: [
-                    {
-                        color: 'red',
-                    },
-                    {
-                        color: 'blue',
-                    },
-                    {
-                        color: 'grey',
-                    }
-                ],
+                styles: [{ color: 'red' }, { color: 'blue' }, { color: 'grey' }]
             },
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
