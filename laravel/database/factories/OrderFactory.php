@@ -126,7 +126,7 @@ class OrderFactory extends Factory
                 $lat = $point['lat'];
                 $lng = $point['lng'];
 
-                $coordinates = new Point($lng, $lat);
+                $coordinates = new Point($lat, $lng);
 
                 $place = Place::factory()->create([
                     'coordinates' => $coordinates,
