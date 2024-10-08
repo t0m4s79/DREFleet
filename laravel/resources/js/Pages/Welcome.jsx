@@ -58,13 +58,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <main className="mt-6">
 
                             <div className="text-center mt-24 mb-40">
-                                        <h6 className="text-base font-light text-sky-500 text-center tracking-widest uppercase mb-2">
+                                        <h6 className="text-sm md:text-base font-light text-sky-500 text-center tracking-widest uppercase mb-2">
                                             Direção Regional de Educação
                                         </h6>
-                                        <h2 className="text-8xl font-bold text-gray-800 text-center mb-8">
+                                        <h2 className="text-6xl md:text-8xl font-bold text-gray-800 text-center mb-8">
                                             Frotas DRE
                                         </h2>
-                                        <p className="text-xl font-normal text-gray-800 text-center w-2/4 text-wrap m-auto">
+                                        <p className="text-lg md:text-xl font-normal text-gray-800 text-center w-full md:w-2/4 text-wrap m-auto">
                                             Aplicação digital para a gestão dos transportes realizados pela frota de veículos afetos à Direção Regional de Educação
                                         </p>
                                         <a
@@ -75,11 +75,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         </a>
                             </div>
 
-                            <div className='flex flex-col lg:flex-row items-center mt-96 mb-56 gap-24'>
+                            <div className='flex flex-col lg:flex-row items-center mt-96 mb-56 gap-24 px-4 md:px-0'>
                                 <div className='basis-5/12 text-center mx-auto'>
                                     <img className='object-fill'
                                     src="/img/about_image.svg"
-                                    alt="img" 
+                                    alt="van vector art" 
                                     />
                                 </div>
                                 <div className='basis-7/12 pt-6'>
@@ -92,7 +92,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 </div>
                             </div>
 
-                            <div className='flex flex-col lg:flex-row items-center mt-1 mb-56 gap-16'>
+                            <div className='flex flex-col lg:flex-row items-center mt-1 mb-56 gap-16 px-4 md:px-0'>
                                 <div className='basis-1/3 text-center border border-slate-200 transition duration-300 hover:border-slate-300 hover:shadow-md rounded-lg py-16 px-5 shadow-sm'>
                                     <img className='mx-auto w-32 mb-10'
                                     src="/img/student_icon.svg"
@@ -136,7 +136,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         <h2 className="text-4xl font-bold text-gray-800 text-center mb-7">
                                             A Direção Regional de Educação
                                         </h2>
-                                        <p className="text-lg font-normal text-gray-800 text-center w-4/5 text-pretty m-auto">
+                                        <p className="text-lg font-normal text-gray-800 text-center w-full md:w-4/5 text-pretty m-auto px-3 md:px-0">
                                             A Direção Regional de Educação (DRE) é o serviço da administração direta da Região Autónoma da Madeira integrado na Secretaria Regional de Educação, Ciência e Tecnologia (SRE), que promove, desenvolve, aplica e presta apoio às políticas educativas no âmbito pedagógico e didático da educação pré-escolar, dos ensinos básico e secundário, da educação extraescolar e da educação especial de toda a Região. A Direção de Serviços de Apoio à Gestão e Organização (DSAGO) é uma das unidades da DRE com funções de carácter predominantemente administrativo, na qual se integra o Núcleo de Equipamento e Conservação (NEC).
                                         </p>
                                         <a href='https://www.madeira.gov.pt/dre'> <button className="mt-10 bg-gradient-to-b from-sky-500 to-sky-800 hover:from-sky-400 hover:to-sky-700 focus:ring focus:ring-offset-1 focus:ring-sky-400 text-sm text-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] font-bold py-5 px-28 rounded-lg tracking-widest uppercase">
@@ -145,7 +145,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </div>
 
                             <div className='bg-white shadow-[0px_14px_34px_0px_rgba(0,0,0,0.13)] rounded-lg mt-60 mb-60'>
-                                <img className="py-10 px-16" src="/img/prr_logo.png" alt="PRR logos" />
+                                <img className="py-6 px-4 md:py-10 md:px-16" src="/img/prr_logo.png" alt="PRR logos" />
                             </div>
                                 
                         </main>
