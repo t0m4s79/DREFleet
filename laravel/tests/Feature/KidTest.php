@@ -3,10 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Kid;
-use App\Models\OrderStop;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Place;
+use App\Models\OrderStop;
+use App\Models\Notification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -56,6 +57,28 @@ class KidTest extends TestCase
         foreach ($orderStops as $orderStop) {
             $this->assertTrue($kid->orderStops->contains($orderStop));
         }
+    }
+
+    public function test_notifications_related_to_kid()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $kid = Kid::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => Kid::class,
+            'related_entity_id' => $kid->id,
+            'type' => 'Criança',
+            'title' => 'Kid Notification',
+            'message' => 'You have a notification about the kid: ' . $kid->id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $kid->notifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
     }
 
     public function test_kids_page_is_displayed(): void

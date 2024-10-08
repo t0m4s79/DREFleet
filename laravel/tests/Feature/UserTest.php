@@ -9,6 +9,7 @@ use App\Models\Driver;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +37,9 @@ class UserTest extends TestCase
 
     public function test_user_has_many_orders_as_technician(): void
     {
-        $technician = User::factory()->create();
+        $technician = User::factory()->create([
+            'user_type' => 'Técnico',
+        ]);
 
         $orders = Order::factory()->count(3)->create([
             'technician_id' => $technician->id,
@@ -51,7 +54,9 @@ class UserTest extends TestCase
 
     public function test_user_has_many_orders_as_manager(): void
     {
-        $manager = User::factory()->create();
+        $manager = User::factory()->create([
+            'user_type' => 'Gestor',
+        ]);
 
         $orders = Order::factory()->count(3)->create([
             'manager_id' => $manager->id,
@@ -77,6 +82,41 @@ class UserTest extends TestCase
         foreach ($orderRoutes as $orderRoute) {
             $this->assertTrue($user->orderRoutes->contains($orderRoute));
         }
+    }
+
+    public function test_user_has_many_notifications(): void
+    {
+        $user = User::factory()->create();
+
+        $notifications = Notification::factory()->count(3)->create([
+            'user_id' => $user->id,
+        ]);
+
+        foreach ($notifications as $notification) {
+            $this->assertTrue($user->notifications->contains($notification));
+        }
+    }
+
+    public function test_notifications_related_to_other_user()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $otherUser = User::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => User::class,
+            'related_entity_id' => $otherUser->id,
+            'type' => 'Utilizador',
+            'title' => 'User Notification',
+            'message' => 'You have a notification about the user: ' . $otherUser->id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $otherUser->relatedNotifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
     }
 
     public function test_users_page_is_displayed(): void

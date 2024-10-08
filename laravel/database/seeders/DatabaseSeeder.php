@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\Notification;
 use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
         Order::factory(6)->create();
         OrderRoute::factory(3)->create();
 
+        $users = User::all();
         $kids = Kid::all();
         $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places
         $drivers = Driver::all();
@@ -56,6 +58,12 @@ class DatabaseSeeder extends Seeder
             $orderRoute->technicians()->sync(
                 $technicians->random(rand(1, 3))->pluck('id')->toArray()
             );
+        });
+
+        $users->each(function ($user) {
+            Notification::factory(3)->create([
+                'user_id' => $user->id,
+            ]);
         });
     }
 }

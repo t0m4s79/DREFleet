@@ -145,7 +145,6 @@ class OrderStopTest extends TestCase
         $this->assertDatabaseMissing('order_stops', [
             'id' => $orderStop->id,
         ]);
-
     }
 
     public function test_order_stop_reached(): void

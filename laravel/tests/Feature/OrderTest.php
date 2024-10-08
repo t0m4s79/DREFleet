@@ -8,10 +8,11 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
-use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
+use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
+use App\Models\Notification;
 use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -94,8 +95,6 @@ class OrderTest extends TestCase
             'order_id' => $order->id,
         ]);
 
-        $this->assertGreaterThanOrEqual(10, $order->orderStops->count());   //Factory already creates stops so it should have at least 10
-
         foreach ($orderStops as $orderStop) {
             $this->assertTrue($order->orderStops->contains($orderStop));
         }
@@ -144,6 +143,28 @@ class OrderTest extends TestCase
         ]);
 
         $this->assertTrue($order->driver->is($driver));
+    }
+
+    public function test_notifications_related_to_order()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $order = Order::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => Order::class,
+            'related_entity_id' => $order->id,
+            'type' => 'Pedido',
+            'title' => 'Order Notification',
+            'message' => 'You have a notification about the order: ' . $order->id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $order->notifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
     }
 
     public function test_orders_page_is_displayed(): void

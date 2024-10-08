@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Driver;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
+use App\Models\Notification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -77,6 +78,28 @@ class DriverTest extends TestCase
         foreach ($orderRoutes as $orderRoute) {
             $this->assertTrue($driver->orderRoutes->contains($orderRoute));
         }
+    }
+
+    public function test_notifications_related_to_driver()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $driver = Driver::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => Driver::class,
+            'related_entity_id' => $driver->user_id,
+            'type' => 'Condutor',
+            'title' => 'Driver Notification',
+            'message' => 'You have a notification about the driver: ' . $driver->user_id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $driver->notifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
     }
 
     public function test_drivers_page_is_displayed(): void
