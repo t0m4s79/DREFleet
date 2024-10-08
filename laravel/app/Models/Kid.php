@@ -30,4 +30,10 @@ class Kid extends Model
     {
         return $this->belongsToMany(OrderStop::class)->withPivot('place_id');
     }
+
+    // Define inverse polymorphic relationship
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
+    }
 }

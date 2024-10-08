@@ -63,6 +63,12 @@ class Vehicle extends Model
     {
         return $this->hasMany(VehicleAccessory::class);
     }
+
+    // Define inverse polymorphic relationship
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
+    }
 }
 
 
