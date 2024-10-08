@@ -162,7 +162,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orderStops/stopReached/{$orderStop->id}", $updatedData);
+            ->patch("/orderStops/stopReached/{$orderStop->id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors();

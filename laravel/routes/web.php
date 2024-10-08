@@ -19,6 +19,7 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -62,6 +63,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
     Route::get('/managers/showApproved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.showApproved'); 
 
+    //NOTIFICATIONS
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/read/{notification}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::delete('/notifications/delete/{notification}', [NotificationController::class, 'deleteNotification'])->name('notifications.delete');
+
     //ORDERS
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
@@ -69,8 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEditOrder');
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
-    Route::put('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
-    Route::put('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.removeApproval');
+    Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
+    Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.removeApproval');
 
     //ORDER ROUTES
     Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
@@ -84,7 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/orderStops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
     Route::put('/orderStops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
     Route::delete('/orderStops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
-    Route::put('/orderStops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
+    Route::patch('/orderStops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');

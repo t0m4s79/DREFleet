@@ -935,7 +935,7 @@ class OrderTest extends TestCase
 
         $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->put(route('orders.approve', $order), [
+        $response = $this->patch(route('orders.approve', $order), [
             'manager_id' => $manager->id,
         ]);
 
@@ -962,7 +962,7 @@ class OrderTest extends TestCase
         
         $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->put(route('orders.approve', $order), [
+        $response = $this->patch(route('orders.approve', $order), [
             'manager_id' => $notManager->id,
         ]);
 
@@ -989,7 +989,7 @@ class OrderTest extends TestCase
 
         $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->put(route('orders.removeApproval', $order), [
+        $response = $this->patch(route('orders.removeApproval', $order), [
             'manager_id' => $manager->id,
         ]);
 
@@ -1018,7 +1018,7 @@ class OrderTest extends TestCase
         
         $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->put(route('orders.removeApproval', $order), [
+        $response = $this->patch(route('orders.removeApproval', $order), [
             'manager_id' => $notManager->id,
         ]);
 

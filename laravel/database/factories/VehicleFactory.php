@@ -57,7 +57,7 @@ class VehicleFactory extends Factory
 
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,
-                'name' => 'Seguro',
+                'name' => 'Documento Único',
             ]);
 
             for ($i = 0; $i < rand(0, 3); $i++) {
