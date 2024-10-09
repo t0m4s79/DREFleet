@@ -87,7 +87,7 @@ class OrderStopController extends Controller
         }
     }
     
-    // To be used by the drivers/technicians when they reach the waypoint
+    // To be used by the drivers/technicians when they reach a waypoint
     public function orderStopReached(OrderStop $orderStop, Request $request) 
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();

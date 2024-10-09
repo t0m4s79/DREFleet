@@ -39,6 +39,22 @@ class Driver extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'driver_id'); // Specify the foreign key explicitly
+    }
+
+    public function orderRoutes(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
+    }
+
+    // Define inverse polymorphic relationship
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
+    }
+
     public function getNameAttribute(): string
     {
         return $this->user->name;
@@ -58,14 +74,4 @@ class Driver extends Model
     {
         return $this->user->status;
     }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class, 'driver_id'); // Specify the foreign key explicitly
-    }
-
-    public function orderRoutes(): BelongsToMany
-    {
-        return $this->belongsToMany(OrderRoute::class)->withTimestamps();
-    }    
 }

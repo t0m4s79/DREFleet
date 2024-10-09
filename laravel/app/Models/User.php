@@ -72,4 +72,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
+
+    // User's own notifications
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id');
+    }
+    
+    // Notifications about the user as a related entity
+    public function relatedNotifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
+    }
 }
