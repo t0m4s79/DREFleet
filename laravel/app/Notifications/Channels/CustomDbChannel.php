@@ -25,5 +25,4 @@ class CustomDbChannel
 		// Create a new notification instance and save it
 		return $notifiable->routeNotificationFor('database', $notification)->create($payload);
 	}
-
 }
