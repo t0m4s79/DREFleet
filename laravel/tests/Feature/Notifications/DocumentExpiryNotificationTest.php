@@ -46,10 +46,7 @@ class DocumentExpiryNotificationTest extends TestCase
         $document = VehicleDocument::factory()->create(['vehicle_id' => $vehicle->id]);
 
         // Send notification
-        $notification = new DocumentExpiryNotification($vehicle, $document);
-
-        //dd($notification->toArray($user)); // Pass the notifiable user here
-        
+        $notification = new DocumentExpiryNotification($vehicle, $document);        
         $user->notify($notification);
 
         $this->assertDatabaseHas('notifications', [
