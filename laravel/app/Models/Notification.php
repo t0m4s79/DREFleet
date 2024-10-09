@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Notification extends Model         //DatabaseNotification?
+class Notification extends DatabaseNotification
 {
     use HasFactory;
-
-    public $incrementing = true;
 
     protected $fillable = [
         'user_id',
@@ -33,5 +32,17 @@ class Notification extends Model         //DatabaseNotification?
     public function relatedEntity()
     {
         return $this->morphTo();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generate a UUID when creating a new Notification
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+        });
     }
 }

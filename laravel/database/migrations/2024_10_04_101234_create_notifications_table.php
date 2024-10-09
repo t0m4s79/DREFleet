@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             
-            $table->nullableMorphs('related_entity');       // Vehicle, Kid, User, Order,...
+            $table->nullableMorphs('related_entity');       // Vehicle, Kid, User, Order,... (id and class)
 
-            $table->enum('type', ['Veículo', 'Pedido', 'Condutor', 'Utilizador', 'Criança'])->nullable();
+            $table->string('type')->nullable();
             $table->string('title');
             $table->string('message');
             $table->boolean('is_read')->default(false);
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['related_entity_id', 'related_entity_type']);
+            $table->index('is_read');
         });
     }
 
