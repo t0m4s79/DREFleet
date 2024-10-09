@@ -1,15 +1,13 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 import { TextField, Button, Grid, Autocomplete } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
-import ExperimentalMap from '@/Components/ExperimentalMap';
-
 
 export default function EditOrder({auth, order, drivers, vehicles, technicians,  kids, otherPlaces, orderRoutes}) {
-    console.log('editOrder', order);
+    //console.log('editOrder', order);
 
     const orderStops = order.order_stops.map((stop)=> {
         return { 
@@ -27,7 +25,9 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
     const [selectedKidPlace, setSelectedKidPlace] = useState({});
     const [selectedOtherPlace, setSelectedOtherPlace] = useState({});
     const [waypoints, setWaypoints] = useState(orderStops);
-    const [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState(orderStops);
+    const [isPlacesModified, setIsPlacesModified] = useState(false);
+
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -54,8 +54,8 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
     const { data, setData, put, errors, processing} = useForm({
         expected_begin_date: order.expected_begin_date,
         expected_end_date: order.expected_end_date,
-        expected_time: '',
-        distance: '',
+        expected_time: order.expected_time,
+        distance: order.distance,
         order_type: order.order_type,
         vehicle_id: order.vehicle_id,
         driver_id: order.driver_id,
@@ -63,8 +63,33 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
         trajectory: order.trajectory,
         order_route_id: order.order_route_id,
         places: orderStops,
-        //order_stops: 
+        places_changed: isPlacesModified,
     })
+
+    // Store a reference to the original places array
+    const originalPlaces = useRef([...data.places]);
+
+    // Function to check if two arrays are equal (ignoring order or changes)
+    const arraysAreEqual = (arr1, arr2) => {
+        if (arr1.length !== arr2.length) return false;
+        for (let i = 0; i < arr1.length; i++) {
+            if (arr1[i].id !== arr2[i].id) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    // useEffect to detect changes in places array
+    useEffect(() => {
+        if (!arraysAreEqual(originalPlaces.current, places)) {
+            setIsPlacesModified(true); // Set flag to true if array has changed
+            setData('places_changed', true)
+        } else {
+            setIsPlacesModified(false); // Reset flag if the arrays match
+            setData('places_changed', false)
+        }
+    }, [places]);
 
     const handleRouteChange =(route) => {
         setSelectedRouteID(route)
@@ -82,21 +107,34 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
         setData('places', newPlaces);
     };
 
+    // const updateWaypointData = (waypointData) => {
+    //     console.log('New WaypointData', waypointData)
+    //     const placesWithMetricData = places.map((place,index)=> {
+    //         const newPlaceData = {place, distance: waypointData[index].distance, time: waypointData[index].time};
+    //         return newPlaceData
+    //     })
+    //     setPlaces(placesWithMetricData)
+    // }
+
     const updateTrajectory= (newTraj) => {
-        console.log(newTraj)
+        //console.log(newTraj)
         setTrajectory(newTraj)
         setData('trajectory', JSON.stringify(newTraj))
     }
 
     const updateSummary = ( summary ) => {
-        console.log('summary',summary);
-        setData('distance', summary.totalDistance);
-        setData('expected_time', summary.totalTime);
+        //console.log('summary',summary);
+        setData({
+            ...data,  // Spread the existing form data
+            expected_time: Number(summary.totalTime),
+            distance: Number(summary.totalDistance),
+        });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('orders.edit'));
+        console.log('Form data on submit:', data);
+        put(route('orders.edit', order.id));
     };
 
     return (
@@ -117,7 +155,7 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                 <input type="hidden" name="_method" value="PUT" />
 
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} md={6}>
+                                    <Grid item xs={12}>
 
                                         <InputLabel sx={{ mb: 2 }}>Rota</InputLabel>
                                         <Autocomplete
@@ -142,30 +180,36 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                             helperText={errors.order_type}
                                             sx={{ mb: 2 }}
                                         />
-
-                                        <WaypointManager kids={kids} otherPlacesList={otherPlaces.map(place => ({
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <WaypointManager 
+                                            kids={kids} 
+                                            otherPlacesList={otherPlaces.map(place => ({
                                                 id: place.id,
                                                 label: `#${place.id} - ${place.address}`,
                                                 lat: place.coordinates.coordinates[1],
                                                 lng: place.coordinates.coordinates[0],
-                                            }))} onUpdateWaypoints={updateWaypoints} waypointsList={waypoints}
+                                            }))} 
+                                            onUpdateWaypoints={updateWaypoints} 
+                                            waypointsList={waypoints}
+                                            updateTrajectory={updateTrajectory}
+                                            updateSummary={updateSummary} 
+                                            //updateWaypointData={updateWaypointData}
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6}>
-                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory} updateSummary={updateSummary}/>
-                                    </Grid>
-
-
+                                    {/* <Grid item xs={12} md={6}>
+                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory} updateSummary={updateSummary} updateWaypointData={updateWaypointData}/>
+                                    </Grid> */}
                                 </Grid>
             
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
-                                        <InputLabel htmlFor="expected_begin_date" value="Data e Hora de Início" />
+                                        <InputLabel htmlFor="planned_begin_date" value="Data e Hora de Início" />
                                         <TextField
                                             //label="Data e Hora de Início"
-                                            id='expected_begin_date'
-                                            name='expected_begin_date'
+                                            id='planned_begin_date'
+                                            name='planned_begin_date'
                                             type="datetime-local"
                                             fullWidth
                                             value={data.expected_begin_date}
@@ -177,11 +221,11 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <InputLabel htmlFor="expected_end_date" value="Data e Hora de Fim" />
+                                        <InputLabel htmlFor="planned_end_date" value="Data e Hora de Fim" />
                                         <TextField
                                             // label="Data e Hora de Fim"
-                                            id='expected_end_date'
-                                            name='expected_end_date'
+                                            id='planned_end_date'
+                                            name='planned_end_date'
                                             type="datetime-local"
                                             fullWidth
                                             value={data.expected_end_date}
