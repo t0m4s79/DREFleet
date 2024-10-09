@@ -16,7 +16,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         editable: false,
         flex: 1,
         renderCell: (params) => {
-            //console.log(params)
+            //console.log(params)              Use this console log for debugging purposes         
             // Display kids_ids as buttons that direct to the respective kid's page
             // Shown in Places "table"
             if (key === 'kids_ids') {
@@ -99,6 +99,28 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             if(key == 'orderArea'){
                 return (
                     <MapModal route={params.value}/>
+                )
+            }
+            //Display vehicle id as a Button to redirect to the respective vehicle
+            //Shown in vehicle Accessories and Vehicle Documents 'table'
+            if(key == 'vehicle_id'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('vehicles.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
                 )
             }
 
