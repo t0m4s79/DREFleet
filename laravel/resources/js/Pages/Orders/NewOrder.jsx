@@ -77,7 +77,6 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
 
     const updateWaypoints = (newWaypoints, newPlaces) => {
         setWaypoints(newWaypoints);
-        // TODO: ADD orderstop to each element
         setPlaces(newPlaces);
         setData('places', newPlaces);
     };
@@ -90,8 +89,11 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
 
     const updateSummary = ( summary ) => {
         console.log('summary',summary);
-        setData('distance', summary.totalDistance);
-        setData('expected_time', summary.totalTime);
+        setData({
+            ...data,  // Spread the existing form data
+            expected_time: Number(summary.totalTime),
+            distance: Number(summary.totalDistance),
+        });
     }
 
     const handleSubmit = (e) => {
