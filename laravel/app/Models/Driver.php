@@ -21,6 +21,7 @@ class Driver extends Model
         'license_number',
         'heavy_license',
         'heavy_license_type',
+        'license_expiration_date',
     ];
 
     protected $appends = [
@@ -65,9 +66,9 @@ class Driver extends Model
         return $this->user->email;
     }
 
-    public function getPhoneAttribute(): string
+    public function getPhoneAttribute(): ?string
     {
-        return $this->user->phone;
+        return $this->user->phone ?? null;
     }
 
     public function getStatusAttribute(): string

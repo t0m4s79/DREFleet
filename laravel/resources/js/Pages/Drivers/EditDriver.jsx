@@ -3,13 +3,14 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Typography, Grid } from '@mui/material';
 import { Head, useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
 import LicenseNumberInput from '@/Components/LicenseNumberInput';
 
-{/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
-{/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
-{/*TODO: LICENSE NUMBER FIELDS ERROR POSITIONS*/}
-{/*TODO: LICENSE NUMBER FIELDS SHOWING CORRECTLY*/}
-{/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
+{/*TODO: LICENSE NUMBER FIELDS ERRORS SHOWING*/}
+{/*TODO: ALLIGN EXPIRATION DATE AND LICENSE NUMBER CORRECTLY*/}
+{/*TODO: REMOVE "null" APPEARING WHEN X IS CLICKED ON LICENSE NUMBER*/}
+{/*TODO: HEAVY LICENSE OPTIONS NEXT TO EACH OTHER*/}
+{/*TODO: HEAVY LICENSE TYPE OPTIONS NEXT TO EACH OTHER*/}
 export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
@@ -23,6 +24,7 @@ export default function EditDriver({ auth, driver }) {
         license_number: driver.license_number,
         heavy_license: driver.heavy_license,
         heavy_license_type: driver.heavy_license_type,
+        license_expiration_date: driver.license_expiration_date,
         status: driver.status,
     });
 
@@ -107,50 +109,76 @@ export default function EditDriver({ auth, driver }) {
                                 helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
-                            <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
-                            
-                            <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Carta de Pesados</FormLabel>
-                                <RadioGroup
-                                    name="heavy_license"
-                                    value={data.heavy_license}
-                                    onChange={handleChange}
-                                    row
-                                >
-                                    <FormControlLabel
-                                        value="0"
-                                        control={<Radio />}
-                                        label="Não"
-                                    />
-                                    <FormControlLabel
-                                        value="1"
-                                        control={<Radio />}
-                                        label="Sim"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                            <br/>
+                            <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
+                                </Grid>
 
-                            <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
-                                <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
-                                <RadioGroup
-                                    name="heavy_license_type"
-                                    value={data.heavy_license_type}
-                                    onChange={handleChange}
-                                    row
-                                >
-                                    <FormControlLabel
-                                        value="Mercadorias"
-                                        control={<Radio />}
-                                        label="Mercadorias"
+                                <Grid item xs={3} sx={{marginTop: 2}}>
+                                <Typography>Data de Validade</Typography>
+                                <TextField
+                                        //label="Data e Hora de Início"
+                                        id='license_expiration_date'
+                                        name='license_expiration_date'
+                                        type="date"
+                                        fullWidth
+                                        value={data.license_expiration_date}
+                                        onChange={(e) => setData('license_expiration_date', e.target.value)}
+                                        error={errors.license_expiration_date}
+                                        helperText={errors.license_expiration_date}
+                                        sx={{ mb: 2 }}
                                     />
-                                    <FormControlLabel
-                                        value="Passageiros"
-                                        control={<Radio />}
-                                        label="Passageiros"
-                                    />
-                                </RadioGroup>
-                            </FormControl>
+                                </Grid>
+                            </Grid>
+                                
+                            <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <FormControl component="fieldset" margin="normal">
+                                        <FormLabel component="legend">Carta de Pesados</FormLabel>
+                                        <RadioGroup
+                                            name="heavy_license"
+                                            value={data.heavy_license}
+                                            onChange={handleChange}
+                                            row
+                                        >
+                                            <FormControlLabel
+                                                value="0"
+                                                control={<Radio />}
+                                                label="Não"
+                                            />
+                                            <FormControlLabel
+                                                value="1"
+                                                control={<Radio />}
+                                                label="Sim"
+                                            />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <br/>
+
+                                <Grid item xs={6}>
+                                    <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
+                                        <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
+                                        <RadioGroup
+                                            name="heavy_license_type"
+                                            value={data.heavy_license_type}
+                                            onChange={handleChange}
+                                            row
+                                        >
+                                            <FormControlLabel
+                                                value="Mercadorias"
+                                                control={<Radio />}
+                                                label="Mercadorias"
+                                            />
+                                            <FormControlLabel
+                                                value="Passageiros"
+                                                control={<Radio />}
+                                                label="Passageiros"
+                                            />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                            </Grid>
                             <br/>
 
                             <FormControl component="fieldset" margin="normal">
