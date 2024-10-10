@@ -18,7 +18,7 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $notifications = Auth::user()->notifications->sortByDesc('created_at');;
+        $notifications = Auth::user()->notifications->sortByDesc('created_at')->values();
 
         return Inertia::render('Notifications/AllNotifications', [
             'flash' => [
