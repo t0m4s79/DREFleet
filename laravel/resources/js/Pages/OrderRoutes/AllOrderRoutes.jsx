@@ -7,7 +7,7 @@ import { Head } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 
 export default function AllOrderRoutes({auth, orderRoutes, flash}) {
-
+    console.log(orderRoutes)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -22,13 +22,15 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
 
     const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
         const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
-        return {id: orderRoute.id, name: orderRoute.name, orderArea}
+        return {id: orderRoute.id, name: orderRoute.name, orderArea, created_at: orderRoute.created_at, updated_at: orderRoute.updated_at}
     })
 
     const orderRoutesLabels = {
         id: 'ID',
         name: 'Rota',
         orderArea: 'Área',
+        created_at: 'Data de criação',
+        updated_at: 'Data da última atualizão'
     }
 
     return (

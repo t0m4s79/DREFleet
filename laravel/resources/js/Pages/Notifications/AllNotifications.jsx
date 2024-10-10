@@ -31,13 +31,13 @@ export default function AllNotifications({auth, notifications, flash}) {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mensagem</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id do Tipo</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo (id)</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {notifications.map(notification => (
                             <tr key={notification.id}>
-                                <td className="px-6 py-4 max-w-[15%] whitespace-normal text-sm text-gray-900">{new Date(notification.created_at).toLocaleString('default', {hour12: false})}</td>
+                                <td className="px-6 py-4 max-w-[15%] whitespace-normal text-sm text-gray-900">{notification.created_at}</td>
                                 <td className="px-6 py-4 max-w-[20%] whitespace-normal text-sm text-gray-900">{notification.title}</td>
                                 <td className="px-6 py-4 max-w-[35%] whitespace-normal text-sm text-gray-900">{notification.message}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{notification.type}</td>
