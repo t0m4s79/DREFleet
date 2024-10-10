@@ -2,7 +2,7 @@ import OrderRoutePolygon from '@/Components/OrderRoutePolygon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
-import { MuiColorInput } from 'mui-color-input';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import React, { useState } from 'react';
@@ -11,8 +11,8 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function EditOrderRoute({ auth, orderRoute, drivers, technicians }) {
-    console.log('orderRoute',orderRoute)
     const [color, setColor] = useState(orderRoute.area_color);
+    console.log(color);
 
     const driversList = drivers.map((driver) => ({
         value: driver.user_id,
@@ -96,8 +96,10 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                                     required
                                     margin="normal"
                                 />
+                                
                                 <Box mt={2} mb={2}>
-                                    <MuiColorInput format="hex" value={color} onChange={handleColorChange} isAlphaHidden />
+                                    <HexColorPicker color={color} onChange={handleColorChange} />
+                                    <HexColorInput color={color} onChange={handleColorChange} />
                                 </Box>
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}

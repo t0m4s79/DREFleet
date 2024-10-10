@@ -2,7 +2,7 @@ import OrderRoutePolygon from '@/Components/OrderRoutePolygon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
-import { MuiColorInput } from 'mui-color-input';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import React, { useState } from 'react';
@@ -84,8 +84,10 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
                                     required
                                     margin="normal"
                                 />
+                                
                                 <Box mt={2} mb={2}>
-                                    <MuiColorInput format="hex" value={color} onChange={handleColorChange} isAlphaHidden />
+                                    <HexColorPicker color={color} onChange={handleColorChange} />
+                                    <HexColorInput color={color} onChange={handleColorChange} />
                                 </Box>
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}
