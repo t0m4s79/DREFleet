@@ -5,8 +5,7 @@ import L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
-// Component to initialize Leaflet-Geoman controls and apply boundaries
-function GeomanControls({ onAreaChange, color, bounds }) {
+function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
     const map = useMap();
     const polygonLayerRef = useRef(null);
 
@@ -34,7 +33,7 @@ function GeomanControls({ onAreaChange, color, bounds }) {
             });
         });
 
-        // Enforce boundary restriction when drawing a polygon
+        // Handle polygon creation
         map.on('pm:create', (e) => {
             const layer = e.layer;
             const polygonCoordinates = layer.getLatLngs();
@@ -50,13 +49,23 @@ function GeomanControls({ onAreaChange, color, bounds }) {
             // Check if the polygon is within the boundary
             if (bounds && !bounds.contains(layer.getBounds())) {
                 map.removeLayer(layer); // Remove the polygon if it's outside the boundary
-                alert('Polygon must be within the defined area!');
+                alert('Área fora das coordenadas permitidas!');
             } else {
                 onAreaChange(polygonCoordinates); // Send coordinates back to parent
             }
         });
 
-    }, [map, color, bounds, onAreaChange]);
+        // Load initial polygon if coordinates are provided
+        if (initialCoordinates && initialCoordinates.length > 0) {
+            const initialPolygon = L.polygon(initialCoordinates, {
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.4,
+            }).addTo(map);
+            polygonLayerRef.current = initialPolygon;
+        }
+
+    }, [map, color, bounds, onAreaChange, initialCoordinates]);
 
     useEffect(() => {
         // Update the polygon color whenever the color changes
@@ -73,7 +82,7 @@ function GeomanControls({ onAreaChange, color, bounds }) {
 }
 
 // Main component to render the map
-export default function OrderRoutePolygon({ onAreaChange, color }) {
+export default function OrderRoutePolygon({ onAreaChange, color, initialCoordinates }) {
     // Define the boundary as LatLngBounds (southwest corner and northeast corner)
     const bounds = L.latLngBounds(
         [32.269181, -17.735033], // Southwest boundary
@@ -93,7 +102,12 @@ export default function OrderRoutePolygon({ onAreaChange, color }) {
                 attribution="&copy; OpenStreetMap contributors"
             />
             {/* GeomanControls to manage drawing and polygon creation */}
-            <GeomanControls onAreaChange={onAreaChange} color={color} bounds={bounds} />
+            <GeomanControls
+                onAreaChange={onAreaChange}
+                color={color}
+                bounds={bounds}
+                initialCoordinates={initialCoordinates} // Pass initial coordinates here
+            />
         </MapContainer>
     );
 }

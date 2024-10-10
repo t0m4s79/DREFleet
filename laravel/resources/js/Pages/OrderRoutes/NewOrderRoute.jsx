@@ -85,10 +85,9 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
                                     margin="normal"
                                 />
                                 
-                                <Box mt={2} mb={2}>
-                                    <HexColorPicker color={color} onChange={handleColorChange} />
-                                    <HexColorInput color={color} onChange={handleColorChange} />
-                                </Box>
+                                <HexColorInput color={color} onChange={handleColorChange} placeholder="Cor da Rota"/>
+                                <HexColorPicker color={color} onChange={handleColorChange} />
+                                <br />
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}
                                 <Grid item xs={12} margin="normal">

@@ -1,7 +1,7 @@
 import OrderRoutePolygon from '@/Components/OrderRoutePolygon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
+import { Autocomplete, Button, Checkbox, Grid, TextField } from '@mui/material';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+{/*TODO: SHOW ROUTE POLYGON ON MAP */}
 export default function EditOrderRoute({ auth, orderRoute, drivers, technicians }) {
     const [color, setColor] = useState(orderRoute.area_color);
     console.log(color);
@@ -54,12 +55,12 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
         setData('area_color', newValue)
     };
 
-    const handleDriversChange = (newValue) => {
+    const handleDriversChange = (event, newValue) => {
         setSelectedDrivers(newValue);
         setData('usual_drivers', newValue.map(driver => driver.value)); // Update form data with selected driver IDs
     };
 
-    const handleTechniciansChange = (newValue) => {
+    const handleTechniciansChange = (event, newValue) => {
         setSelectedTechnicians(newValue);
         setData('usual_technicians', newValue.map(tech => tech.value)); // Update form data with selected technician IDs
     };
@@ -96,11 +97,10 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                                     required
                                     margin="normal"
                                 />
-                                
-                                <Box mt={2} mb={2}>
-                                    <HexColorPicker color={color} onChange={handleColorChange} />
-                                    <HexColorInput color={color} onChange={handleColorChange} />
-                                </Box>
+
+                                <HexColorInput color={color} onChange={handleColorChange} placeholder="Cor da Rota"/>
+                                <HexColorPicker color={color} onChange={handleColorChange} />
+                                <br />
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}
                                 <Grid item xs={12} margin="normal">
