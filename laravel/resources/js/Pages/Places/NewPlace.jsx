@@ -1,10 +1,10 @@
 import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
-import { Head, useState } from 'react';
+import { useState } from 'react';
 
 export default function NewPlace({auth}) {
 

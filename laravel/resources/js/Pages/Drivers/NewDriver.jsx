@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
-import { Head, useState } from 'react';
+import { useState } from 'react';
 
 {/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
 {/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}

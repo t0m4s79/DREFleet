@@ -3,8 +3,8 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
-import React, { Head, useEffect, useState } from 'react'
+import { Head } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react'
 
 export default function AllOrderRoutes({auth, orderRoutes, flash}) {
 
@@ -34,9 +34,9 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Rota</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Rotas</h2>}
         >
-            
+
             {<Head title='Rotas' />}
 
             <div className='py-12 px-6'>
@@ -45,7 +45,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
                     <Button href={route('orderRoutes.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Nova Rota
+                            Rotas
                         </a>
                     </Button>
 

@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Autocomplete } from '@mui/material';
-import { Head, useState } from 'react';
+import { useState } from 'react';
 
 {/*TODO: Condition should turn grey and auto select expired if present date is bigger than expiration_date */}
 export default function NewVehicleAccessory( {auth, vehicles} ) {

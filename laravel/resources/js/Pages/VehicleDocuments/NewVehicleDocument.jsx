@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import { Button, TextField, Grid, Autocomplete } from '@mui/material';
-import { Head, useState } from 'react';
+import { useState } from 'react';
 
 export default function NewVehicleAccessory( {auth, vehicles} ) {
 
