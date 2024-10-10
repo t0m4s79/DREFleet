@@ -32,7 +32,7 @@ export default function ShowApprovedOrders({auth, orders}) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos aprovados pelo/a Gestor/a </h2>}
         >
 
-            <Head title="Gestores" />
+            <Head title="Pedidos Aprovados" />
         
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">

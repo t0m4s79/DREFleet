@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Grid } from '@mui/material';
-import { useState } from 'react';
+import { Head, useState } from 'react';
 
 {/*TODO: VEHICLE IMAGE SELECT */}
 export default function NewVehicle( {auth} ) {
@@ -47,6 +47,8 @@ export default function NewVehicle( {auth} ) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Veículo</h2>}
         >
+
+            {<Head title='Novo Veículo' />}
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

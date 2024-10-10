@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
-import { useState } from 'react';
+import { Head, useState } from 'react';
 
 {/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
 {/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
@@ -57,6 +57,8 @@ export default function NewDriver( {auth, users} ) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Condutor</h2>}
         >
+            
+            {<Head title='Criar Condutor' />}
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

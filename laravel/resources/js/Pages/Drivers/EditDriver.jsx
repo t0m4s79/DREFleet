@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Typography, Grid } from '@mui/material';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 import LicenseNumberInput from '@/Components/LicenseNumberInput';
 
@@ -56,7 +56,7 @@ export default function EditDriver({ auth, driver }) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Condutor #{driver.user_id}</h2>}
         >
 
-            {/*<Head title={'Condutor'} />*/}
+            {<Head title='Editar Condutor' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

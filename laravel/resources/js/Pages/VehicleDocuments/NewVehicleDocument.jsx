@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import { Button, TextField, Grid, Autocomplete } from '@mui/material';
-import { useState } from 'react';
+import { Head, useState } from 'react';
 
 export default function NewVehicleAccessory( {auth, vehicles} ) {
 
@@ -31,6 +31,8 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Documento</h2>}
         >
+
+            {<Head title='Criar Documento' />}
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

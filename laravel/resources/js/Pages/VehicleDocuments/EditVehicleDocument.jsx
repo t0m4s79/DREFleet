@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputLabel from '@/Components/InputLabel';
 import { TextField, Grid, Button, Autocomplete } from '@mui/material';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 {/*TODO: VEHICLE IMAGE SELECT */}
 export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) {
@@ -35,6 +35,8 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Documento #{vehicleDocument.id}</h2>}
         >
+
+            {<Head title='Editar Documento' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

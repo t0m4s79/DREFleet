@@ -50,7 +50,7 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Técnico #{technician.id}</h2>}
         >
 
-            {/*<Head title={'Utilizador'} />*/}
+            {<Head title='Editar Técnico' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

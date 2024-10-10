@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputLabel from '@/Components/InputLabel';
 import { TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Autocomplete } from '@mui/material';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 {/*TODO: Condition should turn grey and auto select expired if present date is bigger than expiration_date */}
 export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}) {
@@ -35,6 +35,8 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Acessório #{vehicleAccessory.id}</h2>}
         >
+            
+            {<Head title='Editar Acessório' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

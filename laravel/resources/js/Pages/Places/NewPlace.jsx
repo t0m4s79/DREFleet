@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
-import { useState } from 'react';
+import { Head, useState } from 'react';
 
 export default function NewPlace({auth}) {
 
@@ -43,6 +43,8 @@ export default function NewPlace({auth}) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Morada</h2>}
         >
+            
+            {<Head title='Criar Morada' />}
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

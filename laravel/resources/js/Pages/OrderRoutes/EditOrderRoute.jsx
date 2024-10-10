@@ -1,6 +1,6 @@
 import OrderRoutePolygon from '@/Components/OrderRoutePolygon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
 import { MuiColorInput } from 'mui-color-input';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -76,6 +76,9 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Editar Rota #{orderRoute.id}</h2>}
         >
+
+            {<Head title='Editar Rota' />}
+
             <div className="py-12">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">

@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import React, { useEffect, useState } from 'react'
+import React, { Head, useEffect, useState } from 'react'
 
 export default function AllOrderRoutes({auth, orderRoutes, flash}) {
 
@@ -36,6 +36,8 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Rota</h2>}
         >
+            
+            {<Head title='Rotas' />}
 
             <div className='py-12 px-6'>
                 <div className="bg-white overflow-hidden shadow-lg sm:rounded-lg">

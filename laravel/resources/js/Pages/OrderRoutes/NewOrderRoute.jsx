@@ -5,7 +5,7 @@ import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/mater
 import { MuiColorInput } from 'mui-color-input';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import React, { useState } from 'react';
+import React, { Head, useState } from 'react';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -64,6 +64,9 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Rota</h2>}
         >
+
+            {<Head title='Nova Rota' />}
+
             <div className="py-12">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
