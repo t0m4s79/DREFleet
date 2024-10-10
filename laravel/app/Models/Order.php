@@ -34,6 +34,16 @@ class Order extends Model
         'end_coordinates' => Point::class,
         'begin_coordinates' => Point::class,
     ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
     
     public function orderStops(): HasMany
     {

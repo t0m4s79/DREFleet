@@ -33,7 +33,17 @@ class Driver extends Model
 
     protected $hidden = [
         'user',
-    ]; 
+    ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
 
     public function user(): BelongsTo
     {

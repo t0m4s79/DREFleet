@@ -23,11 +23,6 @@ class OrderRouteController extends Controller
     {
         $orderRoutes = OrderRoute::all();
 
-        $orderRoutes->each(function ($route) {
-            $route->created_at = \Carbon\Carbon::parse($route->created_at)->format('d-m-Y H:i');
-            $route->updated_at = \Carbon\Carbon::parse($route->updated_at)->format('d-m-Y H:i');
-        });
-
         return Inertia::render('OrderRoutes/AllOrderRoutes', [
             'flash' => [
                 'message' => session('message'),
