@@ -35,10 +35,10 @@ const LicenseNumberInput = ({ value, onChange }) => {
     }
 
     return (
-        <div className='my-3'>
+        <div>
             <Typography >Carta de Condução</Typography>
             <Grid container spacing={2} style={{ marginTop: 2}}>
-                    <Grid item xs={2}>
+                    <Grid item xs={5}>
                         <Autocomplete
                             options={validCodes}
                             value={selectedCode}
@@ -47,7 +47,7 @@ const LicenseNumberInput = ({ value, onChange }) => {
                         />
                     </Grid>
 
-                    <Grid item xs={8}>
+                    <Grid item xs={7}>
                         <InputMask
                             mask="999999 9"
                             value={numberPart}

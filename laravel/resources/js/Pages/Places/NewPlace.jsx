@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
-import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Grid } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
 
@@ -92,43 +92,49 @@ export default function NewPlace({auth}) {
                                     </RadioGroup>
                                 </FormControl>
 
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    id="latitude"
-                                    name="latitude"
-                                    label="Latitude"
-                                    type="number"
-                                    inputProps={{
-                                        step: 0.000000000000001,
-                                        min: -90,
-                                        max: 90,
-                                        placeholder: "0.00000"
-                                    }}
-                                    value={data.latitude}
-                                    onChange={(e) => setData('latitude', e.target.value)}
-                                    error={Boolean(errors.latitude)}
-                                    helperText={errors.latitude}
-                                />
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            id="latitude"
+                                            name="latitude"
+                                            label="Latitude"
+                                            type="number"
+                                            inputProps={{
+                                                step: 0.000000000000001,
+                                                min: -90,
+                                                max: 90,
+                                                placeholder: "0.00000"
+                                            }}
+                                            value={data.latitude}
+                                            onChange={(e) => setData('latitude', e.target.value)}
+                                            error={Boolean(errors.latitude)}
+                                            helperText={errors.latitude}
+                                        />
+                                    </Grid>
 
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    id="longitude"
-                                    name="longitude"
-                                    label="Longitude"
-                                    type="number"
-                                    inputProps={{
-                                        step: 0.000000000000001,
-                                        min: -180,
-                                        max: 180,
-                                        placeholder: "0.00000"
-                                    }}
-                                    value={data.longitude}
-                                    onChange={(e) => setData('longitude', e.target.value)}
-                                    error={Boolean(errors.longitude)}
-                                    helperText={errors.longitude}
-                                />
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            id="longitude"
+                                            name="longitude"
+                                            label="Longitude"
+                                            type="number"
+                                            inputProps={{
+                                                step: 0.000000000000001,
+                                                min: -180,
+                                                max: 180,
+                                                placeholder: "0.00000"
+                                            }}
+                                            value={data.longitude}
+                                            onChange={(e) => setData('longitude', e.target.value)}
+                                            error={Boolean(errors.longitude)}
+                                            helperText={errors.longitude}
+                                        />
+                                    </Grid>
+                                </Grid>
 
                                 <Button
                                     variant="outlined"
