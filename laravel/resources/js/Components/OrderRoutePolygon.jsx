@@ -25,25 +25,33 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
         });
         map.pm.setLang('pt-br');
 
-        // Restrict drawing to the defined boundaries
-        map.on('pm:drawstart', (e) => {
-            map.pm.setGlobalOptions({
-                limitMarkersToCount: 50, // Example: Limit marker count
-                limitMarkersToBoundary: true,
-            });
-        });
+        // Remove existing polygon before creating a new one
+        const removeExistingPolygon = () => {
+            if (polygonLayerRef.current) {
+                map.removeLayer(polygonLayerRef.current);
+                polygonLayerRef.current = null;
+            }
+        };
 
-        // Handle polygon creation
+        // Enable vertex deletion for new polygons
         map.on('pm:create', (e) => {
+            removeExistingPolygon(); // Ensure only one polygon exists
+
             const layer = e.layer;
             const polygonCoordinates = layer.getLatLngs();
             polygonLayerRef.current = layer; // Save reference to the polygon
 
-            // Apply the selected color to the polygon
+            // Apply color to the polygon
             layer.setStyle({
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.4,
+            });
+
+            // Allow vertex deletion during edit mode
+            layer.pm.enable({
+                allowSelfIntersection: false, // Disable self-intersection to allow deleting vertices
+                snappable: true, // Snapping makes interaction easier
             });
 
             // Check if the polygon is within the boundary
@@ -57,12 +65,21 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
 
         // Load initial polygon if coordinates are provided
         if (initialCoordinates && initialCoordinates.length > 0) {
+            removeExistingPolygon(); // Ensure no duplicate polygons
+
             const initialPolygon = L.polygon(initialCoordinates, {
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.4,
             }).addTo(map);
+
             polygonLayerRef.current = initialPolygon;
+
+            // Enable editing and vertex deletion for existing polygons
+            initialPolygon.pm.enable({
+                allowSelfIntersection: false, // Allow vertex deletion
+                snappable: true,
+            });
         }
 
     }, [map, color, bounds, onAreaChange, initialCoordinates]);

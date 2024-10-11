@@ -10,11 +10,19 @@ import React, { useState } from 'react';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-{/*TODO: SHOW ROUTE POLYGON ON MAP */}
 export default function EditOrderRoute({ auth, orderRoute, drivers, technicians }) {
     const [color, setColor] = useState(orderRoute.area_color);
-    console.log(color);
 
+    // Reverse coordinates from lng lat (backend) to lat lng and format them
+    const reverseCoordinates = (polygon) => {
+        return polygon.coordinates[0].map(coordinate => ({
+            lat: coordinate[1],
+            lng: coordinate[0]
+        }));
+    };
+
+    const reversedCoordinates = reverseCoordinates(orderRoute.area);
+    
     const driversList = drivers.map((driver) => ({
         value: driver.user_id,
         label: `#${driver.user_id} - ${driver.name}`
@@ -40,19 +48,20 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
     const { data, setData, put, processing, errors } = useForm({
         id: orderRoute.id,
         name: orderRoute.name,
-        area_coordinates: orderRoute.area.coordinates[0],
+        area_coordinates: reversedCoordinates,
         area_color: orderRoute.area_color,
-        usual_drivers: orderRoute.drivers.map(driver=> driver.user_id),
-        usual_technicians: orderRoute.technicians.map(tech=> tech.id),
+        usual_drivers: orderRoute.drivers.map(driver => driver.user_id),
+        usual_technicians: orderRoute.technicians.map(tech => tech.id),
     });
 
     const onAreaChange = (area) => {
-        setData('area_coordinates', area[0]); // Update form data with the new polygon coordinates
+        const formattedArea = area[0].map(coord => ({ lat: coord.lat, lng: coord.lng })); // Convert to {lat, lng}
+        setData('area_coordinates', formattedArea); // Update form data with the new polygon coordinates
     };
 
     const handleColorChange = (newValue) => {
         setColor(newValue);
-        setData('area_color', newValue)
+        setData('area_color', newValue);
     };
 
     const handleDriversChange = (event, newValue) => {
@@ -65,7 +74,7 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
         setData('usual_technicians', newValue.map(tech => tech.value)); // Update form data with selected technician IDs
     };
 
-    console.log('data', data)
+    console.log('data', data);
 
     const handleSubmit = (e) => {
         e.preventDefault();
