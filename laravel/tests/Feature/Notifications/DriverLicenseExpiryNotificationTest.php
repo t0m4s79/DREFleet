@@ -5,11 +5,12 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Driver;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Notifications\OrderRequiresApprovalNotification;
+use App\Notifications\DriverLicenseExpiryNotification;
 
-class OrderRequiresApprovalNotificationTest extends TestCase
+class DriverLicenseExpiryNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,17 +18,17 @@ class OrderRequiresApprovalNotificationTest extends TestCase
     {
         // Create a user and order
         $user = User::factory()->create();
-        $order = Order::factory()->create();
+        $driver = Driver::factory()->create();
 
         // Send notification
-        $notification = new OrderRequiresApprovalNotification($order);        
+        $notification = new DriverLicenseExpiryNotification($driver);        
         $user->notify($notification);
 
         $this->assertDatabaseHas('notifications', [
             'user_id' => $user->id,
-            'related_entity_id' => $order->id,
-            'related_entity_type' => Order::class,
-            'type' => 'Pedido'
+            'related_entity_id' => $driver->user_id,
+            'related_entity_type' => Driver::class,
+            'type' => 'Condutor'
         ]);
     }
 }

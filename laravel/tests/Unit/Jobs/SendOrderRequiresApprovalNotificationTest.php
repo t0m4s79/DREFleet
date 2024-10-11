@@ -14,7 +14,7 @@ class SendOrderRequiresApprovalNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_notification_sent_for_õrder_requiring_approval()
+    public function test_notification_sent_for_order_requiring_approval()
     {
         // Fake the notifications
         Notification::fake();

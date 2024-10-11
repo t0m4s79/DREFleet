@@ -3,15 +3,15 @@
 namespace App\Jobs;
 
 use App\Models\User;
-use App\Models\Order;
+use App\Models\Driver;
+use App\Notifications\DriverLicenseExpiryNotification;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Notifications\OrderRequiresApprovalNotification;
 
-class SendOrderRequiresApprovalNotification implements ShouldQueue
+class SendDriverLicenseExpiryNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -32,24 +32,21 @@ class SendOrderRequiresApprovalNotification implements ShouldQueue
         $currentDate = now();
         $oneMonthFromNow = now()->addMonth();
 
-        // Fetch orders that begin within one month and are not approved
-        $orders = Order::where('expected_begin_date', '>=', $currentDate)
-                    ->where('expected_begin_date', '<=', $oneMonthFromNow)
-                    ->where('approved_date', null)
-                    ->where('manager_id', null)
+        // Fetch drivers with license that expires within one month
+        $drivers = Driver::where('license_expiration_date', '>=', $currentDate)
+                    ->where('license_expiration_date', '<=', $oneMonthFromNow)
                     ->get();
 
-        foreach ($orders as $order) {
+        foreach ($drivers as $driver) {
             $users = User::where('user_type', 'Gestor')
                 ->orWhere('user_type', 'Administrador')
                 ->get();  // Retrieve the collection of users
 
             foreach ($users as $user) {
-                if ($order->expected_begin_date >= $currentDate && $order->expected_begin_date <= $oneMonthFromNow) {
-                    $user->notify(new OrderRequiresApprovalNotification($order));  // Notify each user
+                if ($driver->license_expiration_date >= $currentDate && $driver->license_expiration_date <= $oneMonthFromNow) {
+                    $user->notify(new DriverLicenseExpiryNotification($driver));  // Notify each user
                 }
             }
         }
     }
-
 }
