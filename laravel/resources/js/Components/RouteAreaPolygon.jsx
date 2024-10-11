@@ -30,7 +30,7 @@ export default function RouteAreaPolygon( {onAreaChange, color} ) {
             drawCircle: false, // Disable circle tool
             drawRectangle: false, // Disable rectangle tool
             editMode: true, // Enable editing mode for shapes
-            dragMode: false, // Disable drag mode for markers/shapes
+            dragMode: true, // Disable drag mode for markers/shapes
             cutPolygon: false, // Disable cutting polygons
             removalMode: true, // Enable delete mode for shapes
         });

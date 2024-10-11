@@ -5,6 +5,7 @@ import L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
+{/*TODO: STORE THE POLYGON COORDINATES CORRECTLY AFTER DRAGGING THE VERTICES*/}
 function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
     const map = useMap();
     const polygonLayerRef = useRef(null);
@@ -19,7 +20,7 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             drawCircle: false,
             drawRectangle: false,
             editMode: true,
-            dragMode: false,
+            dragMode: true,
             cutPolygon: false,
             removalMode: true,
         });
@@ -33,7 +34,6 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             }
         };
 
-        // Enable vertex deletion for new polygons
         map.on('pm:create', (e) => {
             removeExistingPolygon(); // Ensure only one polygon exists
 
