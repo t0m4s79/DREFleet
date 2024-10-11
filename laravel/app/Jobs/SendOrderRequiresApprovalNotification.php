@@ -32,7 +32,7 @@ class SendOrderRequiresApprovalNotification implements ShouldQueue
         $currentDate = now();
         $oneMonthFromNow = now()->addMonth();
 
-        // Fetch vehicles with documents that expire within one month
+        // Fetch orders that begin within one month and are not approved
         $orders = Order::where('expected_begin_date', '>=', $currentDate)
                     ->where('expected_begin_date', '<=', $oneMonthFromNow)
                     ->where('approved_date', null)

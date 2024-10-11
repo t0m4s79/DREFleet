@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\SendAccesssoryExpiryNotification;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -15,3 +16,5 @@ Artisan::command('inspire', function () {
 Schedule::job(new SendDocumentExpiryNotification)->weekly();
 
 Schedule::job(new SendOrderRequiresApprovalNotification)->weekly();
+
+Schedule::job(new SendAccesssoryExpiryNotification)->weekly();

@@ -15,7 +15,7 @@ class OrderRequiresApprovalNotificationTest extends TestCase
 
     public function test_toArray_stores_notification_correctly()
     {
-        // Create a user, vehicle, and document
+        // Create a user and an order
         $user = User::factory()->create();
         $order = Order::factory()->create();
 
