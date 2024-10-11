@@ -10,7 +10,7 @@ const boundsSouthWestCorner = [32.269181, -17.735033];
 const boundsNorthEastCorner = [33.350247, -15.861279];
 
 function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointData }) {
-
+    //console.log(waypoints)
     const map = useMap();
 
     useEffect(() => {
@@ -30,11 +30,6 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
-
-            showAlternatives: true,
-            altLineOptions: {
-                styles: [{ color: 'red' }, { color: 'blue' }, { color: 'grey' }]
-            },
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
 
@@ -45,7 +40,7 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
             const instructions = e.routes[0].instructions;
 
             const metrics = calculateTravelMetrics(instructions, waypoints);
-            //console.log('metrics', metrics)
+            console.log('metrics', metrics)
             // Pass the trajectory waypoints back to the form through the callback
             onTrajectoryChange(trajectory);
             updateWaypointData(metrics);
