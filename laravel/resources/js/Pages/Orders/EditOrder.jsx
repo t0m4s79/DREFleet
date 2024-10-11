@@ -3,11 +3,37 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 import { TextField, Button, Grid, Autocomplete } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
+import { OrderContext, OrderProvider } from './OrderContext';
 
-export default function EditOrder({auth, order, drivers, vehicles, technicians,  kids, otherPlaces, orderRoutes}) {
+export default function EditOrder({auth, order, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
+    return (
+        <OrderProvider>
+            <InnerEditOrder
+                order={order}
+                auth={auth}
+                drivers={drivers}
+                vehicles={vehicles}
+                technicians={technicians}
+                kids={kids}
+                otherPlaces={otherPlaces}
+                orderRoutes={orderRoutes}
+            />
+        </OrderProvider>
+    );
+}
+
+function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, otherPlaces, orderRoutes}) {
     //console.log('editOrder', order);
+    const { 
+        waypoints,
+        places,
+        trajectory,
+        updateWaypoints,
+        updatePlaces,
+        updateTrajectory,
+    } = useContext(OrderContext);
 
     const orderStops = order.order_stops.map((stop)=> {
         return { 
@@ -17,17 +43,18 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
             lng: stop.place.coordinates.coordinates[0],
         }
     })
+    
+    useEffect(() => {
+        // Update OrderContext with initial waypoints and places from order
+        console.log('Waypoints before update', waypoints)
+        updateWaypoints(orderStops);
+        console.log('waypoints after update', waypoints)
+        updatePlaces(orderStops);
+    }, []);
 
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
-    const [trajectory, setTrajectory] = useState([]);
-    const [selectedKid, setSelectedKid] = useState({});
-    const [selectedKidPlace, setSelectedKidPlace] = useState({});
-    const [selectedOtherPlace, setSelectedOtherPlace] = useState({});
-    const [waypoints, setWaypoints] = useState(orderStops);
-    const [places, setPlaces] = useState(orderStops);
     const [isPlacesModified, setIsPlacesModified] = useState(false);
-
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -62,34 +89,9 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
         technician_id: order.technician_id,
         trajectory: order.trajectory,
         order_route_id: order.order_route_id,
-        places: orderStops,
+        places: places,
         places_changed: isPlacesModified,
     })
-
-    // Store a reference to the original places array
-    const originalPlaces = useRef([...data.places]);
-
-    // Function to check if two arrays are equal (ignoring order or changes)
-    const arraysAreEqual = (arr1, arr2) => {
-        if (arr1.length !== arr2.length) return false;
-        for (let i = 0; i < arr1.length; i++) {
-            if (arr1[i].id !== arr2[i].id) {
-                return false;
-            }
-        }
-        return true;
-    };
-
-    // useEffect to detect changes in places array
-    useEffect(() => {
-        if (!arraysAreEqual(originalPlaces.current, places)) {
-            setIsPlacesModified(true); // Set flag to true if array has changed
-            setData('places_changed', true)
-        } else {
-            setIsPlacesModified(false); // Reset flag if the arrays match
-            setData('places_changed', false)
-        }
-    }, [places]);
 
     const handleRouteChange =(route) => {
         setSelectedRouteID(route)
@@ -101,27 +103,6 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
         setData('order_type', type)
     }
 
-    const updateWaypoints = (newWaypoints, newPlaces) => {
-        setWaypoints(newWaypoints);
-        setPlaces(newPlaces);
-        setData('places', newPlaces);
-    };
-
-    // const updateWaypointData = (waypointData) => {
-    //     console.log('New WaypointData', waypointData)
-    //     const placesWithMetricData = places.map((place,index)=> {
-    //         const newPlaceData = {place, distance: waypointData[index].distance, time: waypointData[index].time};
-    //         return newPlaceData
-    //     })
-    //     setPlaces(placesWithMetricData)
-    // }
-
-    const updateTrajectory= (newTraj) => {
-        //console.log(newTraj)
-        setTrajectory(newTraj)
-        setData('trajectory', JSON.stringify(newTraj))
-    }
-
     const updateSummary = ( summary ) => {
         //console.log('summary',summary);
         setData({
@@ -130,6 +111,19 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
             distance: Number(summary.totalDistance),
         });
     }
+    
+    useEffect(() => {
+        if (places && places.length > 0) {
+            setData('places', places);
+            console.log('Places updated in form:', places);
+        }
+    }, [places]);
+    useEffect(() => {
+        if (trajectory && trajectory.length > 0) {
+            setData('trajectory', JSON.stringify(trajectory));
+            console.log('Trajectory updated in form:', trajectory);
+        }
+    }, [trajectory]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -189,12 +183,8 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                                                 label: `#${place.id} - ${place.address}`,
                                                 lat: place.coordinates.coordinates[1],
                                                 lng: place.coordinates.coordinates[0],
-                                            }))} 
-                                            onUpdateWaypoints={updateWaypoints} 
-                                            waypointsList={waypoints}
-                                            updateTrajectory={updateTrajectory}
+                                            }))}      
                                             updateSummary={updateSummary} 
-                                            //updateWaypointData={updateWaypointData}
                                         />
                                     </Grid>
 

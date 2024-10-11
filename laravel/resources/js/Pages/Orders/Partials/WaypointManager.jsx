@@ -1,51 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ExperimentalMap from '@/Components/ExperimentalMap';
+import { OrderContext } from '../OrderContext';
 
-export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoints, waypointsList, updateTrajectory, updateSummary, updateWaypointData }) {
-    const [waypoints, setWaypoints] = useState([]);
-    const [places, setPlaces] = useState([]);
+export default function WaypointManager({ kids, otherPlacesList, updateSummary }) {
+    const { 
+        waypoints,
+        places,
+        updateWaypoints,
+        updatePlaces,
+        updateTrajectory,
+    } = useContext(OrderContext);
+
     const [selectedKid, setSelectedKid] = useState(null);
     const [selectedKidPlace, setSelectedKidPlace] = useState(null);
     const [selectedOtherPlace, setSelectedOtherPlace] = useState(null);
 
+    console.log('waypoint manager receives waypoints', waypoints)
+    console.log('waypoint manager receives places', places)
+
     useEffect(() => {
-        if (waypointsList?.length > 0) {
-            setWaypoints(waypointsList);
-            setPlaces(waypointsList.map((waypoint, index) => ({
-                place_id: waypoint.id,
-                kid_id: waypoint.kid?.id || null,
-                stop_number: index + 1,
-                // Initialize metric data if necessary
-                distance: 0, // or whatever default makes sense
-                time: 0,
-            })));
+        if (waypoints.length > 0) {
+            const newPlaces = waypoints.map((waypoint, index) => {
+                const existingPlace = places.find(p => p.place_id === waypoint.id) || {};
+                return {
+                    place_id: waypoint.id,
+                    kid_id: waypoint.kid?.id || null,
+                    stop_number: index + 1,
+                    distance: existingPlace.distance || 0, // Keep existing metric data if available
+                    time: existingPlace.time || 0,         // Keep existing metric data if available
+                };
+            });
+            updatePlaces(newPlaces);
+            updateTrajectory(); // Call this to update the trajectory
         }
-    }, [waypointsList]);
-
-    const updateWaypointsAndPlaces = (newWaypoints, newPlaces) => {
-        setWaypoints(newWaypoints);
-        setPlaces(newPlaces);
-        onUpdateWaypoints(newWaypoints, newPlaces);
-    };
-
+    }, [waypoints, updateTrajectory]);
+    
     const addWaypoint = (waypoint, placeId) => {
         const newWaypoints = [...waypoints, waypoint];
-        const newPlaces = [...places, { place_id: placeId, stop_number: places.length + 1, distance: 0, duration: 0 }];
-        updateWaypointsAndPlaces(newWaypoints, newPlaces);
+        updateWaypoints(newWaypoints);
+        updatePlaces([...places, { place_id: placeId, stop_number: places.length + 1, distance: 0, time: 0 }]);
     };
 
     const updateMetricData = (newMetrics) => {
+        console.log('metric data being updated')
         const updatedPlaces = places.map((place, index) => ({
             ...place,
-            distance: newMetrics[index]?.distance || place.distance, // Update distance
-            time: newMetrics[index]?.time || place.time, // Update duration
+            distance: newMetrics[index]?.distance || place.distance,
+            time: newMetrics[index]?.time || place.time,
         }));
-        setPlaces(updatedPlaces);
-        onUpdateWaypoints(waypoints, updatedPlaces); // Ensure the updated places are sent back
+        updatePlaces([...updatedPlaces]);
     };
-
 
     const addKid = () => {
         if (selectedKid && selectedKidPlace) {
@@ -75,7 +81,10 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
 
     const removeLastWaypoint = () => {
         if (waypoints.length) {
-            updateWaypointsAndPlaces(waypoints.slice(0, -1), places.slice(0, -1));
+            const newWaypoints = waypoints.slice(0, -1);
+            const newPlaces = places.slice(0, -1);
+            updateWaypoints(newWaypoints);
+            updatePlaces(newPlaces);
         }
     };
 
@@ -94,7 +103,8 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
             stop_number: index + 1,
         }));
 
-        updateWaypointsAndPlaces(reorderedWaypoints, updatedPlacesWithStopNumber);
+        updateWaypoints(reorderedWaypoints);
+        updatePlaces(updatedPlacesWithStopNumber);
     };
 
     return (
@@ -111,7 +121,7 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
                                     ref={provided.innerRef}
                                 >
                                     {waypoints.map((waypoint, index) => (
-                                        <Draggable key={index} draggableId={index.toString()} index={index}>
+                                        <Draggable key={waypoint.id} draggableId={waypoint.id.toString()} index={index}>
                                             {(provided) => (
                                                 <ListItem
                                                     ref={provided.innerRef}
@@ -174,7 +184,7 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
             <Grid item xs={12} md={6}>
                 <ExperimentalMap 
                     waypoints={waypoints} 
-                    onTrajectoryChange={updateTrajectory} 
+                    onTrajectoryChange={updateTrajectory}
                     updateSummary={updateSummary} 
                     updateWaypointData={updateMetricData}
                 />
