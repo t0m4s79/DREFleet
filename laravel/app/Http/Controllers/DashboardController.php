@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class DashboardController extends Controller
         $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
         $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
+        $orders = Order::where('expected_end_date', '>', now())->get();
 
         return Inertia::render('Dashboard', [
             // 'flash' => [
@@ -22,6 +24,7 @@ class DashboardController extends Controller
             'drivers' => $drivers,
             'technicians' => $technicians,
             'vehicles' => $vehicles,
+            'orders' => $orders,
         ]);
     }
 }

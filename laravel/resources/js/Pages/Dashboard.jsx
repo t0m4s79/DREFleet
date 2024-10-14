@@ -3,11 +3,9 @@ import { Head } from '@inertiajs/react';
 import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[] }) {
+export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[], orders=[] }) {
     
-    console.log('drivers', drivers);
-    console.log('technicians', technicians);
-    console.log('vehicles', vehicles);
+    console.log('orders', orders);
 
     // const availableDrivers = drivers.map((driver)=> {   
     //     if(driver.status == "Disponível") {
@@ -209,7 +207,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                             </div>
                                         ))
                                     ) : (
-                                        <div>Nenhum veículo em Manutenção.</div>
+                                        <div>Nenhum veículo em manutenção.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
@@ -231,11 +229,17 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 Pedidos em Curso
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date()).length > 0 ? (
+                                        orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date() || order.status === 'Em curso').map(order => (
+                                            <div key={`order-${order.id}`}>
+                                                <a href={route('orders.edit', order)}>
+                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhuma pedido em curso.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -248,11 +252,17 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 Pedidos Agendados
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {orders.filter(order => new Date(order.expected_begin_date) > new Date()).length > 0 ? (
+                                        orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').map(order => (
+                                            <div key={`order-${order.id}`}>
+                                                <a href={route('orders.edit', order)}>
+                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhuma pedido agendado.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
 
@@ -265,11 +275,17 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 Pedidos por Aprovar
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <ul className="px-4" style={{listStyleType: 'disc'}}>
-                                    <li>Coffee</li>
-                                    <li>Tea</li>
-                                    <li>Milk</li>
-                                </ul>
+                                    {orders.filter(order => order.status === 'Por aprovar').length > 0 ? (
+                                        orders.filter(order => order.status === 'Por aprovar').map(order => (
+                                            <div>
+                                                <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhuma pedido por aprovar.</div>
+                                    )}
                                 </AccordionDetails>
                             </Accordion>
                         </div>
