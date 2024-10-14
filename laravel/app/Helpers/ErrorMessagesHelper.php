@@ -83,6 +83,7 @@ class ErrorMessagesHelper
 
             // Orders
             'technician_id.required_if' => 'Técnicos são obrigatórios no transporte de crianças',
+            'expected_end_date.after' => 'Data de fim de ser depois da data de início', 
 
             // Password
             'current_password.current_password' => 'A password introduzida está incorreta',

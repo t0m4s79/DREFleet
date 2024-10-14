@@ -71,7 +71,7 @@ class TechnicianTest extends TestCase
         $this->assertDatabaseHas('users', $technicianData);
     }
 
-    public function test_create_technician_fails_on_non_none_user_type(): void
+    public function test_create_technician_fails_on_user_type_is_not_none(): void
     {
         $user = User::factory()->create([
             'user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador']),

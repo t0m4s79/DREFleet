@@ -7,7 +7,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Driver;
 use Illuminate\Http\Request;
-use InvalidArgumentDException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ErrorMessagesHelper;
@@ -57,7 +56,7 @@ class DriverController extends Controller
             'license_number' => [
                 'required', 
                 'regex:/^[A-Z]{1,2}-\d{6} \d$/',
-                new DriverLicenseNumberValidation(),
+                new DriverLicenseNumberValidation($request->input('user_id')),
             ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
@@ -72,13 +71,6 @@ class DriverController extends Controller
 
         DB::beginTransaction();
         try {
-            $user = User::findOrFail($incomingFields['user_id']);
-
-            //TODO: SHOULD BE FRONT-END MESSAGE
-            if (DB::table('drivers')->where('license_number', $incomingFields['license_number'])->exists()) {
-                throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
-            }
-
             $driver = Driver::create([
                 'user_id' => $incomingFields['user_id'],
                 'license_number' => $incomingFields['license_number'],
@@ -87,6 +79,7 @@ class DriverController extends Controller
                 'license_expiration_date' => $incomingFields['license_expiration_date']
             ]);
 
+            $user = User::findOrFail($incomingFields['user_id']);
             $user->update([
                 'user_type' => "Condutor",
             ]);
@@ -123,7 +116,7 @@ class DriverController extends Controller
             'license_number' => [
                 'required', 
                 'regex:/^[A-Z]{1,2}-\d{6} \d$/',
-                new DriverLicenseNumberValidation(),
+                new DriverLicenseNumberValidation($request->input('user_id')),
             ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
@@ -144,11 +137,6 @@ class DriverController extends Controller
         
         DB::beginTransaction();
         try {
-            //TODO: SHOULD BE FRONT-END MESSAGE
-            if (DB::table('drivers')->where('license_number', $incomingFields['license_number'])->whereNot('user_id', $driver->user_id)->exists()) {
-                throw new \InvalidArgumentException("Este número de carta já está associado a outro condutor");
-            }
-
             $driver->update([
                 'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
