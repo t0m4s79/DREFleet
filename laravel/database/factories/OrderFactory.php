@@ -7,10 +7,11 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
-use App\Models\OrderRoute;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
+use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -44,8 +45,9 @@ class OrderFactory extends Factory
 
         $route = $hasRoute? OrderRouteFactory::new()->create() : null;
 
+        $orderTime = rand(2000,86400);
         $beginDate = fake()->dateTimeBetween(now()->subYear(), now()->addYear());
-        $endDate = (clone $beginDate)->modify('+1 day');
+        $endDate = Carbon::parse($beginDate)->addSeconds($orderTime);
 
         // Future Order
         if ($beginDate > now()) {
@@ -63,7 +65,7 @@ class OrderFactory extends Factory
         return [
             'expected_begin_date' => $beginDate,
             'expected_end_date' => $endDate,
-            'expected_time' => 86400,           //seconds in a day
+            'expected_time' => $orderTime,
             'distance' => rand(1000,20000),
             'status' => $status,
             'trajectory' => json_encode($trajectory),
@@ -116,9 +118,11 @@ class OrderFactory extends Factory
         return $this->afterCreating(function (Order $order) {
             $trajectory = json_decode($order->trajectory, true);
             $totalPoints = count($trajectory);
-            $stopAverageTime = (int) (86400 / $totalPoints);
+            $stopAverageTime = (int) ($order->expected_time / $totalPoints);
             $stopAverageDistance = (int) ($order->distance / $totalPoints);
 
+            $stopExpectedArrivalDate = Carbon::parse($order->expected_begin_date);
+            
             $stopNumber = 0;
             // Create stops for each point
             foreach ($trajectory as $point) {
@@ -139,7 +143,10 @@ class OrderFactory extends Factory
                     'stop_number' => $stopNumber,
                     'time_from_previous_stop' => $stopAverageTime,
                     'distance_from_previous_stop' => $stopAverageDistance,
+                    'expected_arrival_date' => $stopExpectedArrivalDate,
                 ]);
+
+                $stopExpectedArrivalDate = $stopExpectedArrivalDate->addSeconds($stopAverageTime);
 
                 if (rand(0, 1) === 1) {
                     $place->update([

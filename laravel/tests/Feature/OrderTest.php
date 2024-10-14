@@ -205,8 +205,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -275,8 +275,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -325,8 +325,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -374,8 +374,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
 
         $orderData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -417,8 +417,8 @@ class OrderTest extends TestCase
      
         //1 -> heavy vehicle with no heavy license
         $orderData_1 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -451,8 +451,8 @@ class OrderTest extends TestCase
 
         //2 -> heavy Passangers vehicle with heavy Goods license     
         $orderData_2 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -493,8 +493,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $orderData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -532,12 +532,13 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
     
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
+            'order_route_id' => OrderRoute::factory()->create()->id,
 
             'places_changed' => false,
             'places' => [],
@@ -588,8 +589,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
     
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -666,8 +667,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -720,8 +721,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -774,8 +775,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -817,8 +818,8 @@ class OrderTest extends TestCase
     
         //1 -> heavy vehicle with no heavy license
         $updatedData_1 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -852,8 +853,8 @@ class OrderTest extends TestCase
 
         //2 -> heavy Passangers vehicle with heavy Goods license     
         $updatedData_2 = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -889,8 +890,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
     
         $updatedData = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),
@@ -1063,8 +1064,8 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
 
         $incomingFields = [
-            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
-            'expected_end_date' => fake()->dateTimeBetween('2024-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
+            'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
+            'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
             'distance' => rand(1,200),
             'trajectory' => json_encode($trajectory),

@@ -22,6 +22,7 @@ use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
 use App\Rules\OrderVehicleCapacityValidation;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -83,8 +84,6 @@ class OrderController extends Controller
         ]);
     }
 
-    //TODO: CAN DRIVER/VEHICLE BE NULL??
-    //TODO: SNACKBAR
     public function createOrder(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -96,7 +95,7 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
-            'expected_end_date' => ['required', 'date'],
+            'expected_end_date' => ['required', 'date', 'after:expected_begin_date'],
             'expected_time' => ['required', 'min:0'], //in seconds
             'distance' => ['required', 'min:0'],      //in meters
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
@@ -148,15 +147,19 @@ class OrderController extends Controller
                 'status' => 'Por aprovar',
             ]);
 
-            //TODO: EXPECTED ARRIVAL DATE??
+            // Calculate the expected arrival of each stop
+            $expectedArrivalDate = Carbon::parse($incomingFields['expected_begin_date']);
+
             // Create the order stops
             foreach ($incomingFields['places'] as $place) {
+                $expectedArrivalDate = $expectedArrivalDate->addSeconds($place['time']);
                 $orderStopRequest = new Request([
                     'order_id' => $order->id,
                     'stop_number' => $place['stop_number'],
                     'place_id' => $place['place_id'],
                     'time_from_previous_stop' => $place['time'],
                     'distance_from_previous_stop' => $place['distance'],
+                    'expected_arrival_date' => $expectedArrivalDate,
                     'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                 ]);
 
@@ -215,7 +218,7 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'expected_begin_date' => ['required', 'date'],
-            'expected_end_date' => ['required', 'date'],
+            'expected_end_date' => ['required', 'date', 'after:expected_begin_date'],
             'expected_time' => ['required', 'min:0'],
             'distance' => ['required', 'min:0'],
             'trajectory' => ['required', 'json'],
@@ -237,12 +240,12 @@ class OrderController extends Controller
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
-            'places' => ['required', 'array'], // Ensure 'places' is an array
+            'places' => ['required_if:places_changed,true', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
-            'places.*.stop_number' => ['required', 'integer', 'min:0'],
-            'places.*.time' => ['required', 'min:0'],                 //time from previous stop
-            'places.*.distance' => ['required', 'min:0'],             //distance from previous stop
-            'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
+            'places.*.stop_number' => ['required_if:places_changed,true', 'integer', 'min:0'],
+            'places.*.time' => ['required_if:places_changed,true', 'min:0'],                 //time from previous stop
+            'places.*.distance' => ['required_if:places_changed,true', 'min:0'],             //distance from previous stop
+            'places.*.place_id' => ['required_if:places_changed,true', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
                 'exists:kids,id',
@@ -268,20 +271,24 @@ class OrderController extends Controller
                 'status' => 'Por aprovar'
             ]);
 
-            //TODO: EXPECTED ARRIVAL DATE
             //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
             //TODO:               -> RIGHT NOW IT DELETES EVERY STOP IN THE ORDER AND THEN CREATES EVERY STOP AGAIN(INCLUDING ONES THAT ALREADY EXISTED)
             if($incomingFields['places_changed']) {
-                
                 OrderStop::where('order_id', $order->id)->delete();
 
+                // Calculate the expected arrival of each stop
+                $expectedArrivalDate = Carbon::parse($incomingFields['expected_begin_date']);
+                
+                // Create the order stops
                 foreach ($incomingFields['places'] as $place) {
+                    $expectedArrivalDate = $expectedArrivalDate->addSeconds($place['time']);
                     $orderStopRequest = new Request([
                         'order_id' => $order->id,
                         'stop_number' => $place['place_id'],
                         'place_id' => $place['place_id'],
                         'time_from_previous_stop' => $place['time'],
                         'distance_from_previous_stop' => $place['distance'],
+                        'expected_arrival_date' => $expectedArrivalDate,
                         'kid_id' => $place['kid_id'] ?? null, // Use null if kid_id is not set
                     ]);
 

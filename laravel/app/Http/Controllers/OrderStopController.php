@@ -15,7 +15,7 @@ class OrderStopController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'expected_arrival_date' => ['nullable', 'date'],
+            'expected_arrival_date' => ['required', 'date'],
             'stop_number' => ['required', 'integer', 'min:0'],
             'order_id' => ['required','exists:orders,id'],
             'place_id' => ['required','exists:places,id'],
