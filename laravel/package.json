@@ -29,8 +29,8 @@
         "leaflet": "^1.9.4",
         "leaflet-control-geocoder": "^2.4.0",
         "leaflet-routing-machine": "^3.2.12",
-        "mui-color-input": "^4.0.1",
         "react-beautiful-dnd": "^13.1.1",
+        "react-colorful": "^5.6.1",
         "react-leaflet": "^4.2.1"
     }
 }

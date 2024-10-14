@@ -60,7 +60,7 @@ class VehicleFactory extends Factory
                 'name' => 'Documento Único',
             ]);
 
-            for ($i = 0; $i < rand(0, 3); $i++) {
+            for ($i = 0; $i < rand(1, 3); $i++) {
                 VehicleAccessory::factory()->create([
                     'vehicle_id' => $vehicle->id,
                 ]);

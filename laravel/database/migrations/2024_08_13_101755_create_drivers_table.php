@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("license_number")->unique();
             $table->boolean('heavy_license');
             $table->enum('heavy_license_type',['Mercadorias', 'Passageiros'])->nullable();
+            $table->date('license_expiration_date');
             $table->timestamps();
 
             $table->index('license_number');

@@ -23,11 +23,6 @@ class OrderRouteController extends Controller
     {
         $orderRoutes = OrderRoute::all();
 
-        $orderRoutes->each(function ($route) {
-            $route->created_at = \Carbon\Carbon::parse($route->created_at)->format('d-m-Y H:i');
-            $route->updated_at = \Carbon\Carbon::parse($route->updated_at)->format('d-m-Y H:i');
-        });
-
         return Inertia::render('OrderRoutes/AllOrderRoutes', [
             'flash' => [
                 'message' => session('message'),
@@ -115,7 +110,7 @@ class OrderRouteController extends Controller
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
-        $orderRoute->load(['drivers', 'technicians']);
+        $orderRoute->load(['drivers', 'technicians']);  // the database stores coordinates as lng lat, so need to reverse it to use as lat lng
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
 
@@ -129,7 +124,6 @@ class OrderRouteController extends Controller
     public function editOrderRoute(OrderRoute $orderRoute, Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
-
         $incomingFields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'area_coordinates' => ['required', 'array'],

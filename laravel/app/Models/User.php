@@ -52,6 +52,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
     public function driver(): HasOne
     {
         return $this->hasOne(Driver::class);

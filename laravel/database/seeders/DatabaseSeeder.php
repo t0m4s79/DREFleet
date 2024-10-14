@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         });
 
         $users->each(function ($user) {
-            Notification::factory(3)->create([
+            Notification::factory(rand(1,3))->create([
                 'user_id' => $user->id,
             ]);
         });

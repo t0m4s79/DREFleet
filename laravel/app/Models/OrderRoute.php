@@ -21,6 +21,17 @@ class OrderRoute extends Model
         'area' => Polygon::class,
     ];
 
+    
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
     public function drivers(): BelongsToMany
     {
         return $this->belongsToMany(Driver::class)->withTimestamps();

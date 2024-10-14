@@ -28,6 +28,7 @@ class DriverFactory extends Factory
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
+            'license_expiration_date' => fake()->date(now()->addYears(rand(1,5))),
         ];    
     }
 

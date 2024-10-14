@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\VehicleDocumentController;
+use App\Http\Controllers\VehicleAccessoryController;
+use App\Jobs\SendAccesssoryExpiryNotification;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Vehicle;
-use App\Models\VehicleDocument;
-use App\Jobs\SendDocumentExpiryNotification;
+use App\Models\VehicleAccessory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SendDocumentExpiryNotificationTest extends TestCase
+class SendAccessoryExpiryNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,26 +24,25 @@ class SendDocumentExpiryNotificationTest extends TestCase
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
+        
+        $controller = new VehicleAccessoryController;
 
-        // Delete documents created on vehicle factory
-        $controller = new VehicleDocumentController();
-
-        foreach ($vehicle->vehicleDocuments as $document) {
-            $controller->deleteVehicleDocument($document->id);
+        foreach ($vehicle->vehicleAccessories as $accessory) {
+            $controller->deleteVehicleAccessory($accessory->id);
         }
-
-        VehicleDocument::factory()->create([
+        
+        VehicleAccessory::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addWeek(), // within the next month
         ]);
 
         // Dispatch the job
-        (new SendDocumentExpiryNotification())->handle();
+        (new SendAccesssoryExpiryNotification())->handle();
 
         // Assert that the user was notified
         Notification::assertSentTo(
             [$user],
-            \App\Notifications\DocumentExpiryNotification::class
+            \App\Notifications\AccessoryExpiryNotification::class
         );
     }
 
@@ -56,20 +55,19 @@ class SendDocumentExpiryNotificationTest extends TestCase
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
 
-        // Delete documents created on vehicle factory
-        $controller = new VehicleDocumentController();
+        $controller = new VehicleAccessoryController;
 
-        foreach ($vehicle->vehicleDocuments as $document) {
-            $controller->deleteVehicleDocument($document->id);
+        foreach ($vehicle->vehicleAccessories as $accessory) {
+            $controller->deleteVehicleAccessory($accessory->id);
         }
 
-        VehicleDocument::factory()->create([
+        VehicleAccessory::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addMonths(2), // beyond one month
         ]);
 
         // Dispatch the job
-        (new SendDocumentExpiryNotification())->handle();
+        (new SendAccesssoryExpiryNotification())->handle();
 
         // Assert no notifications were sent
         Notification::assertNothingSent();

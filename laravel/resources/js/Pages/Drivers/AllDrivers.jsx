@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function AllDrivers( {auth, drivers, flash} ) {
-    
+    console.log(drivers);
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -21,7 +21,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
 
     //Deconstruct data to send to table component
     let driverInfo = drivers.map((driver) => (
-        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license, license_number: driver.license_number, heavy_license_type: driver.heavy_license_type , status: driver.status }
+        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license, license_number: driver.license_number, heavy_license_type: driver.heavy_license_type, license_expiration_date: driver.license_expiration_date , status: driver.status }
     ))
 
     const driverColumnLabels = {
@@ -32,7 +32,8 @@ export default function AllDrivers( {auth, drivers, flash} ) {
         license_number: 'Nº da Carta de Condução',
         heavy_license: 'Carta de Pesados',
         heavy_license_type: 'Tipo de Carta de Pesados',
-        status: 'Estado'
+        license_expiration_date: 'Data de Validade da Carta',
+        status: 'Estado',
     };
     
     return (

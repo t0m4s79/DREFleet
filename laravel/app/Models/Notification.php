@@ -21,6 +21,16 @@ class Notification extends DatabaseNotification
         'is_read',
     ];
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

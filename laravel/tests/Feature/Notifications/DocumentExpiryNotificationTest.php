@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\DocumentExpiryNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+//TODO: MAIL TESTS AFTER IMPLEMENTING THEM
 class DocumentExpiryNotificationTest extends TestCase
 {
     use RefreshDatabase;
@@ -40,7 +41,7 @@ class DocumentExpiryNotificationTest extends TestCase
 
     public function test_toArray_stores_notification_correctly()
     {
-        // Create a user, vehicle, and document
+        // Create a user, vehicle and document
         $user = User::factory()->create();
         $vehicle = Vehicle::factory()->create();
         $document = VehicleDocument::factory()->create(['vehicle_id' => $vehicle->id]);
