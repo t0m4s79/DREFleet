@@ -44,7 +44,8 @@ class SendDriverLicenseExpiryNotification implements ShouldQueue
 
             foreach ($users as $user) {
                 if ($driver->license_expiration_date >= $currentDate && $driver->license_expiration_date <= $oneMonthFromNow) {
-                    $user->notify(new DriverLicenseExpiryNotification($driver));  // Notify each user
+                    $user->notify(new DriverLicenseExpiryNotification($driver));                            // Notify each manager
+                    User::find($driver->user_id)->notify(new DriverLicenseExpiryNotification($driver));     // Notify the driver
                 }
             }
         }

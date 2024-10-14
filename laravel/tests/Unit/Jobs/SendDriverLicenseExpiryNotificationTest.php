@@ -33,6 +33,12 @@ class SendDriverLicenseExpiryNotificationTest extends TestCase
             [$user],
             \App\Notifications\DriverLicenseExpiryNotification::class
         );
+
+        // Assert that the driver was notified
+        Notification::assertSentTo(
+            [User::find($driver->user_id)],
+            \App\Notifications\DriverLicenseExpiryNotification::class
+        );
     }
 
     public function test_notification_not_sent_for_driver_license_not_expiring()
