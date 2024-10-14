@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-// TODO: Should the documents include an image?
+// TODO: Should the documents include a file of the document itself?
+// TODO: MORE ATTRIBUTES?
 return new class extends Migration
 {
     /**

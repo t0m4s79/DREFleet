@@ -1,6 +1,6 @@
 import React from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { TextField, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Grid } from '@mui/material';
 import { Head, useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
@@ -49,7 +49,7 @@ export default function EditPlace({auth, place, kids}) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Morada #{place.id}</h2>}
         >
 
-            {/*<Head title={'Moradas'} />*/}
+            {<Head title='Editar Morada' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -94,30 +94,35 @@ export default function EditPlace({auth, place, kids}) {
                                 </RadioGroup>
                             </FormControl>
 
+                            <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth
+                                        margin="normal"
+                                        id="latitude"
+                                        name="latitude"
+                                        label="Latitude"
+                                        value={data.latitude}
+                                        onChange={handleChange}
+                                        error={Boolean(errors.latitude)}
+                                        helperText={errors.latitude}
+                                    />
+                                </Grid>
 
-                            <TextField
-                                fullWidth
-                                margin="normal"
-                                id="latitude"
-                                name="latitude"
-                                label="Latitude"
-                                value={data.latitude}
-                                onChange={handleChange}
-                                error={Boolean(errors.latitude)}
-                                helperText={errors.latitude}
-                            />
-
-                            <TextField
-                                fullWidth
-                                margin="normal"
-                                id="longitude"
-                                name="longitude"
-                                label="Longitude"
-                                value={data.longitude}
-                                onChange={handleChange}
-                                error={Boolean(errors.longitude)}
-                                helperText={errors.longitude}
-                            />
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth
+                                        margin="normal"
+                                        id="longitude"
+                                        name="longitude"
+                                        label="Longitude"
+                                        value={data.longitude}
+                                        onChange={handleChange}
+                                        error={Boolean(errors.longitude)}
+                                        helperText={errors.longitude}
+                                    />
+                                </Grid>
+                            </Grid>
 
                             <Button
                                 type="submit"

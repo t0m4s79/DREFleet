@@ -36,6 +36,8 @@ export default function AllOrders({auth, orders, flash}) {
             trajectory: order.trajectory,
             approved_by: order.manager_id,
             approved_date: order.approved_date,
+            created_at: order.created_at,
+            updated_at: order.updated_at,
         }
     })
 
@@ -49,8 +51,10 @@ export default function AllOrders({auth, orders, flash}) {
         route: 'Rota',
         number_of_stops: 'Número de Pontos',
         trajectory: 'Trajeto',
-        approved_by: 'Approvado por',
+        approved_by: 'Aprovado por',
         approved_date: 'Data de aprovação',
+        created_at: 'Data de criação',
+        updated_at: 'Data da última atualização',
     }
 
     return (

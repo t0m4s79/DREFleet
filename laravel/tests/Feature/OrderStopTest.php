@@ -145,7 +145,6 @@ class OrderStopTest extends TestCase
         $this->assertDatabaseMissing('order_stops', [
             'id' => $orderStop->id,
         ]);
-
     }
 
     public function test_order_stop_reached(): void
@@ -162,7 +161,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orderStops/stopReached/{$orderStop->id}", $updatedData);
+            ->patch("/orderStops/stopReached/{$orderStop->id}", $updatedData);
 
         $response
             ->assertSessionHasNoErrors();

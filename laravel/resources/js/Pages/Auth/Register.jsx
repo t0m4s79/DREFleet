@@ -23,7 +23,7 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Registo" />
 
             <form onSubmit={submit} noValidate>
                 <div>

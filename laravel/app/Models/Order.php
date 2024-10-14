@@ -34,6 +34,16 @@ class Order extends Model
         'end_coordinates' => Point::class,
         'begin_coordinates' => Point::class,
     ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
     
     public function orderStops(): HasMany
     {
@@ -58,5 +68,11 @@ class Order extends Model
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class, 'driver_id', 'user_id');
+    }
+
+    // Define inverse polymorphic relationship
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
     }
 }

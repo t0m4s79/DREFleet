@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';import { useForm } from '@inertiajs/react';
+import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Head, useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
 export default function EditKid({auth, kid, availablePlaces}) {
@@ -52,7 +53,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Criança #{kid.id}</h2>}
         >
 
-            {/*<Head title={'Condutor'} />*/}
+            {<Head title='Editar Criança' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

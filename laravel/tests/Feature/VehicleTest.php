@@ -6,9 +6,10 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Vehicle;
-use App\Models\VehicleAccessory;
-use App\Models\VehicleDocument;
 use Illuminate\Support\Arr;
+use App\Models\Notification;
+use App\Models\VehicleDocument;
+use App\Models\VehicleAccessory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -49,10 +50,7 @@ class VehicleTest extends TestCase
         $documents = VehicleDocument::factory()->count(3)->create([
             'vehicle_id' => $vehicle->id,
         ]);
-    
-        //Greater or equal because the vehicle factory already creates documents
-        $this->assertGreaterThanOrEqual(3, $vehicle->vehicleDocuments->count());
-    
+        
         foreach ($documents as $document) {
             $this->assertTrue($vehicle->vehicleDocuments->contains($document));
         }
@@ -66,12 +64,31 @@ class VehicleTest extends TestCase
             'vehicle_id' => $vehicle->id,
         ]);
 
-        //Greater or equal because the vehicle factory already creates accessories
-        $this->assertGreaterThanOrEqual(3, $vehicle->vehicleAccessories->count());
-
         foreach ($accessories as $accessory) {
             $this->assertTrue($vehicle->vehicleAccessories->contains($accessory));
         }
+    }
+
+    public function test_notifications_related_to_other_user()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $vehicle = Vehicle::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => Vehicle::class,
+            'related_entity_id' => $vehicle->id,
+            'type' => 'Veículo',
+            'title' => 'Vehicle Notification',
+            'message' => 'You have a notification about the vehicle: ' . $vehicle->id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $vehicle->notifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
     }
 
     public function test_vehicles_page_is_displayed(): void

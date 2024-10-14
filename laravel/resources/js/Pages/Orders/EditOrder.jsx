@@ -169,7 +169,7 @@ console.log(data)
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedido #{order.id}</h2>}
         >
 
-            <Head title="Pedidos" />
+            <Head title="Editar Pedido" />
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

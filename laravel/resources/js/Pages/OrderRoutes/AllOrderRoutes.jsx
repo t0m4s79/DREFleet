@@ -3,11 +3,11 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
+import { Head } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 
 export default function AllOrderRoutes({auth, orderRoutes, flash}) {
-
+    console.log(orderRoutes)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -22,20 +22,24 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
 
     const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
         const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
-        return {id: orderRoute.id, name: orderRoute.name, orderArea}
+        return {id: orderRoute.id, name: orderRoute.name, orderArea, created_at: orderRoute.created_at, updated_at: orderRoute.updated_at}
     })
 
     const orderRoutesLabels = {
         id: 'ID',
         name: 'Rota',
         orderArea: 'Área',
+        created_at: 'Data de criação',
+        updated_at: 'Data da última atualizão'
     }
 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Rota</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Rotas</h2>}
         >
+
+            {<Head title='Rotas' />}
 
             <div className='py-12 px-6'>
                 <div className="bg-white overflow-hidden shadow-lg sm:rounded-lg">
@@ -43,7 +47,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
                     <Button href={route('orderRoutes.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Nova Rota
+                            Rotas
                         </a>
                     </Button>
 

@@ -34,6 +34,16 @@ class Vehicle extends Model
         'updated_at',
     ];
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
     // public function getHeavyVehicleAttribute($value)
     // {
     //     return $value ? 'Sim' : 'Não';
@@ -62,6 +72,12 @@ class Vehicle extends Model
     public function vehicleAccessories(): HasMany
     {
         return $this->hasMany(VehicleAccessory::class);
+    }
+
+    // Define inverse polymorphic relationship
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'related_entity');
     }
 }
 

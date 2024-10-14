@@ -1,8 +1,8 @@
 import OrderRoutePolygon from '@/Components/OrderRoutePolygon';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
-import { MuiColorInput } from 'mui-color-input';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import React, { useState } from 'react';
@@ -64,6 +64,9 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Rota</h2>}
         >
+
+            {<Head title='Nova Rota' />}
+
             <div className="py-12">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -81,9 +84,10 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
                                     required
                                     margin="normal"
                                 />
-                                <Box mt={2} mb={2}>
-                                    <MuiColorInput format="hex" value={color} onChange={handleColorChange} isAlphaHidden />
-                                </Box>
+                                
+                                <HexColorInput color={color} onChange={handleColorChange} placeholder="Cor da Rota"/>
+                                <HexColorPicker color={color} onChange={handleColorChange} />
+                                <br />
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}
                                 <Grid item xs={12} margin="normal">

@@ -3,6 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use App\Notifications\CustomDbChannel;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -125,6 +126,11 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'custom' => [
+            'driver' => 'custom',
+            'via' => CustomDbChannel::class,
         ],
 
     ],

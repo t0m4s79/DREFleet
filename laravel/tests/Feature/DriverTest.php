@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Driver;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
+use App\Models\Notification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -79,6 +80,28 @@ class DriverTest extends TestCase
         }
     }
 
+    public function test_notifications_related_to_driver()
+    {
+        // User who receives notification
+        $user = User::factory()->create();
+
+        // Who the notification is about
+        $driver = Driver::factory()->create();
+
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'related_entity_type' => Driver::class,
+            'related_entity_id' => $driver->user_id,
+            'type' => 'Condutor',
+            'title' => 'Driver Notification',
+            'message' => 'You have a notification about the driver: ' . $driver->user_id,
+            'is_read' => false,
+        ]);
+
+        $this->assertCount(1, $driver->notifications);
+        $this->assertEquals($notification->id, $user->notifications->first()->id);
+    }
+
     public function test_drivers_page_is_displayed(): void
     {
         $response = $this
@@ -117,7 +140,8 @@ class DriverTest extends TestCase
             'user_id' => User::factory()->create()->id,
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => $heavyLicense,
-            'heavy_license_type' => $heavyLicenseType
+            'heavy_license_type' => $heavyLicenseType,
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -133,6 +157,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData['license_number'],
             'heavy_license' => $driverData['heavy_license'],
             'heavy_license_type' => $driverData['heavy_license_type'],
+            'license_expiration_date' => $driverData['license_expiration_date'],
         ]);
     }
 
@@ -144,6 +169,7 @@ class DriverTest extends TestCase
             'license_number' => 'ZZ' . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -157,6 +183,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData_1['license_number'],
             'heavy_license' => $driverData_1['heavy_license'],
             'heavy_license_type' => $driverData_1['heavy_license_type'],
+            'license_expiration_date' => $driverData_1['license_expiration_date'],
         ]);
 
         // Invalid middle 6 digits (input max is 5)
@@ -165,6 +192,7 @@ class DriverTest extends TestCase
             'license_number' => $this->getRandomRegionIdentifier() . '-' . rand(0, 99999) . ' ' . rand(0, 9),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -178,6 +206,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData_2['license_number'],
             'heavy_license' => $driverData_2['heavy_license'],
             'heavy_license_type' => $driverData_2['heavy_license_type'],
+            'license_expiration_date' => $driverData_2['license_expiration_date'],
         ]);
 
         // Invalid last digit (input is a letter)
@@ -186,6 +215,7 @@ class DriverTest extends TestCase
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . chr(rand(65, 90)),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -199,6 +229,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData_3['license_number'],
             'heavy_license' => $driverData_3['heavy_license'],
             'heavy_license_type' => $driverData_3['heavy_license_type'],
+            'license_expiration_date' => $driverData_3['license_expiration_date'],
         ]);
 
         // Invalid format altogether
@@ -207,6 +238,7 @@ class DriverTest extends TestCase
             'license_number' => 'ZZ' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . rand(0, 9),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -220,6 +252,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData_4['license_number'],
             'heavy_license' => $driverData_4['heavy_license'],
             'heavy_license_type' => $driverData_4['heavy_license_type'],
+            'license_expiration_date' => $driverData_4['license_expiration_date'],
         ]);
     }
 
@@ -234,6 +267,7 @@ class DriverTest extends TestCase
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         $response = $this
@@ -247,6 +281,7 @@ class DriverTest extends TestCase
             'license_number' => $driverData['license_number'],
             'heavy_license' => $driverData['heavy_license'],
             'heavy_license_type' => $driverData['heavy_license_type'],
+            'license_expiration_date' => $driverData['license_expiration_date'],
         ]);
     }
 
@@ -259,6 +294,7 @@ class DriverTest extends TestCase
             'user_id' => User::factory()->create()->id,
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ]);
     
         $newHeavyLicense = rand(0,1);
@@ -273,6 +309,7 @@ class DriverTest extends TestCase
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => $newHeavyLicense,
             'heavy_license_type' => $newHeavyLicenseType,
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ]; 
         
         $response = $this
@@ -287,7 +324,8 @@ class DriverTest extends TestCase
             'user_id' => $driver->user_id,
             'license_number' => $updatedData['license_number'],
             'heavy_license' => $newHeavyLicense,
-            'heavy_license_type' => $newHeavyLicenseType
+            'heavy_license_type' => $newHeavyLicenseType,
+            'license_expiration_date' => $updatedData['license_expiration_date'],
         ]);
     }
 
@@ -316,6 +354,7 @@ class DriverTest extends TestCase
             'user_id' => User::factory()->create()->id,
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => '0',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
         ];
 
         // Mock the Driver model to throw an exception

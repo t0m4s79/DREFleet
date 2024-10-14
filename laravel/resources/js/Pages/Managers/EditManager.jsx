@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Snackbar, Alert, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Button, TextField, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 export default function EditManager({ auth, manager, flash}) {
     
@@ -49,7 +49,7 @@ export default function EditManager({ auth, manager, flash}) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Gestor #{manager.id}</h2>}
         >
 
-            {/*<Head title={'Utilizador'} />*/}
+            {<Head title='Editar Gestor' />}
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

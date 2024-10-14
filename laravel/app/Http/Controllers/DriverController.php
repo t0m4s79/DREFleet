@@ -24,6 +24,7 @@ class DriverController extends Controller
             $driver->created_at = \Carbon\Carbon::parse($driver->created_at)->format('d-m-Y H:i');
             $driver->updated_at = \Carbon\Carbon::parse($driver->updated_at)->format('d-m-Y H:i');
             $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
+            $driver->phone = $driver->phone ?? '-';
         });
 
         return Inertia::render('Drivers/AllDrivers', [
@@ -60,6 +61,7 @@ class DriverController extends Controller
             ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
+            'license_expiration_date' => ['required', 'date'],
         ], $customErrorMessages);
 
         $incomingFields['license_number'] = strip_tags($incomingFields['license_number']);
@@ -82,7 +84,9 @@ class DriverController extends Controller
                 'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
+                'license_expiration_date' => $incomingFields['license_expiration_date']
             ]);
+
             $user->update([
                 'user_type' => "Condutor",
             ]);
@@ -111,7 +115,6 @@ class DriverController extends Controller
 
     public function editDriver(Driver $driver, Request $request)
     {
-
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -124,6 +127,7 @@ class DriverController extends Controller
             ],
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
+            'license_expiration_date' => ['required', 'date'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
@@ -149,6 +153,7 @@ class DriverController extends Controller
                 'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
+                'license_expiration_date' => $incomingFields['license_expiration_date'],
             ]);
 
             $user = User::findOrFail($incomingFields['user_id']);

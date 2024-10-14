@@ -6,10 +6,9 @@ import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
 import { useState } from 'react';
 
-{/*TODO: HEAVY LICENSE AND LICENSE TYPE NEXT TO EACH OTHER*/}
-{/*TODO: IMPROVE LICENSE NUMBER FIELDS LOOK*/}
-{/*TODO: LICENSE NUMBER FIELDS ERROR POSITIONS*/}
-{/*TODO: SPACE BETWEEN MIDDLE AND LAST DIGITS*/}
+{/*TODO: LICENSE NUMBER FIELDS ERRORS SHOWING*/}
+{/*TODO: ALLIGN EXPIRATION DATE AND LICENSE NUMBER CORRECTLY*/}
+{/*TODO: REMOVE "null" APPEARING WHEN X IS CLICKED ON LICENSE NUMBER*/}
 export default function NewDriver( {auth, users} ) {
 
     //const [license, setLicense] = useState('');
@@ -57,6 +56,8 @@ export default function NewDriver( {auth, users} ) {
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Condutor</h2>}
         >
+            
+            {<Head title='Criar Condutor' />}
 
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
@@ -88,101 +89,84 @@ export default function NewDriver( {auth, users} ) {
                                     sx={{ width: 500, marginBottom: 2 }}
                                 />
 
-                                {/* <Typography variant="body1">Número da Carta de Condução</Typography>
-                                <Grid container>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
+                                    </Grid>
+
+                                    <Grid item xs={3} sx={{marginTop: 2}}>
+                                    <Typography>Data de Validade</Typography>
                                     <TextField
-                                        type="text"
-                                        id="license_region_identifier"
-                                        label="Identificador da Região"
-                                        name="license_region_identifier"
-                                        value={data.license_region_identifier}
-                                        onChange={(e) => setData('license_region_identifier', e.target.value)}
-                                        maxLength={2}
-                                    />
-                                    {errors.license_region_identifier && (
-                                        <InputError message={errors.license_region_identifier} />
-                                    )}
-                                    
-                                    <span>-</span>
-
-                                    <TextField
-                                        type="text"
-                                        label="Dígitos Intermédios"
-                                        id="license_middle_digits"
-                                        name="license_middle_digits"
-                                        value={data.license_middle_digits}
-                                        onChange={(e) => setData('license_middle_digits', e.target.value)}
-                                    />
-                                    {errors.license_middle_digits && (
-                                        <InputError message={errors.license_middle_digits} />
-                                    )}
-                                    
-                                    <span> </span>
-
-                                    <TextField
-                                        type="text"
-                                        label="Dígito Final"
-                                        id="license_last_digit"
-                                        name="license_last_digit"
-                                        value={data.license_last_digit}
-                                        onChange={(e) => setData('license_last_digit', e.target.value)}
-                                    />
-                                    {errors.license_last_digit && (
-                                        <InputError message={errors.license_last_digit} />
-                                    )}
-                                </Grid> */}
-
-                                <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
-
-                                <Typography variant="body1">Carta de Pesados</Typography>
-                                {/* Radio buttons for heavy_license */}
-                                <FormControl component="fieldset">
-                                    <RadioGroup
-                                        aria-label="heavy_license"
-                                        name="heavy_license"
-                                        value={data.heavy_license}
-                                        onChange={(e) => setData('heavy_license', e.target.value)}
-                                    >
-                                        <FormControlLabel
-                                            value="0"
-                                            control={<Radio />}
-                                            label="Não"
+                                            //label="Data e Hora de Início"
+                                            id='license_expiration_date'
+                                            name='license_expiration_date'
+                                            type="date"
+                                            fullWidth
+                                            value={data.license_expiration_date}
+                                            onChange={(e) => setData('license_expiration_date', e.target.value)}
+                                            error={errors.license_expiration_date}
+                                            helperText={errors.license_expiration_date}
+                                            sx={{ mb: 2 }}
                                         />
-                                        <FormControlLabel
-                                            value="1"
-                                            control={<Radio />}
-                                            label="Sim"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                                {errors.heavy_license && (
-                                    <InputError message={errors.heavy_license} />
-                                )}
+                                    </Grid>
+                                </Grid>
 
-                            <Typography variant="body1">Tipo de Carta de Pesados</Typography>
-                                {/* Radio buttons for heavy_license_type */}
-                                <FormControl component="fieldset" disabled={data.heavy_license == '0'}>
-                                    <RadioGroup
-                                        aria-label="heavy_license_type"
-                                        name="heavy_license_type"
-                                        value={data.heavy_license_type}
-                                        onChange={(e) => setData('heavy_license_type', e.target.value)}
-                                    >
-                                        <FormControlLabel
-                                            value="Mercadorias"
-                                            control={<Radio />}
-                                            label="Mercadorias"
-                                        />
-                                        <FormControlLabel
-                                            value="Passageiros"
-                                            control={<Radio />}
-                                            label="Passageiros"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                                {errors.heavy_license_type && (
-                                    <InputError message={errors.heavy_license_type} />
-                                )}
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body1">Carta de Pesados</Typography>
+                                        {/* Radio buttons for heavy_license */}
+                                        <FormControl component="fieldset">
+                                            <RadioGroup
+                                                aria-label="heavy_license"
+                                                name="heavy_license"
+                                                value={data.heavy_license}
+                                                onChange={(e) => setData('heavy_license', e.target.value)}
+                                            >
+                                                <FormControlLabel
+                                                    value="0"
+                                                    control={<Radio />}
+                                                    label="Não"
+                                                />
+                                                <FormControlLabel
+                                                    value="1"
+                                                    control={<Radio />}
+                                                    label="Sim"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        {errors.heavy_license && (
+                                            <InputError message={errors.heavy_license} />
+                                        )}
+                                    </Grid>
+
+
+                                    <Grid item xs={6}>
+                                        <Typography variant="body1">Tipo de Carta de Pesados</Typography>
+                                        {/* Radio buttons for heavy_license_type */}
+                                        <FormControl component="fieldset" disabled={data.heavy_license == '0'}>
+                                            <RadioGroup
+                                                aria-label="heavy_license_type"
+                                                name="heavy_license_type"
+                                                value={data.heavy_license_type}
+                                                onChange={(e) => setData('heavy_license_type', e.target.value)}
+                                            >
+                                                <FormControlLabel
+                                                    value="Mercadorias"
+                                                    control={<Radio />}
+                                                    label="Mercadorias"
+                                                />
+                                                <FormControlLabel
+                                                    value="Passageiros"
+                                                    control={<Radio />}
+                                                    label="Passageiros"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        {errors.heavy_license_type && (
+                                            <InputError message={errors.heavy_license_type} />
+                                        )}
+                                    </Grid>
+                                </Grid>
 
                                 <br />
 
