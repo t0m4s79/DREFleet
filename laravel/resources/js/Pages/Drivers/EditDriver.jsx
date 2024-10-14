@@ -14,6 +14,7 @@ import LicenseNumberInput from '@/Components/LicenseNumberInput';
 export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
+    const [isEditMode, setisEditMode] = useState(false)
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({
@@ -29,6 +30,10 @@ export default function EditDriver({ auth, driver }) {
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     // Handle input changes
     const handleChange = (e) => {
@@ -78,6 +83,8 @@ export default function EditDriver({ auth, driver }) {
                                 margin="normal"
                                 variant="outlined"
                                 error={Boolean(errors.name)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 helperText={errors.name  && <InputError message={errors.name} /> }
                             />
 
@@ -92,6 +99,8 @@ export default function EditDriver({ auth, driver }) {
                                 variant="outlined"
                                 type="email"
                                 error={Boolean(errors.email)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 helperText={errors.email  && <InputError message={errors.email} />}
                             />
 
@@ -106,34 +115,38 @@ export default function EditDriver({ auth, driver }) {
                                 variant="outlined"
                                 type="tel"
                                 error={Boolean(errors.phone)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
+                                    <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} isDisabled={!isEditMode}/>
                                 </Grid>
 
                                 <Grid item xs={3} sx={{marginTop: 2}}>
                                 <Typography>Data de Validade</Typography>
                                 <TextField
-                                        //label="Data e Hora de Início"
-                                        id='license_expiration_date'
-                                        name='license_expiration_date'
-                                        type="date"
-                                        fullWidth
-                                        value={data.license_expiration_date}
-                                        onChange={(e) => setData('license_expiration_date', e.target.value)}
-                                        error={errors.license_expiration_date}
-                                        helperText={errors.license_expiration_date}
-                                        sx={{ mb: 2 }}
-                                    />
+                                    //label="Data e Hora de Início"
+                                    id='license_expiration_date'
+                                    name='license_expiration_date'
+                                    type="date"
+                                    fullWidth
+                                    value={data.license_expiration_date}
+                                    onChange={(e) => setData('license_expiration_date', e.target.value)}
+                                    error={errors.license_expiration_date}
+                                    helperText={errors.license_expiration_date}
+                                    className={!isEditMode ? 'read-only-field' : ''}
+                                    disabled={!isEditMode}
+                                    sx={{ mb: 2 }}
+                                />
                                 </Grid>
                             </Grid>
                                 
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
-                                    <FormControl component="fieldset" margin="normal">
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                         <FormLabel component="legend">Carta de Pesados</FormLabel>
                                         <RadioGroup
                                             name="heavy_license"
@@ -157,7 +170,7 @@ export default function EditDriver({ auth, driver }) {
                                 <br/>
 
                                 <Grid item xs={6}>
-                                    <FormControl component="fieldset" margin="normal" disabled={data.heavy_license == '0'}>
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode || data.heavy_license == '0'}>
                                         <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
                                         <RadioGroup
                                             name="heavy_license_type"
@@ -181,7 +194,7 @@ export default function EditDriver({ auth, driver }) {
                             </Grid>
                             <br/>
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Estado</FormLabel>
                                 <RadioGroup
                                     name="status"
@@ -212,16 +225,35 @@ export default function EditDriver({ auth, driver }) {
                                 </RadioGroup>
                             </FormControl>
                             <br/>
-
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                disabled={processing}
-                            >
-                                Submeter
-                            </Button>
                         </form>
+                        { isEditMode === false ? 
+                                (<Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Editar
+                                </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
                     </div>
                 </div>
             </div>

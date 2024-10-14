@@ -5,7 +5,7 @@ import InputMask from 'react-input-mask';
 const validCodes = ['AV','BE','BR','BG','CB','C','E','FA','GD','LE','L','PT','P','SA','SE','VC','VR','VS','AN','H','A','M'];
 
 
-const LicenseNumberInput = ({ value, onChange }) => {
+const LicenseNumberInput = ({ value, onChange, isDisabled }) => {
     const [selectedCode, setSelectedCode] = useState('');
     const [numberPart, setNumberPart] = useState('');
 
@@ -42,6 +42,8 @@ const LicenseNumberInput = ({ value, onChange }) => {
                         <Autocomplete
                             options={validCodes}
                             value={selectedCode}
+                            className={isDisabled ? 'read-only-field' : ''}
+                            disabled={isDisabled}
                             onChange={handleCodeChange}
                             renderInput={(params) => <TextField {...params} label="Código identificador de região" />}
                         />
@@ -51,6 +53,8 @@ const LicenseNumberInput = ({ value, onChange }) => {
                         <InputMask
                             mask="999999 9"
                             value={numberPart}
+                            className={isDisabled ? 'read-only-field' : ''}
+                            disabled={isDisabled}
                             onChange={handleNumberChange}
                             maskChar=''
                         >

@@ -7,12 +7,18 @@ import { Head, useForm } from '@inertiajs/react';
 {/*TODO: VEHICLE IMAGE SELECT */}
 export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) {
 
+    const [isEditMode, setisEditMode] = useState(false)
+
     const { data, setData, put, processing, errors } = useForm({
         name: vehicleDocument.name,
         issue_date: vehicleDocument.issue_date,
         expiration_date: vehicleDocument.expiration_date,
         vehicle_id: vehicleDocument.vehicle_id,
     });
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
@@ -49,6 +55,8 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.name}
@@ -65,6 +73,8 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                         fullWidth
                                         value={data.issue_date}
                                         onChange={(e) => setData('issue_date', e.target.value)}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
                                         error={errors.issue_date}
                                         helperText={errors.issue_date}
                                         sx={{ mb: 2 }}
@@ -80,6 +90,8 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                     fullWidth
                                     value={data.expiration_date}
                                     onChange={(e) => setData('expiration_date', e.target.value)}
+                                    className={!isEditMode ? 'read-only-field' : ''}
+                                    disabled={!isEditMode}
                                     error={errors.expiration_date}
                                     helperText={errors.expiration_date}
                                     sx={{ mb: 2 }}
@@ -94,6 +106,8 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                 getOptionLabel={(option) => option.label}
                                 value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
                                 onChange={(e,value) => setData('vehicle_id', value.value)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -108,10 +122,36 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                             />
 
                             <br />
-
-                            <Button type="submit" variant='outlined'>Submeter</Button>
-
                         </form>
+                        { isEditMode === false ? 
+                            (<Button
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                                onClick={toggleEdit}
+                            >
+                                Editar
+                            </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+    const [isEditMode, setisEditMode] = useState(false)
 
     useEffect(() => {
         if (flash.message || flash.error) {
@@ -26,6 +27,10 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     // Handle input changes
     const handleChange = (e) => {
@@ -66,6 +71,8 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                                     name="name"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
+                                    className={!isEditMode ? 'read-only-field' : ''}
+                                    disabled={!isEditMode}
                                     error={errors.name ? true : false}
                                     helperText={errors.name && errors.name}
                                     fullWidth
@@ -81,6 +88,8 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                                     type="email"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
+                                    className={!isEditMode ? 'read-only-field' : ''}
+                                    disabled={!isEditMode}
                                     error={errors.email ? true : false}
                                     helperText={errors.email && errors.email}
                                     fullWidth
@@ -96,13 +105,15 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                                     type="tel"
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
+                                    className={!isEditMode ? 'read-only-field' : ''}
+                                    disabled={!isEditMode}
                                     error={errors.phone ? true : false}
                                     helperText={errors.phone && errors.phone}
                                     fullWidth
                                 />
                             </FormControl>
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Disponível?</FormLabel>
                                 <RadioGroup
                                     name="status"
@@ -133,12 +144,35 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                                 </RadioGroup>
                             </FormControl>
                             <br/>
-
-                            {/* Submit Button */}
-                            <Button type="submit" variant="contained" color="primary" disabled={processing}>
-                                Submeter
-                            </Button>
                         </form>
+                        { isEditMode === false ? 
+                                (<Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Editar
+                                </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
 
                         <Snackbar 
                                 open={openSnackbar} 

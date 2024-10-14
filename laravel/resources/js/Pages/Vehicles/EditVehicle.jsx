@@ -6,6 +6,8 @@ import { Head, useForm } from '@inertiajs/react';
 {/*TODO: VEHICLE IMAGE SELECT */}
 export default function EditVehicle({ auth, vehicle}) {
 
+    const [isEditMode, setisEditMode] = useState(false)
+
     const { data, setData, put, processing, errors } = useForm({
         make: vehicle.make,
         model: vehicle.model,
@@ -22,6 +24,10 @@ export default function EditVehicle({ auth, vehicle}) {
         fuel_type: vehicle.fuel_type,
         current_kilometrage: vehicle.current_kilometrage,
     });
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
@@ -59,6 +65,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 name="make"
                                 value={data.make}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.make}
@@ -70,6 +78,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 name="model"
                                 value={data.model}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.model}
@@ -81,6 +91,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 name="license_plate"
                                 value={data.license_plate}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ pattern: "[A-Za-z0-9]+" }}
@@ -93,6 +105,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 name="year"
                                 value={data.year}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ pattern: "[0-9]+" }}
@@ -102,7 +116,7 @@ export default function EditVehicle({ auth, vehicle}) {
 
                             <Grid container>
                                 <Grid item xs={12} md={6}>
-                                    <FormControl component="fieldset" margin="normal">
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                         <FormLabel component="legend">Veículo Pesado?</FormLabel>
                                         <RadioGroup
                                             name="heavy_vehicle"
@@ -115,7 +129,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                     </FormControl>
                                 </Grid>
 
-                                <FormControl component="fieldset" margin="normal" disabled={data.heavy_vehicle == '0'}>
+                                <FormControl component="fieldset" margin="normal" disabled={!isEditMode || data.heavy_vehicle == '0'}>
                                     <FormLabel component="legend">Tipo de Pesado</FormLabel>
                                     <RadioGroup
                                         name="heavy_type"
@@ -128,7 +142,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                 </FormControl>
 
                                 <Grid item  xs={12} md={6}>
-                                    <FormControl component="fieldset" margin="normal">
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                         <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
@@ -142,7 +156,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                 </Grid>
 
                                 <Grid item  xs={12} md={6}>
-                                    <FormControl component="fieldset" margin="normal">
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                         <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_certified"
@@ -162,6 +176,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 type="number"
                                 value={data.capacity}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ min: 1, max: 100 }}
@@ -183,7 +199,7 @@ export default function EditVehicle({ auth, vehicle}) {
                             />
 
                             {/* Use MUI Radio for status */}
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Estado</FormLabel>
                                 <RadioGroup
                                     name="status"
@@ -203,6 +219,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 type="number"
                                 value={data.current_month_fuel_requests}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ min: 0, max: 100 }}
@@ -210,7 +228,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                 helperText={errors.current_month_fuel_requests}
                             />
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Tipo de Combustível</FormLabel>
                                 <RadioGroup
                                     aria-label="fuel_type"
@@ -233,6 +251,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 type="number"
                                 value={data.current_kilometrage}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ min: 0}}
@@ -241,10 +261,35 @@ export default function EditVehicle({ auth, vehicle}) {
                             />
 
                             <br />
-
-                            <Button type="submit" variant='outlined'>Submeter</Button>
-
                         </form>
+                        { isEditMode === false ? 
+                                (<Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Editar
+                                </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
                     </div>
                 </div>
             </div>

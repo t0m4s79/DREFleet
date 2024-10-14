@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function EditUser({ auth, user }) {
+
+    const [isEditMode, setisEditMode] = useState(false)
 
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
@@ -11,6 +13,10 @@ export default function EditUser({ auth, user }) {
         phone: user.phone,
         status: user.status,
     });
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     // Handle form input changes and update data using setData
     const handleChange = (e) => {
@@ -48,6 +54,8 @@ export default function EditUser({ auth, user }) {
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={Boolean(errors.name)}
                                 helperText={errors.name}
                             />
@@ -62,6 +70,8 @@ export default function EditUser({ auth, user }) {
                                 name="email"
                                 value={data.email}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={!!errors.email}
                                 helperText={errors.email}
                             />
@@ -76,12 +86,14 @@ export default function EditUser({ auth, user }) {
                                 name="phone"
                                 value={data.phone}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={!!errors.phone}
                                 helperText={errors.phone}
                             />
 
                             {/* Status Select Field */}
-                            <FormControl fullWidth margin="normal" error={!!errors.status}>
+                            <FormControl fullWidth margin="normal" error={!!errors.status} disabled={!isEditMode}>
                                 <InputLabel id="status-label">Estado</InputLabel>
                                 <Select
                                     labelId="status-label"
@@ -97,18 +109,35 @@ export default function EditUser({ auth, user }) {
                                 </Select>
                                 {errors.status && <p style={{ color: 'red' }}>{errors.status}</p>}
                             </FormControl>
-
-                            {/* Submit Button */}
-
-                            <Button
-                                variant="outlined"
-                                type="submit"
-                                disabled={processing}
-                                sx={{ mt: 2 }}
-                            >
-                                Submeter
-                            </Button>
                         </form>
+                        { isEditMode === false ? 
+                            (<Button
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                                onClick={toggleEdit}
+                            >
+                                Editar
+                            </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
                     </div>
                 </div>
             </div>

@@ -7,12 +7,18 @@ import { Head, useForm } from '@inertiajs/react';
 {/*TODO: Condition should turn grey and auto select expired if present date is bigger than expiration_date */}
 export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}) {
 
+    const [isEditMode, setisEditMode] = useState(false)
+
     const { data, setData, put, processing, errors } = useForm({
         name: vehicleAccessory.name,
         condition: vehicleAccessory.condition,
         expiration_date: vehicleAccessory.expiration_date,
         vehicle_id: vehicleAccessory.vehicle_id,
     });
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value);
@@ -49,13 +55,15 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.name}
                                 helperText={errors.name}
                             />
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Condição</FormLabel>
                                 <RadioGroup
                                     aria-label="condition"
@@ -78,6 +86,8 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
                                 fullWidth
                                 value={data.expiration_date}
                                 onChange={(e) => setData('expiration_date', e.target.value)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={errors.expiration_date}
                                 helperText={errors.expiration_date}
                                 sx={{ mb: 2 }}
@@ -89,6 +99,8 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
                                 getOptionLabel={(option) => option.label}
                                 value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
                                 onChange={(e,value) => setData('vehicle_id', value.value)}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -101,12 +113,37 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
                                 )}
                                 sx={{ mb: 2 }}
                             />
-
                             <br />
+                      </form>
+                      { isEditMode === false ? 
+                            (<Button
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                                onClick={toggleEdit}
+                            >
+                                Editar
+                            </Button>) : 
 
-                            <Button type="submit" variant='outlined'>Submeter</Button>
-
-                        </form>
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

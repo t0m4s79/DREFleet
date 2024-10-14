@@ -9,6 +9,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
     const [selectedAddPlaces, setSelectedAddPlaces] = useState([]);                 // state variable that holds the places to be added
     const [selectedRemovePlaces, setSelectedRemovePlaces] = useState([]);           // state variable that holds the places to be removed
     //console.log(kid)
+    const [isEditMode, setisEditMode] = useState(false)
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({
@@ -21,6 +22,10 @@ export default function EditKid({auth, kid, availablePlaces}) {
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     // Handle input changes
     const handleChange = (e) => {
@@ -70,6 +75,8 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={!!errors.name}
                                 helperText={errors.name && <InputError message={errors.name} />}
                             />
@@ -83,6 +90,8 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 name="email"
                                 value={data.email}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={!!errors.email}
                                 helperText={errors.email && <InputError message={errors.email} />}
                             />
@@ -96,11 +105,13 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 name="phone"
                                 value={data.phone}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={!!errors.phone}
                                 helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Utiliza cadeira de rodas?</FormLabel>
                                 <RadioGroup
                                     aria-label="wheelchair"
@@ -117,7 +128,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
 
 
                             <p>Adicionar Morada</p>
-                            <FormControl sx={{ m: 1, minWidth: 300 }}>
+                            <FormControl sx={{ m: 1, minWidth: 300 }} className={!isEditMode ? 'read-only-field' : ''} disabled={!isEditMode}>
                                 <InputLabel id="add-places-label">Adicionar Morada</InputLabel>
                                 <Select
                                     labelId="add-places-label"
@@ -138,7 +149,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
                             </FormControl>
 
                             <p>Retirar Morada</p>
-                            <FormControl sx={{ m: 1, minWidth: 300 }}>
+                            <FormControl sx={{ m: 1, minWidth: 300 }} className={!isEditMode ? 'read-only-field' : ''} disabled={!isEditMode}>
                                 <InputLabel id="remove-places-label">Retirar Morada</InputLabel>
                                 <Select
                                     labelId="remove-places-label"
@@ -158,9 +169,35 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 </Select>
                             </FormControl>
                             <br/>
-
-                            <Button type="submit" variant="outlined" disabled={processing}>Submeter</Button>
                         </form>
+                        { isEditMode === false ? 
+                            (<Button
+                                variant="contained"
+                                color="primary"
+                                disabled={processing}
+                                onClick={toggleEdit}
+                            >
+                                Editar
+                            </Button>) : 
+
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
                     </div>
                 </div>
             </div>

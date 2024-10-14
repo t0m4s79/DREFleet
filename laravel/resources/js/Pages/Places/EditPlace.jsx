@@ -9,6 +9,7 @@ export default function EditPlace({auth, place, kids}) {
 
     const [lat, setLat] = useState('');
     const [lng, setLng] = useState('');
+    const [isEditMode, setisEditMode] = useState(false)
 
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
@@ -21,6 +22,10 @@ export default function EditPlace({auth, place, kids}) {
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     // Handle input changes
     const handleChange = (e) => {
@@ -65,6 +70,8 @@ export default function EditPlace({auth, place, kids}) {
                                 label="Nome"
                                 value={data.address}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={Boolean(errors.address)}
                                 helperText={errors.address}
                             />
@@ -77,11 +84,13 @@ export default function EditPlace({auth, place, kids}) {
                                 label="Conhecido como"
                                 value={data.known_as}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 error={Boolean(errors.known_as)}
                                 helperText={errors.known_as}
                             />
 
-                            <FormControl component="fieldset" margin="normal">
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Estado</FormLabel>
                                 <RadioGroup
                                     name="place_type"
@@ -104,6 +113,8 @@ export default function EditPlace({auth, place, kids}) {
                                         label="Latitude"
                                         value={data.latitude}
                                         onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
                                         error={Boolean(errors.latitude)}
                                         helperText={errors.latitude}
                                     />
@@ -118,23 +129,43 @@ export default function EditPlace({auth, place, kids}) {
                                         label="Longitude"
                                         value={data.longitude}
                                         onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
                                         error={Boolean(errors.longitude)}
                                         helperText={errors.longitude}
                                     />
                                 </Grid>
                             </Grid>
-
-                            <Button
-                                type="submit"
-                                variant="outlined"
+                        </form>
+                        { isEditMode === false ? 
+                            (<Button
+                                variant="contained"
                                 color="primary"
                                 disabled={processing}
-                                sx={{ mt: 3 }}
+                                onClick={toggleEdit}
                             >
-                                Submeter
-                            </Button>
-                        </form>
+                                Editar
+                            </Button>) : 
 
+                            (<div>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="outlined"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>
+                        )}
                         <br />
                             <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: data.latitude, lng: data.longitude}} edditing={true}/>
 

@@ -1,8 +1,7 @@
 import React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { Button, Modal } from '@mui/material';
-import {  ptPT } from '@mui/x-data-grid/locales';
-import LeafletMap from './LeafletMap';
+import { DataGrid, } from '@mui/x-data-grid';
+import { Button } from '@mui/material';
+import { ptPT } from '@mui/x-data-grid/locales';
 import MapModal from './MapModal';
 
 // Custom table using Material UI's DataGrid
@@ -123,6 +122,72 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            if(key == 'driver_id'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('drivers.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
+                )
+            }
+            if(key == 'technician_id'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('technicians.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
+                )
+            }
+            if(key == 'route'){
+                if(params.value != '-'){
+                    return (
+                        <div>
+                            <Button
+                                key={params.value}
+                                variant="outlined"
+                                href={route('orderRoutes.showEditOrder', params.value)}
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value}
+                            </Button>
+                        </div>
+                    )
+                } else{
+                    return (
+                        <div></div>
+                    )
+                }
+            }
 
             return params.value;
         }
@@ -193,7 +258,6 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             <DataGrid
                 rows={rows}
                 columns={columns}
-                pageSize={10}
                 initialState={{
                     pagination: {
                         paginationModel: { pageSize: 25,},
