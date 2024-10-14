@@ -73,7 +73,7 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
                         <div className="p-6">
                             <OrderRoutePolygon onAreaChange={onAreaChange} color={color} />
 
-                            <form onSubmit={handleSubmit}>
+                            <form className='mt-4' onSubmit={handleSubmit}>
                                 <TextField
                                     label="Nome da Rota"
                                     value={data.name}
@@ -85,8 +85,8 @@ export default function NewOrderRoute({ auth, drivers, technicians }) {
                                     margin="normal"
                                 />
                                 
-                                <HexColorInput color={color} onChange={handleColorChange} placeholder="Cor da Rota"/>
-                                <HexColorPicker color={color} onChange={handleColorChange} />
+                                <HexColorInput color={color} onChange={handleColorChange} placeholder="Cor da Rota" className='mt-4 mb-1 border-gray-300 rounded-lg'/>
+                                <HexColorPicker color={color} onChange={handleColorChange} className='mb-3' />
                                 <br />
 
                                 {/* Autocomplete for Drivers (Multiple Selection) */}
