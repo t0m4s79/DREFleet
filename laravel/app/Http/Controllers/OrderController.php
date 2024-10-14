@@ -92,13 +92,13 @@ class OrderController extends Controller
         $kidsCount = count($request->input('places.*.kid_id', []));
         $hasTechnician = $request->input('technician_id') ? 1 : 0;
         $totalPassengers = $kidsCount + $hasTechnician;
-        //dd($request);
+
         $incomingFields = $request->validate([
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
-            'expected_time' => ['required'], //in seconds
-            'distance' => ['required'],      //in meters
+            'expected_time' => ['required', 'min:0'], //in seconds
+            'distance' => ['required', 'min:0'],      //in meters
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
                 'required',
@@ -216,8 +216,8 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
-            'expected_time' => ['required'],
-            'distance' => ['required'],
+            'expected_time' => ['required', 'min:0'],
+            'distance' => ['required', 'min:0'],
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
