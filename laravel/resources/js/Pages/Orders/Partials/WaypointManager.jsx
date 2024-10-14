@@ -23,24 +23,35 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary }
     useEffect(() => {
         if (waypoints.length > 0) {
             const newPlaces = waypoints.map((waypoint, index) => {
-                const existingPlace = places.find(p => p.place_id === waypoint.id) || {};
+                const existingPlace = places.find(p => p.place_id === waypoint.place_id) || {};
+    
                 return {
-                    place_id: waypoint.id,
-                    kid_id: waypoint.kid?.id || null,
+                    place_id: waypoint.place_id,
+                    kid_id: waypoint.kid_id || null, // Ensure kid_id is included even if null
                     stop_number: index + 1,
                     distance: existingPlace.distance || 0, // Keep existing metric data if available
                     time: existingPlace.time || 0,         // Keep existing metric data if available
                 };
             });
+    
+            // Update the places array in context with the new structure
             updatePlaces(newPlaces);
-            updateTrajectory(); // Call this to update the trajectory
+            updateTrajectory(); // Update trajectory after places are set
         }
     }, [waypoints, updateTrajectory]);
+    
     
     const addWaypoint = (waypoint, placeId) => {
         const newWaypoints = [...waypoints, waypoint];
         updateWaypoints(newWaypoints);
-        updatePlaces([...places, { place_id: placeId, stop_number: places.length + 1, distance: 0, time: 0 }]);
+        updatePlaces([...places, { 
+            place_id: placeId, 
+            kid_id: waypoint.kid_id,
+            stop_number: places.length + 1, 
+            label: waypoint.label, 
+            lat: waypoint.lat, 
+            lng: waypoint.lng,
+            distance: 0, time: 0 }]);
     };
 
     const updateMetricData = (newMetrics) => {
@@ -56,9 +67,9 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary }
     const addKid = () => {
         if (selectedKid && selectedKidPlace) {
             addWaypoint({
-                kid: selectedKid,
-                id: selectedKidPlace.id,
-                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address}`,
+                kid_id: selectedKid.id,
+                place_id: selectedKidPlace.id,
+                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address} ###${selectedKid.id} - ${selectedKid.name}`,
                 lat: selectedKidPlace.coordinates.coordinates[1],
                 lng: selectedKidPlace.coordinates.coordinates[0],
             }, selectedKidPlace.id);
@@ -70,11 +81,11 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary }
     const addOtherPlace = () => {
         if (selectedOtherPlace) {
             addWaypoint({
-                id: selectedOtherPlace.id,
+                place_id: selectedOtherPlace.place_id,
                 label: selectedOtherPlace.label,
                 lat: selectedOtherPlace.lat,
                 lng: selectedOtherPlace.lng,
-            }, selectedOtherPlace.id);
+            }, selectedOtherPlace.place_id);
             setSelectedOtherPlace(null);
         }
     };
@@ -121,7 +132,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary }
                                     ref={provided.innerRef}
                                 >
                                     {waypoints.map((waypoint, index) => (
-                                        <Draggable key={waypoint.id} draggableId={waypoint.id.toString()} index={index}>
+                                        <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index}>
                                             {(provided) => (
                                                 <ListItem
                                                     ref={provided.innerRef}

@@ -91,21 +91,26 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         });
     }
     useEffect(() => {
-        if (places && places.length > 0) {
-            setData('places', places);
-            console.log('Places updated in form:', places);
+        if (places && trajectory) {
+            setData(prevData => ({
+                ...prevData,
+                places: places,
+                trajectory: JSON.stringify(trajectory),
+            }));
+    
+            console.log('Updated form data with places and trajectory:', places, trajectory);
         }
-    }, [places]);
-    useEffect(() => {
-        if (trajectory && trajectory.length > 0) {
-            setData('trajectory', JSON.stringify(trajectory));
-            console.log('Trajectory updated in form:', trajectory);
-        }
-    }, [trajectory]);
+    }, [places, trajectory]);
+    
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('data', data)        
+    
+        // Debugging: Ensure data is ready before submitting
+        console.log('Form data on submit:', data);
+    
+        // Ensure the state is fully updated before submitting
+        await new Promise(resolve => setTimeout(resolve, 1000));       
         post(route('orders.create'));
     };
 
@@ -159,7 +164,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                     <WaypointManager 
                                                         kids={kids} 
                                                         otherPlacesList={otherPlaces.map(place => ({
-                                                            id: place.id,
+                                                            place_id: place.id,
                                                             label: `#${place.id} - ${place.address}`,
                                                             lat: place.coordinates.coordinates[1],
                                                             lng: place.coordinates.coordinates[0],

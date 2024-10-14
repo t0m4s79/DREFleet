@@ -37,24 +37,48 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
 
     const orderStops = order.order_stops.map((stop)=> {
         return { 
-            id: stop.place_id,
+            place_id: stop.place_id,
+            kid_id: stop.kid_id,
             label: `#${stop.place.id} - ${stop.place.address}`,
             lat: stop.place.coordinates.coordinates[1],
             lng: stop.place.coordinates.coordinates[0],
+            stop_number: stop.stop_number,
+            distance: stop.distance_from_previous_stop || 0, // Keep existing metric data if available
+            time: stop.time_from_previous_stop || 0,         // Keep existing metric data if available
         }
     })
     
     useEffect(() => {
-        // Update OrderContext with initial waypoints and places from order
-        console.log('Waypoints before update', waypoints)
-        updateWaypoints(orderStops);
-        console.log('waypoints after update', waypoints)
-        updatePlaces(orderStops);
-    }, []);
+        if (orderStops.length > 0) {
+            console.log('Initializing order stops:', orderStops);
+    
+            // Batch context updates together
+            updateWaypoints(orderStops);
+            updatePlaces(orderStops);
+    
+            // Update the form state after the context has been updated
+            setData({
+                expected_begin_date: order.expected_begin_date,
+                expected_end_date: order.expected_end_date,
+                expected_time: order.expected_time,
+                distance: order.distance,
+                order_type: order.order_type,
+                vehicle_id: order.vehicle_id,
+                driver_id: order.driver_id,
+                technician_id: order.technician_id,
+                trajectory: order.trajectory,
+                order_route_id: order.order_route_id,
+                places: [],
+                places_changed: isPlacesModified,
+            });
+    
+            console.log('Form state initialized:', data);
+        }
+    }, []);    
 
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
-    const [isPlacesModified, setIsPlacesModified] = useState(false);
+    const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -89,7 +113,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         technician_id: order.technician_id,
         trajectory: order.trajectory,
         order_route_id: order.order_route_id,
-        places: places,
+        places: [],
         places_changed: isPlacesModified,
     })
 
@@ -113,24 +137,32 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     }
     
     useEffect(() => {
-        if (places && places.length > 0) {
-            setData('places', places);
-            console.log('Places updated in form:', places);
+        if (places && trajectory) {
+            setData(prevData => ({
+                ...prevData,
+                places: places,
+                trajectory: JSON.stringify(trajectory),
+            }));
+    
+            console.log('Updated form data with places and trajectory:', places, trajectory);
         }
-    }, [places]);
-    useEffect(() => {
-        if (trajectory && trajectory.length > 0) {
-            setData('trajectory', JSON.stringify(trajectory));
-            console.log('Trajectory updated in form:', trajectory);
-        }
-    }, [trajectory]);
+    }, [places, trajectory]);
+    
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        // Debugging: Ensure data is ready before submitting
         console.log('Form data on submit:', data);
+    
+        // Ensure the state is fully updated before submitting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    
+        // Submit the form
         put(route('orders.edit', order.id));
     };
-
+    
+console.log(data)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -179,7 +211,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                         <WaypointManager 
                                             kids={kids} 
                                             otherPlacesList={otherPlaces.map(place => ({
-                                                id: place.id,
+                                                place_id: place.id,
                                                 label: `#${place.id} - ${place.address}`,
                                                 lat: place.coordinates.coordinates[1],
                                                 lng: place.coordinates.coordinates[0],
