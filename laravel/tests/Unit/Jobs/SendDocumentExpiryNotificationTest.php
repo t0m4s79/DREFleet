@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\VehicleDocumentController;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -23,7 +24,15 @@ class SendDocumentExpiryNotificationTest extends TestCase
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
-        $document = VehicleDocument::factory()->create([
+
+        // Delete documents created on vehicle factory
+        $controller = new VehicleDocumentController();
+
+        foreach ($vehicle->vehicleDocuments as $document) {
+            $controller->deleteVehicleDocument($document->id);
+        }
+
+        VehicleDocument::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addWeek(), // within the next month
         ]);
@@ -46,7 +55,15 @@ class SendDocumentExpiryNotificationTest extends TestCase
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
-        $document = VehicleDocument::factory()->create([
+
+        // Delete documents created on vehicle factory
+        $controller = new VehicleDocumentController();
+
+        foreach ($vehicle->vehicleDocuments as $document) {
+            $controller->deleteVehicleDocument($document->id);
+        }
+
+        VehicleDocument::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addMonths(2), // beyond one month
         ]);

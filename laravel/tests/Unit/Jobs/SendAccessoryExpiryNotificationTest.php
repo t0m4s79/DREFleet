@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\VehicleAccessoryController;
 use App\Jobs\SendAccesssoryExpiryNotification;
 use Tests\TestCase;
 use App\Models\User;
@@ -23,7 +24,14 @@ class SendAccessoryExpiryNotificationTest extends TestCase
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
-        $document = VehicleAccessory::factory()->create([
+        
+        $controller = new VehicleAccessoryController;
+
+        foreach ($vehicle->vehicleAccessories as $accessory) {
+            $controller->deleteVehicleAccessory($accessory->id);
+        }
+        
+        VehicleAccessory::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addWeek(), // within the next month
         ]);
@@ -46,7 +54,14 @@ class SendAccessoryExpiryNotificationTest extends TestCase
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
-        $document = VehicleAccessory::factory()->create([
+
+        $controller = new VehicleAccessoryController;
+
+        foreach ($vehicle->vehicleAccessories as $accessory) {
+            $controller->deleteVehicleAccessory($accessory->id);
+        }
+
+        VehicleAccessory::factory()->create([
             'vehicle_id' => $vehicle->id,
             'expiration_date' => now()->addMonths(2), // beyond one month
         ]);
