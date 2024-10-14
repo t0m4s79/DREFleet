@@ -21,10 +21,10 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             drawRectangle: false,
             editMode: true,
             dragMode: true,
-            cutPolygon: false,
+            cutPolygon: true,
             removalMode: true,
         });
-        map.pm.setLang('pt-br');
+        map.pm.setLang('pt_pt');
 
         // Remove existing polygon before creating a new one
         const removeExistingPolygon = () => {
@@ -40,7 +40,9 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             const layer = e.layer;
             const polygonCoordinates = layer.getLatLngs();
             polygonLayerRef.current = layer; // Save reference to the polygon
-
+            layer.on('pm:edit', (e) => {
+                console.log(e);
+              });
             // Apply color to the polygon
             layer.setStyle({
                 color: color,
@@ -80,6 +82,9 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
                 allowSelfIntersection: false, // Allow vertex deletion
                 snappable: true,
             });
+
+            // Ensure edit mode is not enabled by default
+            initialPolygon.pm.disable(); // Disable edit mode on load
         }
 
     }, [map, color, bounds, onAreaChange, initialCoordinates]);

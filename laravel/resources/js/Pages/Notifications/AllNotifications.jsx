@@ -1,8 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
 import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';

@@ -30,6 +30,11 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
+            language: 'pt-PT',
+            showAlternatives: true,
+            altLineOptions: {
+                styles: [{ color: 'red' }, { color: 'blue' }, { color: 'grey' }]
+            },
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
 
