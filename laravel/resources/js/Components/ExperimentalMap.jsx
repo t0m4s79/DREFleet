@@ -4,13 +4,13 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
-
+import { calculateTravelMetrics } from '@/utils/calculateTravelMetrics'; 
 
 const boundsSouthWestCorner = [32.269181, -17.735033];
 const boundsNorthEastCorner = [33.350247, -15.861279];
 
-function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
-
+function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointData }) {
+    //console.log(waypoints)
     const map = useMap();
 
     useEffect(() => {
@@ -30,11 +30,6 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
-
-            showAlternatives: true,
-            altLineOptions: {
-                styles: [{ color: 'red' }, { color: 'blue' }, { color: 'grey' }]
-            },
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
 
@@ -42,9 +37,13 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
             console.log('routes found ', e.routes)                      // TODO: CHECK THIS CONSOLE.LOG
             const trajectory = e.routes[0].coordinates;
             const summary = e.routes[0].summary;
+            const instructions = e.routes[0].instructions;
 
+            const metrics = calculateTravelMetrics(instructions, waypoints);
+            console.log('metrics', metrics)
             // Pass the trajectory waypoints back to the form through the callback
             onTrajectoryChange(trajectory);
+            updateWaypointData(metrics);
             updateSummary(summary);
         });
 
@@ -54,15 +53,15 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary }) {
     return null;
 }
 
-export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateSummary }) {
-    console.log(waypoints)
+export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateSummary, updateWaypointData }) {
+    //console.log(waypoints)
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%' }}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange} updateSummary={updateSummary}/>
+            <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange} updateSummary={updateSummary} updateWaypointData={updateWaypointData}/>
         </MapContainer>
     );
 }

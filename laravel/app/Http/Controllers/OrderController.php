@@ -97,8 +97,8 @@ class OrderController extends Controller
             'trajectory' => ['required', 'json'],
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
-            'expected_time' => ['required', 'integer'], //in seconds
-            'distance' => ['required', 'integer'],      //in meters
+            'expected_time' => ['required', 'min:0'], //in seconds
+            'distance' => ['required', 'min:0'],      //in meters
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
                 'required',
@@ -119,8 +119,8 @@ class OrderController extends Controller
             'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.stop_number' => ['required', 'integer', 'min:0'],
-            'places.*.time' => ['required', 'integer', 'min:0'],                 //time from previous stop
-            'places.*.distance' => ['required', 'integer', 'min:0'],             //distance from previous stop
+            'places.*.time' => ['required', 'min:0'],                 //time from previous stop
+            'places.*.distance' => ['required', 'min:0'],             //distance from previous stop
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
@@ -216,8 +216,8 @@ class OrderController extends Controller
         $incomingFields = $request->validate([
             'expected_begin_date' => ['required', 'date'],
             'expected_end_date' => ['required', 'date'],
-            'expected_time' => ['required', 'integer'],
-            'distance' => ['required', 'integer'],
+            'expected_time' => ['required', 'min:0'],
+            'distance' => ['required', 'min:0'],
             'trajectory' => ['required', 'json'],
             'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
@@ -237,11 +237,11 @@ class OrderController extends Controller
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
-            'places' => ['nullable', 'array'], // Ensure 'places' is an array
+            'places' => ['required', 'array'], // Ensure 'places' is an array
             'places.*' => ['array'],           // Ensure each item in 'places' is an array
             'places.*.stop_number' => ['required', 'integer', 'min:0'],
-            'places.*.time' => ['required', 'integer', 'min:0'],                 //time from previous stop
-            'places.*.distance' => ['required', 'integer', 'min:0'],             //distance from previous stop
+            'places.*.time' => ['required', 'min:0'],                 //time from previous stop
+            'places.*.distance' => ['required', 'min:0'],             //distance from previous stop
             'places.*.place_id' => ['required', 'exists:places,id'], // Validate that 'place_id' exists in the places table
             'places.*.kid_id' => [
                 'nullable',           // Validate that 'kid_id' is optional but must exist if provided
@@ -252,7 +252,6 @@ class OrderController extends Controller
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
-
         DB::beginTransaction();
         try {
             $order->update([

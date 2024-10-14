@@ -1,54 +1,78 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import ExperimentalMap from '@/Components/ExperimentalMap';
+import { OrderContext } from '../OrderContext';
 
-export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoints, waypointsList }) {
-    const [waypoints, setWaypoints] = useState([]);
-    const [places, setPlaces] = useState([]);
+export default function WaypointManager({ kids, otherPlacesList, updateSummary }) {
+    const { 
+        waypoints,
+        places,
+        updateWaypoints,
+        updatePlaces,
+        updateTrajectory,
+    } = useContext(OrderContext);
+
     const [selectedKid, setSelectedKid] = useState(null);
     const [selectedKidPlace, setSelectedKidPlace] = useState(null);
     const [selectedOtherPlace, setSelectedOtherPlace] = useState(null);
 
+    console.log('waypoint manager receives waypoints', waypoints)
+    console.log('waypoint manager receives places', places)
+
     useEffect(() => {
-        if (waypointsList && waypointsList.length > 0) {
-            setWaypoints(waypointsList);
-            const initialPlaces = waypointsList.map((waypoint, index) => ({
-                place_id: waypoint.id,
-                kid_id: waypoint.kid ? waypoint.kid.id : null,
-                stop_number: index + 1, // Initialize the stop_number
-            }));
-            setPlaces(initialPlaces);
+        if (waypoints.length > 0) {
+            const newPlaces = waypoints.map((waypoint, index) => {
+                const existingPlace = places.find(p => p.place_id === waypoint.place_id) || {};
+    
+                return {
+                    place_id: waypoint.place_id,
+                    kid_id: waypoint.kid_id || null, // Ensure kid_id is included even if null
+                    stop_number: index + 1,
+                    distance: existingPlace.distance || 0, // Keep existing metric data if available
+                    time: existingPlace.time || 0,         // Keep existing metric data if available
+                };
+            });
+    
+            // Update the places array in context with the new structure
+            updatePlaces(newPlaces);
+            updateTrajectory(); // Update trajectory after places are set
         }
-    }, [waypointsList]);
-
-    const handleKidChange = (kid) => {
-        setSelectedKid(kid);
+    }, [waypoints, updateTrajectory]);
+    
+    
+    const addWaypoint = (waypoint, placeId) => {
+        const newWaypoints = [...waypoints, waypoint];
+        updateWaypoints(newWaypoints);
+        updatePlaces([...places, { 
+            place_id: placeId, 
+            kid_id: waypoint.kid_id,
+            stop_number: places.length + 1, 
+            label: waypoint.label, 
+            lat: waypoint.lat, 
+            lng: waypoint.lng,
+            distance: 0, time: 0 }]);
     };
 
-    const handlePlaceChange = (place) => {
-        if (selectedKid && place) {
-            setSelectedKidPlace(place);
-        }
-    };
-
-    const handleOtherPlaceChange = (place) => {
-        setSelectedOtherPlace(place);
+    const updateMetricData = (newMetrics) => {
+        console.log('metric data being updated')
+        const updatedPlaces = places.map((place, index) => ({
+            ...place,
+            distance: newMetrics[index]?.distance || place.distance,
+            time: newMetrics[index]?.time || place.time,
+        }));
+        updatePlaces([...updatedPlaces]);
     };
 
     const addKid = () => {
         if (selectedKid && selectedKidPlace) {
-            const newWaypoint = {
-                kid: selectedKid,
-                id: selectedKidPlace.id,
-                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address}`,
+            addWaypoint({
+                kid_id: selectedKid.id,
+                place_id: selectedKidPlace.id,
+                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address} ###${selectedKid.id} - ${selectedKid.name}`,
                 lat: selectedKidPlace.coordinates.coordinates[1],
                 lng: selectedKidPlace.coordinates.coordinates[0],
-            };
-            const updatedWaypoints = [...waypoints, newWaypoint];
-            const updatedPlaces = [...places, { place_id: selectedKidPlace.id, kid_id: selectedKid.id, stop_number: places.length + 1 }];
-            setWaypoints(updatedWaypoints);
-            setPlaces(updatedPlaces);
-            onUpdateWaypoints(updatedWaypoints, updatedPlaces);
+            }, selectedKidPlace.id);
             setSelectedKid(null);
             setSelectedKidPlace(null);
         }
@@ -56,27 +80,23 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
 
     const addOtherPlace = () => {
         if (selectedOtherPlace) {
-            const newWaypoint = {
-                id: selectedOtherPlace.id,
+            addWaypoint({
+                place_id: selectedOtherPlace.place_id,
                 label: selectedOtherPlace.label,
                 lat: selectedOtherPlace.lat,
                 lng: selectedOtherPlace.lng,
-            };
-            const updatedWaypoints = [...waypoints, newWaypoint];
-            const updatedPlaces = [...places, { place_id: selectedOtherPlace.id, stop_number: places.length + 1 }];
-            setWaypoints(updatedWaypoints);
-            setPlaces(updatedPlaces);
-            onUpdateWaypoints(updatedWaypoints, updatedPlaces);
+            }, selectedOtherPlace.place_id);
             setSelectedOtherPlace(null);
         }
     };
 
     const removeLastWaypoint = () => {
-        const updatedWaypoints = waypoints.slice(0, -1);
-        const updatedPlaces = places.slice(0, -1);
-        setWaypoints(updatedWaypoints);
-        setPlaces(updatedPlaces);
-        onUpdateWaypoints(updatedWaypoints, updatedPlaces);
+        if (waypoints.length) {
+            const newWaypoints = waypoints.slice(0, -1);
+            const newPlaces = places.slice(0, -1);
+            updateWaypoints(newWaypoints);
+            updatePlaces(newPlaces);
+        }
     };
 
     const onDragEnd = (result) => {
@@ -84,99 +104,101 @@ export default function WaypointManager({ kids, otherPlacesList, onUpdateWaypoin
 
         const reorderedWaypoints = Array.from(waypoints);
         const reorderedPlaces = Array.from(places);
-        
-        // Reorder waypoints and places
         const [removedWaypoint] = reorderedWaypoints.splice(result.source.index, 1);
         const [removedPlace] = reorderedPlaces.splice(result.source.index, 1);
         reorderedWaypoints.splice(result.destination.index, 0, removedWaypoint);
         reorderedPlaces.splice(result.destination.index, 0, removedPlace);
 
-        // Update stop_number based on new order
         const updatedPlacesWithStopNumber = reorderedPlaces.map((place, index) => ({
             ...place,
-            stop_number: index + 1, // Set stop_number based on the new index
+            stop_number: index + 1,
         }));
 
-        setWaypoints(reorderedWaypoints);
-        setPlaces(updatedPlacesWithStopNumber);
-        onUpdateWaypoints(reorderedWaypoints, updatedPlacesWithStopNumber);
+        updateWaypoints(reorderedWaypoints);
+        updatePlaces(updatedPlacesWithStopNumber);
     };
 
     return (
         <Grid container spacing={3}>
-            <Grid item xs={12}>
-                <Typography>Pontos de Paragem:</Typography>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="waypoints-list">
-                        {(provided) => (
-                            <List
-                                style={{ minHeight: '200px', maxHeight: '500px', overflowY: 'scroll' }}
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                {waypoints.map((waypoint, index) => (
-                                    <Draggable key={index} draggableId={index.toString()} index={index}>
-                                        {(provided) => (
-                                            <ListItem
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                            >
-                                                <Typography>
-                                                    {waypoint.kid
-                                                        ? `${waypoint.kid.name} - ${waypoint.label}`
-                                                        : waypoint.label}
-                                                </Typography>
-                                            </ListItem>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </List>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-            </Grid>
+            <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
+                    <Typography>Pontos de Paragem:</Typography>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="waypoints-list">
+                            {(provided) => (
+                                <List
+                                    style={{ minHeight: '200px', maxHeight: '500px', overflowY: 'scroll' }}
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                >
+                                    {waypoints.map((waypoint, index) => (
+                                        <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index}>
+                                            {(provided) => (
+                                                <ListItem
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    <Typography>
+                                                        {waypoint.kid ? `${waypoint.kid.name} - ${waypoint.label}` : waypoint.label}
+                                                    </Typography>
+                                                </ListItem>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </List>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                </Grid>
 
-            {/* Kid Selection */}
-            <Grid item xs={12}>
-                <Autocomplete
-                    options={kids}
-                    getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
-                    onChange={(event, kid) => handleKidChange(kid)}
-                    renderInput={(params) => <TextField {...params} label="Criança" />}
-                />
-                {selectedKid && (
+                <Grid item xs={12}>
                     <Autocomplete
-                        options={selectedKid.places || []}
-                        getOptionLabel={(place) => place.address}
-                        onChange={(event, place) => handlePlaceChange(place)}
-                        renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
+                        options={kids}
+                        getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
+                        onChange={(event, kid) => setSelectedKid(kid)}
+                        renderInput={(params) => <TextField {...params} label="Criança" />}
                     />
-                )}
+                    {selectedKid && (
+                        <Autocomplete
+                            options={selectedKid.places || []}
+                            getOptionLabel={(place) => place.address}
+                            onChange={(event, place) => setSelectedKidPlace(place)}
+                            renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
+                        />
+                    )}
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Autocomplete
+                        options={otherPlacesList}
+                        getOptionLabel={(place) => place.label}
+                        onChange={(event, place) => setSelectedOtherPlace(place)}
+                        renderInput={(params) => <TextField {...params} label="Outro Local" />}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Button onClick={addKid} disabled={!selectedKid || !selectedKidPlace}>
+                        Add Kid
+                    </Button>
+                    <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
+                        Add Other Place
+                    </Button>
+                    <Button onClick={removeLastWaypoint} disabled={!waypoints.length}>
+                        Remove Last Waypoint
+                    </Button>
+                </Grid>
             </Grid>
 
-            {/* Other Places Selection */}
-            <Grid item xs={12}>
-                <Autocomplete
-                    options={otherPlacesList}
-                    getOptionLabel={(place) => place.label}
-                    onChange={(event, place) => handleOtherPlaceChange(place)}
-                    renderInput={(params) => <TextField {...params} label="Outro Local" />}
+            <Grid item xs={12} md={6}>
+                <ExperimentalMap 
+                    waypoints={waypoints} 
+                    onTrajectoryChange={updateTrajectory}
+                    updateSummary={updateSummary} 
+                    updateWaypointData={updateMetricData}
                 />
-            </Grid>
-
-            {/* Buttons for adding and removing waypoints */}
-            <Grid item xs={12}>
-                <Button onClick={addKid} disabled={!selectedKid || !selectedKidPlace}>
-                    Add Kid
-                </Button>
-                <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
-                    Add Other Place
-                </Button>
-                <Button onClick={removeLastWaypoint} disabled={waypoints.length === 0}>
-                    Remove Last Waypoint
-                </Button>
             </Grid>
         </Grid>
     );
