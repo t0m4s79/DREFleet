@@ -113,7 +113,7 @@ class KidTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/kids');
+            ->get(route('kids.index'));
 
         $response->assertOk();
     }
@@ -122,7 +122,7 @@ class KidTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/kids/create');
+            ->get(route('kids.showCreate'));
 
         $response->assertOk();
     }
@@ -133,7 +133,7 @@ class KidTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/kids/edit/{$kid->id}");
+            ->get(route('kids.showEdit',$kid->id));
 
         $response->assertOk();
     }
@@ -144,7 +144,7 @@ class KidTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/kids/contacts/{$kid->id}");
+            ->get(route('kids.contacts', $kid->id));
 
         $response->assertOk();
     }
@@ -158,11 +158,11 @@ class KidTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/kids/create', $kidData);
+            ->post(route('kids.create'), $kidData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/kids');
+            ->assertRedirect(route('kids.index'));
 
 
         $this->assertDatabaseHas('kids', $kidData);
@@ -179,11 +179,11 @@ class KidTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/kids/edit/{$kid->id}", $updatedData);
+            ->put(route('kids.edit', $kid->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/kids');
+            ->assertRedirect(route('kids.index'));
 
         $this->assertDatabaseHas('kids', $updatedData); 
     }
@@ -194,11 +194,11 @@ class KidTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/kids/delete/{$kid->id}");
+            ->delete(route('kids.delete', $kid->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/kids');
+            ->assertRedirect(route('kids.index'));
 
         $this->assertDatabaseMissing('kids', [
             'id' => $kid->id,
@@ -222,7 +222,7 @@ class KidTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/kids');
+            ->assertRedirect(route('kids.index'));
 
         $this->assertDatabaseHas('kids', [
             'name' => $kidData['name'],
@@ -292,11 +292,11 @@ class KidTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/kids/edit/{$kid->id}", $updatedData);
+            ->put(route('kids.edit', $kid->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/kids');
+            ->assertRedirect(route('kids.index'));
 
         $this->assertDatabaseMissing('kid_place', [
             'kid_id' => $kid->id,
@@ -341,7 +341,7 @@ class KidTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/kids/edit/{$kid->id}", $updatedData);
+            ->put(route('kids.edit', $kid->id), $updatedData);
 
         $response->assertSessionHasErrors(['addPlaces']);
 
@@ -353,7 +353,7 @@ class KidTest extends TestCase
 
     public function test_kid_creation_handles_exception()
     {
-        $incomingFields = [
+        $data = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
         ];
@@ -367,9 +367,9 @@ class KidTest extends TestCase
         // Act: Send a POST request to the create kid route
         $response = $this
             ->actingAs($this->user)
-            ->post('/kids/create', $incomingFields);
+            ->post('/kids/create', $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/kids'); // Ensure it redirects back to the form
+        $response->assertRedirect(route('kids.index')); // Ensure it redirects back to the form
     }
 }

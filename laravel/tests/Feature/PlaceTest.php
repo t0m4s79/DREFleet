@@ -60,7 +60,7 @@ class PlaceTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/places');
+            ->get(route('places.index'));
 
         $response->assertOk();
     }
@@ -69,7 +69,7 @@ class PlaceTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/places/create');
+            ->get(route('places.showCreate'));
 
         $response->assertOk();
     }
@@ -80,7 +80,7 @@ class PlaceTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/places/edit/{$place->id}");
+            ->get(route('places.edit', $place->id));
 
         $response->assertOk();
     }
@@ -98,11 +98,11 @@ class PlaceTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/places/create', $placeData);
+            ->post(route('places.create'), $placeData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/places');
+            ->assertRedirect(route('places.index'));
 
         $place = Place::where('address', $placeData['address'])
                     ->where('known_as', $placeData['known_as'])
@@ -136,11 +136,11 @@ class PlaceTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/places/edit/{$place->id}", $updatedData);
+            ->put(route('places.edit',$place->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/places');
+            ->assertRedirect(route('places.index'));
 
         $place->refresh();
 
@@ -161,11 +161,11 @@ class PlaceTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/places/delete/{$place->id}");
+            ->delete(route('places.delete', $place->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/places');
+            ->assertRedirect(route('places.index'));
 
         $this->assertDatabaseMissing('places', [
             'id' => $place->id,
@@ -174,7 +174,7 @@ class PlaceTest extends TestCase
 
     public function test_place_creation_handles_exception()
     {
-        $incomingFields = [
+        $data = [
             'address' => fake()->address(),
             'known_as' =>  Arr::random(['Casa do Avô','Casa da Tia', 'Casa do Pai', 'Casa da Mãe','Restaurante da Mãe','Casa do Primo', 'Café da Tia', 'Restaurante do Tio','Casa']),
             'place_type' => Arr::random(['Residência', 'Residência', 'Residência', 'Residência','Escola', 'Outros']),
@@ -191,9 +191,9 @@ class PlaceTest extends TestCase
         // Act: Send a POST request to the create place route
         $response = $this
             ->actingAs($this->user)
-            ->post('/places/create', $incomingFields);
+            ->post(route('places.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/places');
+        $response->assertRedirect(route('places.index'));
     }
 }

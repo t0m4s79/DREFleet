@@ -35,7 +35,7 @@ class VehicleAccessoryTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicleAccessories');
+            ->get(route('vehicleAccessories.index'));
 
         $response->assertOk();
     }
@@ -44,7 +44,7 @@ class VehicleAccessoryTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicleAccessories/create');
+            ->get(route('vehicleAccessories.showCreate'));
 
         $response->assertOk();
     }
@@ -55,7 +55,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/vehicleAccessories/edit/{$vehicleAccessory->id}");
+            ->get(route('vehicleAccessories.showEdit', $vehicleAccessory->id));
 
         $response->assertOk();
     }
@@ -74,11 +74,11 @@ class VehicleAccessoryTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicleAccessories/create', $vehicleAccessoryData);
+            ->post(route('vehicleAccessories.create'), $vehicleAccessoryData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleAccessories');
+            ->assertRedirect(route('vehicleAccessories.index'));
 
         $this->assertDatabaseHas('vehicle_accessories', $vehicleAccessoryData);
     }
@@ -99,11 +99,11 @@ class VehicleAccessoryTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/vehicleAccessories/edit/{$vehicleAccessory->id}", $updatedData);
+            ->put(route('vehicleAccessories.edit', $vehicleAccessory->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleAccessories');
+            ->assertRedirect(route('vehicleAccessories.index'));
 
         $this->assertDatabaseHas('vehicle_accessories', $updatedData);
     }
@@ -114,11 +114,11 @@ class VehicleAccessoryTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/vehicleAccessories/delete/{$vehicleAccessory->id}");
+            ->delete(route('vehicleAccessories.delete', $vehicleAccessory->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleAccessories');
+            ->assertRedirect(route('vehicleAccessories.index'));
 
         $this->assertDatabaseMissing('vehicle_accessories', [
             'id' => $vehicleAccessory->id,
@@ -128,7 +128,7 @@ class VehicleAccessoryTest extends TestCase
     public function test_vehicle_creation_handles_exception()
     {
         // Prepare the incoming fields
-        $incomingFields = [
+        $data = [
             'name' => fake()->name(),
             'condition' => Arr::random(['Expirado', 'Danificado', 'Aceitável']),
             'expiration_date' => fake()->dateTime()->format('Y-m-d'),
@@ -144,11 +144,11 @@ class VehicleAccessoryTest extends TestCase
         // Act: Send a POST request to the create vehicle accessory route
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicleAccessories/create', $incomingFields);
+            ->post(route('vehicleAccessories.create'), $data);
 
         // Assert: Check if the catch block was executed
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleAccessories');
+            ->assertRedirect(route('vehicleAccessories.index'));
     }
 }

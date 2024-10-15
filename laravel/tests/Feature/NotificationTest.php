@@ -106,7 +106,7 @@ class NotificationTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/notifications');
+            ->get(route('notifications.index'));
 
         $response->assertOk();
     }
@@ -158,7 +158,7 @@ class NotificationTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/notifications/delete/{$notification->id}");
+            ->delete(route('notifications.delete', $notification->id));
 
         $response
             ->assertSessionHasNoErrors();

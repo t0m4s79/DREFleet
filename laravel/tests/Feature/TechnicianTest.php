@@ -26,7 +26,7 @@ class TechnicianTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/technicians');
+            ->get(route('technicians.index'));
 
         $response->assertOk();
     }
@@ -35,7 +35,7 @@ class TechnicianTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/technicians/create');
+            ->get(route('technicians.showCreate'));
 
         $response->assertOk();
     }
@@ -46,7 +46,7 @@ class TechnicianTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/technicians/edit/{$technician->id}");
+            ->get(route('technicians.showEdit', $technician->id));
 
         $response->assertOk();
     }
@@ -61,11 +61,11 @@ class TechnicianTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/technicians/create', $technicianData);
+            ->post(route('technicians.create'), $technicianData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/technicians');
+            ->assertRedirect(route('technicians.index'));
 
 
         $this->assertDatabaseHas('users', $technicianData);
@@ -74,16 +74,24 @@ class TechnicianTest extends TestCase
     public function test_create_technician_fails_on_user_type_is_not_none(): void
     {
         $user = User::factory()->create([
-            'user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador']),
+            'user_type' => $userType = Arr::random(['Gestor', 'Condutor', 'Administrador']),
         ]);
 
         $managerData = [
             'id' => $user->id,
         ];
 
+        // Select the route based on the user_type
+        $route = match ($userType) {
+            'Gestor' => route('managers.create'),
+            'Condutor' => route('drivers.create'),
+            default => route('managers.create'), // Fallback route, you can modify it as needed
+        };
+
+        // Make the post request using the selected route
         $response = $this
             ->actingAs($this->user)
-            ->post('/managers/create', $managerData);
+            ->post($route, $managerData);
 
         $response->assertSessionHasErrors(['id']);
 
@@ -106,11 +114,11 @@ class TechnicianTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/technicians/edit/{$technician->id}", $updatedData);
+            ->put(route('technicians.edit', $technician->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/technicians');
+            ->assertRedirect(route('technicians.index'));
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -126,11 +134,11 @@ class TechnicianTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/technicians/delete/{$technician->id}");
+            ->delete(route('technicians.delete', $technician->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/technicians');
+            ->assertRedirect(route('technicians.index'));
 
         $this->assertDatabaseHas('users', [
             'id' => $technician->id,
@@ -142,7 +150,7 @@ class TechnicianTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $incomingFields = [
+        $data = [
             'id' => $user->id,
         ];
 
@@ -155,10 +163,10 @@ class TechnicianTest extends TestCase
         // Act: Send a POST request to the create technician route
         $response = $this
             ->actingAs($this->user)
-            ->post('/technicians/create', $incomingFields);
+            ->post(route('technicians.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/technicians'); // Ensure it redirects back to the form
+        $response->assertRedirect(route('technicians.index')); // Ensure it redirects back to the form
     }
 
 }

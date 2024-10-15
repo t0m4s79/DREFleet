@@ -35,7 +35,7 @@ class KidPhoneNumberTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/kidPhoneNumbers/create');
+            ->get(route('kidPhoneNumbers.showCreate'));
 
         $response->assertOk();
     }
@@ -46,7 +46,7 @@ class KidPhoneNumberTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/kidPhoneNumbers/edit/{$kidPhoneNumber->id}");
+            ->get(route('kidPhoneNumbers.showEdit', $kidPhoneNumber->id));
 
         $response->assertOk();
     }
@@ -63,7 +63,7 @@ class KidPhoneNumberTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/kidPhoneNumbers/create', $kidPhoneNumberData);
+            ->post(route('kidPhoneNumbers.create'), $kidPhoneNumberData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -85,7 +85,7 @@ class KidPhoneNumberTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/kidPhoneNumbers/edit/{$KidPhoneNumber->id}", $updatedData);
+            ->put(route('kidPhoneNumbers.edit', $KidPhoneNumber->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -99,7 +99,7 @@ class KidPhoneNumberTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/kidPhoneNumbers/delete/{$KidPhoneNumber->id}");
+            ->delete(route('kidPhoneNumbers.delete', $KidPhoneNumber->id));
 
         $response
             ->assertSessionHasNoErrors();

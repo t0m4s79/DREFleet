@@ -171,7 +171,7 @@ class OrderTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/orders');
+            ->get(route('orders.index'));
 
         $response->assertOk();
     }
@@ -180,7 +180,7 @@ class OrderTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/orders/create');
+            ->get(route('orders.showCreate'));
 
         $response->assertOk();
     }
@@ -191,7 +191,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/orders/edit/{$order->id}");
+            ->get(route('orders.showEdit', $order->id));
 
         $response->assertOk();
     }
@@ -222,11 +222,11 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData);
+            ->post(route('orders.create'), $orderData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect(route('orders.index'));
 
 
         $this->assertDatabaseHas('orders', [
@@ -291,7 +291,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData);
+            ->post(route('orders.create'), $orderData);
 
         $response->assertSessionHasErrors(['places.*.kid_id']);
 
@@ -340,7 +340,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData);
+            ->post(route('orders.create'), $orderData);
 
         $response->assertSessionHasErrors(['places.*.kid_id']);
 
@@ -389,7 +389,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData);
+            ->post(route('orders.create'), $orderData);
 
         $response->assertSessionHasErrors(['vehicle_id']);
 
@@ -432,7 +432,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData_1);
+            ->post(route('orders.create'), $orderData_1);
 
 
         $response->assertSessionHasErrors(['driver_id']);
@@ -466,7 +466,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData_2);
+            ->post(route('orders.create'), $orderData_2);
 
         $response->assertSessionHasErrors(['driver_id']);
 
@@ -508,7 +508,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $orderData);
+            ->post(route('orders.create'), $orderData);
 
         $response->assertSessionHasErrors(['technician_id']);
 
@@ -549,11 +549,11 @@ class OrderTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect(route('orders.index'));
 
         $order->refresh();
 
@@ -613,11 +613,11 @@ class OrderTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect(route('orders.index'));
 
         $order->refresh();
 
@@ -684,7 +684,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response->assertSessionHasErrors(['places.*.kid_id']);
 
@@ -738,7 +738,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response->assertSessionHasErrors(['places.*.kid_id']);
 
@@ -792,7 +792,7 @@ class OrderTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response->assertSessionHasErrors(['vehicle_id']);
 
@@ -835,7 +835,7 @@ class OrderTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData_1);
+            ->put(route('orders.edit', $order->id), $updatedData_1);
 
         $response->assertSessionHasErrors(['driver_id']);
 
@@ -867,7 +867,7 @@ class OrderTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", [
+            ->put(route('orders.edit', $order->id), [
                 'expected_begin_date' => $updatedData_2['expected_begin_date'],
                 'expected_end_date' => $updatedData_2['expected_end_date'],
                 'trajectory' => $updatedData_2['trajectory'],
@@ -907,7 +907,7 @@ class OrderTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orders/edit/{$order->id}", $updatedData);
+            ->put(route('orders.edit', $order->id), $updatedData);
 
         $response->assertSessionHasErrors(['technician_id']);
 
@@ -936,7 +936,7 @@ class OrderTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orders');
+            ->assertRedirect(route('orders.index'));
 
         $this->assertDatabaseMissing('orders', [
             'id' => $order->id,
@@ -1011,7 +1011,7 @@ class OrderTest extends TestCase
 
         $this->actingAs($manager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->patch(route('orders.removeApproval', $order), [
+        $response = $this->patch(route('orders.unapprove', $order), [
             'manager_id' => $manager->id,
         ]);
 
@@ -1040,7 +1040,7 @@ class OrderTest extends TestCase
         
         $this->actingAs($notManager);      //if intelephense shows error -> ignore it, the line is correct
 
-        $response = $this->patch(route('orders.removeApproval', $order), [
+        $response = $this->patch(route('orders.unapprove', $order), [
             'manager_id' => $notManager->id,
         ]);
 
@@ -1063,7 +1063,7 @@ class OrderTest extends TestCase
 
         $trajectory = $this->generateRandomTrajectory();
 
-        $incomingFields = [
+        $data = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
             'expected_time' => rand(1,200),
@@ -1086,9 +1086,9 @@ class OrderTest extends TestCase
         // Act: Send a POST request to the create order route
         $response = $this
             ->actingAs($this->user)
-            ->post('/orders/create', $incomingFields);
+            ->post(route('orders.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/orders');
+        $response->assertRedirect(route('orders.index'));
     }
 }

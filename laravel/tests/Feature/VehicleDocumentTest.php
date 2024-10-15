@@ -36,7 +36,7 @@ class VehicleDocumentTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicleDocuments');
+            ->get(route('vehicleDocuments.index'));
 
         $response->assertOk();
     }
@@ -45,7 +45,7 @@ class VehicleDocumentTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicleDocuments/create');
+            ->get(route('vehicleDocuments.showCreate'));
 
         $response->assertOk();
     }
@@ -56,7 +56,7 @@ class VehicleDocumentTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/vehicleDocuments/edit/{$vehicleDocument->id}");
+            ->get(route('vehicleDocuments.showEdit', $vehicleDocument->id));
 
         $response->assertOk();
     }
@@ -74,11 +74,11 @@ class VehicleDocumentTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicleDocuments/create', $vehicleDocumentData);
+            ->post(route('vehicleDocuments.create'), $vehicleDocumentData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleDocuments');
+            ->assertRedirect(route('vehicleDocuments.index'));
 
         $this->assertDatabaseHas('vehicle_documents', $vehicleDocumentData);
     }
@@ -97,11 +97,11 @@ class VehicleDocumentTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/vehicleDocuments/edit/{$vehicleDocument->id}", $updatedData);
+            ->put(route('vehicleDocuments.edit', $vehicleDocument->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleDocuments');
+            ->assertRedirect(route('vehicleDocuments.index'));
 
         $this->assertDatabaseHas('vehicle_documents', $updatedData);
     }
@@ -112,11 +112,11 @@ class VehicleDocumentTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/vehicleDocuments/delete/{$vehicleDocument->id}");
+            ->delete(route('vehicleDocuments.delete', $vehicleDocument->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleDocuments');
+            ->assertRedirect(route('vehicleDocuments.index'));
 
         $this->assertDatabaseMissing('vehicle_documents', [
             'id' => $vehicleDocument->id,
@@ -127,7 +127,7 @@ class VehicleDocumentTest extends TestCase
     {
         $issueDate = Carbon::instance(fake()->dateTime());
 
-        $incomingFields = [
+        $data = [
             'name' => fake()->name(),
             'issue_date' => $issueDate->format('Y-m-d'),
             'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
@@ -143,11 +143,11 @@ class VehicleDocumentTest extends TestCase
         // Act: Send a POST request to the create vehicle document route
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicleDocuments/create', $incomingFields);
+            ->post(route('vehicleDocuments.create'), $data);
 
         // Assert: Check if the catch block was executed
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicleDocuments');
+            ->assertRedirect(route('vehicleDocuments.index'));
     }
 }

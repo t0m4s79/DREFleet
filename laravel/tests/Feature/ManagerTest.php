@@ -34,7 +34,7 @@ class ManagerTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/managers/create');
+            ->get(route('managers.showCreate'));
 
         $response->assertOk();
     }
@@ -45,7 +45,7 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/managers/showApproved/{$manager->id}");
+            ->get(route('managers.showEdit', $manager->id));
 
         $response->assertOk();
     }
@@ -56,7 +56,7 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/managers/edit/{$manager->id}");
+            ->get(route('managers.approved', $manager->id));
 
         $response->assertOk();
     }
@@ -71,11 +71,11 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/managers/create', $managerData);
+            ->post(route('managers.create'), $managerData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect(route('managers.index'));
 
 
         $this->assertDatabaseHas('users', $managerData);
@@ -93,7 +93,7 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/managers/create', $managerData);
+            ->post(route('managers.create'), $managerData);
 
         $response->assertSessionHasErrors(['id']);
 
@@ -116,11 +116,11 @@ class ManagerTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/managers/edit/{$manager->id}", $updatedData);
+            ->put(route('managers.edit', $manager->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect(route('managers.index'));
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -136,11 +136,11 @@ class ManagerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/managers/delete/{$manager->id}");
+            ->delete(route('managers.delete', $manager->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/managers');
+            ->assertRedirect(route('managers.index'));
 
         $this->assertDatabaseHas('users', [
             'id' => $manager->id,
@@ -152,7 +152,7 @@ class ManagerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $incomingFields = [
+        $data = [
             'id' => $user->id,
         ];
 
@@ -165,10 +165,10 @@ class ManagerTest extends TestCase
         // Act: Send a POST request to the create manager route
         $response = $this
             ->actingAs($this->user)
-            ->post('/managers/create', $incomingFields);
+            ->post(route('managers.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/managers'); // Ensure it redirects back to the form
+        $response->assertRedirect(route('managers.index')); // Ensure it redirects back to the form
     }
 
 }

@@ -35,7 +35,7 @@ class KidEmailTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/kidEmails/create');
+            ->get(route('kidEmails.showCreate'));
 
         $response->assertOk();
     }
@@ -46,7 +46,7 @@ class KidEmailTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/kidEmails/edit/{$kidEmail->id}");
+            ->get(route('kidEmails.showEdit', $kidEmail->id));
 
         $response->assertOk();
     }
@@ -63,7 +63,7 @@ class KidEmailTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/kidEmails/create', $kidEmailData);
+            ->post(route('kidEmails.create'), $kidEmailData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -85,7 +85,7 @@ class KidEmailTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/kidEmails/edit/{$kidEmail->id}", $updatedData);
+            ->put(route('kidEmails.edit', $kidEmail->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -99,7 +99,7 @@ class KidEmailTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/kidEmails/delete/{$kidEmail->id}");
+            ->delete(route('kidEmails.delete', $kidEmail->id));
 
         $response
             ->assertSessionHasNoErrors();

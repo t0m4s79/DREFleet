@@ -106,7 +106,7 @@ class DriverTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/drivers');
+            ->get(route('drivers.index'));
 
         $response->assertOk();
     }
@@ -115,7 +115,7 @@ class DriverTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/drivers/create');
+            ->get(route('drivers.showCreate'));
 
         $response->assertOk();
     }
@@ -126,7 +126,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/drivers/edit/{$driver->user_id}");
+            ->get(route('drivers.showEdit', $driver->user_id));
 
         $response->assertOk();
     }
@@ -146,11 +146,11 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData);
+            ->post(route('drivers.create'), $driverData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/drivers');
+            ->assertRedirect(route('drivers.index'));
 
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driverData['user_id'],
@@ -174,7 +174,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData_1);
+            ->post(route('drivers.create'), $driverData_1);
 
         $response->assertSessionHasErrors(['license_number']);
 
@@ -197,7 +197,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData_2);
+            ->post(route('drivers.create'), $driverData_2);
 
         $response->assertSessionHasErrors(['license_number']);
 
@@ -220,7 +220,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData_3);
+            ->post(route('drivers.create'), $driverData_3);
 
         $response->assertSessionHasErrors(['license_number']);
 
@@ -243,7 +243,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData_4);
+            ->post(route('drivers.create'), $driverData_4);
 
         $response->assertSessionHasErrors(['license_number']);
 
@@ -272,7 +272,7 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $driverData);
+            ->post(route('drivers.create'), $driverData);
 
         $response->assertSessionHasErrors(['user_id']);
 
@@ -314,11 +314,11 @@ class DriverTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/drivers/edit/{$driver->user_id}", $updatedData);
+            ->put((route('drivers.edit', $driver->user_id)), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/drivers');
+            ->assertRedirect(route('drivers.index'));
 
         $this->assertDatabaseHas('drivers', [
             'user_id' => $driver->user_id,
@@ -337,11 +337,11 @@ class DriverTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/drivers/delete/{$driver->user_id}");
+            ->delete(route('drivers.delete', $driver->user_id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/drivers');
+            ->assertRedirect(route('drivers.index'));
 
         $this->assertDatabaseMissing('drivers', [
             'user_id' => $driver->user_id,
@@ -350,7 +350,7 @@ class DriverTest extends TestCase
 
     public function test_driver_creation_handles_exception()
     {
-        $incomingFields = [
+        $data = [
             'user_id' => User::factory()->create()->id,
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
             'heavy_license' => '0',
@@ -366,9 +366,9 @@ class DriverTest extends TestCase
         // Act: Send a POST request to the create driver route
         $response = $this
             ->actingAs($this->user)
-            ->post('/drivers/create', $incomingFields);
+            ->post(route('drivers.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/drivers'); // Ensure it redirects back to the form
+        $response->assertRedirect(route('drivers.index')); // Ensure it redirects back to the form
     }
 }

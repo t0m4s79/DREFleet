@@ -102,7 +102,7 @@ class OrderRouteTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/orderRoutes');
+            ->get(route('orderRoutes.index'));
 
         $response->assertOk();
     }
@@ -111,7 +111,7 @@ class OrderRouteTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/orderRoutes/create');
+            ->get(route('orderRoutes.showCreate'));
 
         $response->assertOk();
     }
@@ -122,7 +122,7 @@ class OrderRouteTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/orderRoutes/edit/{$orderRoute->id}");
+            ->get(route('orderRoutes.showEdit', $orderRoute->id));
 
         $response->assertOk();
     }
@@ -139,11 +139,11 @@ class OrderRouteTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orderRoutes/create', $orderRouteData);
+            ->post(route('orderRoutes.create', $orderRouteData));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orderRoutes');
+            ->assertRedirect(route('orderRoutes.index'));
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -179,11 +179,11 @@ class OrderRouteTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orderRoutes/create', $orderRouteData);
+            ->post(route('orderRoutes.create', $orderRouteData));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orderRoutes');
+            ->assertRedirect(route('orderRoutes.index'));
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -232,7 +232,7 @@ class OrderRouteTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orderRoutes/create', $orderRouteData);
+            ->post(route('orderRoutes.create', $orderRouteData));
 
         $response->assertSessionHasErrors(['usual_technicians.*']);
 
@@ -266,11 +266,11 @@ class OrderRouteTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orderRoutes/edit/{$orderRoute->id}", $updatedData);
+            ->put(route('orderRoutes.edit', $orderRoute->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orderRoutes');
+            ->assertRedirect(route('orderRoutes.index'));
 
         $expectedArea = $this->coordinatesToPolygon($coordinates);
 
@@ -321,7 +321,7 @@ class OrderRouteTest extends TestCase
         
         $response = $this
             ->actingAs($this->user)
-            ->put("/orderRoutes/edit/{$orderRoute->id}", $updatedData);
+            ->put(route('orderRoutes.edit', $orderRoute->id), $updatedData);
 
         $response->assertSessionHasErrors(['usual_technicians.*']);
 
@@ -337,11 +337,11 @@ class OrderRouteTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/orderRoutes/delete/{$orderRoute->id}");
+            ->delete(route('orderRoutes.delete', $orderRoute->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/orderRoutes');
+            ->assertRedirect(route('orderRoutes.index'));
 
         $this->assertDatabaseMissing('order_routes', [
             'id' => $orderRoute->id,
@@ -352,7 +352,7 @@ class OrderRouteTest extends TestCase
     {
         $coordinates = $this->generateRandomCoordinatesArray();
 
-        $incomingFields = [
+        $data = [
             'name' => fake()->company(),
             'area_coordinates' => $coordinates,
             'area_color' => fake()->hexColor(),
@@ -367,9 +367,9 @@ class OrderRouteTest extends TestCase
         // Act: Send a POST request to the create order_route route 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orderRoutes/create', $incomingFields);
+            ->post(route('orderRoutes.create', $data));
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/orderRoutes');
+        $response->assertRedirect(route('orderRoutes.index'));
     }
 }

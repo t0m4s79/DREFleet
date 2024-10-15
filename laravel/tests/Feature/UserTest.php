@@ -123,7 +123,7 @@ class UserTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/users');
+            ->get(route('users.index'));
 
         $response->assertOk();
     }
@@ -132,7 +132,7 @@ class UserTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/users/create');
+            ->get(route('users.showCreate'));
 
         $response->assertOk();
     }
@@ -143,7 +143,7 @@ class UserTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/users/edit/{$user->id}");
+            ->get(route('users.showEdit', $user->id));
 
         $response->assertOk();
     }
@@ -161,11 +161,11 @@ class UserTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/users/create', $userData);
+            ->post(route('users.create'), $userData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect(route('users.index'));
 
         $this->assertDatabaseHas('users', [
             'name' => $userData['name'],
@@ -187,11 +187,11 @@ class UserTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/users/edit/{$user->id}", $updatedData);
+            ->put(route('users.edit', $user->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect(route('users.index'));
 
         $this->assertDatabaseHas('users', $updatedData);
     }
@@ -202,11 +202,11 @@ class UserTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/users/delete/{$user->id}");
+            ->delete(route('users.delete', $user->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/users');
+            ->assertRedirect(route('users.index'));
 
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
@@ -215,7 +215,7 @@ class UserTest extends TestCase
 
     public function test_user_creation_handles_exception()
     {
-        $incomingFields = [
+        $data = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' =>  'Teste1234*',
@@ -232,9 +232,9 @@ class UserTest extends TestCase
         // Act: Send a POST request to the create vehicle route
         $response = $this
             ->actingAs($this->user)
-            ->post('/users/create', $incomingFields);
+            ->post(route('users.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/users'); // Ensure it redirects back to the form
+        $response->assertRedirect(route('users.index')); // Ensure it redirects back to the form
     }
 }

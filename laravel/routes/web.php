@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
-    Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.removeApproval');
+    Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
 
     //ORDER ROUTES
     Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');

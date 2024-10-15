@@ -23,7 +23,7 @@ class DashboardTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/dashboard');
+            ->get(route('dashboard.index'));
 
         $response->assertOk();
     }

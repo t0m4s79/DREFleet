@@ -115,7 +115,7 @@ class VehicleTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicles');
+            ->get(route('vehicles.index'));
 
         $response->assertOk();
     }
@@ -124,7 +124,7 @@ class VehicleTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/vehicles/create');
+            ->get(route('vehicles.showCreate'));
 
         $response->assertOk();
     }
@@ -135,7 +135,7 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/vehicles/edit/{$vehicle->id}");
+            ->get(route('vehicles.showEdit', $vehicle->id));
 
         $response->assertOk();
     }
@@ -146,7 +146,7 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->get("/vehicles/documentsAndAccessories/{$vehicle->id}");
+            ->get(route('vehicles.documentsAndAccessories', $vehicle->id));
 
         $response->assertOk();
     }
@@ -175,11 +175,11 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicles/create', $vehicleData);
+            ->post(route('vehicles.create'), $vehicleData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicles');
+            ->assertRedirect(route('vehicles.index'));
 
 
         $this->assertDatabaseHas('vehicles', $vehicleData);
@@ -213,11 +213,11 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicles/create', $vehicleData);
+            ->post(route('vehicles.create'), $vehicleData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicles');
+            ->assertRedirect(route('vehicles.index'));
     
         $vehicle = Vehicle::where('license_plate', $vehicleData['license_plate'])->first();
 
@@ -268,11 +268,11 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
+            ->put(route('vehicles.edit', $vehicle->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicles');
+            ->assertRedirect(route('vehicles.index'));
 
         $this->assertDatabaseHas('vehicles', $updatedData);
     }
@@ -307,11 +307,11 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/vehicles/edit/{$vehicle->id}", $updatedData);
+            ->put(route('vehicles.edit', $vehicle->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicles');
+            ->assertRedirect(route('vehicles.index'));
 
             $vehicle = Vehicle::where('license_plate', $updatedData['license_plate'])->first();
 
@@ -342,11 +342,11 @@ class VehicleTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/vehicles/delete/{$vehicle->id}");
+            ->delete(route('vehicles.delete', $vehicle->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect('/vehicles');
+            ->assertRedirect(route('vehicles.index'));
 
         $this->assertDatabaseMissing('vehicles', [
             'id' => $vehicle->id,
@@ -359,7 +359,7 @@ class VehicleTest extends TestCase
         $heavyType = $heavyVehicle ? Arr::random(['Mercadorias', 'Passageiros']) : null;
 
         // Prepare the incoming fields
-        $incomingFields = [
+        $data = [
             'make' => Arr::random(['Ford', 'Reanult', 'VW', 'Fiat', 'Peugeot']),
             'model' => fake()->name(),
             'license_plate' => rand(10, 99) . chr(rand(65, 90)) . chr(rand(65, 90)) . rand(10, 99),            
@@ -385,9 +385,9 @@ class VehicleTest extends TestCase
         // Act: Send a POST request to the create vehicle route
         $response = $this
             ->actingAs($this->user)
-            ->post('/vehicles/create', $incomingFields);
+            ->post(route('vehicles.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect('/vehicles');
+        $response->assertRedirect(route('vehicles.index'));
     }
 }

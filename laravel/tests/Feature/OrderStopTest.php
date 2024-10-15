@@ -73,7 +73,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post('/orderStops/create', $orderStopData);
+            ->post(route('orderStops.create'), $orderStopData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -111,7 +111,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put("/orderStops/edit/{$orderStop->id}", $updatedData);
+            ->put(route('orderStops.edit', $orderStop->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors();
@@ -133,7 +133,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->delete("/orderStops/delete/{$orderStop->id}");
+            ->delete(route('orderStops.delete', $orderStop->id));
 
         $response
             ->assertSessionHasNoErrors();
@@ -158,7 +158,7 @@ class OrderStopTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->patch("/orderStops/stopReached/{$orderStop->id}", $updatedData);
+            ->patch(route('orderStops.stopReached', $orderStop->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors();
