@@ -28,7 +28,7 @@ class SendDocumentExpiryNotificationTest extends TestCase
         // Delete documents created on vehicle factory
         $controller = new VehicleDocumentController();
 
-        foreach ($vehicle->vehicleDocuments as $document) {
+        foreach ($vehicle->documents as $document) {
             $controller->deleteVehicleDocument($document->id);
         }
 
@@ -59,7 +59,7 @@ class SendDocumentExpiryNotificationTest extends TestCase
         // Delete documents created on vehicle factory
         $controller = new VehicleDocumentController();
 
-        foreach ($vehicle->vehicleDocuments as $document) {
+        foreach ($vehicle->documents as $document) {
             $controller->deleteVehicleDocument($document->id);
         }
 

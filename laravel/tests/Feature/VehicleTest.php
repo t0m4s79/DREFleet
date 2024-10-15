@@ -52,7 +52,7 @@ class VehicleTest extends TestCase
         ]);
         
         foreach ($documents as $document) {
-            $this->assertTrue($vehicle->vehicleDocuments->contains($document));
+            $this->assertTrue($vehicle->documents->contains($document));
         }
     }
 
@@ -65,7 +65,7 @@ class VehicleTest extends TestCase
         ]);
 
         foreach ($accessories as $accessory) {
-            $this->assertTrue($vehicle->vehicleAccessories->contains($accessory));
+            $this->assertTrue($vehicle->accessories->contains($accessory));
         }
     }
 

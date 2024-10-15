@@ -64,14 +64,14 @@ class Vehicle extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function vehicleDocuments(): HasMany
+    public function documents(): HasMany
     {
-        return $this->hasMany(VehicleDocument::class);
+        return $this->hasMany(VehicleDocument::class)->chaperone();
     }
 
-    public function vehicleAccessories(): HasMany
+    public function accessories(): HasMany
     {
-        return $this->hasMany(VehicleAccessory::class);
+        return $this->hasMany(VehicleAccessory::class)->chaperone();
     }
 
     // Define inverse polymorphic relationship

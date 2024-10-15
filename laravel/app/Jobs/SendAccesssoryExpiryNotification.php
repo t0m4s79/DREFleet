@@ -33,8 +33,8 @@ class SendAccesssoryExpiryNotification implements ShouldQueue
         $oneMonthFromNow = now()->addMonth();
 
         // Fetch vehicles with accessories that expire within one month
-        $vehicles = Vehicle::with('vehicleAccessories')
-            ->whereHas('vehicleAccessories', function ($query) use ($currentDate, $oneMonthFromNow) {
+        $vehicles = Vehicle::with('accessories')
+            ->whereHas('accessories', function ($query) use ($currentDate, $oneMonthFromNow) {
                 $query->where('expiration_date', '>=', $currentDate)
                     ->where('expiration_date', '<=', $oneMonthFromNow);
             })
@@ -46,7 +46,7 @@ class SendAccesssoryExpiryNotification implements ShouldQueue
                 ->get();  // Retrieve the collection of users
 
             foreach ($users as $user) {
-                foreach ($vehicle->vehicleAccessories as $accessory) {
+                foreach ($vehicle->accessories as $accessory) {
                     if ($accessory->expiration_date >= $currentDate && $accessory->expiration_date <= $oneMonthFromNow) {
                         $user->notify(new AccessoryExpiryNotification($vehicle, $accessory));  // Notify each user
                     }

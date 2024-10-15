@@ -27,7 +27,7 @@ class SendAccessoryExpiryNotificationTest extends TestCase
         
         $controller = new VehicleAccessoryController;
 
-        foreach ($vehicle->vehicleAccessories as $accessory) {
+        foreach ($vehicle->accessories as $accessory) {
             $controller->deleteVehicleAccessory($accessory->id);
         }
         
@@ -57,7 +57,7 @@ class SendAccessoryExpiryNotificationTest extends TestCase
 
         $controller = new VehicleAccessoryController;
 
-        foreach ($vehicle->vehicleAccessories as $accessory) {
+        foreach ($vehicle->accessories as $accessory) {
             $controller->deleteVehicleAccessory($accessory->id);
         }
 
