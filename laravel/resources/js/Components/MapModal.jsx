@@ -30,7 +30,7 @@ export default function MapModal({ trajectory, route }) {
                 style={{ display:'flex', alignItems:'center', justifyContent:'center' }}
             >
                 
-                <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px' }}>
+                <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px', borderRadius: "8px" }}>
                     <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={color} trajectory={traject}/>
                 </div>
 
