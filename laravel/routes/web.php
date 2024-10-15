@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kidPhoneNumbers.showCreate');
     Route::post('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.create');
     Route::get('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'showEditKidPhoneNumberForm'])->name('kidPhoneNumbers.showEdit');
-    Route::put('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.edit');
+    Route::put('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'editKidPhoneNumber'])->name('kidPhoneNumbers.edit');
     Route::delete('/kidPhoneNumbers/delete/{kidPhoneNumber}', [KidPhoneNumberController::class, 'deleteKidPhoneNumber'])->name('kidPhoneNumbers.delete');
     
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
