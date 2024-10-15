@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 .read-only-field{
-    background-color: #f0f0f0;
-    color: #000000;
+    background-color: #f9fafb;
+    color: #1f2937;
     border: none;
     pointer-events: none;
     cursor: default;

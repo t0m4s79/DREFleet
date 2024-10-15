@@ -63,6 +63,38 @@ export default function EditKid({auth, kid, availablePlaces}) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+
+                    { isEditMode === false ? 
+                                (<div className='mb-4'>
+                                    <Button
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Editar
+                                    </Button>
+                                </div>) : 
+
+                            (<div className='mb-4 space-x-4'>
+                                <Button 
+                                    variant="contained"
+                                    color="error"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Cancelar Edição
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                >
+                                    Submeter
+                                </Button>
+                            </div>)}
+
                         <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken} />
 
@@ -170,34 +202,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
                             </FormControl>
                             <br/>
                         </form>
-                        { isEditMode === false ? 
-                            (<Button
-                                variant="contained"
-                                color="primary"
-                                disabled={processing}
-                                onClick={toggleEdit}
-                            >
-                                Editar
-                            </Button>) : 
 
-                            (<div>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={processing}
-                                    onClick={toggleEdit}
-                                >
-                                    Cancelar Edição
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="outlined"
-                                    color="primary"
-                                    disabled={processing}
-                                >
-                                    Submeter
-                                </Button>
-                            </div>)}
                     </div>
                 </div>
             </div>
