@@ -254,6 +254,29 @@ class DriverTest extends TestCase
             'heavy_license_type' => $driverData_4['heavy_license_type'],
             'license_expiration_date' => $driverData_4['license_expiration_date'],
         ]);
+
+        // Invalid format altogether
+        $driverData_4 = [
+            'user_id' => User::factory()->create()->id,
+            'license_number' => 'ZZ' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . rand(0, 9),
+            'heavy_license' => 1,
+            'heavy_license_type' => 'Mercadorias',
+            'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('drivers.create'), $driverData_4);
+
+        $response->assertSessionHasErrors(['license_number']);
+
+        $this->assertDatabaseMissing('drivers', [
+            'user_id' => $driverData_4['user_id'],
+            'license_number' => $driverData_4['license_number'],
+            'heavy_license' => $driverData_4['heavy_license'],
+            'heavy_license_type' => $driverData_4['heavy_license_type'],
+            'license_expiration_date' => $driverData_4['license_expiration_date'],
+        ]);
     }
 
     public function test_create_driver_fails_on_user_type_is_not_none(): void
