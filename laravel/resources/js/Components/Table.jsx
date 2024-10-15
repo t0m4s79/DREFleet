@@ -3,6 +3,9 @@ import { DataGrid, } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import { ptPT } from '@mui/x-data-grid/locales';
 import MapModal from './MapModal';
+import ErrorIcon from '@mui/icons-material/Error';
+import { parse, isBefore } from 'date-fns';
+import { pt } from 'date-fns/locale';
 
 // Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
@@ -162,6 +165,27 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            if(key == 'approved_by'){
+                if(params.value==null) return params.value
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('managers.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
+                )
+            }
             if(key == 'route'){
                 if(params.value != '-'){
                     return (
@@ -187,6 +211,56 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         <div></div>
                     )
                 }
+            }
+            if (key === 'expiration_date' || key === 'license_expiration_date') {
+                const parsedDate = parse(params.value, 'dd-MM-yyyy', new Date(), { locale: pt });
+                const now = new Date();
+                
+                if (isBefore(parsedDate, now)) {
+                    return (
+                        <div style={{ color: 'red' }}>
+                            <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                            {params.value}
+                        </div>
+                    );
+                }
+                return params.value
+            }
+            if(key === 'all_approved_orders'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('managers.showApproved', params.value)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Consultar
+                        </Button>
+                    </div>
+                )
+            }
+            if(key === 'vehicle_accesories_docs'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('vehicles.documentsAndAccessories', params.value)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Consultar
+                        </Button>
+                    </div>
+                )
             }
 
             return params.value;
