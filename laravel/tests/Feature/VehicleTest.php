@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
+use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
 use Illuminate\Http\UploadedFile;
@@ -26,6 +27,25 @@ class VehicleTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+    }
+
+    public function test_vehicle_getters(): void
+    {
+        // Create a sample notification with specific created_at and updated_at values
+        $vehicle = Vehicle::factory()->create([
+            'created_at' => Carbon::create(2023, 10, 1, 12, 0, 0),  // 01-10-2023 12:00:00
+            'updated_at' => Carbon::create(2023, 10, 2, 15, 30, 45), // 02-10-2023 15:30:45
+        ]);
+
+        // Get the formatted created_at and updated_at attributes
+        $formattedCreatedAt = $vehicle->created_at;
+        $formattedUpdatedAt = $vehicle->updated_at;
+
+        // Assert that the created_at is in the correct format
+        $this->assertEquals('01-10-2023 12:00:00', $formattedCreatedAt);
+
+        // Assert that the updated_at is in the correct format
+        $this->assertEquals('02-10-2023 15:30:45', $formattedUpdatedAt);
     }
 
     public function test_vehicle_has_many_orders(): void
@@ -52,7 +72,7 @@ class VehicleTest extends TestCase
         ]);
         
         foreach ($documents as $document) {
-            $this->assertTrue($vehicle->vehicleDocuments->contains($document));
+            $this->assertTrue($vehicle->documents->contains($document));
         }
     }
 
@@ -65,7 +85,7 @@ class VehicleTest extends TestCase
         ]);
 
         foreach ($accessories as $accessory) {
-            $this->assertTrue($vehicle->vehicleAccessories->contains($accessory));
+            $this->assertTrue($vehicle->accessories->contains($accessory));
         }
     }
 
@@ -116,6 +136,17 @@ class VehicleTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->get("/vehicles/edit/{$vehicle->id}");
+
+        $response->assertOk();
+    }
+
+    public function test_vehicle_accessories_and_documents_page_is_displayed(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get("/vehicles/documentsAndAccessories/{$vehicle->id}");
 
         $response->assertOk();
     }

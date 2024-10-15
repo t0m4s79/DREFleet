@@ -15,7 +15,7 @@ class OrderStopController extends Controller
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
-            'expected_arrival_date' => ['nullable', 'date'],
+            'expected_arrival_date' => ['required', 'date'],
             'stop_number' => ['required', 'integer', 'min:0'],
             'order_id' => ['required','exists:orders,id'],
             'place_id' => ['required','exists:places,id'],
@@ -65,7 +65,7 @@ class OrderStopController extends Controller
                 'expected_arrival_date' => $incomingFields['expected_arrival_date'],
             ]);
 
-            // return redirect()->route('orders.index')->with('message', 'Dados do da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Dados da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
@@ -79,7 +79,7 @@ class OrderStopController extends Controller
             $orderStop = OrderStop::findOrFail($id);
             $orderStop->delete();
 
-            // return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . 'apagado com sucesso!');
+            // return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\OrderStop;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -104,12 +105,8 @@ class OrderStopTest extends TestCase
     {       
         $orderStop = OrderStop::factory()->create();
 
-        $this->assertDatabaseHas('order_stops', [
-            'expected_arrival_date' => null,
-        ]);
-
         $updatedData = [
-            'expected_arrival_date' => now(),
+            'expected_arrival_date' => Carbon::parse($orderStop->expected_arrival_date)->addHour(),
         ];
 
         $response = $this

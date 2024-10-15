@@ -44,32 +44,17 @@ class Vehicle extends Model
         return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
-    // public function getHeavyVehicleAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
-    // public function getWheelchairAdaptedAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
-    // public function getWheelchairCertifiedAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function vehicleDocuments(): HasMany
+    public function documents(): HasMany
     {
         return $this->hasMany(VehicleDocument::class);
     }
 
-    public function vehicleAccessories(): HasMany
+    public function accessories(): HasMany
     {
         return $this->hasMany(VehicleAccessory::class);
     }

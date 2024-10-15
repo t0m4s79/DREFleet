@@ -62,8 +62,6 @@ class KidController extends Controller
 
         $incomingFields = $request->validate([
             'name' => 'required',
-            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
             'places' => [
                 'array',
@@ -72,7 +70,6 @@ class KidController extends Controller
         ], $customErrorMessages);
         
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['email'] = strip_tags($incomingFields['email']);
 
         $addPlaces = isset($incomingFields['places']) ? array_map('strip_tags', $incomingFields['places']) : [];
 
@@ -95,7 +92,7 @@ class KidController extends Controller
     public function showEditKidForm(Kid $kid)
     {
 
-        $kidPlaces = $kid->places;                                                  //Given kid places
+        $kidPlaces = $kid->places;
 
         $associatedPlaceIds = $kid->places->pluck('id');
         $availablePlaces = Place::whereNotIn('id', $associatedPlaceIds)->where('place_type', 'Residência')->get();     //Places that dont belong to given kid
@@ -110,8 +107,6 @@ class KidController extends Controller
 
         $incomingFields = $request->validate([
             'name' => 'required',
-            'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
-            'email' => ['required', 'email', 'lowercase'],
             'wheelchair' => ['required', 'boolean'],
             'addPlaces' => [
                 'array',
@@ -121,7 +116,6 @@ class KidController extends Controller
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $incomingFields['email'] = strip_tags($incomingFields['email']);
 
         $addPlaces = isset($incomingFields['addPlaces']) ? array_map('strip_tags', $incomingFields['addPlaces']) : [];
         $removePlaces = isset($incomingFields['removePlaces']) ? array_map('strip_tags', $incomingFields['removePlaces']) : [];
@@ -155,5 +149,13 @@ class KidController extends Controller
             dd($e);
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
+    }
+
+    public function showKidContacts(Kid $kid)
+    {
+        // Use 'load' to eager load the relationships on the already retrieved kid instance
+        $kid->load('phoneNumbers', 'emails');
+        
+        return Inertia::render('Kids/KidContacts', ['kid' => $kid]);
     }
 }

@@ -33,8 +33,8 @@ class SendDocumentExpiryNotification implements ShouldQueue
         $oneMonthFromNow = now()->addMonth();
 
         // Fetch vehicles with documents that expire within one month
-        $vehicles = Vehicle::with('vehicleDocuments')
-            ->whereHas('vehicleDocuments', function ($query) use ($currentDate, $oneMonthFromNow) {
+        $vehicles = Vehicle::with('documents')
+            ->whereHas('documents', function ($query) use ($currentDate, $oneMonthFromNow) {
                 $query->where('expiration_date', '>=', $currentDate)
                     ->where('expiration_date', '<=', $oneMonthFromNow);
             })
@@ -46,7 +46,7 @@ class SendDocumentExpiryNotification implements ShouldQueue
                 ->get();  // Retrieve the collection of users
 
             foreach ($users as $user) {
-                foreach ($vehicle->vehicleDocuments as $document) {
+                foreach ($vehicle->documents as $document) {
                     if ($document->expiration_date >= $currentDate && $document->expiration_date <= $oneMonthFromNow) {
                         $user->notify(new DocumentExpiryNotification($vehicle, $document));  // Notify each user
                     }

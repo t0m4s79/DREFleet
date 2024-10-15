@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->boolean('wheelchair');
             $table->string('name');
-            $table->string('phone');
-            $table->string('email');
             $table->timestamps();
         });
     }

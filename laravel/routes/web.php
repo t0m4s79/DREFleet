@@ -18,6 +18,8 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\KidEmailController;
+use App\Http\Controllers\KidPhoneNumberController;
 use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
@@ -38,20 +40,35 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     //DRIVERS
-    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                              //GET all page
+    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                                  //GET all page
     Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.showCreate');       //GET creation page
-    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');              //CREATE action
+    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');                  //CREATE action
     Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditDriverForm'])->name('drivers.showEdit');    //GET edit page
-    Route::put('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');            //EDIT action
-    Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');   //DELETE action
+    Route::put('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');                //EDIT action
+    Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');       //DELETE action
 
     //KIDS
     Route::get('/kids', [KidController::class, 'index'])->name('kids.index');
-    Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.create');
-    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.showCreate');
+    Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.showCreate');
+    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.create');
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditKidForm'])->name('kids.showEdit');
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
+    Route::get('/kids/contacts/{kid}', [KidController::class, 'showKidContacts'])->name('kids.contacts');
+
+    //KID EMAILS
+    Route::get('/kidEmails/create', [KidEmailController::class, 'showCreateKidEmailForm'])->name('kids.showCreate');
+    Route::post('/kidEmails/create', [KidEmailController::class, 'createKidEmail'])->name('kidEmails.create');
+    Route::get('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'showEditKidEmailForm'])->name('kidEmails.showEdit');
+    Route::put('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'editKidEmail'])->name('kidEmails.edit');
+    Route::delete('/kidEmails/delete/{kidEmail}', [KidEmailController::class, 'deleteKidEmail'])->name('kidEmails.delete');
+
+    //KID PHONE NUMBERS
+    Route::get('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kids.showCreate');
+    Route::post('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.create');
+    Route::get('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'showEditKidPhoneNumberForm'])->name('kidPhoneNumbers.showEdit');
+    Route::put('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.edit');
+    Route::delete('/kidPhoneNumbers/delete/{kidPhoneNumber}', [KidPhoneNumberController::class, 'deleteKidPhoneNumber'])->name('kidPhoneNumbers.delete');
     
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
     Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
@@ -127,6 +144,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditVehicleForm'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
+    Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
 
     //VEHICLES ACCESSORIES
     Route::get('/vehicleAccessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
