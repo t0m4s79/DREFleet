@@ -38,6 +38,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             current_month_fuel_requests: vehicle.current_month_fuel_requests,
             fuel_type: vehicle.fuel_type,
             current_kilometrage: vehicle.current_kilometrage,
+            vehicle_accesories_docs: vehicle.id
         }
     })
 
@@ -57,6 +58,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         current_month_fuel_requests: 'Pedidos Mensais de Reabastecimento',
         fuel_type: 'Tipo de Combustível',
         current_kilometrage: 'Kilometragem Atual',
+        vehicle_accesories_docs: 'Documentos e Acessórios'
     };
 
     return (

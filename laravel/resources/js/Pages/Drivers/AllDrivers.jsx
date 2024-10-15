@@ -21,7 +21,17 @@ export default function AllDrivers( {auth, drivers, flash} ) {
 
     //Deconstruct data to send to table component
     let driverInfo = drivers.map((driver) => (
-        {id: driver.user_id, name: driver.name, email: driver.email, phone: driver.phone, heavy_license: driver.heavy_license, license_number: driver.license_number, heavy_license_type: driver.heavy_license_type, license_expiration_date: driver.license_expiration_date , status: driver.status }
+        {
+            id: driver.user_id, 
+            name: driver.name, 
+            email: driver.email, 
+            phone: driver.phone, 
+            heavy_license: driver.heavy_license ? 'Sim' : 'Não', 
+            license_number: driver.license_number, 
+            heavy_license_type: driver.heavy_license_type, 
+            license_expiration_date: driver.license_expiration_date, 
+            status: driver.status 
+        }
     ))
 
     const driverColumnLabels = {
