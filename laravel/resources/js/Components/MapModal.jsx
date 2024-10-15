@@ -6,7 +6,6 @@ import LeafletMap from './LeafletMap';
 export default function MapModal({ trajectory, route }) {
 
     const [open, setOpen] = useState(false);
-    //const [selectedRoute, setSelectedRoute] = useState([])
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -14,7 +13,6 @@ export default function MapModal({ trajectory, route }) {
     let routeArea;
     let color;
 
-    // useEffect(()=>{
     if (trajectory) {
         traject = JSON.parse(trajectory);
     }
@@ -22,11 +20,6 @@ export default function MapModal({ trajectory, route }) {
         routeArea = JSON.parse(route.area)
         color = route.color
     }
-    //     console.log(traject)
-    //     setSelectedRoute(traject)
-    // }, trajectory)
-
-    console.log('traject', traject)
 
     return (
         <div className='justify-center'>
@@ -36,8 +29,9 @@ export default function MapModal({ trajectory, route }) {
                 onClose={handleClose}
                 style={{ display:'flex', alignItems:'center', justifyContent:'center' }}
             >
+                
                 <div style={{ top: '50%', margin: 'auto', width: '80%', height: '80%', backgroundColor: 'white', padding: '20px' }}>
-                    <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={color}/>
+                    <LeafletMap routing={false} onTrajectoryChange={trajectory} polygonCoordinates={routeArea} polygonColor={color} trajectory={traject}/>
                 </div>
 
             </Modal>

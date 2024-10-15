@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polygon, Polyline } from 'react-leaflet';
 import L, { latLng } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
@@ -162,7 +162,7 @@ function EditMarker({ initialPos, onPositionChange }) {
         map.on('drag', function() {
             map.panInsideBounds(bounds, { animate: false });
         });
-        
+        map.flyTo(position);
         // Add geocoder search bar only for the edit page
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({
@@ -178,7 +178,8 @@ function EditMarker({ initialPos, onPositionChange }) {
                 .once('markgeocode', function (e) {
                     const latlng = e.geocode.center;
                     setPosition(latlng);
-                    map.setView(latlng, map.getZoom());
+                    //map.setView(latlng, map.getZoom());   // If client decides to change back
+                    map.flyTo(latlng, map.getZoom());
                     // Update the form coordinates with the geocoder result
                     onPositionChange(latlng.lat, latlng.lng);
                 })
@@ -212,7 +213,7 @@ function EditMarker({ initialPos, onPositionChange }) {
     );
 }
 
-export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange, initialPosition, edditing, polygonCoordinates, polygonColor}) {  // routing -> activate (true) routing or not (false)
+export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChange, initialPosition, edditing, polygonCoordinates, polygonColor, trajectory}) {  // routing -> activate (true) routing or not (false)
     
     let polyCoords
     if(polygonCoordinates) {
@@ -240,6 +241,10 @@ export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChan
                     positions={polyCoords}
                     pathOptions={{ color: polygonColor }}
                 />
+            )}
+
+            {trajectory && (
+                <Polyline positions={trajectory} color="red" weight={2} />
             )}
             
         </MapContainer>
