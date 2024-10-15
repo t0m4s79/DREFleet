@@ -219,9 +219,32 @@ class VehicleController extends Controller
 
     public function showVehicleAccessoriesAndDocuments(Vehicle $vehicle)
     {
-        // Use 'load' to eager load the relationships on the already retrieved vehicle instance
+        // Eager load the 'documents' and 'accessories' relationships
         $vehicle->load('documents', 'accessories');
-        
-        return Inertia::render('Vehicles/VehicleAccessoriesAndDocuments', ['vehicle' => $vehicle]);
+
+        // Format the dates for the vehicle itself
+        $vehicle->created_at = \Carbon\Carbon::parse($vehicle->created_at)->format('d-m-Y H:i');
+        $vehicle->updated_at = \Carbon\Carbon::parse($vehicle->updated_at)->format('d-m-Y H:i');
+
+        // Format the dates for each accessory
+        $vehicle->accessories->each(function ($accessory) {
+            $accessory->created_at = \Carbon\Carbon::parse($accessory->created_at)->format('d-m-Y H:i');
+            $accessory->updated_at = \Carbon\Carbon::parse($accessory->updated_at)->format('d-m-Y H:i');
+            $accessory->expiration_date = $accessory->expiration_date ? \Carbon\Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
+        }); 
+
+        // Format the dates for each document
+        $vehicle->documents->each(function ($document) {
+            $document->created_at = \Carbon\Carbon::parse($document->created_at)->format('d-m-Y H:i');
+            $document->updated_at = \Carbon\Carbon::parse($document->updated_at)->format('d-m-Y H:i');
+            $document->issue_date = \Carbon\Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = \Carbon\Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->expired = $document->expired ? 'Sim' : 'Não';
+        });
+
+        // Return the data to the view with formatted dates
+        return Inertia::render('Vehicles/VehicleAccessoriesAndDocuments', [
+            'vehicle' => $vehicle
+        ]);
     }
 }
