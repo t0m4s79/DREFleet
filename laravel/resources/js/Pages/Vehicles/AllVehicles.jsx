@@ -54,7 +54,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
-        current_month_fuel_requests: 'Pedidos de Reabastecimento (Este mês)',
+        current_month_fuel_requests: 'Pedidos Mensais de Reabastecimento',
         fuel_type: 'Tipo de Combustível',
         current_kilometrage: 'Kilometragem Atual',
     };

@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
     Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
     Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
-    Route::get('/managers/showApproved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.showApproved'); 
+    Route::get('/managers/showApproved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.approved'); 
 
     //NOTIFICATIONS
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
     Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
-    Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEditOrder');
+    Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEdit');
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
     Route::get('/orderRoutes/create', [OrderRouteController::class, 'showCreateOrderRouteForm'])->name('orderRoutes.showCreate');
     Route::post('/orderRoutes/create', [OrderRouteController::class, 'createOrderRoute'])->name('orderRoutes.create');
-    Route::get('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEditOrder');
+    Route::get('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEdit');
     Route::put('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
     Route::delete('/orderRoutes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
 

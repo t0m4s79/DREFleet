@@ -38,7 +38,7 @@ export default function ShowApprovedOrders({auth, orders}) {
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
 
-                    <Table data={managerOrderInfo} columnsLabel={managerOrderColumns} editAction={'orders.showEditOrder'} dataId="id"/>
+                    <Table data={managerOrderInfo} columnsLabel={managerOrderColumns} editAction={'orders.showEdit'} dataId="id"/>
                 </div>
             </div>
 		</AuthenticatedLayout>

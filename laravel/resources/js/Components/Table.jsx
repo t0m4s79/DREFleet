@@ -169,7 +169,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                             <Button
                                 key={params.value}
                                 variant="outlined"
-                                href={route('orderRoutes.showEditOrder', params.value)}
+                                href={route('orderRoutes.showEdit', params.value)}
                                 sx={{
                                     maxWidth: '30px',
                                     maxHeight: '30px',
