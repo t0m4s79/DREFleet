@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Kid;
+use App\Models\KidEmail;
+use App\Models\KidPhoneNumber;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Place;
@@ -59,7 +61,33 @@ class KidTest extends TestCase
         }
     }
 
-    public function test_notifications_related_to_kid()
+    public function test_kid_has_many_emails(): void
+    {
+        $kid = Kid::factory()->create();
+
+        $emails = KidEmail::factory()->count(3)->create([
+            'kid_id' => $kid->id,
+        ]);
+
+        foreach ($emails as $email) {
+            $this->assertTrue($kid->emails->contains($email));
+        }
+    }
+
+    public function test_kid_has_many_phone_numbers(): void
+    {
+        $kid = Kid::factory()->create();
+
+        $phoneNumbers = KidPhoneNumber::factory()->count(3)->create([
+            'kid_id' => $kid->id,
+        ]);
+
+        foreach ($phoneNumbers as $phoneNumber) {
+            $this->assertTrue($kid->phoneNumbers->contains($phoneNumber));
+        }
+    }
+
+    public function test_notifications_related_to_kid(): void
     {
         // User who receives notification
         $user = User::factory()->create();
@@ -110,14 +138,22 @@ class KidTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_kid_contacts_page_is_displayed(): void
+    {
+        $kid = Kid::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get("/kids/contacts/{$kid->id}");
+
+        $response->assertOk();
+    }
 
     public function test_user_can_create_a_kid(): void
     {
         $kidData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
         ];
 
         $response = $this
@@ -139,8 +175,6 @@ class KidTest extends TestCase
         $updatedData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
         ];
         
         $response = $this
@@ -179,8 +213,6 @@ class KidTest extends TestCase
         $kidData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id, $place_2->id],
         ];
 
@@ -194,12 +226,10 @@ class KidTest extends TestCase
 
         $this->assertDatabaseHas('kids', [
             'name' => $kidData['name'],
-            'phone' => $kidData['phone'],
-            'email' => $kidData['email'],
             'wheelchair' => $kidData['wheelchair'],
         ]);
 
-        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
+        $kid = Kid::where('name', $kidData['name'])->orderBy('id', 'desc')->first();
 
         $this->assertDatabaseHas('kid_place', [
             'kid_id' => $kid->id,
@@ -220,8 +250,6 @@ class KidTest extends TestCase
         $kidData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id, $place_2->id],
         ];
 
@@ -233,8 +261,6 @@ class KidTest extends TestCase
 
         $this->assertDatabaseMissing('kids',[
             'name' => $kidData['name'],
-            'phone' => $kidData['phone'],
-            'email' => $kidData['email'],
             'wheelchair' => $kidData['wheelchair'],
         ]);
     }
@@ -248,8 +274,6 @@ class KidTest extends TestCase
         $kidData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id, $place_2->id],
         ];
 
@@ -257,13 +281,11 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
-        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
+        $kid = Kid::where('name', $kidData['name'])->orderBy('id', 'desc')->first();
 
         $updatedData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'addPlaces' => [$place_3->id],
             'removePlaces' => [$place_1->id, $place_2->id],
         ];
@@ -301,8 +323,6 @@ class KidTest extends TestCase
         $kidData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'places' => [$place_1->id],
         ];
 
@@ -310,13 +330,11 @@ class KidTest extends TestCase
             ->actingAs($this->user)
             ->post('/kids/create', $kidData);
 
-        $kid = Kid::where('email', $kidData['email'])->orderBy('id', 'desc')->first();
+        $kid = Kid::where('name', $kidData['name'])->orderBy('id', 'desc')->first();
 
         $updatedData = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
             'addPlaces' => [$place_2->id],
             'removePlaces' => [$place_1->id],
         ];
@@ -329,8 +347,6 @@ class KidTest extends TestCase
 
         $this->assertDatabaseMissing('kids',[
             'name' => $updatedData['name'],
-            'phone' => $updatedData['phone'],
-            'email' => $updatedData['email'],
             'wheelchair' => $updatedData['wheelchair'],
         ]);
     }
@@ -340,8 +356,6 @@ class KidTest extends TestCase
         $incomingFields = [
             'wheelchair' => fake()->boolean(),
             'name' => fake()->name(),
-            'phone' => rand(910000000, 999999999),
-            'email' => fake()->unique()->safeEmail(),
         ];
 
         // Mock the Kid model to throw an exception

@@ -313,7 +313,7 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
-            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . 'apagado com sucesso!');
+            return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);

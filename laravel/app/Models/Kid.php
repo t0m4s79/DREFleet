@@ -5,10 +5,10 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Place;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-//TODO: SHOULD KID BE ALLOWED TO HAVE MULTIPLE PHONE NUMBERS AND EMAILS (NEW TABLES)???
 class Kid extends Model
 {
     use HasFactory;
@@ -17,8 +17,6 @@ class Kid extends Model
         'id',
         'wheelchair',
         'name',
-        'phone',
-        'email'
     ];
 
     public function getCreatedAtAttribute($value)
@@ -41,9 +39,20 @@ class Kid extends Model
         return $this->belongsToMany(OrderStop::class)->withPivot('place_id');
     }
 
+    public function phoneNumbers(): HasMany
+    {
+        return $this->hasMany(KidPhoneNumber::class);
+    }
+
+    public function emails(): HasMany
+    {
+        return $this->hasMany(KidEmail::class);
+    }
+
     // Define inverse polymorphic relationship
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'related_entity');
     }
+
 }
