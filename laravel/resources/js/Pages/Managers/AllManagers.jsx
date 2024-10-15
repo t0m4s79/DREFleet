@@ -29,6 +29,7 @@ export default function AllManagers({ auth, managers, flash }) {
             email: manager.email,
             phone: manager.phone,
             status: manager.status,
+            all_approved_orders: manager.id,
         }
     })
 
@@ -38,6 +39,7 @@ export default function AllManagers({ auth, managers, flash }) {
         email: 'Email',
         phone: 'Numero de Telefone',
         status: 'Estado',
+        all_approved_orders: 'Pedidos Aprovados'
     };
     
     return (

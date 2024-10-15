@@ -29,7 +29,7 @@ export default function ShowApprovedOrders({auth, orders}) {
 	return (
 		<AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos aprovados pelo/a Gestor/a </h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos aprovados pelo/a Gestor/a #{orders[0].manager_id} </h2>}
         >
 
             <Head title="Pedidos Aprovados" />
