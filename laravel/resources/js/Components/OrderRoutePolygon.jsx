@@ -1,14 +1,14 @@
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
-{/*TODO: STORE THE POLYGON COORDINATES CORRECTLY AFTER DRAGGING THE VERTICES*/}
 function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
     const map = useMap();
     const polygonLayerRef = useRef(null);
+    const [isEditing, setIsEditing] = useState(initialCoordinates && initialCoordinates.length > 0);
 
     useEffect(() => {
         // Add Leaflet-Geoman controls
@@ -22,7 +22,6 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             editMode: true,
             dragMode: true,
             cutPolygon: true,
-            removalMode: true,
         });
         map.pm.setLang('pt_pt');
 
@@ -34,15 +33,10 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             }
         };
 
-        map.on('pm:create', (e) => {
-            removeExistingPolygon(); // Ensure only one polygon exists
-
-            const layer = e.layer;
+        const handlePolygonCreation = (layer) => {
             const polygonCoordinates = layer.getLatLngs();
             polygonLayerRef.current = layer; // Save reference to the polygon
-            layer.on('pm:edit', (e) => {
-                console.log(e);
-              });
+
             // Apply color to the polygon
             layer.setStyle({
                 color: color,
@@ -63,31 +57,45 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             } else {
                 onAreaChange(polygonCoordinates); // Send coordinates back to parent
             }
-        });
+        };
 
-        // Load initial polygon if coordinates are provided
-        if (initialCoordinates && initialCoordinates.length > 0) {
-            removeExistingPolygon(); // Ensure no duplicate polygons
+        const handlePolygonEditing = (layer) => {
+            const polygonCoordinates = layer.getLatLngs();
+            polygonLayerRef.current = layer; // Save reference to the polygon
+            onAreaChange(polygonCoordinates); // Send coordinates back to parent
+        };
 
-            const initialPolygon = L.polygon(initialCoordinates, {
-                color: color,
-                fillColor: color,
-                fillOpacity: 0.4,
-            }).addTo(map);
+        if (isEditing) {
+            if (initialCoordinates && initialCoordinates.length > 0) {
+                removeExistingPolygon(); // Ensure no duplicate polygons
 
-            polygonLayerRef.current = initialPolygon;
+                const initialPolygon = L.polygon(initialCoordinates, {
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.4,
+                }).addTo(map);
 
-            // Enable editing and vertex deletion for existing polygons
-            initialPolygon.pm.enable({
-                allowSelfIntersection: false, // Allow vertex deletion
-                snappable: true,
+                polygonLayerRef.current = initialPolygon;
+
+                // Enable editing and vertex deletion for existing polygons
+                initialPolygon.pm.enable({
+                    allowSelfIntersection: false, // Allow vertex deletion
+                    snappable: true,
+                });
+
+                initialPolygon.on('pm:edit', () => handlePolygonEditing(initialPolygon));
+            }
+        } else {
+            map.on('pm:create', (e) => {
+                removeExistingPolygon(); // Ensure only one polygon exists
+                handlePolygonCreation(e.layer);
             });
-
-            // Ensure edit mode is not enabled by default
-            initialPolygon.pm.disable(); // Disable edit mode on load
         }
 
-    }, [map, color, bounds, onAreaChange, initialCoordinates]);
+        return () => {
+            map.off('pm:create');
+        };
+    }, [map, color, bounds, onAreaChange, initialCoordinates, isEditing]);
 
     useEffect(() => {
         // Update the polygon color whenever the color changes
@@ -98,7 +106,7 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
                 fillOpacity: 0.4,
             });
         }
-    }, [color]); // This effect runs whenever the color changes
+    }, [color]);
 
     return null;
 }
