@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 export default function AllKids( {auth, kids, flash} ) {
 
+    console.log(kids)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -28,8 +29,7 @@ export default function AllKids( {auth, kids, flash} ) {
         return {
             id: kid.id,
             name: kid.name,
-            email: kid.email,
-            phone: kid.phone,
+            kid_contacts: kid.id,
             wheelchair: kid.wheelchair ? 'Sim' : 'Não',
             places_count: kid.place_ids.length > 0 ? kid.place_ids.length : 0,
             place_ids: kidPlacesIds,
@@ -39,8 +39,7 @@ export default function AllKids( {auth, kids, flash} ) {
     const kidColumnLabels = {
         id: 'ID',
         name: 'Nome',
-        email: 'Email',
-        phone: 'Numero de Telefone',
+        kid_contacts: 'Contactos',
         wheelchair: 'Cadeira de Rodas',
         places_count: 'Número de Moradas',
         place_ids: 'Ids das Moradas'

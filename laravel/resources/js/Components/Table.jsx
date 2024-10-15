@@ -262,6 +262,24 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            if(key === 'kid_contacts'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('kids.contacts', params.value)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Consultar
+                        </Button>
+                    </div>
+                )
+            }
 
             return params.value;
         }
