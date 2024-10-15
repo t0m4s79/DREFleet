@@ -61,7 +61,10 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
 
-                    { isEditMode === false ? 
+                        <form onSubmit={handleSubmit}>
+                            <input type="hidden" name="_token" value={csrfToken} />
+
+                            { isEditMode === false ? 
                                 (<div className='mb-4'>
                                     <Button
                                     variant="contained"
@@ -91,9 +94,6 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
                                     Submeter
                                 </Button>
                             </div>)}
-
-                        <form onSubmit={handleSubmit}>
-                            <input type="hidden" name="_token" value={csrfToken} />
 
                             {/* Name Field */}
                             <FormControl fullWidth margin="normal">

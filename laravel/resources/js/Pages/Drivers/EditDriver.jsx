@@ -69,7 +69,12 @@ export default function EditDriver({ auth, driver }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
 
-                    { isEditMode === false ? 
+                        <form onSubmit={handleSubmit}>
+                            <input type="hidden" name="_token" value={csrfToken} />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="user_id" value={driver.user_id} />
+
+                            { isEditMode === false ? 
                                 (<div className='mb-4'>
                                     <Button
                                     variant="contained"
@@ -98,12 +103,7 @@ export default function EditDriver({ auth, driver }) {
                                 >
                                     Submeter
                                 </Button>
-                            </div>)}
-
-                        <form onSubmit={handleSubmit}>
-                            <input type="hidden" name="_token" value={csrfToken} />
-                            <input type="hidden" name="_method" value="PUT" />
-                            <input type="hidden" name="user_id" value={driver.user_id} />     
+                            </div>)}   
 
                             <TextField
                                 label="Nome"
