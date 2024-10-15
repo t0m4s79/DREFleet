@@ -57,14 +57,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/contacts/{kid}', [KidController::class, 'showKidContacts'])->name('kids.contacts');
 
     //KID EMAILS
-    Route::get('/kidEmails/create', [KidEmailController::class, 'showCreateKidEmailForm'])->name('kids.showCreate');
+    Route::get('/kidEmails/create', [KidEmailController::class, 'showCreateKidEmailForm'])->name('kidEmails.showCreate');
     Route::post('/kidEmails/create', [KidEmailController::class, 'createKidEmail'])->name('kidEmails.create');
     Route::get('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'showEditKidEmailForm'])->name('kidEmails.showEdit');
     Route::put('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'editKidEmail'])->name('kidEmails.edit');
     Route::delete('/kidEmails/delete/{kidEmail}', [KidEmailController::class, 'deleteKidEmail'])->name('kidEmails.delete');
 
     //KID PHONE NUMBERS
-    Route::get('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kids.showCreate');
+    Route::get('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kidPhoneNumbers.showCreate');
     Route::post('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.create');
     Route::get('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'showEditKidPhoneNumberForm'])->name('kidPhoneNumbers.showEdit');
     Route::put('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.edit');
