@@ -120,6 +120,17 @@ class VehicleTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_vehicle_accessories_and_documents_page_is_displayed(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get("/vehicles/documentsAndAccessories/{$vehicle->id}");
+
+        $response->assertOk();
+    }
+
     public function test_user_can_create_a_vehicle(): void
     {
         $heavyVehicle = fake()->boolean();

@@ -209,11 +209,19 @@ class VehicleController extends Controller
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
     
-            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . 'apagado com sucesso!');
+            return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
         }
+    }
+
+    public function showVehicleAccessoriesAndDocuments(Vehicle $vehicle)
+    {
+        // Use 'load' to eager load the relationships on the already retrieved vehicle instance
+        $vehicle->load('documents', 'accessories');
+        
+        return Inertia::render('Vehicles/VehicleAccessoriesAndDocuments', ['vehicle' => $vehicle]);
     }
 }

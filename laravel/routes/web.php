@@ -18,6 +18,8 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\KidEmailController;
+use App\Http\Controllers\KidPhoneNumberController;
 use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
@@ -47,8 +49,8 @@ Route::middleware('auth')->group(function () {
 
     //KIDS
     Route::get('/kids', [KidController::class, 'index'])->name('kids.index');
-    Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.create');
-    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.showCreate');
+    Route::get('/kids/create', [KidController::class, 'showCreateKidForm'])->name('kids.showCreate');
+    Route::post('/kids/create', [KidController::class, 'createKid'])->name('kids.create');
     Route::get('/kids/edit/{kid}', [KidController::class, 'showEditKidForm'])->name('kids.showEdit');
     Route::put('/kids/edit/{kid}', [KidController::class, 'editKid'])->name('kids.edit');
     Route::delete('/kids/delete/{kid}', [KidController::class, 'deleteKid'])->name('kids.delete');
@@ -127,6 +129,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditVehicleForm'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
+    Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
 
     //VEHICLES ACCESSORIES
     Route::get('/vehicleAccessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');

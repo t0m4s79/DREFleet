@@ -44,21 +44,6 @@ class Vehicle extends Model
         return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
-    // public function getHeavyVehicleAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
-    // public function getWheelchairAdaptedAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
-    // public function getWheelchairCertifiedAttribute($value)
-    // {
-    //     return $value ? 'Sim' : 'Não';
-    // }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -66,12 +51,12 @@ class Vehicle extends Model
 
     public function documents(): HasMany
     {
-        return $this->hasMany(VehicleDocument::class)->chaperone();
+        return $this->hasMany(VehicleDocument::class);
     }
 
     public function accessories(): HasMany
     {
-        return $this->hasMany(VehicleAccessory::class)->chaperone();
+        return $this->hasMany(VehicleAccessory::class);
     }
 
     // Define inverse polymorphic relationship
