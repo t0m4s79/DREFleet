@@ -74,24 +74,16 @@ class TechnicianTest extends TestCase
     public function test_create_technician_fails_on_user_type_is_not_none(): void
     {
         $user = User::factory()->create([
-            'user_type' => $userType = Arr::random(['Gestor', 'Condutor', 'Administrador']),
+            'user_type' => 'Gestor',
         ]);
 
-        $managerData = [
+        $technicianData = [
             'id' => $user->id,
         ];
 
-        // Select the route based on the user_type
-        $route = match ($userType) {
-            'Gestor' => route('managers.create'),
-            'Condutor' => route('drivers.create'),
-            default => route('managers.create'), // Fallback route, you can modify it as needed
-        };
-
-        // Make the post request using the selected route
         $response = $this
             ->actingAs($this->user)
-            ->post($route, $managerData);
+            ->post(route('technicians.create'), $technicianData);
 
         $response->assertSessionHasErrors(['id']);
 
