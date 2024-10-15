@@ -9,3 +9,11 @@
     pointer-events: none;
     cursor: default;
 }
+/*changes text color of disabled fields that are not being styled by browser default*/
+.read-only-field div {
+    color: #BDBDBD;
+}
+
+.read-only-field label {
+    color: #BDBDBD !important;
+}
