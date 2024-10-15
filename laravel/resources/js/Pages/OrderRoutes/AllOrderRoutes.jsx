@@ -30,7 +30,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
         name: 'Rota',
         orderArea: 'Área',
         created_at: 'Data de criação',
-        updated_at: 'Data da última atualizão'
+        updated_at: 'Data da última atualização'
     }
 
     return (
@@ -42,7 +42,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
             {<Head title='Rotas' />}
 
             <div className='py-12 px-6'>
-                <div className="bg-white overflow-hidden shadow-lg sm:rounded-lg">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                     <Button href={route('orderRoutes.showCreate')}>
                         <AddIcon />
@@ -55,7 +55,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
                 </div>
             </div>
 
-            <Snackbar 
+            <Snackbar
                 open={openSnackbar} 
                 autoHideDuration={3000}
                 onClose={() => setOpenSnackbar(false)}

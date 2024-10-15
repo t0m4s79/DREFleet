@@ -66,7 +66,7 @@ export default function AllOrders({auth, orders, flash}) {
             <Head title="Pedidos" />
         
             <div className="py-12 px-6">
-                <div className="bg-white overflow-hidden shadow-lg sm:rounded-lg">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                     <Button href={route('orders.showCreate')}>
                         <AddIcon />
