@@ -232,7 +232,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         <Button
                             key={params.value}
                             variant="outlined"
-                            href={route('managers.showApproved', params.value)}
+                            href={route('managers.approved', params.value)}
                             sx={{
                                 maxHeight: '30px',
                                 minHeight: '30px',
