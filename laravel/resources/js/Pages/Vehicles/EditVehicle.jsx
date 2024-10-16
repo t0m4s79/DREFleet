@@ -223,6 +223,8 @@ export default function EditVehicle({ auth, vehicle}) {
                                 type="number"
                                 value={data.fuel_consumption}
                                 onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ step: "0.001" }}
