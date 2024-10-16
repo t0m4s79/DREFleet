@@ -255,6 +255,7 @@ class OrderController extends Controller
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
+
         DB::beginTransaction();
         try {
             $order->update([
@@ -281,7 +282,7 @@ class OrderController extends Controller
                 
                 // Create the order stops
                 foreach ($incomingFields['places'] as $place) {
-                    $expectedArrivalDate = $expectedArrivalDate->addSeconds($place['time']);
+                    $expectedArrivalDate = $expectedArrivalDate->addSeconds((float) $place['time']);
                     $orderStopRequest = new Request([
                         'order_id' => $order->id,
                         'stop_number' => $place['place_id'],
