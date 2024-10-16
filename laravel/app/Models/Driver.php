@@ -60,6 +60,11 @@ class Driver extends Model
         return $this->belongsToMany(OrderRoute::class)->withTimestamps();
     }
 
+    public function vehicleKilometrageReports(): HasMany
+    {
+        return $this->hasMany(VehicleKilometrageReport::class, 'driver_id'); // Specify the foreign key explicitly
+    }
+
     // Define inverse polymorphic relationship
     public function notifications()
     {

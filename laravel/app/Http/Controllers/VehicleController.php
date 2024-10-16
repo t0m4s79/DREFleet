@@ -247,4 +247,24 @@ class VehicleController extends Controller
             'vehicle' => $vehicle
         ]);
     }
+
+    public function showVehicleKilometrageReports(Vehicle $vehicle)
+    {
+        $vehicle->load('kilometrageReports');
+
+        // Format the fields for each report entry
+        $vehicle->kilometrageReports->each(function ($report) {
+            $report->created_at = \Carbon\Carbon::parse($report->created_at)->format('d-m-Y');
+            $report->updated_at = \Carbon\Carbon::parse($report->updated_at)->format('d-m-Y');
+            $report->date = $report->date;
+        });
+
+        return Inertia::render('Vehicles/VehicleKilometrageReports', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'vehicle' => $vehicle
+        ]);
+    }
 }

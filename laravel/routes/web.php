@@ -11,16 +11,17 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\KidEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderStopController;
 use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\KidPhoneNumberController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\KidEmailController;
-use App\Http\Controllers\KidPhoneNumberController;
-use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\VehicleKilometrageReportController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -145,6 +146,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
     Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
+    Route::get('/vehicles/kilometrageReports/{vehicle}', [VehicleController::class, 'showVehicleKilometrageReports'])->name('vehicles.kilometrageReports');
 
     //VEHICLES ACCESSORIES
     Route::get('/vehicle/accessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
@@ -161,6 +163,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicle/documents/edit/{vehicleDocument}', [VehicleDocumentController::class, 'showEditVehicleDocumentForm'])->name('vehicleDocuments.showEdit');
     Route::put('/vehicle/documents/edit/{vehicleDocument}', [VehicleDocumentController::class, 'editVehicleDocument'])->name('vehicleDocuments.edit');
     Route::delete('/vehicle/documents/delete/{vehicleDocument}', [VehicleDocumentController::class, 'deleteVehicleDocument'])->name('vehicleDocuments.delete');
+
+    //VEHICLES KILOMETRAGE REPORTS
+    Route::get('/vehicle/kilometrageReports/create', [VehicleKilometrageReportController::class, 'showCreateVehicleKilometrageReportForm'])->name('vehicleKilometrageReports.showCreate');
+    Route::post('/vehicle/kilometrageReports/create', [VehicleKilometrageReportController::class, 'createVehicleKilometrageReport'])->name('vehicleKilometrageReports.create');
+    Route::get('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'showEditVehicleKilometrageReportForm'])->name('vehicleKilometrageReports.showEdit');
+    Route::put('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'editVehicleKilometrageReport'])->name('vehicleKilometrageReports.edit');
+    Route::delete('/vehicle/kilometrageReports/delete/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'deleteVehicleKilometrageReport'])->name('vehicleKilometrageReports.delete');
 });
 
 require __DIR__.'/auth.php';

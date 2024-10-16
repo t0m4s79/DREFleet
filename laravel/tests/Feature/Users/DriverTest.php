@@ -10,6 +10,7 @@ use App\Models\Driver;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
+use App\Models\VehicleKilometrageReport;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -77,6 +78,19 @@ class DriverTest extends TestCase
 
         foreach ($orderRoutes as $orderRoute) {
             $this->assertTrue($driver->orderRoutes->contains($orderRoute));
+        }
+    }
+
+    public function test_vehicle_has_many_kilometrage_reports(): void
+    {
+        $driver = Driver::factory()->create();
+
+        $reports = VehicleKilometrageReport::factory()->count(3)->create([
+            'driver_id' => $driver->user_id,
+        ]);
+
+        foreach ($reports as $report) {
+            $this->assertTrue($driver->vehicleKilometrageReports->contains($report));
         }
     }
 

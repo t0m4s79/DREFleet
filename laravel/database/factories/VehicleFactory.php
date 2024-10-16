@@ -6,6 +6,7 @@ use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
+use App\Models\VehicleKilometrageReport;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -44,24 +45,34 @@ class VehicleFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Vehicle $vehicle) {
-
+            $date = \Carbon\Carbon::parse(fake()->dateTimeBetween(now()->subDays(20), now()->subDays(10)));
+        
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,
                 'name' => 'Seguro',
             ]);
-
+        
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,
                 'name' => 'Ficha de Inspeção',
             ]);
-
+        
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,
                 'name' => 'Documento Único',
             ]);
-
+        
             for ($i = 0; $i < rand(1, 3); $i++) {
                 VehicleAccessory::factory()->create([
+                    'vehicle_id' => $vehicle->id,
+                ]);
+            }
+        
+            for ($i = 0; $i < rand(1, 5); $i++) {
+                $date = $date->addDay();
+                
+                VehicleKilometrageReport::factory()->create([
+                    'date' => $date,
                     'vehicle_id' => $vehicle->id,
                 ]);
             }

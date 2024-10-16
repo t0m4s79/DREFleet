@@ -11,6 +11,7 @@ use App\Models\Notification;
 use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
+use App\Models\VehicleKilometrageReport;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -89,6 +90,19 @@ class VehicleTest extends TestCase
         }
     }
 
+    public function test_vehicle_has_many_kilometrage_reports(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $reports = VehicleKilometrageReport::factory()->count(3)->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        foreach ($reports as $report) {
+            $this->assertTrue($vehicle->kilometrageReports->contains($report));
+        }
+    }
+
     public function test_notifications_related_to_other_user()
     {
         // User who receives notification
@@ -147,6 +161,17 @@ class VehicleTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->get(route('vehicles.documentsAndAccessories', $vehicle->id));
+
+        $response->assertOk();
+    }
+
+    public function test_vehicle_kilometrage_reports_page_is_displayed(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('vehicles.kilometrageReports', $vehicle->id));
 
         $response->assertOk();
     }
