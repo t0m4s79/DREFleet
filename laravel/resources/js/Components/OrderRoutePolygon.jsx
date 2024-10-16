@@ -46,7 +46,7 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
 
             // Allow vertex deletion during edit mode
             layer.pm.enable({
-                allowSelfIntersection: false, // Disable self-intersection to allow deleting vertices
+                allowSelfIntersection: true, // Disable self-intersection to allow deleting vertices
                 snappable: true, // Snapping makes interaction easier
             });
 
@@ -79,7 +79,7 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
 
                 // Enable editing and vertex deletion for existing polygons
                 initialPolygon.pm.enable({
-                    allowSelfIntersection: false, // Allow vertex deletion
+                    allowSelfIntersection: true, // Allow vertex deletion
                     snappable: true,
                 });
 
