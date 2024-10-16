@@ -240,6 +240,10 @@ class VehicleController extends Controller
 
         // Return the data to the view with formatted dates
         return Inertia::render('Vehicles/VehicleAccessoriesAndDocuments', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
             'vehicle' => $vehicle
         ]);
     }

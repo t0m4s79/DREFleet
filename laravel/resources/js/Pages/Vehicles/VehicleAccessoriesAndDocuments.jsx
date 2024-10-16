@@ -1,10 +1,23 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
-export default function VehicleAccessoriesAndDocuments( {auth, vehicle} ) {
+export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} ) {
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
+        }
+    }, [flash]);
 
     //Deconstruct props to send to Table
     const vehicleDocs = vehicle.documents.map((doc) => {
@@ -104,6 +117,17 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle} ) {
                 </div>
             </div>
  
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
         </AuthenticatedLayout>
 
     )

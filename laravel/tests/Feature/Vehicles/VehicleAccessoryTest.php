@@ -78,7 +78,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicleAccessories.index'));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessoryData['vehicle_id']));
 
         $this->assertDatabaseHas('vehicle_accessories', $vehicleAccessoryData);
     }
@@ -103,7 +103,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicleAccessories.index'));
+            ->assertRedirect(route('vehicles.documentsAndAccessories',  $updatedData['vehicle_id']));
 
         $this->assertDatabaseHas('vehicle_accessories', $updatedData);
     }
@@ -118,7 +118,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicleAccessories.index'));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessory->id));
 
         $this->assertDatabaseMissing('vehicle_accessories', [
             'id' => $vehicleAccessory->id,
@@ -149,6 +149,6 @@ class VehicleAccessoryTest extends TestCase
         // Assert: Check if the catch block was executed
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicleAccessories.index'));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $data['vehicle_id']));
     }
 }
