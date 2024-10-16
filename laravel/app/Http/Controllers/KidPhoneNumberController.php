@@ -28,7 +28,7 @@ class KidPhoneNumberController extends Controller
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
 
         ], $customErrorMessages);
@@ -65,7 +65,7 @@ class KidPhoneNumberController extends Controller
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
         ], $customErrorMessages);
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('owner_name');
             $table->string('relationship_to_kid');
             $table->string('email');
-            $table->enum('preference', ['Preferido', 'Alternativo']);       // To specify which contact is the prefered/primary one
+            $table->enum('preference', ['Preferida', 'Alternativa']);       // To specify which contact is the prefered/primary one
 
             $table->unsignedBigInteger('kid_id');
             $table->foreign('kid_id')->references('id')->on('kids')->onDelete('cascade');

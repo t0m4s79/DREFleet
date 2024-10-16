@@ -22,7 +22,7 @@ class KidEmailFactory extends Factory
             'email' => fake()->email(),
             'owner_name' => fake()->name(),
             'relationship_to_kid' => Arr::random(['Avô', 'Avó', 'Pai', 'Mãe', 'Primo', 'Tia', 'Tio', 'Tutor']),
-            'preference' => Arr::random(['Alternativo', 'Preferido']),
+            'preference' => Arr::random(['Alternativa', 'Preferida']),
             'kid_id' => Kid::factory(),
         ];
     }

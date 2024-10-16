@@ -28,7 +28,7 @@ class KidEmailController extends Controller
             'email' => ['required', 'email', 'lowercase'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
 
         ], $customErrorMessages);
@@ -65,7 +65,7 @@ class KidEmailController extends Controller
             'email' => ['required', 'email', 'lowercase'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
         ], $customErrorMessages);
 
