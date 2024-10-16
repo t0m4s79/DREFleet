@@ -15,7 +15,7 @@ class KidPhoneNumberController extends Controller
     {
         $kids = Kid::all();
 
-        return Inertia::render('KidPhoneNumbers/NewPhoneNumber', [
+        return Inertia::render('KidPhoneNumbers/NewKidPhoneNumber', [
             'kids' => $kids,
         ]);
     }
@@ -23,7 +23,7 @@ class KidPhoneNumberController extends Controller
     public function createKidPhoneNumber(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
-
+        //dd($request);
         $incomingFields = $request->validate([
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'owner_name' => ['required', 'string', 'max:255'],
@@ -39,11 +39,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber = KidPhoneNumber::create($incomingFields);
 
-            // return redirect()->route('kid.index')->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . ' criada com sucesso!');
+            return redirect()->route('kids.index')->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kid.index')->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
         }
     }
 
@@ -72,11 +72,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber->update($incomingFields);
 
-            // return redirect()->route('kid.index')->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . ' atualizados com sucesso!');
+            return redirect()->route('kids.index')->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kid.index')->with('error', 'Houve um problema ao editar os dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . '. Tente novamente.');
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao editar os dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . '. Tente novamente.');
         }
     }
 
