@@ -66,7 +66,8 @@ class KidEmailTest extends TestCase
             ->post(route('kidEmails.create'), $kidEmailData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidEmailData['kid_id']));
 
         $this->assertDatabaseHas('kid_emails', $kidEmailData);
     }
@@ -88,7 +89,8 @@ class KidEmailTest extends TestCase
             ->put(route('kidEmails.edit', $kidEmail->id), $updatedData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $updatedData['kid_id']));
 
         $this->assertDatabaseHas('kid_emails', $updatedData); 
     }
@@ -102,7 +104,9 @@ class KidEmailTest extends TestCase
             ->delete(route('kidEmails.delete', $kidEmail->id));
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidEmail->id));
+
 
         $this->assertDatabaseMissing('kid_emails', [
             'id' => $kidEmail->id,
