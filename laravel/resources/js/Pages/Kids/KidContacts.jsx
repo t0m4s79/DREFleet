@@ -4,7 +4,19 @@ import { Head } from '@inertiajs/react';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-export default function KidContacts( {auth, kid} ) {
+export default function KidContacts( {auth, kid, flash} ) {
+
+    const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
+    const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {                                 // if there is a flash message/error
+            setSnackbarMessage(flash.message || flash.error);               // set the message
+            setSnackbarSeverity(flash.error ? 'error' : 'success');         // defines background color of snackbar
+            setOpenSnackbar(true);                                          // show snackbar
+        }
+    }, [flash]);
 
     //Deconstruct data to display on "table"
     const kidEmails = kid.emails.map((kidEmail) => {
@@ -104,6 +116,17 @@ export default function KidContacts( {auth, kid} ) {
 
                 </div>
             </div>
+
+            <Snackbar 
+                open={openSnackbar} 
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
  
         </AuthenticatedLayout>
 

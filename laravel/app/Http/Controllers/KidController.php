@@ -169,6 +169,10 @@ class KidController extends Controller
         });
         
         return Inertia::render('Kids/KidContacts', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
             'kid' => $kid
         ]);
     }

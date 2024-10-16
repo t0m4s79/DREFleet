@@ -39,11 +39,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber = KidPhoneNumber::create($incomingFields);
 
-            // return redirect()->route('kid.index')->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . ' criada com sucesso!');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kid.index')->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
         }
     }
 
@@ -72,11 +72,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber->update($incomingFields);
 
-            // return redirect()->route('kid.index')->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . ' atualizados com sucesso!');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kid.index')->with('error', 'Houve um problema ao editar os dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id] . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao editar os dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . '. Tente novamente.');
         }
     }
 
@@ -86,11 +86,11 @@ class KidPhoneNumberController extends Controller
             $kidPhoneNumber = KidPhoneNumber::findOrFail($id);
             $kidPhoneNumber->delete();
 
-            // return redirect()->route('kid.index')->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
+            return redirect()->route('kids.contacts', $id)->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kid.index')->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $id)->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
         }
     }
 }
