@@ -1,13 +1,10 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Button, Alert, Snackbar } from '@mui/material';
+import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
 
 export default function VehicleAccessoriesAndDocuments( {auth, vehicle} ) {
-
-    console.log(vehicle);
 
     //Deconstruct props to send to Table
     const vehicleDocs = vehicle.documents.map((doc) => {
