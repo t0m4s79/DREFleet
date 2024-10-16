@@ -89,10 +89,6 @@ class DriverController extends Controller
 
             return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         
-        } catch (\InvalidArgumentException $e) {
-            DB::rollBack();        
-            return redirect()->back()->with('error', $e->getMessage());
-        
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
@@ -157,10 +153,6 @@ class DriverController extends Controller
 
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
 
-        } catch (\InvalidArgumentException $e) {
-            DB::rollBack();        
-            return redirect()->back()->with('error', $e->getMessage());
-        
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e);
