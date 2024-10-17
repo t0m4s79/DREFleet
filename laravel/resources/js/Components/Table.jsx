@@ -436,7 +436,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         whiteSpace: "nowrap",
                         lineHeight: "normal",
                         marginTop: "12px", 
-                        marginBottom: "12px", color: "#A0A0A0", fontSize: 12, textTransform: "uppercase", fontWeight:"500", fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif", letterSpacing: "0.05em"
+                        marginBottom: "12px", color: "#A6A6A6", fontSize: 12, textTransform: "uppercase", fontWeight:"500", fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif", letterSpacing: "0.05em"
                     },
                 //    "& .MuiDataGrid-columnHeader": {
                 //        // Forced to use important since overriding inline styles
