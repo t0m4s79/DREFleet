@@ -1,8 +1,9 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Button } from '@mui/material';
+import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { useEffect, useState } from 'react';
 
 export default function KidContacts( {auth, kid, flash} ) {
 
