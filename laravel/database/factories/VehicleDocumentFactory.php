@@ -29,8 +29,9 @@ class VehicleDocumentFactory extends Factory
         $valueArray = ['Companhia XPTO', '123455', 'XX112AF'];
 
         for ($i = 0; $i < rand(1, 3); $i++) {
-            $key = $keyArray[rand(0,2)]; // Random key
-            $value = $valueArray[rand(0,2)]; // Random value
+            $randNumber = rand(0,2);
+            $key = $keyArray[$randNumber]; // Random key
+            $value = $valueArray[$randNumber]; // Random value
             $data[$key] = $value;
         }
 
