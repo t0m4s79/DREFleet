@@ -83,6 +83,42 @@ class VehicleDocumentTest extends TestCase
         $this->assertDatabaseHas('vehicle_documents', $vehicleDocumentData);
     }
 
+    public function test_user_can_create_a_vehicle_document_with_aditional_data(): void
+    {
+        $issueDate = Carbon::instance(fake()->dateTime());
+
+        $data = [];
+        for ($i = 0; $i < rand(0, 3); $i++) {
+            $key = fake()->name(); // Random key
+            $value = fake()->name(); // Random value
+            $data[$key] = $value;
+        }
+        
+        $vehicleDocumentData = [
+            'name' => fake()->name(),
+            'issue_date' => $issueDate->format('Y-m-d'),
+            'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
+            'vehicle_id' => Vehicle::factory()->create()->id,
+            'data' => $data,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->post(route('vehicleDocuments.create'), $vehicleDocumentData);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleDocumentData['vehicle_id']));
+
+        $this->assertDatabaseHas('vehicle_documents', [
+            'name' => $vehicleDocumentData['name'],
+            'issue_date' => $vehicleDocumentData['issue_date'],
+            'expiration_date' => $vehicleDocumentData['expiration_date'],
+            'vehicle_id' => $vehicleDocumentData['vehicle_id'],
+            'data' => $vehicleDocumentData['data'] != [] ? json_encode($vehicleDocumentData['data']) : null,
+        ]);
+    }
+
     public function test_user_can_edit_a_vehicle_document(): void
     {
         $issueDate = Carbon::instance(fake()->dateTime());
@@ -104,6 +140,43 @@ class VehicleDocumentTest extends TestCase
             ->assertRedirect(route('vehicles.documentsAndAccessories', $updatedData['vehicle_id']));
 
         $this->assertDatabaseHas('vehicle_documents', $updatedData);
+    }
+
+    public function test_user_can_edit_a_vehicle_document_with_aditional_data(): void
+    {
+        $issueDate = Carbon::instance(fake()->dateTime());
+        $vehicleDocument = VehicleDocument::factory()->create();
+
+        $data = [];
+        for ($i = 0; $i < rand(0, 3); $i++) {
+            $key = fake()->name(); // Random key
+            $value = fake()->name(); // Random value
+            $data[$key] = $value;
+        }
+
+        $updatedData = [
+            'name' => fake()->name(),
+            'issue_date' => $issueDate->format('Y-m-d'),
+            'expiration_date' => $issueDate->copy()->addYear(1)->format('Y-m-d'),
+            'vehicle_id' => $vehicleDocument->vehicle_id,
+            'data' => $data,
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->put(route('vehicleDocuments.edit', $vehicleDocument->id), $updatedData);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $updatedData['vehicle_id']));
+
+            $this->assertDatabaseHas('vehicle_documents', [
+                'name' => $updatedData['name'],
+                'issue_date' => $updatedData['issue_date'],
+                'expiration_date' => $updatedData['expiration_date'],
+                'vehicle_id' => $updatedData['vehicle_id'],
+                'data' => $updatedData['data'] != [] ? json_encode($updatedData['data']) : null,
+            ]);    
     }
 
     public function test_user_can_delete_a_vehicle(): void

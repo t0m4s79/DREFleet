@@ -23,12 +23,20 @@ class VehicleDocumentFactory extends Factory
 
         $expired = $expirationDate < now() ? 1 : 0;
 
+        $data = [];
+        for ($i = 0; $i < rand(1, 3); $i++) {
+            $key = fake()->name(); // Random key
+            $value = fake()->name(); // Random value
+            $data[$key] = $value;
+        }
+
         return [
             'name' => Arr::random(["Seguro", "Documento único", "Ficha de Inspeção"]),
             'issue_date' => $issueDate,
             'expiration_date' => $expirationDate,
             'expired' => $expired,
             'vehicle_id' => Vehicle::factory(),
+            'data' => $data,
         ];
     }
 }

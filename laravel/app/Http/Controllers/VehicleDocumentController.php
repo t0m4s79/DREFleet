@@ -50,9 +50,18 @@ class VehicleDocumentController extends Controller
             'issue_date' => ['required', 'date'],
             'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
+            'data' => ['nullable', 'array'],
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
+
+        // Ensure $incomingFields['data'] is an array
+        $formattedData = isset($incomingFields['data']) ? $incomingFields['data'] : [];
+
+        // Iterate through each key-value pair in the additional data
+        foreach ($formattedData as $key => $value) {
+            $formattedData[strip_tags($key)] = strip_tags($value);
+        }
         
         try {
             $expired = now()->toDateTimeString() > $incomingFields['expiration_date'] ? 1 : 0;
@@ -63,6 +72,7 @@ class VehicleDocumentController extends Controller
                 'expiration_date' => $incomingFields['expiration_date'],
                 'expired' => $expired,
                 'vehicle_id' => $incomingFields['vehicle_id'],
+                'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
@@ -93,9 +103,18 @@ class VehicleDocumentController extends Controller
             'issue_date' => ['required', 'date'],
             'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
+            'data' => ['nullable', 'array'],
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
+
+        // Ensure $incomingFields['data'] is an array
+        $formattedData = isset($incomingFields['data']) ? $incomingFields['data'] : [];
+
+        // Iterate through each key-value pair in the additional data
+        foreach ($formattedData as $key => $value) {
+            $formattedData[strip_tags($key)] = strip_tags($value);
+        }
 
         try {
             $expired = now()->toDateTimeString() > $incomingFields['expiration_date'] ? 1 : 0;
@@ -106,6 +125,7 @@ class VehicleDocumentController extends Controller
                 'expiration_date' => $incomingFields['expiration_date'],
                 'expired' => $expired,
                 'vehicle_id' => $incomingFields['vehicle_id'],
+                'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Dados do documento com id ' . $vehicleDocument->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
