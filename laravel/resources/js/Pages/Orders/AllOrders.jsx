@@ -21,6 +21,14 @@ export default function AllOrders({auth, orders, flash}) {
         }
     }, [flash]);
 
+    const formatTime = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+
+        // Pad the numbers with leading zeros if needed
+        return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}m`;
+    };
+
     console.log(orders);
     const OrderInfo = orders.map((order)=>{
         
@@ -35,7 +43,7 @@ export default function AllOrders({auth, orders, flash}) {
             order_type: order.order_type,
             number_of_stops: order.order_stops.length,
             trajectory: order.trajectory,
-            expected_time: order.expected_time,
+            expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm:ss
             distance: order.distance,
             approved_date: order.approved_date,
             approved_by: order.manager_id,
