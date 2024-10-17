@@ -127,8 +127,6 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div className='p-6'>
                                 <div className='my-6'>
-                                    {/* <LeafletMap routing={true} onTrajectoryChange={(trajectory) => document.getElementById('trajectory').value = JSON.stringify(trajectory)} />     */}
-                                    {/* <LeafletMap routing={true} onTrajectoryChange={updateTrajectory} /> */}
                                     
                                         <form onSubmit={handleSubmit}>
                                             <input type="hidden" name="_token" value={csrfToken} />
@@ -173,13 +171,9 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         waypointsList={waypoints}
                                                         updateTrajectory={updateTrajectory}
                                                         updateSummary={updateSummary} 
-                                                        //updateWaypointData={updateWaypointData}
+                                                        selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
                                                     />
                                                 </Grid>
-
-                                                {/* <Grid item xs={12} md={6}>
-                                                    <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory} updateSummary={updateSummary} updateWaypointData={updateWaypointData}/>
-                                                </Grid> */}
                                             </Grid>
                         
                                             <Grid container spacing={3}>
