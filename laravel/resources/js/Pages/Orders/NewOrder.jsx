@@ -33,6 +33,8 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         updateTrajectory,
     } = useContext(OrderContext);
 
+    const [selectedDriver, setSelectedDriver] = useState(null);
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
 
@@ -45,11 +47,11 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     }));
 
     const driversList = drivers.map((driver) => {
-        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`}
+        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`, heavy_license: driver.heavy_license}
     })
 
     const vehicleList = vehicles.map((vehicle) => {
-        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
+        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
     })
 
     const techniciansList = technicians.map((technician) => {
@@ -81,6 +83,16 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         setSelectedRouteType(type)
         setData('order_type', type)
     }
+
+    const handleDriverChange = (e, value) => {
+        setSelectedDriver(value); // Save selected driver
+        setData('driver_id', value?.value || '');
+    };
+
+    const handleVehicleChange = (e, value) => {
+        setSelectedVehicle(value); // Save selected vehicle
+        setData('vehicle_id', value?.value || '');
+    };
 
     const updateSummary = ( summary ) => {
         //console.log('summary',summary);
@@ -215,7 +227,15 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                     id="vehicle"
                                                     options={vehicleList}
                                                     getOptionLabel={(option) => option.label}
-                                                    onChange={(e,value) => setData('vehicle_id', value.value)}
+                                                    getOptionDisabled={(option) => {
+                                                        // Disable vehicles that require a heavy license if the selected driver does not have one
+                                                        return (
+                                                            selectedDriver &&
+                                                            selectedDriver.heavy_license==0 &&
+                                                            option.heavy_vehicle==1
+                                                        );
+                                                    }}
+                                                    onChange={handleVehicleChange}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
@@ -236,7 +256,15 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                     id="driver"
                                                     options={driversList}
                                                     getOptionLabel={(option) => option.label}
-                                                    onChange={(e,value) => setData('driver_id', value.value)}
+                                                    getOptionDisabled={(option) => {
+                                                        // Disable drivers who don't have a heavy license if the selected vehicle requires one
+                                                        return (
+                                                            selectedVehicle &&
+                                                            selectedVehicle.heavy_vehicle &&
+                                                            !option.heavy_license
+                                                        );
+                                                    }}
+                                                    onChange={handleDriverChange}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}

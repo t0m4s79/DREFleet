@@ -35,6 +35,8 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         updateTrajectory,
     } = useContext(OrderContext);
 
+    const [selectedDriver, setSelectedDriver] = useState(null);
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
     const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
@@ -91,11 +93,11 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     }));
 
     const driversList = drivers.map((driver) => {
-        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`}
+        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`, heavy_license: driver.heavy_license}
     })
 
     const vehicleList = vehicles.map((vehicle) => {
-        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
+        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
     })
 
     const techniciansList = technicians.map((technician) => {
@@ -128,6 +130,16 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         setSelectedRouteType(type)
         setData('order_type', type)
     }
+
+    const handleDriverChange = (e, value) => {
+        setSelectedDriver(value); // Save selected driver
+        setData('driver_id', value?.value || '');
+    };
+
+    const handleVehicleChange = (e, value) => {
+        setSelectedVehicle(value); // Save selected vehicle
+        setData('vehicle_id', value?.value || '');
+    };
 
     const updateSummary = ( summary ) => {
         //console.log('summary',summary);
@@ -262,9 +274,16 @@ console.log(data)
                                     <Autocomplete
                                         id="vehicle"
                                         options={vehicleList}
-                                        getOptionLabel={(option) => option.label}
+                                        getOptionDisabled={(option) => {
+                                            // Disable vehicles that require a heavy license if the selected driver does not have one
+                                            return (
+                                                selectedDriver &&
+                                                selectedDriver.heavy_license==0 &&
+                                                option.heavy_vehicle==1
+                                            );
+                                        }}
                                         value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
-                                        onChange={(e,value) => setData('vehicle_id', value.value)}
+                                        onChange={handleVehicleChange}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
@@ -285,8 +304,16 @@ console.log(data)
                                         id="driver"
                                         options={driversList}
                                         getOptionLabel={(option) => option.label}
+                                            getOptionDisabled={(option) => {
+                                                // Disable drivers who don't have a heavy license if the selected vehicle requires one
+                                                return (
+                                                    selectedVehicle &&
+                                                    selectedVehicle.heavy_vehicle &&
+                                                    !option.heavy_license
+                                                );
+                                            }}
                                         value={driversList.find(driver => driver.value === data.driver_id) || null}
-                                        onChange={(e,value) => setData('driver_id', value.value)}
+                                        onChange={handleDriverChange}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
