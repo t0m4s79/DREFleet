@@ -4,7 +4,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
 
-export default function WaypointManager({ kids, otherPlacesList, updateSummary }) {
+export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute }) {
+    console.log('selectedRoute is:',selectedRoute)
     const { 
         waypoints,
         places,
@@ -198,6 +199,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary }
                     onTrajectoryChange={updateTrajectory}
                     updateSummary={updateSummary} 
                     updateWaypointData={updateMetricData}
+                    route={selectedRoute}
                 />
             </Grid>
         </Grid>
