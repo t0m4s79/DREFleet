@@ -54,7 +54,7 @@ class VehicleAccessoryController extends Controller
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         
         try {
-            $condition = now()->toDateTimeString() > $incomingFields['expiration_date'] ? 'Expirado' : $incomingFields['condition'];
+            $condition = $incomingFields['expiration_date'] != null && now()->toDateTimeString() > $incomingFields['expiration_date'] ? 'Expirado' : $incomingFields['condition'];
 
             $accessory = VehicleAccessory::create([
                 'name' => $incomingFields['name'],
@@ -96,7 +96,7 @@ class VehicleAccessoryController extends Controller
         $incomingFields['name'] = strip_tags($incomingFields['name']);
 
         try {
-            $condition = now()->toDateTimeString() > $incomingFields['expiration_date'] ? 'Expirado' : $incomingFields['condition'];
+            $condition = $incomingFields['expiration_date'] != null && now()->toDateTimeString() > $incomingFields['expiration_date'] ? 'Expirado' : $incomingFields['condition'];
 
             $vehicleAccessory->update([
                 'name' => $incomingFields['name'],
