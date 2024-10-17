@@ -62,7 +62,13 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
         const handlePolygonEditing = (layer) => {
             const polygonCoordinates = layer.getLatLngs();
             polygonLayerRef.current = layer; // Save reference to the polygon
-            onAreaChange(polygonCoordinates); // Send coordinates back to parent
+            // Check if the polygon is within the boundary
+            if (bounds && !bounds.contains(layer.getBounds())) {
+                map.removeLayer(layer); // Remove the polygon if it's outside the boundary
+                alert('Área fora das coordenadas permitidas!');
+            } else {
+                onAreaChange(polygonCoordinates); // Send coordinates back to parent
+            }
         };
 
         if (isEditing) {
