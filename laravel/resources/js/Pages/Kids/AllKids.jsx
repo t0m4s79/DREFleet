@@ -22,16 +22,16 @@ export default function AllKids( {auth, kids, flash} ) {
     
     // Deconstruct data to send to table component
     const kidInfo = kids.map((kid) => {
-        const kidPlacesIds = kid.place_ids.length
-            ? kid.place_ids.map((placeId) => ({ id: placeId }))
+        const kidPlacesIds = kid.places.length
+            ? kid.places.map((place) => ({ id: place.id })) // Accessing the `id` property of each place
             : [];
-
+    
         return {
             id: kid.id,
             name: kid.name,
-            kid_contacts: kid.id,
+            kid_contacts: kid.id, // It seems like you want to reference `kid.id` here; adjust if necessary
             wheelchair: kid.wheelchair ? 'Sim' : 'Não',
-            places_count: kid.place_ids.length > 0 ? kid.place_ids.length : 0,
+            places_count: kid.places.length,
             place_ids: kidPlacesIds,
         };
     });

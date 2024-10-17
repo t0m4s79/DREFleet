@@ -16,12 +16,6 @@ class KidController extends Controller
     {
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
-        // Add a new attribute for place IDs
-        $kids->transform(function ($kid) {
-            $kid->place_ids = $kid->places->pluck('id')->toArray(); // Collect place IDs
-            return $kid;
-        });
-
         $kids->each(function ($kid) {
             $kid->created_at = \Carbon\Carbon::parse($kid->created_at)->format('d-m-Y H:i');
             $kid->updated_at = \Carbon\Carbon::parse($kid->updated_at)->format('d-m-Y H:i');
