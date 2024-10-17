@@ -37,7 +37,7 @@ export default function AllManagers({ auth, managers, flash }) {
         id: 'ID',
         name: 'Nome',
         email: 'Email',
-        phone: 'Numero de Telefone',
+        phone: 'Número de Telefone',
         status: 'Estado',
         all_approved_orders: 'Pedidos Aprovados'
     };

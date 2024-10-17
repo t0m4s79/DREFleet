@@ -385,18 +385,20 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 // Currently there is no simple way to change header text warp
                 sx={{
                     "& .MuiDataGrid-columnHeaderTitle": {
-                        whiteSpace: "normal",
-                        lineHeight: "normal"
+                        whiteSpace: "nowrap",
+                        lineHeight: "normal",
+                        marginTop: "12px", 
+                        marginBottom: "12px", color: "#A0A0A0", fontSize: 12, textTransform: "uppercase", fontWeight:"500", fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif", letterSpacing: "0.05em"
                     },
-                    "& .MuiDataGrid-columnHeader": {
-                        // Forced to use important since overriding inline styles
-                        height: "unset !important"
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                        // Forced to use important since overriding inline styles
-                        maxHeight: "168px !important"
-                    },
-                    fontSize: 14,
+                //    "& .MuiDataGrid-columnHeader": {
+                //        // Forced to use important since overriding inline styles
+                //        height: "unset !important"
+                //    },
+                //    "& .MuiDataGrid-columnHeaders": {
+                //        // Forced to use important since overriding inline styles
+                //        maxHeight: "168px !important"
+                //    },
+                    fontSize: 14
                 }}
             />
         </div>

@@ -28,7 +28,7 @@ export default function AllDrivers( {auth, users, flash} ) {
         id: 'ID',
         name: 'Nome',
         email: 'Email',
-        phone: 'Numero de Telefone',
+        phone: 'Número de Telefone',
         user_type: 'Tipo de Utilizador',
         status: 'Estado'
     };

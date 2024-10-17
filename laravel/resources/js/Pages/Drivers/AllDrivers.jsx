@@ -38,7 +38,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
         id: 'ID',
         name: 'Nome',
         email: 'Email',
-        phone: 'Numero de Telefone',
+        phone: 'Número de Telefone',
         license_number: 'Nº da Carta de Condução',
         heavy_license: 'Carta de Pesados',
         heavy_license_type: 'Tipo de Carta de Pesados',
