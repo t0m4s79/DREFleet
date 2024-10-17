@@ -44,7 +44,7 @@ export default function AllOrders({auth, orders, flash}) {
             number_of_stops: order.order_stops.length,
             trajectory: order.trajectory,
             expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm:ss
-            distance: order.distance,
+            distance: (order.distance / 1000).toFixed(2) + 'km',
             approved_date: order.approved_date,
             approved_by: order.manager_id,
             status: order.status,
