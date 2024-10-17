@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Helpers\ErrorMessagesHelper;
@@ -13,9 +14,11 @@ class VehicleKilometrageReportController extends Controller
     public function showCreateVehicleKilometrageReportForm()
     {
         $vehicles = Vehicle::all();
+        $drivers = Driver::all();
 
         return Inertia::render('VehicleKilometrageReports/NewVehicleKilometrageReports', [
             'vehicles' => $vehicles,
+            'drivers' => $drivers,
         ]);
     }
 
@@ -27,7 +30,7 @@ class VehicleKilometrageReportController extends Controller
         $incomingFields = $request->validate([
             'date' => ['required', 'date'],
             'begin_kilometrage' => ['required', 'integer', 'min:0'],
-            'end_kilometrage' => ['required', 'integer', 'min:0'],
+            'end_kilometrage' => ['required', 'integer', 'min:0', 'gte:begin_kilometrage'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
             'driver_id' => ['required', 'exists:drivers,user_id'],
         ], $customErrorMessages);
@@ -46,10 +49,12 @@ class VehicleKilometrageReportController extends Controller
     public function showEditVehicleKilometrageReportForm(VehicleKilometrageReport $vehicleKilometrageReport)
     {
         $vehicles = Vehicle::all();
+        $drivers = Driver::all();
 
         return Inertia::render('VehicleKilometrageReports/EditVehicleKilometrageReports', [
             'report' => $vehicleKilometrageReport,
             'vehicles' => $vehicles,
+            'drivers' => $drivers,
         ]);
     }
 
@@ -61,7 +66,7 @@ class VehicleKilometrageReportController extends Controller
         $incomingFields = $request->validate([
             'date' => ['required', 'date'],
             'begin_kilometrage' => ['required', 'integer', 'min:0'],
-            'end_kilometrage' => ['required', 'integer', 'min:0'],
+            'end_kilometrage' => ['required', 'integer', 'min:0', 'gte:begin_kilometrage'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
             'driver_id' => ['required', 'exists:drivers,user_id'],
         ], $customErrorMessages);

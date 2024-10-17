@@ -108,6 +108,9 @@ class ErrorMessagesHelper
 
             // Vehicle Documents
             'expiration_date.after' => 'A data de validade não pode ser antes da data de emissão',
+
+            // Vehicle Kilometrage Reports
+            'end_kilometrage.gte' => 'A kilometragem final tem de ser maior ou igual à inicial',
         ];
     }
 }

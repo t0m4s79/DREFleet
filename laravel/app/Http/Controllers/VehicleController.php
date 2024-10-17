@@ -256,9 +256,9 @@ class VehicleController extends Controller
         $vehicle->kilometrageReports->each(function ($report) {
             $report->created_at = \Carbon\Carbon::parse($report->created_at)->format('d-m-Y');
             $report->updated_at = \Carbon\Carbon::parse($report->updated_at)->format('d-m-Y');
-            $report->date = $report->date;
+            $report->date = \Carbon\Carbon::parse($report->date)->format('d-m-Y');
         });
-
+        
         return Inertia::render('Vehicles/VehicleKilometrageReports', [
             'flash' => [
                 'message' => session('message'),
