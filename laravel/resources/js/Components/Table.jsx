@@ -363,7 +363,23 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 //loading                           //loading can be used when fetching data
                 hideFooterSelectedRowCount
                 localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
-                sx={{ fontSize: 14 }}
+                // Table header styling was from github Issue https://github.com/mui/mui-x/issues/898#issuecomment-1498361362
+                // Currently there is no simple way to change header text warp
+                sx={{
+                    "& .MuiDataGrid-columnHeaderTitle": {
+                        whiteSpace: "normal",
+                        lineHeight: "normal"
+                    },
+                    "& .MuiDataGrid-columnHeader": {
+                        // Forced to use important since overriding inline styles
+                        height: "unset !important"
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        // Forced to use important since overriding inline styles
+                        maxHeight: "168px !important"
+                    },
+                    fontSize: 14,
+                }}
             />
         </div>
     );
