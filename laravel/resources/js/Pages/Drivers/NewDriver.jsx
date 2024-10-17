@@ -1,10 +1,8 @@
 import InputError from '@/Components/InputError';
 import LicenseNumberInput from '@/Components/LicenseNumberInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
-import { useState } from 'react';
 
 {/*TODO: LICENSE NUMBER FIELDS ERRORS SHOWING*/}
 {/*TODO: ALLIGN EXPIRATION DATE AND LICENSE NUMBER CORRECTLY*/}
@@ -178,16 +176,6 @@ export default function NewDriver( {auth, users} ) {
                                 >
                                     Submeter
                                 </Button>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600">Guardado</p>
-                                </Transition>
                             </form>
             
                         </div>
