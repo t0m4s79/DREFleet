@@ -298,6 +298,54 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            // Display drivers with buttons, each button redirecting to the respective drivers's page
+            // Shown in OrderRoutes "table"
+            if (key === 'drivers') {
+                return (
+                    <div>
+                        {params.value.map((driver) => (
+                            <Button
+                                key={driver.user_id}
+                                variant="outlined"
+                                href={route('drivers.showEdit', driver)}
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {driver.user_id}
+                            </Button>
+                        ))}
+                    </div>
+                );
+            }
+            // Display technicians with buttons, each button redirecting to the respective technician's page
+            // Shown in OrderRoutes "table"
+            if (key === 'technicians') {
+                return (
+                    <div>
+                        {params.value.map((tech) => (
+                            <Button
+                                key={tech.id}
+                                variant="outlined"
+                                href={route('technicians.showEdit', tech)}
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {tech.id}
+                            </Button>
+                        ))}
+                    </div>
+                );
+            }
 
             return params.value;
         }

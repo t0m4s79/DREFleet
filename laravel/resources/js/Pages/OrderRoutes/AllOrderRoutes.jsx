@@ -22,12 +22,22 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
 
     const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
         const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
-        return {id: orderRoute.id, name: orderRoute.name, orderArea, created_at: orderRoute.created_at, updated_at: orderRoute.updated_at}
+          
+        return {
+            id: orderRoute.id, 
+            name: orderRoute.name, 
+            drivers: orderRoute.drivers,
+            technicians: orderRoute.technicians,
+            orderArea, created_at: orderRoute.created_at, 
+            updated_at: orderRoute.updated_at
+        }
     })
 
     const orderRoutesLabels = {
         id: 'ID',
         name: 'Rota',
+        drivers: 'Condutores',
+        technicians: 'Técnicos',
         orderArea: 'Área',
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização'
