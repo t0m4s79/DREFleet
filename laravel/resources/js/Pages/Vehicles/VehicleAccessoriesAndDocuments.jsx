@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} ) {
-
+    console.log(vehicle)
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -21,15 +21,21 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
 
     //Deconstruct props to send to Table
     const vehicleDocs = vehicle.documents.map((doc) => {
+        // Parse the JSON data field for each document
+        const additionalData = doc.data
+            ? Object.entries(doc.data).map(([key, value]) => `${key}: ${value}`)
+            : [];
+    
         return {
             id: doc.id,
             name: doc.name,
             issue_date: doc.issue_date,
             expiration_date: doc.expiration_date,
             expired: doc.expired,
+            data: additionalData,
             created_at: doc.created_at,
             updated_at: doc.updated_at,
-        }
+        };
     });
 
     const vehicleDocsColumnLabels = {
@@ -38,6 +44,7 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
         issue_date: 'Data de Emissão',
         expiration_date: 'Data de Validade',
         expired: 'Expirado',
+        data: 'Dados adicionais',
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };

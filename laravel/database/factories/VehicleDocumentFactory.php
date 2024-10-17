@@ -23,10 +23,14 @@ class VehicleDocumentFactory extends Factory
 
         $expired = $expirationDate < now() ? 1 : 0;
 
+
         $data = [];
+        $keyArray = ['Companhia de Seguros', 'Nº do documento', 'Apólice'];
+        $valueArray = ['Companhia XPTO', '123455', 'XX112AF'];
+
         for ($i = 0; $i < rand(1, 3); $i++) {
-            $key = fake()->name(); // Random key
-            $value = fake()->name(); // Random value
+            $key = $keyArray[rand(0,2)]; // Random key
+            $value = $valueArray[rand(0,2)]; // Random value
             $data[$key] = $value;
         }
 

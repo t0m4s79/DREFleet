@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
-
+console.log(vehicleDocuments);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -20,23 +20,30 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
     }, [flash]);
 
     const vehicleDocumentInfo = vehicleDocuments.map((vehicleDocument) => {
+        // Parse the JSON data field
+        const additionalData = vehicleDocument.data
+            ? Object.entries(vehicleDocument.data).map(([key, value]) => `${key}: ${value}`)
+            : [];
+    
         return {
             id: vehicleDocument.id,
             name: vehicleDocument.name,
             issue_date: vehicleDocument.issue_date,
             expiration_date: vehicleDocument.expiration_date,
-            expired: vehicleDocument.expired,
+            expired: vehicleDocument.expired ? 'Sim' : 'Não', // Handle boolean for display
             vehicle_id: vehicleDocument.vehicle_id,
-        }
-    })
+            data: additionalData, // Store key-value pairs as array
+        };
+    });
 
     const VehicleDocumentColumnLabels = {
         id: 'ID',
         name: 'Nome',
-        issue_date: 'Data de Emissão',
-        expiration_date: 'Data de Validade',
+        issue_date: 'Data de emissão',
+        expiration_date: 'Data de validade',
         expired: 'Expirado',
-        vehicle_id: 'Id do Veículo',
+        vehicle_id: 'Id do veículo',
+        data: 'Dados adicionais',
     };
 
     return (
