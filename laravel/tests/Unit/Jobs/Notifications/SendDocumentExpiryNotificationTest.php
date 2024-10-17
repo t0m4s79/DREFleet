@@ -53,7 +53,7 @@ class SendDocumentExpiryNotificationTest extends TestCase
         Notification::fake();
 
         // Set up test data
-        $user = User::factory()->create(['user_type' => 'Gestor']);
+        User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
 
         // Delete documents created on vehicle factory
