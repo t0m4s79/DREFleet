@@ -25,7 +25,7 @@ class ManagerTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get('/managers');
+            ->get(route('managers.index'));
 
         $response->assertOk();
     }

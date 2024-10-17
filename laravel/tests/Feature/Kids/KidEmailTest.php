@@ -57,7 +57,7 @@ class KidEmailTest extends TestCase
             'email' => fake()->email(),
             'owner_name' => fake()->name(),
             'relationship_to_kid' => Arr::random(['Avô', 'Avó', 'Pai', 'Mãe', 'Primo', 'Tia', 'Tio', 'Tutor']),
-            'preference' => Arr::random(['Alternativo', 'Preferido']),
+            'preference' => Arr::random(['Alternativa', 'Preferida']),
             'kid_id' => Kid::factory()->create()->id,
         ];
 
@@ -66,7 +66,8 @@ class KidEmailTest extends TestCase
             ->post(route('kidEmails.create'), $kidEmailData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidEmailData['kid_id']));
 
         $this->assertDatabaseHas('kid_emails', $kidEmailData);
     }
@@ -79,7 +80,7 @@ class KidEmailTest extends TestCase
             'email' => fake()->email(),
             'owner_name' => fake()->name(),
             'relationship_to_kid' => Arr::random(['Avô', 'Avó', 'Pai', 'Mãe', 'Primo', 'Tia', 'Tio', 'Tutor']),
-            'preference' => Arr::random(['Alternativo', 'Preferido']),
+            'preference' => Arr::random(['Alternativa', 'Preferida']),
             'kid_id' => Kid::factory()->create()->id,
         ];
         
@@ -88,7 +89,8 @@ class KidEmailTest extends TestCase
             ->put(route('kidEmails.edit', $kidEmail->id), $updatedData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $updatedData['kid_id']));
 
         $this->assertDatabaseHas('kid_emails', $updatedData); 
     }
@@ -102,7 +104,9 @@ class KidEmailTest extends TestCase
             ->delete(route('kidEmails.delete', $kidEmail->id));
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidEmail->id));
+
 
         $this->assertDatabaseMissing('kid_emails', [
             'id' => $kidEmail->id,

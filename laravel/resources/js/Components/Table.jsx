@@ -232,7 +232,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         <Button
                             key={params.value}
                             variant="outlined"
-                            href={route('managers.showApproved', params.value)}
+                            href={route('managers.approved', params.value)}
                             sx={{
                                 maxHeight: '30px',
                                 minHeight: '30px',
@@ -251,6 +251,24 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                             key={params.value}
                             variant="outlined"
                             href={route('vehicles.documentsAndAccessories', params.value)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Consultar
+                        </Button>
+                    </div>
+                )
+            }
+            if(key === 'vehicle_kilometrage_reports'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('vehicles.kilometrageReports', params.value)}
                             sx={{
                                 maxHeight: '30px',
                                 minHeight: '30px',

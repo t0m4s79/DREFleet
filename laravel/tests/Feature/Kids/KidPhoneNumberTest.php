@@ -57,7 +57,7 @@ class KidPhoneNumberTest extends TestCase
             'phone' => rand(910000000,929999999),
             'owner_name' => fake()->name(),
             'relationship_to_kid' => Arr::random(['Avô', 'Avó', 'Pai', 'Mãe', 'Primo', 'Tia', 'Tio', 'Tutor']),
-            'preference' => Arr::random(['Alternativo', 'Preferido']),
+            'preference' => Arr::random(['Alternativa', 'Preferida']),
             'kid_id' => Kid::factory()->create()->id,
         ];
 
@@ -66,46 +66,51 @@ class KidPhoneNumberTest extends TestCase
             ->post(route('kidPhoneNumbers.create'), $kidPhoneNumberData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidPhoneNumberData['kid_id']));
 
         $this->assertDatabaseHas('kid_phone_numbers', $kidPhoneNumberData);
     }
 
     public function test_user_can_edit_a_kid_phone_number(): void
     {
-        $KidPhoneNumber = KidPhoneNumber::factory()->create();
+        $kidPhoneNumber = KidPhoneNumber::factory()->create();
     
         $updatedData = [
             'phone' => rand(910000000,929999999),
             'owner_name' => fake()->name(),
             'relationship_to_kid' => Arr::random(['Avô', 'Avó', 'Pai', 'Mãe', 'Primo', 'Tia', 'Tio', 'Tutor']),
-            'preference' => Arr::random(['Alternativo', 'Preferido']),
+            'preference' => Arr::random(['Alternativa', 'Preferida']),
             'kid_id' => Kid::factory()->create()->id,
         ];
         
         $response = $this
             ->actingAs($this->user)
-            ->put(route('kidPhoneNumbers.edit', $KidPhoneNumber->id), $updatedData);
+            ->put(route('kidPhoneNumbers.edit', $kidPhoneNumber->id), $updatedData);
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $updatedData['kid_id']));
+            
 
         $this->assertDatabaseHas('kid_phone_numbers', $updatedData); 
     }
 
     public function test_user_can_delete_a_kid_phone_number(): void
     {
-        $KidPhoneNumber = KidPhoneNumber::factory()->create();
+        $kidPhoneNumber = KidPhoneNumber::factory()->create();
 
         $response = $this
             ->actingAs($this->user)
-            ->delete(route('kidPhoneNumbers.delete', $KidPhoneNumber->id));
+            ->delete(route('kidPhoneNumbers.delete', $kidPhoneNumber->id));
 
         $response
-            ->assertSessionHasNoErrors();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('kids.contacts', $kidPhoneNumber->id));
+
 
         $this->assertDatabaseMissing('kid_phone_numbers', [
-            'id' => $KidPhoneNumber->id,
+            'id' => $kidPhoneNumber->id,
         ]);
     }
 }

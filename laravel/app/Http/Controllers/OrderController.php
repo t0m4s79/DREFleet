@@ -42,7 +42,7 @@ class OrderController extends Controller
             // Format the dates as dd-mm-yyyy
             $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
             $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
-            $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : null;
+            $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : '-';
             $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d-m-Y H:i');
             $order->updated_at = \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y H:i');
 
@@ -255,6 +255,7 @@ class OrderController extends Controller
         ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
+
         DB::beginTransaction();
         try {
             $order->update([
@@ -281,7 +282,7 @@ class OrderController extends Controller
                 
                 // Create the order stops
                 foreach ($incomingFields['places'] as $place) {
-                    $expectedArrivalDate = $expectedArrivalDate->addSeconds($place['time']);
+                    $expectedArrivalDate = $expectedArrivalDate->addSeconds((float) $place['time']);
                     $orderStopRequest = new Request([
                         'order_id' => $order->id,
                         'stop_number' => $place['place_id'],

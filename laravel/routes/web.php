@@ -11,16 +11,17 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\KidEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderStopController;
 use App\Http\Controllers\OrderRouteController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\KidPhoneNumberController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\KidEmailController;
-use App\Http\Controllers\KidPhoneNumberController;
-use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\VehicleKilometrageReportController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -40,12 +41,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     //DRIVERS
-    Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');                                  //GET all page
-    Route::get('/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.showCreate');       //GET creation page
-    Route::post('/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');                  //CREATE action
-    Route::get('/drivers/edit/{driver}', [DriverController::class, 'showEditDriverForm'])->name('drivers.showEdit');    //GET edit page
-    Route::put('/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');                //EDIT action
-    Route::delete('/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');       //DELETE action
+    Route::get('/users/drivers', [DriverController::class, 'index'])->name('drivers.index');                                  //GET all page
+    Route::get('/users/drivers/create', [DriverController::class, 'showCreateDriverForm'])->name('drivers.showCreate');       //GET creation page
+    Route::post('/users/drivers/create', [DriverController::class, 'createDriver'])->name('drivers.create');                  //CREATE action
+    Route::get('/users/drivers/edit/{driver}', [DriverController::class, 'showEditDriverForm'])->name('drivers.showEdit');    //GET edit page
+    Route::put('/users/drivers/edit/{driver}', [DriverController::class, 'editDriver'])->name('drivers.edit');                //EDIT action
+    Route::delete('/users/drivers/delete/{driver}', [DriverController::class, 'deleteDriver'])->name('drivers.delete');       //DELETE action
 
     //KIDS
     Route::get('/kids', [KidController::class, 'index'])->name('kids.index');
@@ -57,27 +58,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/kids/contacts/{kid}', [KidController::class, 'showKidContacts'])->name('kids.contacts');
 
     //KID EMAILS
-    Route::get('/kidEmails/create', [KidEmailController::class, 'showCreateKidEmailForm'])->name('kidEmails.showCreate');
-    Route::post('/kidEmails/create', [KidEmailController::class, 'createKidEmail'])->name('kidEmails.create');
-    Route::get('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'showEditKidEmailForm'])->name('kidEmails.showEdit');
-    Route::put('/kidEmails/edit/{kidEmail}', [KidEmailController::class, 'editKidEmail'])->name('kidEmails.edit');
-    Route::delete('/kidEmails/delete/{kidEmail}', [KidEmailController::class, 'deleteKidEmail'])->name('kidEmails.delete');
+    Route::get('/kids/emails/create', [KidEmailController::class, 'showCreateKidEmailForm'])->name('kidEmails.showCreate');
+    Route::post('/kids/emails/create', [KidEmailController::class, 'createKidEmail'])->name('kidEmails.create');
+    Route::get('/kids/emails/edit/{kidEmail}', [KidEmailController::class, 'showEditKidEmailForm'])->name('kidEmails.showEdit');
+    Route::put('/kids/emails/edit/{kidEmail}', [KidEmailController::class, 'editKidEmail'])->name('kidEmails.edit');
+    Route::delete('/kids/emails/delete/{kidEmail}', [KidEmailController::class, 'deleteKidEmail'])->name('kidEmails.delete');
 
     //KID PHONE NUMBERS
-    Route::get('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kidPhoneNumbers.showCreate');
-    Route::post('/kidPhoneNumbers/create', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.create');
-    Route::get('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'showEditKidPhoneNumberForm'])->name('kidPhoneNumbers.showEdit');
-    Route::put('/kidPhoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'editKidPhoneNumber'])->name('kidPhoneNumbers.edit');
-    Route::delete('/kidPhoneNumbers/delete/{kidPhoneNumber}', [KidPhoneNumberController::class, 'deleteKidPhoneNumber'])->name('kidPhoneNumbers.delete');
+    Route::get('/kids/phoneNumbers/create', [KidPhoneNumberController::class, 'showCreateKidPhoneNumberForm'])->name('kidPhoneNumbers.showCreate');
+    Route::post('/kids/phoneNumbers/create', [KidPhoneNumberController::class, 'createKidPhoneNumber'])->name('kidPhoneNumbers.create');
+    Route::get('/kids/phoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'showEditKidPhoneNumberForm'])->name('kidPhoneNumbers.showEdit');
+    Route::put('/kids/phoneNumbers/edit/{kidPhoneNumber}', [KidPhoneNumberController::class, 'editKidPhoneNumber'])->name('kidPhoneNumbers.edit');
+    Route::delete('/kids/phoneNumbers/delete/{kidPhoneNumber}', [KidPhoneNumberController::class, 'deleteKidPhoneNumber'])->name('kidPhoneNumbers.delete');
     
     //MANAGERS (USER MODEL WITH Gestor USER_TYPE)
-    Route::get('/managers', [ManagerController::class, 'index'])->name('managers.index');
-    Route::get('/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.showCreate');
-    Route::post('/managers/create', [ManagerController::class, 'createManager'])->name('managers.create');
-    Route::get('/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
-    Route::put('/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
-    Route::delete('/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
-    Route::get('/managers/showApproved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.approved'); 
+    Route::get('/users/managers', [ManagerController::class, 'index'])->name('managers.index');
+    Route::get('/users/managers/create', [ManagerController::class, 'showCreateManagerForm'])->name('managers.showCreate');
+    Route::post('/users/managers/create', [ManagerController::class, 'createManager'])->name('managers.create');
+    Route::get('/users/managers/edit/{user}', [ManagerController::class, 'showEditManagerForm'])->name('managers.showEdit');
+    Route::put('/users/managers/edit/{user}', [ManagerController::class, 'editManager'])->name('managers.edit');
+    Route::delete('/users/managers/delete/{user}', [ManagerController::class, 'deleteManager'])->name('managers.delete');
+    Route::get('/users/managers/approved/{user}', [ManagerController::class, 'showManagerApprovedOrders'])->name('managers.approved'); 
 
     //NOTIFICATIONS
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -95,18 +96,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
 
     //ORDER ROUTES
-    Route::get('/orderRoutes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
-    Route::get('/orderRoutes/create', [OrderRouteController::class, 'showCreateOrderRouteForm'])->name('orderRoutes.showCreate');
-    Route::post('/orderRoutes/create', [OrderRouteController::class, 'createOrderRoute'])->name('orderRoutes.create');
-    Route::get('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEdit');
-    Route::put('/orderRoutes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
-    Route::delete('/orderRoutes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
+    Route::get('/orders/routes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
+    Route::get('/orders/routes/create', [OrderRouteController::class, 'showCreateOrderRouteForm'])->name('orderRoutes.showCreate');
+    Route::post('/orders/routes/create', [OrderRouteController::class, 'createOrderRoute'])->name('orderRoutes.create');
+    Route::get('/orders/routes/edit/{orderRoute}', [OrderRouteController::class, 'showEditOrderRouteForm'])->name('orderRoutes.showEdit');
+    Route::put('/orders/routes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
+    Route::delete('/orders/routes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
 
     //ORDER STOPS
-    Route::post('/orderStops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
-    Route::put('/orderStops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
-    Route::delete('/orderStops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
-    Route::patch('/orderStops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
+    Route::post('/orders/stops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
+    Route::put('/orders/stops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
+    Route::delete('/orders/stops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
+    Route::patch('/orders/stops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');
@@ -130,12 +131,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');
 
     //TECHNICIANS (USER MODEL WITH Técnico USER_TYPE)
-    Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
-    Route::get('/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.showCreate');
-    Route::post('/technicians/create', [TechnicianController::class, 'createTechnician'])->name('technicians.create');
-    Route::get('/technicians/edit/{user}', [TechnicianController::class, 'showEditTechnicianForm'])->name('technicians.showEdit');
-    Route::put('/technicians/edit/{user}', [TechnicianController::class, 'editTechnician'])->name('technicians.edit');
-    Route::delete('/technicians/delete/{user}', [TechnicianController::class, 'deleteTechnician'])->name('technicians.delete');
+    Route::get('/users/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
+    Route::get('/users/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.showCreate');
+    Route::post('/users/technicians/create', [TechnicianController::class, 'createTechnician'])->name('technicians.create');
+    Route::get('/users/technicians/edit/{user}', [TechnicianController::class, 'showEditTechnicianForm'])->name('technicians.showEdit');
+    Route::put('/users/technicians/edit/{user}', [TechnicianController::class, 'editTechnician'])->name('technicians.edit');
+    Route::delete('/users/technicians/delete/{user}', [TechnicianController::class, 'deleteTechnician'])->name('technicians.delete');
 
     //VEHICLES
     Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
@@ -145,22 +146,30 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
     Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
+    Route::get('/vehicles/kilometrageReports/{vehicle}', [VehicleController::class, 'showVehicleKilometrageReports'])->name('vehicles.kilometrageReports');
 
     //VEHICLES ACCESSORIES
-    Route::get('/vehicleAccessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
-    Route::get('/vehicleAccessories/create', [VehicleAccessoryController::class, 'showCreateVehicleAccessoryForm'])->name('vehicleAccessories.showCreate');
-    Route::post('/vehicleAccessories/create', [VehicleAccessoryController::class, 'createVehicleAccessory'])->name('vehicleAccessories.create');
-    Route::get('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'showEditVehicleAccessoryForm'])->name('vehicleAccessories.showEdit');
-    Route::put('/vehicleAccessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'editVehicleAccessory'])->name('vehicleAccessories.edit');
-    Route::delete('/vehicleAccessories/delete/{vehicleAccessory}', [VehicleAccessoryController::class, 'deleteVehicleAccessory'])->name('vehicleAccessories.delete');
+    Route::get('/vehicle/accessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
+    Route::get('/vehicle/accessories/create', [VehicleAccessoryController::class, 'showCreateVehicleAccessoryForm'])->name('vehicleAccessories.showCreate');
+    Route::post('/vehicle/accessories/create', [VehicleAccessoryController::class, 'createVehicleAccessory'])->name('vehicleAccessories.create');
+    Route::get('/vehicle/accessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'showEditVehicleAccessoryForm'])->name('vehicleAccessories.showEdit');
+    Route::put('/vehicle/accessories/edit/{vehicleAccessory}', [VehicleAccessoryController::class, 'editVehicleAccessory'])->name('vehicleAccessories.edit');
+    Route::delete('/vehicle/accessories/delete/{vehicleAccessory}', [VehicleAccessoryController::class, 'deleteVehicleAccessory'])->name('vehicleAccessories.delete');
     
     //VEHICLES DOCUMENTS
-    Route::get('/vehicleDocuments', [VehicleDocumentController::class, 'index'])->name('vehicleDocuments.index');
-    Route::get('/vehicleDocuments/create', [VehicleDocumentController::class, 'showCreateVehicleDocumentForm'])->name('vehicleDocuments.showCreate');
-    Route::post('/vehicleDocuments/create', [VehicleDocumentController::class, 'createVehicleDocument'])->name('vehicleDocuments.create');
-    Route::get('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'showEditVehicleDocumentForm'])->name('vehicleDocuments.showEdit');
-    Route::put('/vehicleDocuments/edit/{vehicleDocument}', [VehicleDocumentController::class, 'editVehicleDocument'])->name('vehicleDocuments.edit');
-    Route::delete('/vehicleDocuments/delete/{vehicleDocument}', [VehicleDocumentController::class, 'deleteVehicleDocument'])->name('vehicleDocuments.delete');
+    Route::get('/vehicle/documents', [VehicleDocumentController::class, 'index'])->name('vehicleDocuments.index');
+    Route::get('/vehicle/documents/create', [VehicleDocumentController::class, 'showCreateVehicleDocumentForm'])->name('vehicleDocuments.showCreate');
+    Route::post('/vehicle/documents/create', [VehicleDocumentController::class, 'createVehicleDocument'])->name('vehicleDocuments.create');
+    Route::get('/vehicle/documents/edit/{vehicleDocument}', [VehicleDocumentController::class, 'showEditVehicleDocumentForm'])->name('vehicleDocuments.showEdit');
+    Route::put('/vehicle/documents/edit/{vehicleDocument}', [VehicleDocumentController::class, 'editVehicleDocument'])->name('vehicleDocuments.edit');
+    Route::delete('/vehicle/documents/delete/{vehicleDocument}', [VehicleDocumentController::class, 'deleteVehicleDocument'])->name('vehicleDocuments.delete');
+
+    //VEHICLES KILOMETRAGE REPORTS
+    Route::get('/vehicle/kilometrageReports/create', [VehicleKilometrageReportController::class, 'showCreateVehicleKilometrageReportForm'])->name('vehicleKilometrageReports.showCreate');
+    Route::post('/vehicle/kilometrageReports/create', [VehicleKilometrageReportController::class, 'createVehicleKilometrageReport'])->name('vehicleKilometrageReports.create');
+    Route::get('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'showEditVehicleKilometrageReportForm'])->name('vehicleKilometrageReports.showEdit');
+    Route::put('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'editVehicleKilometrageReport'])->name('vehicleKilometrageReports.edit');
+    Route::delete('/vehicle/kilometrageReports/delete/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'deleteVehicleKilometrageReport'])->name('vehicleKilometrageReports.delete');
 });
 
 require __DIR__.'/auth.php';

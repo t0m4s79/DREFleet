@@ -47,8 +47,8 @@ class SendDriverLicenseExpiryNotificationTest extends TestCase
         Notification::fake();
 
         // Set up test data
-        $user = User::factory()->create(['user_type' => 'Gestor']);
-        $driver = Driver::factory()->create([
+        User::factory()->create(['user_type' => 'Gestor']);
+        Driver::factory()->create([
             'license_expiration_date' => now()->addMonths(2),
         ]);
 

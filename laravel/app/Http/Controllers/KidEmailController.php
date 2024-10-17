@@ -28,7 +28,7 @@ class KidEmailController extends Controller
             'email' => ['required', 'email', 'lowercase'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
 
         ], $customErrorMessages);
@@ -39,11 +39,11 @@ class KidEmailController extends Controller
         try {
             $kidEmail = KidEmail::create($incomingFields);
 
-            return redirect()->route('kids.index')->with('message', 'Email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar o email. Tente novamente.');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
         }
     }
 
@@ -65,18 +65,18 @@ class KidEmailController extends Controller
             'email' => ['required', 'email', 'lowercase'],
             'owner_name' => ['required', 'string', 'max:255'],
             'relationship_to_kid' => ['required', 'string', 'max:255'],
-            'preference' => ['required', Rule::in(['Preferido', 'Alternativo'])],
+            'preference' => ['required', Rule::in(['Preferida', 'Alternativa'])],
             'kid_id' => ['required', 'exists:kids,id'],
         ], $customErrorMessages);
 
         try {
             $kidEmail->update($incomingFields);
 
-            return redirect()->route('kids.index')->with('message', 'Dados do email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Dados do email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('kids.index')->with('error', 'Houve um problema ao editar os dados do emaill com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao editar os dados do emaill com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . '. Tente novamente.');
         }
     }
 
@@ -86,11 +86,11 @@ class KidEmailController extends Controller
             $kidEmail = KidEmail::findOrFail($id);
             $kidEmail->delete();
 
-            // return redirect()->route('kids.index')->with('message', 'Email com id ' . $id . ' apagado com sucesso!');
+            return redirect()->route('kids.contacts', $id)->with('message', 'Email com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            // return redirect()->route('kids.index')->with('error', 'Houve um problema ao apagar o email com id ' . $id . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $id)->with('error', 'Houve um problema ao apagar o email com id ' . $id . '. Tente novamente.');
         }
     }
 }

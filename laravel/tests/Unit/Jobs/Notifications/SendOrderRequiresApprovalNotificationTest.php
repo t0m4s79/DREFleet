@@ -21,7 +21,7 @@ class SendOrderRequiresApprovalNotificationTest extends TestCase
 
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
-        $order = Order::factory()->create([
+        Order::factory()->create([
             'manager_id' => null,
             'approved_date' => null,
             'expected_begin_date' => now()->addWeek(),
@@ -44,19 +44,19 @@ class SendOrderRequiresApprovalNotificationTest extends TestCase
 
         // Set up test data
         $user = User::factory()->create(['user_type' => 'Gestor']);
-        $order_1 = Order::factory()->create([
+        Order::factory()->create([
             'manager_id' => null,
             'approved_date' => null,
             'expected_begin_date' => now()->addMonths(2),
         ]);
 
-        $order_2 = Order::factory()->create([
+        Order::factory()->create([
             'manager_id' => null,
             'approved_date' => now()->now(),
             'expected_begin_date' => null,
         ]);
 
-        $order_3 = Order::factory()->create([
+        Order::factory()->create([
             'manager_id' => $user->id,
             'approved_date' => null,
             'expected_begin_date' => null,

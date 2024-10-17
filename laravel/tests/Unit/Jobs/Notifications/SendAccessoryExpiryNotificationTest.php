@@ -52,7 +52,7 @@ class SendAccessoryExpiryNotificationTest extends TestCase
         Notification::fake();
 
         // Set up test data
-        $user = User::factory()->create(['user_type' => 'Gestor']);
+        User::factory()->create(['user_type' => 'Gestor']);
         $vehicle = Vehicle::factory()->create();
 
         $controller = new VehicleAccessoryController;

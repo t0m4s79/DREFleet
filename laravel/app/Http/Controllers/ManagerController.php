@@ -133,6 +133,7 @@ class ManagerController extends Controller
                 'error' => session('error'),
             ],
             'orders' => $orders,
+            'userId' => $user->id,
         ]);
     }
 

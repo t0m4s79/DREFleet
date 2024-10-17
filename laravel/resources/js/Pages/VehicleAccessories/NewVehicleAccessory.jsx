@@ -1,10 +1,8 @@
 import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import { Button, TextField, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel, Autocomplete } from '@mui/material';
-import { useState } from 'react';
 
 {/*TODO: Condition should turn grey and auto select expired if present date is bigger than expiration_date */}
 export default function NewVehicleAccessory( {auth, vehicles} ) {
@@ -108,16 +106,6 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                 <Button variant="outlined" type="submit" disabled={processing}>
                                     Submeter
                                 </Button>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600">Guardado</p>
-                                </Transition>
                             </form>
                         </div>
 

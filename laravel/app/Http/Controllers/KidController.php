@@ -155,7 +155,25 @@ class KidController extends Controller
     {
         // Use 'load' to eager load the relationships on the already retrieved kid instance
         $kid->load('phoneNumbers', 'emails');
+
+        // Format the fields for each accessory
+        $kid->phoneNumbers->each(function ($phone) {
+            $phone->created_at = \Carbon\Carbon::parse($phone->created_at)->format('d-m-Y H:i');
+            $phone->updated_at = \Carbon\Carbon::parse($phone->updated_at)->format('d-m-Y H:i');
+        }); 
+
+        // Format the fields for each document
+        $kid->emails->each(function ($email) {
+            $email->created_at = \Carbon\Carbon::parse($email->created_at)->format('d-m-Y H:i');
+            $email->updated_at = \Carbon\Carbon::parse($email->updated_at)->format('d-m-Y H:i');
+        });
         
-        return Inertia::render('Kids/KidContacts', ['kid' => $kid]);
+        return Inertia::render('Kids/KidContacts', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'kid' => $kid
+        ]);
     }
 }

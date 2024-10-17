@@ -1,6 +1,4 @@
-import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Grid } from '@mui/material';
 import LeafletMap from '@/Components/LeafletMap';
@@ -144,16 +142,6 @@ export default function NewPlace({auth}) {
                                 >
                                     Submeter
                                 </Button>
-
-                                <Transition
-                                    show={recentlySuccessful}
-                                    enter="transition ease-in-out"
-                                    enterFrom="opacity-0"
-                                    leave="transition ease-in-out"
-                                    leaveTo="opacity-0"
-                                >
-                                    <p className="text-sm text-gray-600">Guardado</p>
-                                </Transition>
                             </form>
 
                             <br />

@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React from 'react'
 import Table from '@/Components/Table';
 
-export default function ShowApprovedOrders({auth, orders}) {
+export default function ShowApprovedOrders({auth, orders, userId}) {
 
 	console.log('orders', orders)
 
@@ -29,7 +29,7 @@ export default function ShowApprovedOrders({auth, orders}) {
 	return (
 		<AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos aprovados pelo/a Gestor/a </h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos aprovados pelo/a Gestor/a #{userId} </h2>}
         >
 
             <Head title="Pedidos Aprovados" />

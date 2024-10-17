@@ -71,32 +71,6 @@ export default function NewKid({auth, places}) {
                                     helperText={errors.name}
                                 />
 
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    id="email"
-                                    name="email"
-                                    label="Email do encarregado de educação"
-                                    type="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    error={Boolean(errors.email)}
-                                    helperText={errors.email}
-                                />
-
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    id="phone"
-                                    name="phone"
-                                    label="Número de telefone do encarregado de educação"
-                                    type="tel"
-                                    value={data.phone}
-                                    onChange={(e) => setData('phone', e.target.value)}
-                                    error={Boolean(errors.phone)}
-                                    helperText={errors.phone}
-                                />
-
                                 <FormControl component="fieldset" margin="normal">
                                     <FormLabel component="legend">Utiliza cadeira de rodas?</FormLabel>
                                     <RadioGroup
@@ -121,7 +95,7 @@ export default function NewKid({auth, places}) {
                                 </FormControl>
                                 <br />
                                 
-                                <p>Adicionar Morada</p>
+                                <p>Adicionar Morada(s)</p>
                                 <FormControl sx={{ minWidth: 300 }} margin="normal">
                                     <InputLabel id="places-label">Adicionar Morada</InputLabel>
                                     <Select

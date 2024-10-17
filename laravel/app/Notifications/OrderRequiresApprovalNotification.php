@@ -42,7 +42,7 @@ class OrderRequiresApprovalNotification extends Notification
 
         return (new MailMessage)
                     ->line('Pedido necessita de aprovação.')
-                    ->action('Ver pedido em', route('orders.show'))
+                    ->action('Ver pedido em', route('orders.edit'))
                     ->line('O pedido com id ' . $this->order->id . ' com data de início breve, marcada para ' . $expected_begin_date . ', necessita de aprovação.');
     }
 

@@ -9,20 +9,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class AccessoryExpiryNotification extends Notification
+class UnfilledKilometrageReportEntryNotification extends Notification
 {
     use Queueable;
 
-    protected $accessory;
+    protected $missingDate;
 
     protected $vehicle;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($vehicle, $accessory)
+    public function __construct($vehicle, $missingDate)
     {
-        $this->accessory = $accessory;
+        $this->missingDate = $missingDate;
         $this->vehicle = $vehicle;
     }
 
@@ -33,7 +33,7 @@ class AccessoryExpiryNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [CustomDbChannel::class];        //can include 'mail' after mail system is ready and show pages are built
+        return [CustomDbChannel::class];
     }
 
     /**
@@ -42,9 +42,9 @@ class AccessoryExpiryNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Acessório prestes a expirar.')
-                    ->action('Ver acessório em', route('vehicleAccessories.edit', ['vehicleAccessory' => $this->accessory->id]))
-                    ->line('O acessório com id ' . $this->accessory->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.');
+                    ->line('Entrada de relatório de kilometragem em falta.')
+                    ->action('Ver detalhes em', route('vehicles.kilometrageReports', ['vehicle' => $this->vehicle->id]))
+                    ->line('No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $this->missingDate . 'para o veículo ' . $this->vehicle->id . '.');
     }
 
     /**
@@ -58,9 +58,9 @@ class AccessoryExpiryNotification extends Notification
             'user_id' => $notifiable->id,
             'related_entity_type' => Vehicle::class,
             'related_entity_id' => $this->vehicle->id,
-            'type' => 'Acessório',
-            'title' => 'Acessório perto de expirar',
-            'message' => 'O acessório com id ' . $this->accessory->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.',
+            'type' => 'Relatório de Kilometragem',
+            'title' => 'Entrada de relatório de kilometragem em falta',
+            'message' => 'No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $this->missingDate . 'para o veículo ' . $this->vehicle->id . '.',
             'is_read' => false,
         ];
     }

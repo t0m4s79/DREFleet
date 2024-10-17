@@ -159,7 +159,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
                             </FormControl>
 
 
-                            <p>Adicionar Morada</p>
+                            <p>Adicionar Morada(s)</p>
                             <FormControl sx={{ m: 1, minWidth: 300 }} className={!isEditMode ? 'read-only-field' : ''} disabled={!isEditMode}>
                                 <InputLabel id="add-places-label">Adicionar Morada</InputLabel>
                                 <Select
@@ -180,7 +180,7 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 </Select>
                             </FormControl>
 
-                            <p>Retirar Morada</p>
+                            <p>Retirar Morada(s)</p>
                             <FormControl sx={{ m: 1, minWidth: 300 }} className={!isEditMode ? 'read-only-field' : ''} disabled={!isEditMode}>
                                 <InputLabel id="remove-places-label">Retirar Morada</InputLabel>
                                 <Select
