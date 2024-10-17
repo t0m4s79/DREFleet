@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date("issue_date");
             $table->date("expiration_date");
             $table->boolean("expired");
+            $table->json('data')->nullable();           //field to hold any specific document data (name and value pairs)
 
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');

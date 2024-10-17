@@ -16,6 +16,11 @@ class VehicleDocument extends Model
         'expiration_date',
         'expired',
         'vehicle_id',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => 'array',  // This will allow Laravel to cast the JSON to an array
     ];
 
     public function getCreatedAtAttribute($value)
