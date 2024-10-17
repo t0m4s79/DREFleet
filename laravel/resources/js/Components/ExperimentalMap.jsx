@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, Polygon, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import L, { latLng } from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import { calculateTravelMetrics } from '@/utils/calculateTravelMetrics'; 
@@ -54,8 +54,19 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
     return null;
 }
 
-export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateSummary, updateWaypointData }) {
+export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateSummary, updateWaypointData, route }) {
     //console.log(waypoints)
+    let polyCoords
+    if(route) {
+        polyCoords = route.area.coordinates[0].map((coords)=>{
+            return latLng({
+                lat: coords[1],
+                lng: coords[0]
+            })
+        })
+        console.log(polyCoords)
+    }
+
     return (
         <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%' }}>
             <TileLayer
@@ -63,6 +74,13 @@ export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateS
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Routing waypoints={waypoints} onTrajectoryChange={onTrajectoryChange} updateSummary={updateSummary} updateWaypointData={updateWaypointData}/>
+
+            {route && (
+                <Polygon 
+                    positions={polyCoords}
+                    pathOptions={{ color: route.area_color, fillOpacity: 0.1 }}
+                />
+            )}
         </MapContainer>
     );
 }

@@ -15,7 +15,7 @@ class KidPhoneNumberController extends Controller
     {
         $kids = Kid::all();
 
-        return Inertia::render('KidPhoneNumbers/NewPhoneNumber', [
+        return Inertia::render('KidPhoneNumbers/NewKidPhoneNumber', [
             'kids' => $kids,
         ]);
     }
@@ -23,7 +23,7 @@ class KidPhoneNumberController extends Controller
     public function createKidPhoneNumber(Request $request)
     {
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
-
+        //dd($request);
         $incomingFields = $request->validate([
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'owner_name' => ['required', 'string', 'max:255'],

@@ -35,6 +35,10 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         updateTrajectory,
     } = useContext(OrderContext);
 
+    const [selectedRouteType, setSelectedRouteType]= useState('');
+    const [selectedRouteID, setSelectedRouteID] =useState('');
+    const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
+
     const orderStops = order.order_stops.map((stop)=> {
         return { 
             place_id: stop.place_id,
@@ -74,11 +78,9 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     
             console.log('Form state initialized:', data);
         }
+        setSelectedRouteID(order.order_route_id)
+        setSelectedRouteType(order.order_type)
     }, []);    
-
-    const [selectedRouteType, setSelectedRouteType]= useState('');
-    const [selectedRouteID, setSelectedRouteID] =useState('');
-    const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -216,13 +218,10 @@ console.log(data)
                                                 lat: place.coordinates.coordinates[1],
                                                 lng: place.coordinates.coordinates[0],
                                             }))}      
-                                            updateSummary={updateSummary} 
+                                            updateSummary={updateSummary}
+                                            selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
                                         />
                                     </Grid>
-
-                                    {/* <Grid item xs={12} md={6}>
-                                        <ExperimentalMap waypoints={waypoints} onTrajectoryChange={updateTrajectory} updateSummary={updateSummary} updateWaypointData={updateWaypointData}/>
-                                    </Grid> */}
                                 </Grid>
             
                                 <Grid container spacing={3}>

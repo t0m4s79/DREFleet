@@ -15,7 +15,7 @@ class KidEmailController extends Controller
     {
         $kids = Kid::all();
 
-        return Inertia::render('KidEmail/NewKidEmail', [
+        return Inertia::render('KidEmails/NewKidEmail', [
             'kids' => $kids,
         ]);
     }
