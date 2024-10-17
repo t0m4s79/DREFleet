@@ -21,8 +21,8 @@ class OrderRouteController extends Controller
 {
     public function index() //: Response
     {
-        $orderRoutes = OrderRoute::all();
-
+        $orderRoutes = OrderRoute::with(['drivers', 'technicians'])->get();
+        
         return Inertia::render('OrderRoutes/AllOrderRoutes', [
             'flash' => [
                 'message' => session('message'),
@@ -110,7 +110,7 @@ class OrderRouteController extends Controller
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
-        $orderRoute->load(['drivers', 'technicians']);  // the database stores coordinates as lng lat, so need to reverse it to use as lat lng
+        $orderRoute->load(['drivers', 'technicians']);
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
 
