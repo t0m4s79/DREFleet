@@ -42,7 +42,7 @@ export default function AllKids( {auth, kids, flash} ) {
         kid_contacts: 'Contactos',
         wheelchair: 'Cadeira de Rodas',
         places_count: 'Número de Moradas',
-        place_ids: 'Ids das Moradas'
+        place_ids: 'Moradas',
     };
     
     return (

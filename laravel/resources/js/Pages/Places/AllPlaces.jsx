@@ -45,8 +45,8 @@ export default function AllPlaces( {auth, places, flash} ) {
         place_type: 'Tipo',
         latitude: 'Latitude',
         longitude: 'Longitude',
-        kids_count: 'Número de Crianças',
-        kids_ids: 'Ids das Crianças',
+        kids_count: 'Número de crianças',
+        kids_ids: 'Crianças',
     };
     
     return (
