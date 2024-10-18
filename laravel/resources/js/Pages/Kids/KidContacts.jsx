@@ -76,6 +76,25 @@ export default function KidContacts( {auth, kid, flash} ) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     
+                <div className="py-12 px-6">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <Button href={route('kidPhoneNumbers.showCreate')}>
+                                <AddIcon />
+                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
+                                    Novo Número de Telemóvel
+                                </a>
+                            </Button>
+
+                            <Table
+                                data={kidPhones}
+                                columnsLabel={kidPhonesColLabels}
+                                editAction="kidPhoneNumbers.showEdit"
+                                deleteAction="kidPhoneNumbers.delete"
+                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                            />
+                        </div>
+                    </div>
+
                     <div className="py-12 px-6">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
@@ -91,25 +110,6 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 columnsLabel={kidEmailsColLabels}
                                 editAction="kidEmails.showEdit"
                                 deleteAction="kidEmails.delete"
-                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
-                        </div>
-                    </div>
-
-                    <div className="py-12 px-6">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <Button href={route('kidPhoneNumbers.showCreate')}>
-                                <AddIcon />
-                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Número de Telemóvel
-                                </a>
-                            </Button>
-
-                            <Table
-                                data={kidPhones}
-                                columnsLabel={kidPhonesColLabels}
-                                editAction="kidPhoneNumbers.showEdit"
-                                deleteAction="kidPhoneNumbers.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
                         </div>
