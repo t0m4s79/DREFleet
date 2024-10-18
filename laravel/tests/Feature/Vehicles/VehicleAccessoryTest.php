@@ -108,7 +108,7 @@ class VehicleAccessoryTest extends TestCase
         $this->assertDatabaseHas('vehicle_accessories', $updatedData);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_a_vehicle_accessory(): void
     {
         $vehicleAccessory = VehicleAccessory::factory()->create();
 
@@ -118,7 +118,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessory->id));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessory->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_accessories', [
             'id' => $vehicleAccessory->id,

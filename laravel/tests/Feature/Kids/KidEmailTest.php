@@ -105,7 +105,7 @@ class KidEmailTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('kids.contacts', $kidEmail->id));
+            ->assertRedirect(route('kids.contacts', $kidEmail->kid->id));
 
 
         $this->assertDatabaseMissing('kid_emails', [

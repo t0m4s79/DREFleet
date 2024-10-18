@@ -303,7 +303,7 @@ class VehicleDocumentTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_a_vehicle_document(): void
     {
         $vehicleDocument = VehicleDocument::factory()->create();
 
@@ -313,7 +313,7 @@ class VehicleDocumentTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleDocument->id));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleDocument->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_documents', [
             'id' => $vehicleDocument->id,

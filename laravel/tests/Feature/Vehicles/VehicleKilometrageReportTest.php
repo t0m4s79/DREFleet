@@ -112,7 +112,7 @@ class VehicleKilometrageReportTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.kilometrageReports', $vehicleDocument->id));
+            ->assertRedirect(route('vehicles.kilometrageReports', $vehicleDocument->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_kilometrage_reports', [
             'id' => $vehicleDocument->id,
