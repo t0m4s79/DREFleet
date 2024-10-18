@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Models\VehicleDocument;
 use App\Helpers\ErrorMessagesHelper;
+use App\Rules\VehicleDocumentDataValidation;
 
 class VehicleDocumentController extends Controller
 {
@@ -50,7 +51,11 @@ class VehicleDocumentController extends Controller
             'issue_date' => ['required', 'date'],
             'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
-            'data' => ['nullable', 'array'],
+            'data' => [
+                'nullable',
+                'array',
+                new VehicleDocumentDataValidation(),
+            ],
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
@@ -103,7 +108,11 @@ class VehicleDocumentController extends Controller
             'issue_date' => ['required', 'date'],
             'expiration_date' => ['required', 'date', 'after:issue_date'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
-            'data' => ['nullable', 'array'],
+            'data' => [
+                'nullable',
+                'array',
+                new VehicleDocumentDataValidation(),
+            ],        
         ], $customErrorMessages);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);

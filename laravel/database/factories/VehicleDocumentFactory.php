@@ -28,7 +28,7 @@ class VehicleDocumentFactory extends Factory
         $keyArray = ['Companhia de Seguros', 'Nº do documento', 'Apólice'];
         $valueArray = ['Companhia XPTO', '123455', 'XX112AF'];
 
-        for ($i = 0; $i < rand(1, 3); $i++) {
+        for ($i = 0; $i < rand(0, 3); $i++) {
             $randNumber = rand(0,2);
             $key = $keyArray[$randNumber]; // Random key
             $value = $valueArray[$randNumber]; // Random value
@@ -41,7 +41,7 @@ class VehicleDocumentFactory extends Factory
             'expiration_date' => $expirationDate,
             'expired' => $expired,
             'vehicle_id' => Vehicle::factory(),
-            'data' => $data,
+            'data' => $data != [] ? $data : null,
         ];
     }
 }

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->foreign('driver_id')->references('user_id')->on('drivers')->onDelete('set null');
 
             $table->timestamps();
+
+            $table->index('date');
         });
     }
 
