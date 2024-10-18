@@ -376,4 +376,25 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
+
+    public function showOrderOccurrences(Order $order)
+    {
+        $order->load('occurrences');
+
+        // Format the fields for each report entry
+        $order->occurrences->each(function ($occurrence) {
+            $occurrence->created_at = \Carbon\Carbon::parse($occurrence->created_at)->format('d-m-Y');
+            $occurrence->updated_at = \Carbon\Carbon::parse($occurrence->updated_at)->format('d-m-Y');
+        });
+
+        $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y');
+        
+        return Inertia::render('Orders/OrderOccurrences', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'order' => $order
+        ]);
+    }
 }

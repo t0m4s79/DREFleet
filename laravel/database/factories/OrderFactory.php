@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\OrderOccurrence;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
 use App\Models\OrderRoute;
@@ -120,6 +121,12 @@ class OrderFactory extends Factory
             $totalPoints = count($trajectory);
             $stopAverageTime = (int) ($order->expected_time / $totalPoints);
             $stopAverageDistance = (int) ($order->distance / $totalPoints);
+
+            if (rand(0, 1) === 1) {
+                OrderOccurrence::factory()->create([
+                    'order_id' => $order->id,
+                ]);
+            }
 
             $stopExpectedArrivalDate = Carbon::parse($order->expected_begin_date);
             

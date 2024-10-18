@@ -21,6 +21,7 @@ use App\Http\Controllers\KidPhoneNumberController;
 use App\Http\Controllers\VehicleDocumentController;
 use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\OrderOccurrenceController;
 use App\Http\Controllers\VehicleKilometrageReportController;
 
 Route::get('/', function () {
@@ -94,6 +95,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
+    Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
+
+    //ORDER OCCURRENCES
+    Route::get('/orders/occurrences', [OrderOccurrenceController::class, 'index'])->name('orderOccurrences.index');
+    Route::get('/orders/occurrences/create', [OrderOccurrenceController::class, 'showCreateOrderOccurrenceForm'])->name('orderOccurrences.showCreate');
+    Route::post('/orders/occurrences/create', [OrderOccurrenceController::class, 'createOrderOccurrence'])->name('orderOccurrences.create');
+    Route::get('/orders/occurrences/edit/{orderOccurrence}', [OrderOccurrenceController::class, 'showEditOrderOccurrenceForm'])->name('orderOccurrences.showEdit');
+    Route::put('/orders/occurrences/edit/{orderOccurrence}', [OrderOccurrenceController::class, 'editOrderOccurrence'])->name('orderOccurrences.edit');
+    Route::delete('/orders/occurrences/delete/{orderOccurrence}', [OrderOccurrenceController::class, 'deleteOrderOccurrence'])->name('orderOccurrences.delete');
 
     //ORDER ROUTES
     Route::get('/orders/routes', [OrderRouteController::class, 'index'])->name('orderRoutes.index');
