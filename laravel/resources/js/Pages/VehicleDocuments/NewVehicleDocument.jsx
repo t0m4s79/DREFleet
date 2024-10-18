@@ -9,6 +9,7 @@ import { useState } from 'react';
 export default function NewVehicleAccessory( {auth, vehicles} ) {
 
     const [documents, setDocuments] = useState([{}]); // Empty object for dynamic keys
+    const [titleErrors, setTitleErrors] = useState([]);
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         name: '',
@@ -27,13 +28,26 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
     // Handle dynamic input for title and description
     const handleInputChange = (index, event) => {
         const newDocuments = [...documents];
-        // Set the title as the key and description as the value
+        const currentKey = Object.keys(newDocuments[index])[0];
+        const currentValue = Object.values(newDocuments[index])[0];
+
+        const newTitleErrors = [...titleErrors];
+    
         if (event.target.name === 'title') {
-            const currentKey = newDocuments[index]?.[Object.keys(newDocuments[index])[0]] || '';
-            newDocuments[index] = { [event.target.value]: currentKey }; // Update key
+            // Check if the new title already exists (and it's not the current key)
+            const newTitle = event.target.value;
+            const isDuplicate = newDocuments.some((doc, idx) => Object.keys(doc)[0] === newTitle && idx !== index);
+    
+            if (isDuplicate) {
+                newTitleErrors[index] = "Este título já existe."; // Set error message
+            } else {
+                newTitleErrors[index] = null; // Clear error message if there's no duplicate
+            }
+    
+            newDocuments[index] = { [newTitle]: currentValue || '' };
+            setTitleErrors(newTitleErrors); // Update the errors state
         } else if (event.target.name === 'description') {
-            const currentKey = Object.keys(newDocuments[index])[0]; // Get current key
-            newDocuments[index] = { [currentKey]: event.target.value }; // Update value
+            newDocuments[index] = { [currentKey || '']: event.target.value };
         }
         setDocuments(newDocuments);
 
@@ -67,7 +81,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('vehicleDocuments.create'));
+        post(route('vehicleDocuments.create'));     //TODO: fix issue where characters are missing from data
     };
     
     console.log('data', data);
@@ -168,6 +182,8 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                                     name="title"
                                                     value={Object.keys(elem)[0] || ''}
                                                     onChange={(event) => handleInputChange(index, event)}
+                                                    error={Boolean(titleErrors[index])}  // Mark input as error if there's a duplicate
+                                                    helperText={titleErrors[index] || ''}  // Show error message if duplicate
                                                 />
                                             </Grid>
                                             <Grid item xs={12} md={9}>

@@ -11,7 +11,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
 
     const [isEditMode, setisEditMode] = useState(false)
     const [documents, setDocuments] = useState([{}]); // Empty object for dynamic keys
-
+    const [titleErrors, setTitleErrors] = useState([]);
 
     const { data, setData, put, processing, errors } = useForm({
         name: vehicleDocument.name,
@@ -20,6 +20,12 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
         vehicle_id: vehicleDocument.vehicle_id,
         data: vehicleDocument.data,
     });
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    const vehicleList = vehicles.map((vehicle) => {
+        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
+    })
 
     useEffect(() => {
         if (vehicleDocument?.data) {
@@ -37,13 +43,26 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
     // Handle dynamic input for title and description
     const handleInputChange = (index, event) => {
         const newDocuments = [...documents];
-        // Set the title as the key and description as the value
+        const currentKey = Object.keys(newDocuments[index])[0];
+        const currentValue = Object.values(newDocuments[index])[0];
+
+        const newTitleErrors = [...titleErrors];
+
         if (event.target.name === 'title') {
-            const currentKey = newDocuments[index]?.[Object.keys(newDocuments[index])[0]] || '';
-            newDocuments[index] = { [event.target.value]: currentKey }; // Update key
+            // Check if the new title already exists (and it's not the current key)
+            const newTitle = event.target.value;
+            const isDuplicate = newDocuments.some((doc, idx) => Object.keys(doc)[0] === newTitle && idx !== index);
+
+            if (isDuplicate) {
+                newTitleErrors[index] = "Este título já existe."; // Set error message
+            } else {
+                newTitleErrors[index] = null; // Clear error message if there's no duplicate
+            }
+    
+            newDocuments[index] = { [newTitle]: currentValue || '' };
+            setTitleErrors(newTitleErrors); // Update the errors state
         } else if (event.target.name === 'description') {
-            const currentKey = Object.keys(newDocuments[index])[0]; // Get current key
-            newDocuments[index] = { [currentKey]: event.target.value }; // Update value
+            newDocuments[index] = { [currentKey || '']: event.target.value };
         }
         setDocuments(newDocuments);
 
@@ -79,13 +98,6 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
         e.preventDefault();
         put(route('vehicleDocuments.edit', vehicleDocument.id)); // assuming you have a named route 'vehicles.update'
     };
-
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
-    const vehicleList = vehicles.map((vehicle) => {
-        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
-    })
-
 
     return (
         <AuthenticatedLayout
@@ -143,6 +155,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                     error={Boolean(errors.name)}
                                     helperText={errors.name && <InputError message={errors.name} />}
                                     margin="normal"
+                                    disabled={!isEditMode}
                                 />
 
                                 <Grid container spacing={3}>
@@ -158,6 +171,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                             error={errors.issue_date}
                                             helperText={errors.issue_date}
                                             sx={{ mb: 2 }}
+                                            disabled={!isEditMode}
                                         />
                                     </Grid>
 
@@ -173,6 +187,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                             error={errors.expiration_date}
                                             helperText={errors.expiration_date}
                                             sx={{ mb: 2 }}
+                                            disabled={!isEditMode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -185,6 +200,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                     getOptionLabel={(option) => option.label}
                                     value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
                                     onChange={(e,value) => setData('vehicle_id', value.value)}
+                                    disabled={!isEditMode}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -213,6 +229,9 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                                     name="title"
                                                     value={Object.keys(elem) || ''}
                                                     onChange={(event) => handleInputChange(index, event)}
+                                                    disabled={!isEditMode}
+                                                    error={Boolean(titleErrors[index])}  // Mark input as error if there's a duplicate
+                                                    helperText={titleErrors[index] || ''}  // Show error message if duplicate
                                                 />
                                             </Grid>
                                             <Grid item xs={12} md={9}>
@@ -222,14 +241,15 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                                     name="description"
                                                     value={Object.values(elem) || ''}
                                                     onChange={(event) => handleInputChange(index, event)}
+                                                    disabled={!isEditMode}
                                                 />
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Button 
-                                                    variant="contained"
+                                                    variant="outlined"
                                                     color="error" 
                                                     onClick={() => removeDocument(index)} 
-                                                    disabled={documents.length < 2}
+                                                    disabled={!isEditMode && documents.length < 2}
                                                     sx={{ marginBottom: 2 }}
                                                     startIcon={<Remove />}
                                                 >
@@ -238,15 +258,11 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                             </Grid>
                                         </Grid>
                                     ))}
-                                    <Button onClick={addDocument} startIcon={<Add />}>
+                                    <Button onClick={addDocument} startIcon={<Add />} disabled={!isEditMode}>
                                         Adicionar Dados
                                     </Button>
                                 </FormControl>
                                 <br/>
-
-                                <Button variant="outlined" type="submit" disabled={processing}>
-                                    Submeter
-                                </Button>
                             </form>
                         </div>
                     </div>
