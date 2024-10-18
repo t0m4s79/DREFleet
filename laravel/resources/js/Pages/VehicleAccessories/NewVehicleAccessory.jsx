@@ -47,7 +47,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                     label="Nome"
                                     id="name"
                                     name="name"
-                                    value={data.make}
+                                    value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     error={Boolean(errors.name)}
                                     helperText={errors.name && <InputError message={errors.name} />}
