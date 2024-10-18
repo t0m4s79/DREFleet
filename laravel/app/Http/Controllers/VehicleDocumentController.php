@@ -149,13 +149,14 @@ class VehicleDocumentController extends Controller
     {
         try {
             $vehicleDocument = VehicleDocument::findOrFail($id);
+            $vehicleId = $vehicleDocument->vehicle->id;
             $vehicleDocument->delete();
     
-            return redirect()->route('vehicles.documentsAndAccessories', $id)->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('vehicles.documentsAndAccessories', $id)->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
         }
     }
 }

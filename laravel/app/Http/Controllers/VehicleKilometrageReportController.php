@@ -86,13 +86,14 @@ class VehicleKilometrageReportController extends Controller
     {
         try {
             $report = VehicleKilometrageReport::findOrFail($id);
+            $vehicleId = $report->vehicle->id;
             $report->delete();
     
-            return redirect()->route('vehicles.kilometrageReports', $id)->with('message', 'Relatório de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('message', 'Relatório de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('vehicles.kilometrageReports', $id)->with('error', 'Houve um problema ao apagar o relatório de kilometragem diário com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('error', 'Houve um problema ao apagar o relatório de kilometragem diário com id ' . $id . '. Tente novamente.');
         }
     }
 }

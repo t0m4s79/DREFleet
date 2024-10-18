@@ -84,13 +84,14 @@ class KidEmailController extends Controller
     {
         try {
             $kidEmail = KidEmail::findOrFail($id);
+            $kidId = $kidEmail->kid->id;
             $kidEmail->delete();
 
-            return redirect()->route('kids.contacts', $id)->with('message', 'Email com id ' . $id . ' apagado com sucesso!');
+            return redirect()->route('kids.contacts', $kidId)->with('message', 'Email com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('kids.contacts', $id)->with('error', 'Houve um problema ao apagar o email com id ' . $id . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $kidId)->with('error', 'Houve um problema ao apagar o email com id ' . $id . '. Tente novamente.');
         }
     }
 }
