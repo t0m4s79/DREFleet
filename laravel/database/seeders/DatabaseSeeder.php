@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         Driver::factory(4)->create();
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();
-        Place::factory(25)->create();
+        Place::factory(15)->create();
         Order::factory(6)->create();
         OrderRoute::factory(3)->create();
 
