@@ -66,8 +66,7 @@ class OrderOccurrenceController extends Controller
 
     public function showEditOrderOccurrenceForm(OrderOccurrence $orderOccurrence)
     {
-        $orderOccurrence = OrderOccurrence::all();
-        $orders = Order::all();
+        $orders = Order::with(['driver', 'vehicle'])->get();
 
         return Inertia::render('OrderOccurrences/EditOrderOccurrence', [
             'occurrence' => $orderOccurrence,

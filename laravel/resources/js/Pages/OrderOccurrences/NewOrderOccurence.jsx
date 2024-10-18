@@ -20,7 +20,7 @@ export default function NewOrderOccurrence({ auth, orders }) {
                 `|| Veículo id ${order.vehicle.id}: ${order.vehicle.make} ${order.vehicle.model} ${order.vehicle.license_plate} ` +
                 `|| Condutor id ${order.driver.user_id}: ${order.driver.name} ${order.driver.license_number}`
         }
-    })
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -45,7 +45,7 @@ export default function NewOrderOccurrence({ auth, orders }) {
                                 <input type="hidden" name="_token" value={csrfToken} />
 
                                 <Autocomplete
-                                    id="order"
+                                    id="order_id"
                                     options={orderList}
                                     getOptionLabel={(option) => option.label}
                                     onChange={(e,value) => setData('order_id', value.value)}
@@ -69,6 +69,8 @@ export default function NewOrderOccurrence({ auth, orders }) {
                                         value={data.type}
                                         onChange={(e) => setData('type', e.target.value)}
                                         style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }} // Use flexbox
+                                        error={errors.type}
+                                        helperText={errors.type}
                                     >
                                         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
                                             <FormControlLabel value="Reparações" control={<Radio />} label="Reparações" />

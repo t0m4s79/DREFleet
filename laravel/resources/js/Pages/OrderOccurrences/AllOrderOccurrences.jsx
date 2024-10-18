@@ -27,6 +27,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             driver_id: occurrence.order.driver.user_id,
             vehicle_id: occurrence.order.vehicle.id,
             type: occurrence.type,
+            description: 'Pop-up com descrição da ocorrência',
             created_at: occurrence.created_at,
             updated_at: occurrence.updated_at
         }
@@ -39,6 +40,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
         driver_id: 'Condutor',
         vehicle_id: 'Veículo',
         type: 'Tipo',
+        description: 'Descrição',
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização'
     }

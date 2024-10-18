@@ -36,7 +36,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::with(['orderStops'])->get();
+        $orders = Order::with(['orderStops', 'occurrences'])->get();
 
         $orders->each(function ($order) {
             // Format the dates as dd-mm-yyyy
@@ -379,7 +379,7 @@ class OrderController extends Controller
 
     public function showOrderOccurrences(Order $order)
     {
-        $order->load('occurrences');
+        $order->load(['occurrences', 'vehicle', 'driver']);
 
         // Format the fields for each report entry
         $order->occurrences->each(function ($occurrence) {
@@ -388,7 +388,7 @@ class OrderController extends Controller
         });
 
         $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y');
-        
+
         return Inertia::render('Orders/OrderOccurrences', [
             'flash' => [
                 'message' => session('message'),

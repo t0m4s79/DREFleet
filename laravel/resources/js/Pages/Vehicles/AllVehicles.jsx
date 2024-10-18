@@ -19,8 +19,6 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         }
     }, [flash]);
 
-    //console.log('vehicles', vehicles)
-
     const vehicleInfo = vehicles.map((vehicle) => {
         return {
             id: vehicle.id,
