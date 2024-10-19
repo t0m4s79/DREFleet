@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use App\Models\VehicleDocument;
@@ -70,10 +71,14 @@ class VehicleFactory extends Factory
         
             for ($i = 0; $i < rand(1, 5); $i++) {
                 $date = $date->addDay();
+
+                // Check if there are any drivers in the database, otherwise create one
+                $driver =  Driver::inRandomOrder()->first() ?? Driver::factory()->create();
                 
                 VehicleKilometrageReport::factory()->create([
                     'date' => $date,
                     'vehicle_id' => $vehicle->id,
+                    'driver_id' => $driver->user_id,
                 ]);
             }
         });
