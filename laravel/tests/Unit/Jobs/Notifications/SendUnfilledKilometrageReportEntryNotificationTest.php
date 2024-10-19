@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Carbon\CarbonPeriod;
 use App\Models\VehicleKilometrageReport;
@@ -54,6 +55,7 @@ class SendUnfilledKilometrageReportEntryNotificationTest extends TestCase
         foreach (CarbonPeriod::create($previousMonthFirstDay, $previousMonthLastDay) as $date) {
             VehicleKilometrageReport::factory()->create([
                 'vehicle_id' => $vehicle->id,
+                'driver_id' => Driver::factory(),
                 'date' => $date,
             ]);
         }

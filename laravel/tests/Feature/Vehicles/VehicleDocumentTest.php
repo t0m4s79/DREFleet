@@ -52,7 +52,9 @@ class VehicleDocumentTest extends TestCase
 
     public function test_vehicle_document_edit_page_is_displayed(): void
     {
-        $vehicleDocument = VehicleDocument::factory()->create();
+        $vehicleDocument = VehicleDocument::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -184,7 +186,9 @@ class VehicleDocumentTest extends TestCase
     public function test_user_can_edit_a_vehicle_document(): void
     {
         $issueDate = Carbon::instance(fake()->dateTime());
-        $vehicleDocument = VehicleDocument::factory()->create();
+        $vehicleDocument = VehicleDocument::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $updatedData = [
             'name' => fake()->name(),
@@ -207,7 +211,9 @@ class VehicleDocumentTest extends TestCase
     public function test_user_can_edit_a_vehicle_document_with_aditional_data(): void
     {
         $issueDate = Carbon::instance(fake()->dateTime());
-        $vehicleDocument = VehicleDocument::factory()->create();
+        $vehicleDocument = VehicleDocument::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $data = [];
         for ($i = 0; $i < rand(0, 3); $i++) {
@@ -244,7 +250,9 @@ class VehicleDocumentTest extends TestCase
     public function test_vehicle_document_data_fails_validation_on_edit(): void
     {
         $issueDate = Carbon::instance(fake()->dateTime());
-        $vehicleDocument = VehicleDocument::factory()->create();
+        $vehicleDocument = VehicleDocument::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         // Fail on empty key
         $data_1 = [];
@@ -303,9 +311,11 @@ class VehicleDocumentTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_a_vehicle_document(): void
     {
-        $vehicleDocument = VehicleDocument::factory()->create();
+        $vehicleDocument = VehicleDocument::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -313,7 +323,7 @@ class VehicleDocumentTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleDocument->id));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleDocument->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_documents', [
             'id' => $vehicleDocument->id,

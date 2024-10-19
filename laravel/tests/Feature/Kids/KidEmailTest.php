@@ -26,7 +26,9 @@ class KidEmailTest extends TestCase
     {
         $kid = Kid::factory()->create();
 
-        $kidEmail = KidEmail::factory()->create(['kid_id' => $kid->id]);
+        $kidEmail = KidEmail::factory()->create([
+            'kid_id' => $kid->id,
+        ]);
 
         $this->assertTrue($kidEmail->kid->is($kid));
     }
@@ -42,7 +44,9 @@ class KidEmailTest extends TestCase
 
     public function test_kid_email_edit_page_is_displayed(): void
     {
-        $kidEmail = KidEmail::factory()->create();
+        $kidEmail = KidEmail::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -74,7 +78,9 @@ class KidEmailTest extends TestCase
 
     public function test_user_can_edit_a_kid_email(): void
     {
-        $kidEmail = KidEmail::factory()->create();
+        $kidEmail = KidEmail::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
     
         $updatedData = [
             'email' => fake()->email(),
@@ -97,7 +103,9 @@ class KidEmailTest extends TestCase
 
     public function test_user_can_delete_a_kid_email(): void
     {
-        $kidEmail = KidEmail::factory()->create();
+        $kidEmail = KidEmail::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -105,7 +113,7 @@ class KidEmailTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('kids.contacts', $kidEmail->id));
+            ->assertRedirect(route('kids.contacts', $kidEmail->kid->id));
 
 
         $this->assertDatabaseMissing('kid_emails', [

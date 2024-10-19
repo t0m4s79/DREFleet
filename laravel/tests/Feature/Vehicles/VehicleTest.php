@@ -5,15 +5,16 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
 use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
-use App\Models\VehicleKilometrageReport;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Models\VehicleKilometrageReport;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -96,6 +97,7 @@ class VehicleTest extends TestCase
 
         $reports = VehicleKilometrageReport::factory()->count(3)->create([
             'vehicle_id' => $vehicle->id,
+            'driver_id' => Driver::factory(),
         ]);
 
         foreach ($reports as $report) {

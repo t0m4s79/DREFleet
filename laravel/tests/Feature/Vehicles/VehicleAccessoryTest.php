@@ -51,7 +51,9 @@ class VehicleAccessoryTest extends TestCase
 
     public function test_vehicle_accessory_edit_page_is_displayed(): void
     {
-        $vehicleAccessory = VehicleAccessory::factory()->create();
+        $vehicleAccessory = VehicleAccessory::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -88,7 +90,9 @@ class VehicleAccessoryTest extends TestCase
         $expirationDate = fake()->dateTime()->format('Y-m-d');
         $condition = now()->toDateTimeString() > $expirationDate ? 'Expirado' : $expirationDate;
 
-        $vehicleAccessory = VehicleAccessory::factory()->create();
+        $vehicleAccessory = VehicleAccessory::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $updatedData = [
             'name' => fake()->name(),
@@ -108,9 +112,11 @@ class VehicleAccessoryTest extends TestCase
         $this->assertDatabaseHas('vehicle_accessories', $updatedData);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_a_vehicle_accessory(): void
     {
-        $vehicleAccessory = VehicleAccessory::factory()->create();
+        $vehicleAccessory = VehicleAccessory::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -118,7 +124,7 @@ class VehicleAccessoryTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessory->id));
+            ->assertRedirect(route('vehicles.documentsAndAccessories', $vehicleAccessory->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_accessories', [
             'id' => $vehicleAccessory->id,

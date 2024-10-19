@@ -3,13 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\Kid;
-use App\Models\KidEmail;
-use App\Models\KidPhoneNumber;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Place;
+use App\Models\KidEmail;
 use App\Models\OrderStop;
 use App\Models\Notification;
+use App\Models\KidPhoneNumber;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -44,7 +45,10 @@ class KidTest extends TestCase
     {
         $kid = Kid::factory()->create();
 
-        $orderStops = OrderStop::factory()->count(3)->create();
+        $orderStops = OrderStop::factory()->count(3)->create([
+            'order_id' => Order::factory(),
+            'place_id' => Place::factory(),
+        ]);
 
         foreach ($orderStops as $orderStop) {
             $kid->places()->attach($orderStop->place_id);

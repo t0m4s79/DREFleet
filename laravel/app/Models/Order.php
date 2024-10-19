@@ -70,6 +70,11 @@ class Order extends Model
         return $this->belongsTo(Driver::class, 'driver_id', 'user_id');
     }
 
+    public function occurrences(): HasMany
+    {
+        return $this->hasMany(OrderOccurrence::class); // Specify the foreign key explicitly
+    }
+
     // Define inverse polymorphic relationship
     public function notifications()
     {

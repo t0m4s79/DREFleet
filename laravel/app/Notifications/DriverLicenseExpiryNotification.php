@@ -39,9 +39,9 @@ class DriverLicenseExpiryNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Carta de condução prestes a expirar.')
-                    ->action('Ver detalhes do condutor em', route('drivers.edit', ['vehicleDocument' => $this->driver->user_id]))
-                    ->line('A carta de condução do condutor com id ' . $this->driver->user . ' está prestes a expirar.');
+            ->line('Carta de condução prestes a expirar.')
+            ->action('Ver detalhes do condutor em', route('drivers.edit', ['driver' => $this->driver->user_id]))
+            ->line('A carta de condução do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.');
     }
 
     /**

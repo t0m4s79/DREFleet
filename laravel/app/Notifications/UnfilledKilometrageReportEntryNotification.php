@@ -44,7 +44,7 @@ class UnfilledKilometrageReportEntryNotification extends Notification
         return (new MailMessage)
                     ->line('Entrada de relatório de kilometragem em falta.')
                     ->action('Ver detalhes em', route('vehicles.kilometrageReports', ['vehicle' => $this->vehicle->id]))
-                    ->line('No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $this->missingDate . 'para o veículo ' . $this->vehicle->id . '.');
+                    ->line('No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $this->missingDate . ' para o veículo ' . $this->vehicle->id . '.');
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
+use App\Models\OrderOccurrence;
 use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -93,10 +94,24 @@ class OrderTest extends TestCase
 
         $orderStops = OrderStop::factory()->count(10)->create([
             'order_id' => $order->id,
+            'place_id' => Place::factory(),
         ]);
 
         foreach ($orderStops as $orderStop) {
             $this->assertTrue($order->orderStops->contains($orderStop));
+        }
+    }
+
+    public function test_order_has_many_occurrences(): void
+    {
+        $order = Order::factory()->create();
+
+        $occurrences = OrderOccurrence::factory()->count(3)->create([
+            'order_id' => $order->id,
+        ]);
+
+        foreach ($occurrences as $occurrence) {
+            $this->assertTrue($order->occurrences->contains($occurrence));
         }
     }
 
@@ -192,6 +207,17 @@ class OrderTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->get(route('orders.showEdit', $order->id));
+
+        $response->assertOk();
+    }
+
+    public function test_order_occurrences_page_is_displayed(): void
+    {
+        $order = Order::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('orders.occurrences', $order->id));
 
         $response->assertOk();
     }

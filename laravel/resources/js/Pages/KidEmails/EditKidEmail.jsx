@@ -6,8 +6,6 @@ import InputError from '@/Components/InputError';
 
 export default function EditKidEmail( {auth, kids, kidEmail} ) {
 
-    console.log(kidEmail);
-    console.log(kids);
     //const [selectedKid, setSelectedKid] = useState('')
 
     const kidList = kids.map((kid)=> {
@@ -24,13 +22,13 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
         relationship_to_kid: kidEmail.relationship_to_kid,
         preference: kidEmail.preference,
     })
-    console.log(data)
+
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const handleKidChange = (event, newValue) => {
-        console.log('Selected Kid:', newValue);
         setData('kid_id', newValue?.value || ''); // Update form data with the selected kid's ID
     };
+    
     const handleSubmit = (e) => {
         e.preventDefault()
         put(route('kidEmails.edit', kidEmail.id))

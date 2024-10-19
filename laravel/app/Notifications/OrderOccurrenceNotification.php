@@ -4,22 +4,26 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderRequiresApprovalNotification extends Notification
+class OrderOccurrenceNotification extends Notification
 {
     use Queueable;
 
     protected $order;
 
+    protected $occurrence;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct($order)
+    public function __construct($order, $occurrence)
     {
+        $this->occurrence = $occurrence;
         $this->order = $order;
     }
 
@@ -30,7 +34,7 @@ class OrderRequiresApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [CustomDbChannel::class];                //can include 'mail' after mail system is ready and show pages are built
+        return [CustomDbChannel::class];
     }
 
     /**
@@ -38,12 +42,10 @@ class OrderRequiresApprovalNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $expected_begin_date = \Carbon\Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
-
         return (new MailMessage)
-                    ->line('Pedido necessita de aprovação.')
-                    ->action('Ver pedido em', route('orders.edit', ['order' => $this->order->id]))
-                    ->line('O pedido com id ' . $this->order->id . ' com data de início breve, marcada para ' . $expected_begin_date . ', necessita de aprovação.');
+                    ->line('Nova ocorrência.')
+                    ->action('Ver detalhes da ocorrência em ', route('orders.occurrences', ['order' => $this->order->id]))
+                    ->line('Uma nova ocorrênica com id ' . $this->occurrence->id . ' do pedido ' . $this->order->id . ' foi reportada.');
     }
 
     /**
@@ -53,16 +55,23 @@ class OrderRequiresApprovalNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $expected_begin_date = \Carbon\Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
+        $date = Carbon::parse($this->order->expected_begin_date)->format('d-m-Y');
+        $time = Carbon::parse($this->order->expected_begin_date)->format('H:');
+
 
         return [
             'user_id' => $notifiable->id,
             'related_entity_type' => Order::class,
             'related_entity_id' => $this->order->id,
             'type' => 'Pedido',
-            'title' => 'Aprovação de Pedido',
-            'message' => 'O pedido com id ' . $this->order->id . ' com data de início breve, marcada para ' . $expected_begin_date . ', necessita de aprovação.',
+            'title' => 'Nova ocorrência',
+            'message' => 'Uma nova ocorrênica com id ' . $this->occurrence->id . ' do pedido ' . $this->order->id . ' foi reportada no dia ' . $date . '.',
             'is_read' => false,
         ];
+    }
+
+    public function getOccurrence()
+    {
+        return $this->occurrence;
     }
 }
