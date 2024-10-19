@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\OrderOccurrence;
 use Illuminate\Validation\Rule;
 use App\Helpers\ErrorMessagesHelper;
+use App\Notifications\OrderOccurrenceNotification;
 
 class OrderOccurrenceController extends Controller
 {
@@ -55,6 +57,14 @@ class OrderOccurrenceController extends Controller
         try {
 
             $occurrence = OrderOccurrence::create($incomingFields);
+
+            $order = Order::findOrFail($incomingFields['order_id']);
+
+            //TODO: SHOULD MORE USERS RECEIVE THIS NOTIFICATION (DRIVER?)
+            // Notify all users with the user_type 'Gestor'
+            foreach (User::where('user_type', 'Gestor')->get() as $user) {
+                $user->notify(new OrderOccurrenceNotification($order, $occurrence));
+            }
 
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Ocorrência com id ' . $occurrence->id . ' pertencente ao ao pedido com id ' . $incomingFields['order_id'] . ' criada com sucesso!');
 

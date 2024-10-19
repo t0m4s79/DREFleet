@@ -170,7 +170,7 @@ class OrderFactory extends Factory
 
                 if (rand(0, 1) === 1) {
                     $place->update([
-                        'place_type' => 'Residência', // Replace 'some_attribute' with the actual attribute you want to update
+                        'place_type' => 'Residência',
                     ]);
                     $kid = Kid::factory()->create();
                     $kid->places()->attach($place->id);

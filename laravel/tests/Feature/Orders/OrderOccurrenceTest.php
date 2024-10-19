@@ -8,6 +8,8 @@ use App\Models\Order;
 use Illuminate\Support\Arr;
 use App\Models\OrderOccurrence;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\OrderOccurrenceNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderOccurrenceTest extends TestCase
@@ -67,6 +69,13 @@ class OrderOccurrenceTest extends TestCase
 
     public function test_user_can_create_an_order_occurrence(): void
     {        
+        // Fake the notifications to prevent actual sending
+        Notification::fake();
+
+        $manager = User::factory()->create([
+            'user_type' => 'Gestor',
+        ]);
+
         $occurrenceData = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
             'description' => fake()->sentence(),
@@ -82,6 +91,17 @@ class OrderOccurrenceTest extends TestCase
             ->assertRedirect(route('orders.occurrences', $occurrenceData['order_id']));
 
         $this->assertDatabaseHas('order_occurrences', $occurrenceData);
+
+        // Assert that the notification was sent
+        Notification::assertSentTo(
+            $manager,
+            OrderOccurrenceNotification::class,
+            function ($notification, $channels) use ($occurrenceData) {
+                $occurrence = $notification->getOccurrence(); // Use the public method
+                return $occurrence->description === $occurrenceData['description'] &&
+                    $occurrence->order_id === $occurrenceData['order_id'];
+            }
+        );
     }
 
     public function test_user_can_edit_an_order_occurrence(): void
@@ -107,7 +127,7 @@ class OrderOccurrenceTest extends TestCase
         $this->assertDatabaseHas('order_occurrences', $updatedData);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_an_order_occurrence(): void
     {
         $occurrance = OrderOccurrence::factory()->create([
             'order_id' => Order::factory()->create()
@@ -126,7 +146,7 @@ class OrderOccurrenceTest extends TestCase
         ]);
     }
 
-    public function test_vehicle_creation_handles_exception()
+    public function test_order_occurrence_creation_handles_exception()
     {
         $data = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
@@ -134,13 +154,13 @@ class OrderOccurrenceTest extends TestCase
             'order_id' => Order::factory()->create()->id,
         ];
 
-        // Mock the Vehicle Document model to throw an exception
+        // Mock the Order Occurrence model to throw an exception
         $this->mock(OrderOccurrence::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create vehicle document route
+        // Act: Send a POST request to the create order occurrence route
         $response = $this
             ->actingAs($this->user)
             ->post(route('orderOccurrences.create'), $data);
