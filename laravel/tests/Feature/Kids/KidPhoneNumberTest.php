@@ -26,7 +26,9 @@ class KidPhoneNumberTest extends TestCase
     {
         $kid = Kid::factory()->create();
 
-        $kidPhoneNumber = KidPhoneNumber::factory()->create(['kid_id' => $kid->id]);
+        $kidPhoneNumber = KidPhoneNumber::factory()->create([
+            'kid_id' => $kid->id,
+        ]);
 
         $this->assertTrue($kidPhoneNumber->kid->is($kid));
     }
@@ -42,7 +44,9 @@ class KidPhoneNumberTest extends TestCase
 
     public function test_kid_phone_number_edit_page_is_displayed(): void
     {
-        $kidPhoneNumber = KidPhoneNumber::factory()->create();
+        $kidPhoneNumber = KidPhoneNumber::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -74,7 +78,9 @@ class KidPhoneNumberTest extends TestCase
 
     public function test_user_can_edit_a_kid_phone_number(): void
     {
-        $kidPhoneNumber = KidPhoneNumber::factory()->create();
+        $kidPhoneNumber = KidPhoneNumber::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
     
         $updatedData = [
             'phone' => rand(910000000,929999999),
@@ -98,7 +104,9 @@ class KidPhoneNumberTest extends TestCase
 
     public function test_user_can_delete_a_kid_phone_number(): void
     {
-        $kidPhoneNumber = KidPhoneNumber::factory()->create();
+        $kidPhoneNumber = KidPhoneNumber::factory()->create([
+            'kid_id' => Kid::factory()->create(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
