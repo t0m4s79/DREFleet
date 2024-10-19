@@ -24,7 +24,10 @@ class VehicleKilometrageReportTest extends TestCase
     {
         $vehicle = Vehicle::factory()->create();
 
-        $report = VehicleKilometrageReport::factory()->create(['vehicle_id' => $vehicle->id]);
+        $report = VehicleKilometrageReport::factory()->create([
+            'vehicle_id' => $vehicle->id,
+            'driver_id' => Driver::factory(),
+        ]);
 
         $this->assertTrue($report->vehicle->is($vehicle));
     }
@@ -33,7 +36,10 @@ class VehicleKilometrageReportTest extends TestCase
     {
         $driver = Driver::factory()->create();
 
-        $report = VehicleKilometrageReport::factory()->create(['driver_id' => $driver->user_id]);
+        $report = VehicleKilometrageReport::factory()->create([
+            'driver_id' => $driver->user_id,
+            'vehicle_id' => Vehicle::factory(),
+        ]);
 
         $this->assertTrue($report->driver->is($driver));
     }
@@ -49,7 +55,10 @@ class VehicleKilometrageReportTest extends TestCase
 
     public function test_vehicle_kilometrage_report_edit_page_is_displayed(): void
     {
-        $report = VehicleKilometrageReport::factory()->create();
+        $report = VehicleKilometrageReport::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+            'driver_id' => Driver::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -81,7 +90,10 @@ class VehicleKilometrageReportTest extends TestCase
 
     public function test_user_can_edit_a_vehicle_kilometrage_report(): void
     {
-        $report = VehicleKilometrageReport::factory()->create();
+        $report = VehicleKilometrageReport::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+            'driver_id' => Driver::factory(),
+        ]);
 
         $updatedData = [
             'date' => fake()->date(),
@@ -104,7 +116,10 @@ class VehicleKilometrageReportTest extends TestCase
 
     public function test_user_can_delete_a_vehicle(): void
     {
-        $vehicleDocument = VehicleKilometrageReport::factory()->create();
+        $vehicleDocument = VehicleKilometrageReport::factory()->create([
+            'vehicle_id' => Vehicle::factory(),
+            'driver_id' => Driver::factory(),
+        ]);
 
         $response = $this
             ->actingAs($this->user)
