@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleKilometrageReport;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\UnfilledKilometrageReportEntryNotification;
 
 class UnfilledKilometrageReportEntryNotificationTest extends TestCase
@@ -37,5 +39,28 @@ class UnfilledKilometrageReportEntryNotificationTest extends TestCase
             'related_entity_type' => Vehicle::class,
             'type' => 'Relatório de Kilometragem'
         ]);
+    }
+
+    public function test_toMail_sends_correct_notification()
+    {
+        // Arrange: Create a vehicle and accessory
+        $vehicle = Vehicle::factory()->create();
+        $missingDate = now()->subMonth()->startOfMonth()->format('Y-m-d');
+
+
+        // Create an instance of the notification
+        $notification = new UnfilledKilometrageReportEntryNotification($vehicle, $missingDate);
+
+        // Simulate a notifiable (could be a user or an anonymous notifiable)
+        $notifiable = new AnonymousNotifiable();
+
+        // Act: Call the toMail method
+        $mailMessage = $notification->toMail($notifiable);
+
+        // Assert: Verify that the mail message is properly structured
+        $this->assertInstanceOf(MailMessage::class, $mailMessage);
+        $this->assertStringContainsString('Entrada de relatório de kilometragem em falta.', $mailMessage->introLines[0]);
+        $this->assertStringContainsString(route('vehicles.kilometrageReports', ['vehicle' => $vehicle->id]), $mailMessage->actionUrl);
+        $this->assertStringContainsString('No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $missingDate . ' para o veículo ' . $vehicle->id . '.', $mailMessage->outroLines[0]);
     }
 }
