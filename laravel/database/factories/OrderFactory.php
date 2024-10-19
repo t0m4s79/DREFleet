@@ -27,11 +27,7 @@ class OrderFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition(): array
-    {
-        $technician = TechnicianFactory::new()->create();
-        $vehicle = Vehicle::factory()->create();
-        $driver = Driver::factory()->create();
-        
+    {        
         $trajectory = $this->generateRandomTrajectory();
 
         // Randomly decide if the order is approved
@@ -72,9 +68,9 @@ class OrderFactory extends Factory
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
-            'vehicle_id' => $vehicle->id,
-            'driver_id' => $driver->user_id,
-            'technician_id' => $technician->id,
+            'vehicle_id' =>  Vehicle::factory()->create()->id,
+            'driver_id' => Driver::factory()->create()->user_id,
+            'technician_id' => TechnicianFactory::new()->create()->id,
             'order_route_id' => $hasRoute ? $route->id : null,
 
             'approved_date' => $approved_date ? $approved_date : null,

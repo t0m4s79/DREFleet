@@ -94,6 +94,7 @@ class OrderTest extends TestCase
 
         $orderStops = OrderStop::factory()->count(10)->create([
             'order_id' => $order->id,
+            'place_id' => Place::factory(),
         ]);
 
         foreach ($orderStops as $orderStop) {
