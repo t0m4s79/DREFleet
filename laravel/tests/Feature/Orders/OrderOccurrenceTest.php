@@ -26,7 +26,9 @@ class OrderOccurrenceTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $occurrence = OrderOccurrence::factory()->create(['order_id' => $order->id]);
+        $occurrence = OrderOccurrence::factory()->create([
+            'order_id' => $order->id,
+        ]);
 
         $this->assertTrue($occurrence->order->is($order));
     }
@@ -52,7 +54,9 @@ class OrderOccurrenceTest extends TestCase
 
     public function test_order_occurrence_edit_page_is_displayed(): void
     {
-        $occurrence = OrderOccurrence::factory()->create();
+        $occurrence = OrderOccurrence::factory()->create([
+            'order_id' => Order::factory()->create()
+        ]);
 
         $response = $this
             ->actingAs($this->user)
@@ -82,7 +86,9 @@ class OrderOccurrenceTest extends TestCase
 
     public function test_user_can_edit_an_order_occurrence(): void
     {
-        $occurrance = OrderOccurrence::factory()->create();
+        $occurrance = OrderOccurrence::factory()->create([
+            'order_id' => Order::factory()->create()
+        ]);
 
         $updatedData = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
@@ -103,7 +109,9 @@ class OrderOccurrenceTest extends TestCase
 
     public function test_user_can_delete_a_vehicle(): void
     {
-        $occurrance = OrderOccurrence::factory()->create();
+        $occurrance = OrderOccurrence::factory()->create([
+            'order_id' => Order::factory()->create()
+        ]);
 
         $response = $this
             ->actingAs($this->user)
