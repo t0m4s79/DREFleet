@@ -23,7 +23,7 @@ export default function MapModal({ trajectory, route }) {
 
     return (
         <div className='justify-center'>
-            <Button onClick={handleOpen}>Consultar</Button>
+            <Button variant='outlined' onClick={handleOpen}>Consultar</Button>
             <Modal
                 open={open}
                 onClose={handleClose}

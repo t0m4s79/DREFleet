@@ -77,7 +77,7 @@ export default function EditManager({ auth, manager, flash}) {
 
                                 (<div className='mb-4 space-x-4'>
                                     <Button 
-                                        variant="contained"
+                                        variant="outlined"
                                         color="error"
                                         disabled={processing}
                                         onClick={toggleEdit}
@@ -86,7 +86,7 @@ export default function EditManager({ auth, manager, flash}) {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         disabled={processing}
                                     >

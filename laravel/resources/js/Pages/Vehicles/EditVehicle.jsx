@@ -75,7 +75,7 @@ export default function EditVehicle({ auth, vehicle}) {
 
                             (<div className='mb-4 space-x-4'>
                                 <Button 
-                                    variant="contained"
+                                    variant="outlined"
                                     color="error"
                                     disabled={processing}
                                     onClick={toggleEdit}
@@ -84,7 +84,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                 </Button>
                                 <Button
                                     type="submit"
-                                    variant="contained"
+                                    variant="outlined"
                                     color="primary"
                                     disabled={processing}
                                 >
