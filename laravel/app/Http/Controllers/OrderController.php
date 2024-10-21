@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Notifications\OrderCreationNotification;
 use App\Notifications\OrderRequiresApprovalNotification;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
@@ -174,7 +175,9 @@ class OrderController extends Controller
                 $user->notify(new OrderRequiresApprovalNotification($order));
             }
 
-            //TODO: Notify users involved of new order
+            // Notify users involved of new order
+            User::find($incomingFields['driver_id'])->notify(new OrderCreationNotification($order));
+            User::find($incomingFields['technician_id'])->notify(new OrderCreationNotification($order));
 
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 

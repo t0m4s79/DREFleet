@@ -63,7 +63,7 @@ function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
         if (routing && !routingControlRef.current) {
             routingControlRef.current = L.Routing.control({
                 router: L.Routing.osrmv1({
-                    serviceUrl: `https://router.project-osrm.org/route/v1`, //TODO: route instructions to Portuguese
+                    serviceUrl: `https://router.project-osrm.org/route/v1`,
                 }),
                 geocoder: L.Control.Geocoder.nominatim({
 					geocodingQueryParams: {
@@ -72,7 +72,7 @@ function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
                         viewbox: `${boundsSouthWestCorner[1]},${boundsSouthWestCorner[0]},${boundsNorthEastCorner[1]},${boundsNorthEastCorner[0]}`
                     }
 				}),
-                language: 'pt',
+                language: 'pt-PT',
             }).addTo(map);
 
 			routingControlRef.current.on('routesfound', function (e) {

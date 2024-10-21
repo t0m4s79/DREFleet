@@ -13,7 +13,9 @@ use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use App\Models\OrderOccurrence;
+use App\Notifications\OrderCreationNotification;
 use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -224,6 +226,8 @@ class OrderTest extends TestCase
 
     public function test_user_can_create_an_order(): void
     {  
+        NotificationFacade::fake();
+
         $withKids = fake()->boolean();
         $orderType = $withKids ? 'Transporte de Crianças' : Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']);
         $placesData = $this->generateRandomPlacesAndKids($withKids);
@@ -280,6 +284,23 @@ class OrderTest extends TestCase
         
         // Assert that the number of order stops matches the size of the placesData array
         $this->assertEquals(count($placesData), $orderStopsCount);
+
+        // Assert that the notification was sent
+        NotificationFacade::assertSentTo(
+            User::findOrFail($orderData['technician_id']),
+            OrderCreationNotification::class,
+            function ($notification, $channels) use ($order) {
+                return $notification->getOrder()->id === $order->id;
+            }
+        );
+        
+        NotificationFacade::assertSentTo(
+            User::findOrFail($orderData['driver_id']),
+            OrderCreationNotification::class,
+            function ($notification, $channels) use ($order) {
+                return $notification->getOrder()->id === $order->id;
+            }
+        );
     }
 
     // Add kid that uses a wheelchair, vehicle will not be wheelchair adapted

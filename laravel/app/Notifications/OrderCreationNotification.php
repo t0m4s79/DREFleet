@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderRequiresApprovalNotification extends Notification
+class OrderCreationNotification extends Notification
 {
     use Queueable;
 
@@ -30,7 +30,7 @@ class OrderRequiresApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [CustomDbChannel::class];                //can include 'mail' after mail system is ready and show pages are built
+        return [CustomDbChannel::class];
     }
 
     /**
@@ -41,9 +41,9 @@ class OrderRequiresApprovalNotification extends Notification
         $expected_begin_date = \Carbon\Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
 
         return (new MailMessage)
-                    ->line('Pedido necessita de aprovação.')
-                    ->action('Ver pedido em', route('orders.edit', ['order' => $this->order->id]))
-                    ->line('O pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . ', necessita de aprovação.');
+            ->line('Novo pedido.')
+            ->action('Ver pedido em', route('orders.edit', ['order' => $this->order->id]))
+            ->line('Foi criado um novo pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . 'em que estará envolvido.');
     }
 
     /**
@@ -60,9 +60,13 @@ class OrderRequiresApprovalNotification extends Notification
             'related_entity_type' => Order::class,
             'related_entity_id' => $this->order->id,
             'type' => 'Pedido',
-            'title' => 'Aprovação de Pedido',
-            'message' => 'O pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . ', necessita de aprovação.',
+            'title' => 'Novo Pedido',
+            'message' => 'Foi criado um novo pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . 'em que estará envolvido.',
             'is_read' => false,
         ];
+    }
+
+    public function getOrder() {
+        return $this->order;
     }
 }
