@@ -39,7 +39,7 @@ class NotificationController extends Controller
                 'is_read' => true,
             ]);
 
-            return redirect()->route('notifications.index')->with('message', 'Notificação com id ' . $notification->id . ' marcada como lida com sucesso!');
+            return response()->json(['message' => 'Notificação marcada como lida com sucesso!'], 200);
 
         } catch (\InvalidArgumentException $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -49,6 +49,7 @@ class NotificationController extends Controller
             return redirect()->route('notifications.index')->with('error', 'Houve um problema ao marcar a notificação com id ' . $notification->id . ' como lida. Tente novamente.');
         }
     }
+    
 
     public function deleteNotification($id)
     {

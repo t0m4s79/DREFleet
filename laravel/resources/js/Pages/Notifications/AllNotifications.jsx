@@ -6,12 +6,33 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 
 export default function AllNotifications({auth, notifications, flash}) {
-
-    console.log(notifications);
-
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+
+    const markAsRead = async (notificationId) => {
+        try {
+            const response = await fetch(route('notifications.markAsRead', notificationId), {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const result = await response.json();
+            setSnackbarMessage(result.message);
+            setSnackbarSeverity('success');
+
+            // Optionally, you can update the notifications state or refresh the page
+            // Here, you can filter out the marked notification if you want to update the UI immediately
+        } catch (error) {
+            setSnackbarMessage(error.message);
+            setSnackbarSeverity('error');
+        } finally {
+            setOpenSnackbar(true);
+        }
+    };
 
     return (
         <AuthenticatedLayout
@@ -30,6 +51,7 @@ export default function AllNotifications({auth, notifications, flash}) {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mensagem</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo (id)</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -40,6 +62,16 @@ export default function AllNotifications({auth, notifications, flash}) {
                                 <td className="px-6 py-4 max-w-[35%] whitespace-normal text-sm text-gray-900">{notification.message}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{notification.type}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{notification.related_entity_id}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {!notification.is_read && ( // Show button only if notification is unread
+                                        <button
+                                            onClick={() => markAsRead(notification.id)}
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            Marcar como lida
+                                        </button>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

@@ -17,7 +17,6 @@ export default function Authenticated({ user, header, children }) {
             try {
                 const response = await axios.get('/notifications/unread-count');
                 setUnreadCount(response.data.unread_count);
-                console.log(response.data.unread_count)
 
             } catch (error) {
                 console.error('Error fetching unread notifications count', error);
