@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel';
 import { Button, TextField, Grid, Autocomplete, FormControl, IconButton, Typography } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import { useState } from 'react';
+import { debounce } from 'lodash';
 
 export default function NewVehicleAccessory( {auth, vehicles} ) {
 
@@ -25,48 +26,51 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
         return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
     });
 
+    const debouncedSetData = debounce((key, value) => {
+        setData(key, value);
+    }, 300);
+
     // Handle dynamic input for title and description
     const handleInputChange = (index, event) => {
         const newDocuments = [...documents];
         const currentKey = Object.keys(newDocuments[index])[0];
         const currentValue = Object.values(newDocuments[index])[0];
-
+        
         const newTitleErrors = [...titleErrors];
     
         if (event.target.name === 'title') {
-            // Check if the new title already exists (and it's not the current key)
             const newTitle = event.target.value;
             const isDuplicate = newDocuments.some((doc, idx) => Object.keys(doc)[0] === newTitle && idx !== index);
     
             if (isDuplicate) {
-                newTitleErrors[index] = "Este título já existe."; // Set error message
+                newTitleErrors[index] = "Este título já existe.";
             } else {
-                newTitleErrors[index] = null; // Clear error message if there's no duplicate
+                newTitleErrors[index] = null;
             }
     
             newDocuments[index] = { [newTitle]: currentValue || '' };
-            setTitleErrors(newTitleErrors); // Update the errors state
+            setTitleErrors(newTitleErrors);
         } else if (event.target.name === 'description') {
             newDocuments[index] = { [currentKey || '']: event.target.value };
         }
+    
         setDocuments(newDocuments);
-
-        // Convert array of objects into a single key-value pair object
-        const flattenedData = documents.reduce((acc, doc) => {
-            const key = Object.keys(doc)[0];  // Get the key (title)
-            const value = doc[key];           // Get the value (description)
-
-            // Only include key-value pairs if both key and value exist
+    
+        // Only debounce the internal state update, not the submission
+        const flattenedData = newDocuments.reduce((acc, doc) => {
+            const key = Object.keys(doc)[0];
+            const value = doc[key];
+    
             if (key && value) {
                 acc[key] = value;
             }
-
+    
             return acc;
         }, {});
-
-        // Submit with flattened data (no array, just key-value pairs)
-        setData('data', flattenedData);
-    };
+    
+        // Use debounced setData for typing
+        debouncedSetData('data', flattenedData);
+    };  
     
     const addDocument = () => {
         setDocuments([...documents, {}]);  // Add an empty object for a new key-value input
