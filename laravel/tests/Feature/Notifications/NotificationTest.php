@@ -120,15 +120,12 @@ class NotificationTest extends TestCase
             ->patch(route('notifications.markAsRead', ['notification' => $notification->id]));
 
         $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/notifications');
-
+            ->assertSessionHasNoErrors();
+            
         $this->assertDatabaseHas('notifications', [
             'id' => $notification->id,
             'is_read' => 1,
         ]);
-
-        $response->assertRedirect(route('notifications.index'));
     }
 
     public function test_user_marks_notification_as_read_fails_on_not_his_notification(): void

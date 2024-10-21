@@ -381,7 +381,7 @@ class OrderController extends Controller
     {
         $order->load(['occurrences', 'vehicle', 'driver']);
 
-        // Format the fields for each report entry
+        // Format the fields for each entry
         $order->occurrences->each(function ($occurrence) {
             $occurrence->created_at = \Carbon\Carbon::parse($occurrence->created_at)->format('d-m-Y');
             $occurrence->updated_at = \Carbon\Carbon::parse($occurrence->updated_at)->format('d-m-Y');

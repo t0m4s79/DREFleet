@@ -33,7 +33,7 @@ class OrderOccurrenceNotificationTest extends TestCase
             'user_id' => $user->id,
             'related_entity_id' => $order->id,
             'related_entity_type' => Order::class,
-            'type' => 'Pedido',
+            'type' => 'Ocorrência',
         ]);
     }
 

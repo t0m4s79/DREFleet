@@ -63,7 +63,7 @@ class OrderOccurrenceNotification extends Notification
             'user_id' => $notifiable->id,
             'related_entity_type' => Order::class,
             'related_entity_id' => $this->order->id,
-            'type' => 'Pedido',
+            'type' => 'Ocorrência',
             'title' => 'Nova ocorrência',
             'message' => 'Uma nova ocorrênica com id ' . $this->occurrence->id . ' do pedido ' . $this->order->id . ' foi reportada no dia ' . $date . '.',
             'is_read' => false,

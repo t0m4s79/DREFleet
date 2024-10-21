@@ -61,7 +61,7 @@ class OrderRequiresApprovalNotification extends Notification
             'related_entity_id' => $this->order->id,
             'type' => 'Pedido',
             'title' => 'Aprovação de Pedido',
-            'message' => 'O pedido com id ' . $this->order->id . ' com data de início breve, marcada para ' . $expected_begin_date . ', necessita de aprovação.',
+            'message' => 'O pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . ', necessita de aprovação.',
             'is_read' => false,
         ];
     }
