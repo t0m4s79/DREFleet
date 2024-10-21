@@ -63,4 +63,10 @@ class NotificationController extends Controller
             return redirect()->route('notifications.index')->with('error', 'Houve um problema ao apagar a notificação com id ' . $notification->id . '. Tente novamente.');
         }
     }
+
+    public function getUnreadCount() {
+        $unreadCount = Auth::user()->notifications->where('is_read', '0')->count();
+
+        return response()->json(['unread_count' => $unreadCount]);
+    }
 }
