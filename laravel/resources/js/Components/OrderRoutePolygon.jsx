@@ -1,17 +1,17 @@
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
 function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
     const map = useMap();
-    const polygonLayerRef = useRef(null);
-    const [isEditing, setIsEditing] = useState(initialCoordinates && initialCoordinates.length > 0);
+    const [polygonLayer, setPolygonLayer] = useState(null);
+    const [polygonExists, setPolygonExists] = useState(false); // Flag to track polygon existence
 
     useEffect(() => {
-        // Add Leaflet-Geoman controls
+        // Initialize Leaflet-Geoman
         map.pm.addControls({
             position: 'topleft',
             drawPolygon: true,
@@ -20,106 +20,129 @@ function GeomanControls({ onAreaChange, color, bounds, initialCoordinates }) {
             drawCircle: false,
             drawRectangle: false,
             editMode: true,
-            dragMode: true,
+            dragMode: false,
             cutPolygon: true,
         });
-        map.pm.setLang('pt_pt');
+        map.pm.setLang('pt_br');
 
-        // Remove existing polygon before creating a new one
-        const removeExistingPolygon = () => {
-            if (polygonLayerRef.current) {
-                map.removeLayer(polygonLayerRef.current);
-                polygonLayerRef.current = null;
-            }
-        };
-
+        // Handle polygon creation
         const handlePolygonCreation = (layer) => {
-            const polygonCoordinates = layer.getLatLngs();
-            polygonLayerRef.current = layer; // Save reference to the polygon
+            // If there is an existing polygon, remove it
+            if (polygonLayer) {
+                map.removeLayer(polygonLayer);
+            }
 
-            // Apply color to the polygon
+            // Apply styles to the newly created polygon
             layer.setStyle({
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.4,
             });
 
-            // Allow vertex deletion during edit mode
-            layer.pm.enable({
-                allowSelfIntersection: true, // Disable self-intersection to allow deleting vertices
-                snappable: true, // Snapping makes interaction easier
-            });
-
-            // Check if the polygon is within the boundary
-            if (bounds && !bounds.contains(layer.getBounds())) {
+            // Check if the polygon is within bounds
+            if (!bounds.contains(layer.getBounds())) {
                 map.removeLayer(layer); // Remove the polygon if it's outside the boundary
                 alert('Área fora das coordenadas permitidas!');
-            } else {
-                onAreaChange(polygonCoordinates); // Send coordinates back to parent
+                return;
             }
-        };
 
-        const handlePolygonEditing = (layer) => {
-            const polygonCoordinates = layer.getLatLngs();
-            polygonLayerRef.current = layer; // Save reference to the polygon
-            // Check if the polygon is within the boundary
-            if (bounds && !bounds.contains(layer.getBounds())) {
-                map.removeLayer(layer); // Remove the polygon if it's outside the boundary
-                alert('Área fora das coordenadas permitidas!');
-            } else {
-                onAreaChange(polygonCoordinates); // Send coordinates back to parent
-            }
-        };
+            // Save the reference to the polygon layer
+            setPolygonLayer(layer);
+            setPolygonExists(true); // Set flag to true
 
-        if (isEditing) {
-            if (initialCoordinates && initialCoordinates.length > 0) {
-                removeExistingPolygon(); // Ensure no duplicate polygons
+            // Send coordinates back to parent
+            const coordinates = layer.getLatLngs();
+            onAreaChange(coordinates);
 
-                const initialPolygon = L.polygon(initialCoordinates, {
-                    color: color,
-                    fillColor: color,
-                    fillOpacity: 0.4,
-                }).addTo(map);
+            // Add event listener for editing
+            layer.on('pm:edit', () => {
+                console.log('Polygon edited:', layer.getLatLngs());
 
-                polygonLayerRef.current = initialPolygon;
+                // Check if the polygon is within bounds
+                if (!bounds.contains(layer.getBounds())) {
+                    map.removeLayer(layer); // Remove the polygon if it's outside the boundary
+                    alert('Área fora das coordenadas permitidas!');
+                    return;
+                }
 
-                // Enable editing and vertex deletion for existing polygons
-                initialPolygon.pm.enable({
-                    allowSelfIntersection: true, // Allow vertex deletion
-                    snappable: true,
-                });
-
-                initialPolygon.on('pm:edit', () => handlePolygonEditing(initialPolygon));
-            }
-        } else {
-            map.on('pm:create', (e) => {
-                removeExistingPolygon(); // Ensure only one polygon exists
-                handlePolygonCreation(e.layer);
+                // Send updated coordinates back to parent
+                onAreaChange(layer.getLatLngs());
             });
-        }
 
+            // Add event listener for removal
+            layer.on('pm:remove', () => {
+                setPolygonLayer(null); // Clear the reference on removal
+                setPolygonExists(false); // Set flag to false
+                onAreaChange(null); // Send null to indicate no polygon exists
+            });
+        };
+
+        map.on('pm:create', (e) => {
+            handlePolygonCreation(e.layer);
+        });
+
+        // Cleanup on component unmount
         return () => {
             map.off('pm:create');
         };
-    }, [map, color, bounds, onAreaChange, initialCoordinates, isEditing]);
+    }, [map, color, polygonLayer, onAreaChange, bounds]);
 
     useEffect(() => {
-        // Update the polygon color whenever the color changes
-        if (polygonLayerRef.current) {
-            polygonLayerRef.current.setStyle({
+        // Draw the initial polygon if coordinates are provided and polygon doesn't already exist
+        if (initialCoordinates && initialCoordinates.length > 0 && !polygonExists) {
+            const initialPolygon = L.polygon(initialCoordinates, {
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.4,
+            }).addTo(map);
+
+            // Set the polygon layer reference
+            setPolygonLayer(initialPolygon);
+            setPolygonExists(true); // Set flag to true
+
+            // Enable editing on the initial polygon
+            initialPolygon.pm.enable({
+                allowSelfIntersection: true,
+                snappable: true,
+            });
+
+            // Add event listener for editing
+            initialPolygon.on('pm:edit', () => {
+                console.log('Polygon edited:', initialPolygon.getLatLngs());
+
+                // Check bounds on edit
+                if (!bounds.contains(initialPolygon.getBounds())) {
+                    alert('Área fora das coordenadas permitidas!');
+                    return;
+                }
+
+                // Send updated coordinates back to parent
+                onAreaChange(initialPolygon.getLatLngs());
+            });
+
+            // Add event listener for removal
+            initialPolygon.on('pm:remove', () => {
+                setPolygonLayer(null); // Clear the reference on removal
+                setPolygonExists(false); // Set flag to false
+                onAreaChange(null);
+            });
+        }
+    }, [initialCoordinates, map, color, onAreaChange, bounds, polygonExists]);
+
+    useEffect(() => {
+        // Update the polygon color dynamically when the color prop changes
+        if (polygonLayer) {
+            polygonLayer.setStyle({
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.4,
             });
         }
-    }, [color]);
-
-    return null;
+    }, [color, polygonLayer]); // Update when color or polygonLayer changes
 }
 
-// Main component to render the map
 export default function OrderRoutePolygon({ onAreaChange, color, initialCoordinates }) {
-    // Define the boundary as LatLngBounds (southwest corner and northeast corner)
+
     const bounds = L.latLngBounds(
         [32.269181, -17.735033], // Southwest boundary
         [33.350247, -15.861279]  // Northeast boundary
@@ -128,16 +151,15 @@ export default function OrderRoutePolygon({ onAreaChange, color, initialCoordina
     return (
         <MapContainer
             center={[32.6443385, -16.9167589]}
-            zoom={13}
-            style={{ height: '500px', width: '100%' }}
             maxBounds={bounds} // Limit map panning and zooming to this area
             maxBoundsViscosity={1.0} // Make boundary strict
+            zoom={13}
+            style={{ height: '500px', width: '100%' }}
         >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; OpenStreetMap contributors"
             />
-            {/* GeomanControls to manage drawing and polygon creation */}
             <GeomanControls
                 onAreaChange={onAreaChange}
                 color={color}
@@ -146,4 +168,4 @@ export default function OrderRoutePolygon({ onAreaChange, color, initialCoordina
             />
         </MapContainer>
     );
-}
+};
