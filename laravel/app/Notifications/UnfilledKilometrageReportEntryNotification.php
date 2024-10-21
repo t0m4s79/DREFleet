@@ -58,7 +58,7 @@ class UnfilledKilometrageReportEntryNotification extends Notification
             'user_id' => $notifiable->id,
             'related_entity_type' => Vehicle::class,
             'related_entity_id' => $this->vehicle->id,
-            'type' => 'Relatório de Kilometragem',
+            'type' => 'Registo de Kilometragem',
             'title' => 'Entrada de relatório de kilometragem em falta',
             'message' => 'No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $this->missingDate . 'para o veículo ' . $this->vehicle->id . '.',
             'is_read' => false,

@@ -37,7 +37,7 @@ class UnfilledKilometrageReportEntryNotificationTest extends TestCase
             'user_id' => $user->id,
             'related_entity_id' => $vehicle->id,
             'related_entity_type' => Vehicle::class,
-            'type' => 'Relatório de Kilometragem'
+            'type' => 'Registo de Kilometragem'
         ]);
     }
 

@@ -45,7 +45,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles, 
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Editar Entrada de Kilometragem do Veículo</h2>}
         >
 
-            {<Head title='Relatórios de Kilometragem do Veículo' />}
+            {<Head title='Registos de Kilometragem do Veículo' />}
 
             <div className='py-12'>
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

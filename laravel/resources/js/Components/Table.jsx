@@ -45,7 +45,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             }
             // Display place_ids as buttons that direct to the respective place's page
             // Shown in Kids "table"
-            if (key === 'place_ids') {
+            else if (key === 'place_ids') {
                 return (
                     <div>
                         {params.value.map((kid) => (
@@ -69,7 +69,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             }
             // Display kidsList with buttons, each button redirecting to the respective kid's page
             // Shown in Technician "table"
-            if (key === 'kidsList1' || key === 'kidsList2') {
+            else if (key === 'kidsList1' || key === 'kidsList2') {
                 return (
                     <div>
                         {params.value.map((kid) => (
@@ -93,19 +93,19 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             }
             // Display trajectory using a Modal
             // Shown in Orders 'table'
-            if(key == 'trajectory'){
+            else if(key == 'trajectory'){
                 return (
                     <MapModal trajectory={params.value}/>
                 )
             }
-            if(key == 'orderArea'){
+            else if(key == 'orderArea'){
                 return (
                     <MapModal route={params.value}/>
                 )
             }
             //Display vehicle id as a Button to redirect to the respective vehicle
             //Shown in vehicle Accessories and Vehicle Documents 'table'
-            if(key == 'vehicle_id'){
+            else if(key == 'vehicle_id'){
                 return (
                     <div>
                         <Button
@@ -125,7 +125,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key == 'driver_id'){
+            else if(key == 'driver_id'){
                 return (
                     <div>
                         <Button
@@ -145,7 +145,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key == 'technician_id'){
+            else if(key == 'technician_id'){
                 return (
                     <div>
                         <Button
@@ -165,7 +165,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key == 'approved_by'){
+            else if(key == 'approved_by'){
                 if(params.value==null) return params.value
                 return (
                     <div>
@@ -186,7 +186,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key == 'order_id'){
+            else if(key == 'order_id'){
                 return (
                     <div>
                         <Button
@@ -206,7 +206,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key == 'route'){
+            else if(key == 'route'){
                 if(params.value != '-'){
                     return (
                         <div>
@@ -232,7 +232,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     )
                 }
             }
-            if (key === 'expiration_date' || key === 'license_expiration_date') {
+            else if (key === 'expiration_date' || key === 'license_expiration_date') {
                 const parsedDate = parse(params.value, 'dd-MM-yyyy', new Date(), { locale: pt });
                 const now = new Date();
                 
@@ -246,7 +246,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 }
                 return params.value
             }
-            if(key === 'all_approved_orders'){
+            else if(key === 'all_approved_orders'){
                 return (
                     <div>
                         <Button
@@ -264,7 +264,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key === 'vehicle_accesories_docs'){
+            else if(key === 'vehicle_accesories_docs'){
                 return (
                     <div>
                         <Button
@@ -282,7 +282,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key === 'vehicle_kilometrage_reports'){
+            else if(key === 'vehicle_kilometrage_reports'){
                 return (
                     <div>
                         <Button
@@ -300,7 +300,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if(key === 'kid_contacts'){
+            else if(key === 'kid_contacts'){
                 return (
                     <div>
                         <Button
@@ -318,7 +318,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            if (key === 'occurrences') {
+            else if (key === 'occurrences') {
                 // Only render the button if there are occurrences
                 if (params.value > 0) {
                     return (
@@ -333,7 +333,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                                     margin: '0px 4px'
                                 }}
                             >
-                                {params.value} Ocorrências {/* Display the number of occurrences */}
+                                {params.value} Ocorrência(s) {/* Display the number of occurrences */}
                             </Button>
                         </div>
                     );
@@ -343,7 +343,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             }
             // Display drivers with buttons, each button redirecting to the respective drivers's page
             // Shown in OrderRoutes "table"
-            if (key === 'drivers') {
+            else if (key === 'drivers') {
                 return (
                     <div>
                         {params.value.map((driver) => (
@@ -367,7 +367,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             }
             // Display technicians with buttons, each button redirecting to the respective technician's page
             // Shown in OrderRoutes "table"
-            if (key === 'technicians') {
+            else if (key === 'technicians') {
                 return (
                     <div>
                         {params.value.map((tech) => (

@@ -57,7 +57,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         current_month_fuel_requests: 'Pedidos Mensais de Reabastecimento',
         fuel_type: 'Tipo de Combustível',
         current_kilometrage: 'Kilometragem Atual',
-        vehicle_kilometrage_reports: 'Relatórios de Kilometragem',
+        vehicle_kilometrage_reports: 'Registo de Kilometragem',
         vehicle_accesories_docs: 'Documentos e Acessórios',
     };
 

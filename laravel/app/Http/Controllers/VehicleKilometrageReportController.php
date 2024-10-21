@@ -38,7 +38,7 @@ class VehicleKilometrageReportController extends Controller
         try {
             $report = VehicleKilometrageReport::create($incomingFields);
 
-            return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Relatório de kilometragem diário com id ' . $report->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
+            return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Registo de kilometragem diário com id ' . $report->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
@@ -89,7 +89,7 @@ class VehicleKilometrageReportController extends Controller
             $vehicleId = $report->vehicle->id;
             $report->delete();
     
-            return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('message', 'Relatório de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('message', 'Registo de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
