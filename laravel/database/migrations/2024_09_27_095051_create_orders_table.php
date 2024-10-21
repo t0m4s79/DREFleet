@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //TODO: ADD MORE FOREIGN AS MORE TABLES ARE ADDED (STATUS)
         //TODO: IF A USER IS DELETED WHAT HAPPENS TO AN ORDER -> STATUS FOR EVERY TABLE SHOULD HOLD A DELETED OPTION INSTEAD OF REMOVING FROM DB
         Schema::create('orders', function (Blueprint $table) {
             $table->id();

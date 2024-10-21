@@ -15,7 +15,6 @@ use App\Notifications\AccessoryExpiryNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Messages\MailMessage;
 
-//TODO: MAIL TESTS AFTER IMPLEMENTING THEM
 class DocumentExpiryNotificationTest extends TestCase
 {
     use RefreshDatabase;

@@ -5,7 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 // TODO: Should the document attributes include a file of the document itself?
-// TODO: MORE ATTRIBUTES?
 return new class extends Migration
 {
     /**
