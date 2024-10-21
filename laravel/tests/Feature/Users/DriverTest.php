@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Driver;
+use App\Models\Vehicle;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
@@ -81,12 +82,13 @@ class DriverTest extends TestCase
         }
     }
 
-    public function test_vehicle_has_many_kilometrage_reports(): void
+    public function test_driver_has_many_kilometrage_reports(): void
     {
         $driver = Driver::factory()->create();
 
         $reports = VehicleKilometrageReport::factory()->count(3)->create([
             'driver_id' => $driver->user_id,
+            'vehicle_id' => Vehicle::factory(),
         ]);
 
         foreach ($reports as $report) {

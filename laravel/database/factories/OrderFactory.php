@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Place;
 use App\Models\Driver;
+use App\Models\OrderOccurrence;
 use App\Models\Vehicle;
 use App\Models\OrderStop;
 use App\Models\OrderRoute;
@@ -26,24 +27,8 @@ class OrderFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition(): array
-    {
-        $technician = TechnicianFactory::new()->create();
-        $vehicle = Vehicle::factory()->create();
-        $driver = Driver::factory()->create();
-        
+    {        
         $trajectory = $this->generateRandomTrajectory();
-
-        // Randomly decide if the order is approved
-        $isApproved = fake()->boolean();
-
-        // Randomly decide if the order has a defined route
-        $hasRoute = fake()->boolean();
-
-        // If approved, generate an approved date and assign a manager
-        $approved_date = $isApproved ? fake()->dateTimeBetween('2024-01-01', '2025-12-31') : null;
-        $manager = $isApproved ? ManagerFactory::new()->create() : null;
-
-        $route = $hasRoute? OrderRouteFactory::new()->create() : null;
 
         $orderTime = rand(2000,86400);
         $beginDate = fake()->dateTimeBetween(now()->subYear(), now()->addYear());
@@ -62,6 +47,35 @@ class OrderFactory extends Factory
             $status = 'Em curso';
         }
 
+        // Check if there are any drivers in the database, otherwise create one
+        $driver =  Driver::inRandomOrder()->first() ?? Driver::factory()->create();
+
+        // Check if there are any vehicles in the database, otherwise create one
+        $vehicle = Vehicle::inRandomOrder()->first() ?? Vehicle::factory()->create();
+
+        // Check if there are any technicians in the database, otherwise create one
+        $technician = User::where('user_type', 'Técnico')->inRandomOrder()->first() ?? TechnicianFactory::new()->create();
+
+        // Randomly decide if the order has a defined route
+        if (fake()->boolean()) {
+            // Check if there are any order routes in the database, otherwise create one
+            $route = OrderRoute::inRandomOrder()->first() ?? OrderRouteFactory::new()->create();
+
+        } else {
+            $route = null;
+        }
+
+        // Randomly decide if the order is approved
+        if (fake()->boolean()) {
+            // Check if there are any managers in the database, otherwise create one
+            $manager = User::where('user_type', 'Gestor')->inRandomOrder()->first() ?? ManagerFactory::new()->create();
+            $approved_date = fake()->dateTimeBetween('2024-01-01', '2025-12-31');
+
+        } else {
+            $approved_date = null;
+            $manager = null;
+        }
+
         return [
             'expected_begin_date' => $beginDate,
             'expected_end_date' => $endDate,
@@ -71,10 +85,10 @@ class OrderFactory extends Factory
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
-            'vehicle_id' => $vehicle->id,
-            'driver_id' => $driver->user_id,
-            'technician_id' => $technician->id,
-            'order_route_id' => $hasRoute ? $route->id : null,
+            'vehicle_id' =>  $vehicle,
+            'driver_id' => $driver,
+            'technician_id' => $technician,
+            'order_route_id' => $route ? $route->id : null,
 
             'approved_date' => $approved_date ? $approved_date : null,
             'manager_id' => $manager ? $manager->id : null,
@@ -121,6 +135,12 @@ class OrderFactory extends Factory
             $stopAverageTime = (int) ($order->expected_time / $totalPoints);
             $stopAverageDistance = (int) ($order->distance / $totalPoints);
 
+            if (rand(0, 1) === 1) {
+                OrderOccurrence::factory()->create([
+                    'order_id' => $order->id,
+                ]);
+            }
+
             $stopExpectedArrivalDate = Carbon::parse($order->expected_begin_date);
             
             $stopNumber = 0;
@@ -150,7 +170,7 @@ class OrderFactory extends Factory
 
                 if (rand(0, 1) === 1) {
                     $place->update([
-                        'place_type' => 'Residência', // Replace 'some_attribute' with the actual attribute you want to update
+                        'place_type' => 'Residência',
                     ]);
                     $kid = Kid::factory()->create();
                     $kid->places()->attach($place->id);

@@ -31,11 +31,12 @@ class VehicleAccessoryFactory extends Factory
             $condition = Arr::random(['Danificado', 'Aceitável']);
         }
     
+        // Vehicle id needs to be passed explicitily when using this factory
         return [
             'name' => $name,
             'expiration_date' => $expirationDate,
             'condition' => $condition,
-            'vehicle_id' => Vehicle::factory(),
+            //'vehicle_id' => Vehicle::factory(),
         ];
     }
 }

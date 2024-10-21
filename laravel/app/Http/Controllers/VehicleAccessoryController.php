@@ -117,13 +117,14 @@ class VehicleAccessoryController extends Controller
     {
         try {
             $vehicleAccessory = VehicleAccessory::findOrFail($id);
+            $vehicleId = $vehicleAccessory->vehicle->id;
             $vehicleAccessory->delete();
     
-            return redirect()->route('vehicles.documentsAndAccessories', $id)->with('message', 'Acessorio com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('message', 'Acessorio com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('vehicles.documentsAndAccessories', $id)->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
         }
     }
 }

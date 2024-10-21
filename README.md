@@ -6,11 +6,11 @@
 
 2. Clone repository;
 
-3. Install project depencies inside laravel directory:
+3. Include **composer** **nodejs** and **php** in the system environment variables;
+
+4. Install project depencies inside laravel directory:
    - `npm install`
    - `composer install`
-
-4. Include **composer** **nodejs** and **php** in the system environment variables;
 
 5. Copy .env.example file to .env and:
    - fill database information;

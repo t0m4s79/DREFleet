@@ -33,7 +33,6 @@ class UserFactory extends Factory
             'phone' => rand(910000000, 999999999),
             'user_type' =>  'Nenhum',
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
-
         ];
     }
 

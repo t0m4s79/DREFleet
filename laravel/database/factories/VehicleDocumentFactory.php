@@ -35,12 +35,13 @@ class VehicleDocumentFactory extends Factory
             $data[$key] = $value;
         }
 
+        // Vehicle id needs to be passed explicitily when using this factory
         return [
             'name' => Arr::random(["Seguro", "Documento único", "Ficha de Inspeção"]),
             'issue_date' => $issueDate,
             'expiration_date' => $expirationDate,
             'expired' => $expired,
-            'vehicle_id' => Vehicle::factory(),
+            //'vehicle_id' => Vehicle::factory(),
             'data' => $data != [] ? $data : null,
         ];
     }

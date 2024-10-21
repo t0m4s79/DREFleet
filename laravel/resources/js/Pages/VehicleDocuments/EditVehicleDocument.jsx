@@ -96,7 +96,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('vehicleDocuments.edit', vehicleDocument.id)); // assuming you have a named route 'vehicles.update'
+        put(route('vehicleDocuments.edit', vehicleDocument.id));
     };
 
     return (

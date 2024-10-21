@@ -30,12 +30,12 @@ class DatabaseSeeder extends Seeder
         Vehicle::factory(6)->create();
         Kid::factory(10)->create();
         Place::factory(15)->create();
-        Order::factory(6)->create();
-        OrderRoute::factory(3)->create();
+        OrderRoute::factory(5)->create();
+        Order::factory(6)->create();            //Order should come last so it uses already existing db records, otherwise it will create new ones (driver, vehicle,...)
 
         $users = User::all();
         $kids = Kid::all();
-        $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places
+        $places = Place::where('place_type', 'Residência')->get(); // Fetch the collection of places that can be associated with kids
         $drivers = Driver::all();
         $technicians = User::where('user_type', 'Técnico')->get();
         $orderRoutes = OrderRoute::all();

@@ -186,6 +186,26 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            if(key == 'order_id'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('orders.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
+                )
+            }
             if(key == 'route'){
                 if(params.value != '-'){
                     return (
@@ -297,6 +317,29 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         </Button>
                     </div>
                 )
+            }
+            if (key === 'occurrences') {
+                // Only render the button if there are occurrences
+                if (params.value > 0) {
+                    return (
+                        <div>
+                            <Button
+                                key={params.value}
+                                variant="outlined"
+                                href={route('orders.occurrences', params.row.id)}
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value} Ocorrências {/* Display the number of occurrences */}
+                            </Button>
+                        </div>
+                    );
+                } else {
+                    return null; // Don't render anything if there are no occurrences
+                }
             }
             // Display drivers with buttons, each button redirecting to the respective drivers's page
             // Shown in OrderRoutes "table"

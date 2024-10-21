@@ -28,7 +28,10 @@ class OrderStopTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $orderStop = OrderStop::factory()->create(['order_id' => $order->id]);
+        $orderStop = OrderStop::factory()->create([
+            'order_id' => $order->id,
+            'place_id' => Place::factory(),
+        ]);
 
         $this->assertTrue($orderStop->order->is($order));
     }
@@ -37,14 +40,20 @@ class OrderStopTest extends TestCase
     {
         $place = Place::factory()->create();
 
-        $orderStop = OrderStop::factory()->create(['place_id' => $place->id]);
+        $orderStop = OrderStop::factory()->create([
+            'place_id' => $place->id,
+            'order_id' => Order::factory(),
+        ]);
 
         $this->assertTrue($orderStop->place->is($place));
     }
 
     public function test_order_stop_belongs_to_many_kids(): void
     {
-        $orderStop = OrderStop::factory()->create();
+        $orderStop = OrderStop::factory()->create([
+            'order_id' => Order::factory(),
+            'place_id' => Place::factory(),
+        ]);
 
         $kids = Kid::factory()->count(3)->create();
     
@@ -103,7 +112,10 @@ class OrderStopTest extends TestCase
 
     public function test_order_stop_edit(): void
     {       
-        $orderStop = OrderStop::factory()->create();
+        $orderStop = OrderStop::factory()->create([
+            'order_id' => Order::factory(),
+            'place_id' => Place::factory(),
+        ]);
 
         $updatedData = [
             'expected_arrival_date' => Carbon::parse($orderStop->expected_arrival_date)->addHour(),
@@ -125,7 +137,10 @@ class OrderStopTest extends TestCase
 
     public function test_order_stop_deletion(): void
     {
-        $orderStop = OrderStop::factory()->create();
+        $orderStop = OrderStop::factory()->create([
+            'order_id' => Order::factory(),
+            'place_id' => Place::factory(),
+        ]);
 
         $this->assertDatabaseHas('order_stops', [
             'id' => $orderStop->id,
@@ -146,7 +161,10 @@ class OrderStopTest extends TestCase
 
     public function test_order_stop_reached(): void
     {
-        $orderStop = OrderStop::factory()->create();
+        $orderStop = OrderStop::factory()->create([
+            'order_id' => Order::factory(),
+            'place_id' => Place::factory(),
+        ]);
 
         $this->assertDatabaseHas('order_stops', [
             'actual_arrival_date' => null,

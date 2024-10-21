@@ -84,13 +84,14 @@ class KidPhoneNumberController extends Controller
     {
         try {
             $kidPhoneNumber = KidPhoneNumber::findOrFail($id);
+            $kidId = $kidPhoneNumber->kid->id;
             $kidPhoneNumber->delete();
 
-            return redirect()->route('kids.contacts', $id)->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
+            return redirect()->route('kids.contacts', $kidId)->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
             dd($e);
-            return redirect()->route('kids.contacts', $id)->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
+            return redirect()->route('kids.contacts', $kidId)->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
         }
     }
 }

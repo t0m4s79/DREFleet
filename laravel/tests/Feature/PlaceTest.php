@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Kid;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Order;
 use App\Models\Place;
 use App\Models\OrderStop;
 use Illuminate\Support\Arr;
@@ -47,6 +48,7 @@ class PlaceTest extends TestCase
 
         $orderStops = OrderStop::factory()->count(3)->create([
             'place_id' => $place->id,
+            'order_id' => Order::factory(),
         ]);
 
         $this->assertCount(3, $place->orderStops);

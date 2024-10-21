@@ -29,9 +29,7 @@ export default function AllOrders({auth, orders, flash}) {
         return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}m`;
     };
 
-    console.log(orders);
-    const OrderInfo = orders.map((order)=>{
-        
+    const OrderInfo = orders.map((order) => {  
         return {
             id: order.id,
             expected_begin_date: order.expected_begin_date,
@@ -45,13 +43,14 @@ export default function AllOrders({auth, orders, flash}) {
             trajectory: order.trajectory,
             expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm:ss
             distance: (order.distance / 1000).toFixed(2) + 'km',
+            occurrences: order.occurrences.length, // Number of occurrences
             approved_date: order.approved_date,
             approved_by: order.manager_id,
             status: order.status,
             created_at: order.created_at,
             updated_at: order.updated_at,
-        }
-    })
+        };
+    });
 
     const orderColumnLabels = {
         id: 'ID',
@@ -66,6 +65,7 @@ export default function AllOrders({auth, orders, flash}) {
         trajectory: 'Trajeto',
         expected_time: 'Tempo de Viagem Esperado',
         distance: 'Distância',
+        occurrences: 'Ocorrências',
         approved_date: 'Data de aprovação',
         approved_by: 'Aprovado por',
         status: 'Estado',

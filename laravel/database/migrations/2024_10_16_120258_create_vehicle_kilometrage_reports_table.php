@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('begin_kilometrage');
             $table->integer('end_kilometrage');
 
-            $table->unsignedBigInteger('vehicle_id')->nullable();
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('set null');
+            $table->unsignedBigInteger('vehicle_id');
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
 
             $table->unsignedBigInteger('driver_id')->nullable();
             $table->foreign('driver_id')->references('user_id')->on('drivers')->onDelete('set null');

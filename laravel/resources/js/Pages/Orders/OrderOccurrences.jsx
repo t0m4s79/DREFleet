@@ -1,13 +1,14 @@
-import OrderRoutePolygon from '@/Components/OrderRoutePolygon'
-import Table from '@/Components/Table';
+import { Head, Link } from '@inertiajs/react';
+import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { Head } from '@inertiajs/react';
-import React, { useEffect, useState } from 'react'
+import 'leaflet/dist/leaflet.css';
+import Table from '@/Components/Table';
+import { useEffect, useState } from 'react';
 
-export default function AllOrderRoutes({auth, orderRoutes, flash}) {
-    console.log(orderRoutes)
+export default function OrderOccurences({auth, order, flash}) {
+    console.log(order)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -20,53 +21,55 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
         }
     }, [flash]);
 
-    const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
-        const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
-          
+    const orderOccurrencesInfo = order.occurrences.map((occurrence) => {
         return {
-            id: orderRoute.id, 
-            name: orderRoute.name, 
-            drivers: orderRoute.drivers,
-            technicians: orderRoute.technicians,
-            orderArea, 
-            created_at: orderRoute.created_at, 
-            updated_at: orderRoute.updated_at
-        }
-    })
+            id: occurrence.id,
+            date: order.expected_begin_date,
+            order_id: occurrence.order_id,
+            driver_id: order.driver.user_id,
+            vehicle_id: order.vehicle.id,
+            type: occurrence.type,
+            description: 'Pop-up com descrição da ocorrência',
+            created_at: occurrence.created_at,
+            updated_at: occurrence.updated_at,
+        };
+    });
 
-    const orderRoutesLabels = {
+    const orderOccurrencesLabels = {
         id: 'ID',
-        name: 'Rota',
-        drivers: 'Condutores',
-        technicians: 'Técnicos',
-        orderArea: 'Área',
+        date: 'Data',
+        order_id: 'Pedido',
+        driver_id: 'Condutor',
+        vehicle_id: 'Veículo',
+        type: 'Tipo',
+        description: 'Descrição',
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização'
     }
-
+    
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Rotas</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Ocorrências do Pedido #{order.id}</h2>}
         >
 
-            {<Head title='Rotas' />}
-
-            <div className='py-12 px-6'>
+            <Head title="Ocorrências do Pedido" />
+        
+            <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('orderRoutes.showCreate')}>
+                    <Button href={route('orderOccurrences.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Nova Rota
+                            Nova Occorrência
                         </a>
                     </Button>
 
-                    <Table data={orderRoutesInfo} columnsLabel={orderRoutesLabels} editAction={'orderRoutes.showEdit'} deleteAction={'orderRoutes.delete'} dataId={'id'}/>
+                    <Table data={orderOccurrencesInfo} columnsLabel={orderOccurrencesLabels} editAction={'orderOccurrences.edit'} deleteAction={'orderOccurrences.delete'} dataId={'id'}/>
                 </div>
             </div>
 
-            <Snackbar
+            <Snackbar 
                 open={openSnackbar} 
                 autoHideDuration={3000}
                 onClose={() => setOpenSnackbar(false)}
@@ -78,5 +81,5 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
             </Snackbar>
 
         </AuthenticatedLayout>
-    )
+    );
 }
