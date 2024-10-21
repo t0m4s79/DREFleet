@@ -5,7 +5,6 @@ namespace App\Notifications\Channels;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
-//TODO: CREATE MORE NOTIFICATION TYPES
 class CustomDbChannel
 {
   	public function send($notifiable, Notification $notification)

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Driver;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
@@ -69,6 +70,8 @@ class OrderOccurrenceTest extends TestCase
 
     public function test_user_can_create_an_order_occurrence(): void
     {        
+        $driver = Driver::factory()->create();
+
         // Fake the notifications to prevent actual sending
         Notification::fake();
 
@@ -79,7 +82,7 @@ class OrderOccurrenceTest extends TestCase
         $occurrenceData = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
             'description' => fake()->sentence(),
-            'order_id' => Order::factory()->create()->id,
+            'order_id' => Order::factory()->create(['driver_id' => $driver->user_id])->id,
         ];
 
         $response = $this
@@ -95,6 +98,16 @@ class OrderOccurrenceTest extends TestCase
         // Assert that the notification was sent
         Notification::assertSentTo(
             $manager,
+            OrderOccurrenceNotification::class,
+            function ($notification, $channels) use ($occurrenceData) {
+                $occurrence = $notification->getOccurrence(); // Use the public method
+                return $occurrence->description === $occurrenceData['description'] &&
+                    $occurrence->order_id === $occurrenceData['order_id'];
+            }
+        );
+
+        Notification::assertSentTo(
+            User::find($driver->user_id),
             OrderOccurrenceNotification::class,
             function ($notification, $channels) use ($occurrenceData) {
                 $occurrence = $notification->getOccurrence(); // Use the public method

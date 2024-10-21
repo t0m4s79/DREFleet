@@ -32,6 +32,7 @@ class SendUnfilledKilometrageReportEntryNotification implements ShouldQueue
         $previousMonthFirstDay = now()->subMonth()->startOfMonth();
         $previousMonthLastDay = now()->subMonth()->endOfMonth();
 
+        //TODO: IF THERE IS NO ORDER WITH THE VEHICLE, SHOULD THE ENTRY BE FILLED AT ALL?
         // Fetch vehicles and their kilometrage reports from the previous month
         $vehicles = Vehicle::with(['kilometrageReports' => function ($query) use ($previousMonthFirstDay, $previousMonthLastDay) {
             $query->where('date', '>=', $previousMonthFirstDay)

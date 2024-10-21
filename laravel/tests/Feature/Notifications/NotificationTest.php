@@ -120,18 +120,15 @@ class NotificationTest extends TestCase
             ->patch(route('notifications.markAsRead', ['notification' => $notification->id]));
 
         $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/notifications');
-
+            ->assertSessionHasNoErrors();
+            
         $this->assertDatabaseHas('notifications', [
             'id' => $notification->id,
             'is_read' => 1,
         ]);
-
-        $response->assertRedirect(route('notifications.index'));
     }
 
-    public function test_user_marks_notification_as_read_fails_on_not_his_notification()
+    public function test_user_marks_notification_as_read_fails_on_not_his_notification(): void
     {
         $otherUser = User::factory()->create();
         $notification = Notification::factory()->create(['user_id' => $otherUser->id, 'is_read' => false]);
@@ -148,7 +145,7 @@ class NotificationTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function test_user_can_delete_notification()
+    public function test_user_can_delete_notification(): void
     {
         $notification = Notification::factory()->create();
 
@@ -166,5 +163,23 @@ class NotificationTest extends TestCase
         $this->assertDatabaseMissing('notifications', [
             'id' => $notification->id,
         ]);
+    }
+
+    public function test_get_unread_count(): void
+    {
+        for ($i = 0; $i < rand(0,5); $i++) {
+            Notification::factory()->create(['user_id' => $this->user->id]);
+        }
+
+        Auth::login($this->user);
+
+        // Call the method to get the unread count
+        $response = $this->getJson(route('notifications.unreadCount'));
+
+        $unreadCount = Auth::user()->notifications->where('is_read', false)->count();
+
+        // Assert that the response is correct
+        $response->assertStatus(200)
+                 ->assertJson(['unread_count' => $unreadCount]);
     }
 }

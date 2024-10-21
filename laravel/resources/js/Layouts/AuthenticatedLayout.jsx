@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
@@ -8,6 +8,23 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        // Fetch the unread notifications count from the back-end
+        const fetchUnreadCount = async () => {
+            try {
+                const response = await axios.get('/notifications/unread-count');
+                setUnreadCount(response.data.unread_count);
+
+            } catch (error) {
+                console.error('Error fetching unread notifications count', error);
+            }
+        };
+
+        fetchUnreadCount();
+    }, []);
 
     return (
         <div className="min-h-screen bg-sky-100">
@@ -156,25 +173,20 @@ export default function Authenticated({ user, header, children }) {
                         <div className="hidden md:flex sm:items-center sm:ms-6">
                             <Dropdown>
                                 <Dropdown.Trigger>
-                                    <span className="inline-flex rounded-md">
+                                    <span className="inline-flex rounded-md relative">
                                         <button
                                             type="button"
-                                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                            className="relative inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                         >
+                                            {/* Bell Icon */}
                                             <NotificationsIcon />
 
-                                            <svg
-                                                className="ms-2 -me-0.5 h-4 w-4"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
+                                            {/* Badge: Unread Count */}
+                                            {unreadCount > 0 && (
+                                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                                    {unreadCount}
+                                                </span>
+                                            )}
                                         </button>
                                     </span>
                                 </Dropdown.Trigger>

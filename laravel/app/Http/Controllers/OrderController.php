@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Notifications\OrderCreationNotification;
+use App\Notifications\OrderRequiresApprovalNotification;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
@@ -168,6 +170,15 @@ class OrderController extends Controller
 
             DB::commit();
 
+            // Notify managers that order requires approval
+            foreach (User::where('user_type', 'Gestor')->get() as $user) {
+                $user->notify(new OrderRequiresApprovalNotification($order));
+            }
+
+            // Notify users involved of new order
+            User::find($incomingFields['driver_id'])->notify(new OrderCreationNotification($order));
+            User::find($incomingFields['technician_id'])->notify(new OrderCreationNotification($order));
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -269,7 +280,7 @@ class OrderController extends Controller
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
-                'status' => 'Por aprovar'
+                //TODO: IF AN ORDER IS EDITED, SHOULD IT NEED REAPPROVAL
             ]);
 
             //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
@@ -381,7 +392,7 @@ class OrderController extends Controller
     {
         $order->load(['occurrences', 'vehicle', 'driver']);
 
-        // Format the fields for each report entry
+        // Format the fields for each entry
         $order->occurrences->each(function ($occurrence) {
             $occurrence->created_at = \Carbon\Carbon::parse($occurrence->created_at)->format('d-m-Y');
             $occurrence->updated_at = \Carbon\Carbon::parse($occurrence->updated_at)->format('d-m-Y');
