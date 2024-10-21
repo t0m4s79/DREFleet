@@ -81,8 +81,8 @@ class RouteOptimizerTest extends TestCase
 
         // Updated expected path and total distance
         $expectedPath = [101, 102, 108, 106, 103, 104, 105, 107, 109]; 
-        $expectedDistance = 60; // 10 (101 to 102) + 20 (102 to 103) + 12 (103 to 104)
-
+        $expectedDistance = 60; // 2 (101 to 102) + 2 (102 to 108) + 3 (108 to 106) + 6 (106 to 103) + 8 (103 to 104) +
+                                // 1 (104 to 105) + 32 (105 to 107) + 6 (107 to 109)
         $this->assertEquals($expectedPath, $result['path']);
         $this->assertEquals($expectedDistance, $result['totalDistance']);
     }
