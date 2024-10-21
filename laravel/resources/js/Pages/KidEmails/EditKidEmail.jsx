@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError';
 export default function EditKidEmail( {auth, kids, kidEmail} ) {
 
     //const [selectedKid, setSelectedKid] = useState('')
+    const [isEditMode, setisEditMode] = useState(false)
 
     const kidList = kids.map((kid)=> {
         return {
@@ -24,6 +25,10 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
     })
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
 
     const handleKidChange = (event, newValue) => {
         setData('kid_id', newValue?.value || ''); // Update form data with the selected kid's ID
@@ -51,12 +56,45 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
                             <form onSubmit={handleSubmit} id="newKidForm">
                                 <input type="hidden" name="_token" value={csrfToken} />
 
+                                { isEditMode === false ? 
+                                    (<div className='mb-4'>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={processing}
+                                            onClick={toggleEdit}
+                                        >
+                                            Editar
+                                        </Button>
+                                    </div>) : 
+
+                                    (<div className='mb-4 space-x-4'>
+                                        <Button 
+                                            variant="outlined"
+                                            color="error"
+                                            disabled={processing}
+                                            onClick={toggleEdit}
+                                        >
+                                            Cancelar Edição
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            variant="outlined"
+                                            color="primary"
+                                            disabled={processing}
+                                        >
+                                            Submeter
+                                        </Button>
+                                    </div>)
+                                }
+
                                 <Autocomplete
                                     id='kid'
                                     options={kidList}
                                     getOptionLabel={(option) => option.label}
                                     value={kidList.find(kid => kid.value === data.kid_id) || null}
                                     onChange={handleKidChange}
+                                    disabled={!isEditMode}
                                     renderInput={(params) => 
                                         <TextField 
                                             {...params} 
@@ -76,6 +114,7 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
                                     label="Nome do Encarregado de Educação"
                                     value={data.owner_name}
                                     onChange={(e) => setData('owner_name', e.target.value)}
+                                    disabled={!isEditMode}
                                     error={Boolean(errors.owner_name)}
                                     helperText={errors.owner_name}
                                 />
@@ -89,6 +128,7 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
                                     type="email"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
+                                    disabled={!isEditMode}
                                     error={Boolean(errors.email)}
                                     helperText={errors.email}
                                 />
@@ -101,6 +141,7 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
                                     label="Grau de Parentesco"
                                     value={data.relationship_to_kid}
                                     onChange={(e) => setData('relationship_to_kid', e.target.value)}
+                                    disabled={!isEditMode}
                                     error={Boolean(errors.relationship_to_kid)}
                                     helperText={errors.relationship_to_kid}
                                 />
@@ -113,27 +154,18 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
                                         name="preference"
                                         value={data.preference}
                                         onChange={(e) => setData('preference', e.target.value)}
+                                        disabled={!isEditMode}
                                         error={Boolean(errors.preference)}
                                         helperText={errors.preference}
                                     >
-                                        <MenuItem value={'Preferido'}>Preferido</MenuItem>
-                                        <MenuItem value={'Alternativo'}>Alternativo</MenuItem>
+                                        <MenuItem value={'Preferida'}>Preferida</MenuItem>
+                                        <MenuItem value={'Alternativa'}>Alternativa</MenuItem>
                                     </Select>
                                     {errors.preference && (
                                         <InputError message={errors.preference}/>
                                     )}
                                 </FormControl>
                                 
-
-                                <br/>
-                                <Button
-                                    variant="outlined"
-                                    type="submit"
-                                    disabled={processing}
-                                    sx={{ mt: 2 }}
-                                >
-                                    Submeter
-                                </Button>
                             </form>
                         </div>
                     </div>
