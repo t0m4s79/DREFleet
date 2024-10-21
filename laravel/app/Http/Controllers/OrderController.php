@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Notifications\OrderRequiresApprovalNotification;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
@@ -168,6 +169,13 @@ class OrderController extends Controller
 
             DB::commit();
 
+            // Notify managers that order requires approval
+            foreach (User::where('user_type', 'Gestor')->get() as $user) {
+                $user->notify(new OrderRequiresApprovalNotification($order));
+            }
+
+            //TODO: Notify users involved of new order
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -269,7 +277,7 @@ class OrderController extends Controller
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
-                'status' => 'Por aprovar'
+                //TODO: IF AN ORDER IS EDITED, SHOULD IT NEED REAPPROVAL
             ]);
 
             //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
