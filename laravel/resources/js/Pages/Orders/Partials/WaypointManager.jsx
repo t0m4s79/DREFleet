@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
 
-export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute }) {
+export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled }) {
     console.log('selectedRoute is:',selectedRoute)
     const { 
         waypoints,
@@ -160,6 +160,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                         getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
                         onChange={(event, kid) => setSelectedKid(kid)}
                         renderInput={(params) => <TextField {...params} label="Criança" />}
+                        disabled={disabled}
                     />
                     {selectedKid && (
                         <Autocomplete
@@ -167,6 +168,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                             getOptionLabel={(place) => place.address}
                             onChange={(event, place) => setSelectedKidPlace(place)}
                             renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
+                            disabled={disabled}
                         />
                     )}
                 </Grid>
@@ -177,6 +179,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                         getOptionLabel={(place) => place.label}
                         onChange={(event, place) => setSelectedOtherPlace(place)}
                         renderInput={(params) => <TextField {...params} label="Outro Local" />}
+                        disabled={disabled}
                     />
                 </Grid>
 
@@ -187,7 +190,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                     <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
                         Add Other Place
                     </Button>
-                    <Button onClick={removeLastWaypoint} disabled={!waypoints.length}>
+                    <Button onClick={removeLastWaypoint} disabled={!waypoints.length || disabled}>
                         Remove Last Waypoint
                     </Button>
                 </Grid>

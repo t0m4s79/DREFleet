@@ -12,6 +12,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function EditOrderRoute({ auth, orderRoute, drivers, technicians }) {
     const [color, setColor] = useState(orderRoute.area_color);
+    const [isEditMode, setisEditMode] = useState(false)
 
     // Reverse coordinates from lng lat (backend) to lat lng and format them
     const reverseCoordinates = (polygon) => {
@@ -54,6 +55,10 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
         usual_technicians: orderRoute.technicians.map(tech => tech.id),
     });
 
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
+
     const onAreaChange = (area) => {
         const formattedArea = area[0].map(coord => ({ lat: coord.lat, lng: coord.lng })); // Convert to {lat, lng}
         setData('area_coordinates', formattedArea); // Update form data with the new polygon coordinates
@@ -93,15 +98,49 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6">
-                            <OrderRoutePolygon onAreaChange={onAreaChange} color={color} initialCoordinates={data.area_coordinates}/>
 
                             <form className='mt-4' onSubmit={handleSubmit}>
+
+                                { isEditMode === false ? 
+                                    (<div className='mb-4'>
+                                        <Button
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={processing}
+                                        onClick={toggleEdit}
+                                    >
+                                        Editar
+                                        </Button>
+                                    </div>) : 
+
+                                (<div className='mb-4 space-x-4'>
+                                    <Button 
+                                        variant="outlined"
+                                        color="error"
+                                        disabled={processing}
+                                        onClick={toggleEdit}
+                                    >
+                                        Cancelar Edição
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="outlined"
+                                        color="primary"
+                                        disabled={processing}
+                                    >
+                                        Submeter
+                                    </Button>
+                                </div>)}
+
+                                <OrderRoutePolygon onAreaChange={onAreaChange} color={color} initialCoordinates={data.area_coordinates}/>
+
                                 <TextField 
                                     label="Nome da Rota"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     error={!!errors.name}
                                     helperText={errors.name}
+                                    disabled={!isEditMode}
                                     fullWidth
                                     required
                                     margin="normal"
@@ -121,6 +160,7 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                                         value={selectedDrivers}
                                         onChange={handleDriversChange}
                                         getOptionLabel={(option) => option.label}
+                                        disabled={!isEditMode}
                                         isOptionEqualToValue={(option, value) => option.value === value.value}
                                         renderOption={(props, option, { selected }) => (
                                             <li {...props}>
@@ -156,6 +196,7 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                                         value={selectedTechnicians}
                                         onChange={handleTechniciansChange}
                                         getOptionLabel={(option) => option.label}
+                                        disabled={!isEditMode}
                                         isOptionEqualToValue={(option, value) => option.value === value.value}
                                         renderOption={(props, option, { selected }) => (
                                             <li {...props}>
@@ -180,15 +221,6 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
                                         sx={{ mb: 2 }}
                                     />
                                 </Grid>
-
-                                <Button
-                                    variant="outlined"
-                                    type="submit"
-                                    disabled={processing}
-                                    sx={{ mt: 2 }}
-                                >
-                                    Submeter
-                                </Button>
                             </form>
                         </div>
                     </div>

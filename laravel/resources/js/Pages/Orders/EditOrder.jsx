@@ -40,6 +40,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
     const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
+    const [isEditMode, setisEditMode] = useState(false)
 
     const orderStops = order.order_stops.map((stop)=> {
         return { 
@@ -121,6 +122,10 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         places_changed: isPlacesModified,
     })
 
+    const toggleEdit = () => {
+        setisEditMode(!isEditMode)
+    }
+
     const handleRouteChange =(route) => {
         setSelectedRouteID(route)
         setData('order_route_id',route)
@@ -194,6 +199,37 @@ console.log(data)
                                 <input type="hidden" name="_token" value={csrfToken} />
                                 <input type="hidden" name="_method" value="PUT" />
 
+                                { isEditMode === false ? 
+                                    (<div className='mb-4'>
+                                        <Button
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={processing}
+                                        onClick={toggleEdit}
+                                    >
+                                        Editar
+                                        </Button>
+                                    </div>) : 
+
+                                (<div className='mb-4 space-x-4'>
+                                    <Button 
+                                        variant="outlined"
+                                        color="error"
+                                        disabled={processing}
+                                        onClick={toggleEdit}
+                                    >
+                                        Cancelar Edição
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="outlined"
+                                        color="primary"
+                                        disabled={processing}
+                                    >
+                                        Submeter
+                                    </Button>
+                                </div>)}
+
                                 <Grid container spacing={3}>
                                     <Grid item xs={12}>
 
@@ -206,6 +242,7 @@ console.log(data)
                                             renderInput={(params) => <TextField {...params} label="Rota" />}
                                             error={errors.order_route_id}
                                             helperText={errors.order_route_id}
+                                            disabled={!isEditMode}
                                             sx={{ mb: 2 }}
                                         />
 
@@ -218,6 +255,7 @@ console.log(data)
                                             renderInput={(params) => <TextField {...params} label="Tipo de Transporte" />}
                                             error={errors.order_type}
                                             helperText={errors.order_type}
+                                            disabled={!isEditMode}
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
@@ -232,6 +270,7 @@ console.log(data)
                                             }))}      
                                             updateSummary={updateSummary}
                                             selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
+                                            disabled={!isEditMode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -249,6 +288,7 @@ console.log(data)
                                             onChange={(e) => setData('expected_begin_date', e.target.value)}
                                             error={errors.expected_begin_date}
                                             helperText={errors.expected_begin_date}
+                                            disabled={!isEditMode}
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
@@ -265,6 +305,7 @@ console.log(data)
                                             onChange={(e) => setData('expected_end_date', e.target.value)}
                                             error={errors.expected_end_date}
                                             helperText={errors.expected_end_date}
+                                            disabled={!isEditMode}
                                             sx={{ mb: 2 }}
                                         />
                                     </Grid>
@@ -294,6 +335,7 @@ console.log(data)
                                                 helperText={errors.vehicle_id}
                                             />
                                         )}
+                                        disabled={!isEditMode}
                                         sx={{ mb: 2 }}
                                     />
                                 </Grid>
@@ -324,6 +366,7 @@ console.log(data)
                                                 helperText={errors.driver_id}
                                             />
                                         )}
+                                        disabled={!isEditMode}
                                         sx={{ mb: 2 }}
                                     />
                                 </Grid>
@@ -346,16 +389,11 @@ console.log(data)
                                                 helperText={errors.technician_id}
                                             />
                                         )}
+                                        disabled={!isEditMode}
                                         sx={{ mb: 2 }}
                                     />
                                 </Grid>
 
-                            
-                                <Grid item xs={12}>
-                                    <Button type="submit" variant="outlined" color="primary" disabled={processing}>
-                                        Submeter
-                                    </Button>
-                                </Grid>
                             </form>
                         </div>
                     </div>
