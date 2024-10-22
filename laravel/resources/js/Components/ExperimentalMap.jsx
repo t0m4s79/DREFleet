@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L, { latLng } from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
-import { calculateTravelMetrics } from '@/utils/calculateTravelMetrics'; 
+import { calculateTravelMetrics } from '@/utils/calculateTravelMetrics';
 
 const boundsSouthWestCorner = [32.269181, -17.735033];
 const boundsNorthEastCorner = [33.350247, -15.861279];
@@ -28,8 +28,16 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
 
         if (!map || waypoints.length < 2) return;
 
+        // Check if the OSRM server URL is defined in the environment variable
+        const osrmServerUrl = import.meta.env.VITE_OSRM_SERVER_URL;
+        
+        const routerOptions = osrmServerUrl
+            ? { serviceUrl: osrmServerUrl } // If the variable exists, use the OSRM server
+            : {}; // If not, fall back to the default configuration
+
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
+            router: L.Routing.osrmv1(routerOptions), // Use the conditional router
             language: 'pt-PT',
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);

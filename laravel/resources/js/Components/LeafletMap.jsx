@@ -61,10 +61,15 @@ function Routing({ routing, onLocationSelect, onTrajectoryChange }) {
 
         // Conditionally add the routing control only when routing is true
         if (routing && !routingControlRef.current) {
+            // Check if the OSRM server URL is defined in the environment variable
+            const osrmServerUrl = import.meta.env.VITE_OSRM_SERVER_URL;
+            
+            const routerOptions = osrmServerUrl
+                ? { serviceUrl: osrmServerUrl } // If the variable exists, use the OSRM server
+                : { serviceUrl: `https://router.project-osrm.org/route/v1`}; // If not, fall back to the default configuration
+                
             routingControlRef.current = L.Routing.control({
-                router: L.Routing.osrmv1({
-                    serviceUrl: `https://router.project-osrm.org/route/v1`,
-                }),
+                router: L.Routing.osrmv1(routerOptions),
                 geocoder: L.Control.Geocoder.nominatim({
 					geocodingQueryParams: {
                         countrycodes: 'pt', // Still restrict by country
