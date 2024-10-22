@@ -22,8 +22,6 @@ use App\Notifications\OrderCreationNotification;
 use App\Notifications\OrderRequiresApprovalNotification;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
-use App\Rules\OrderUserAvailabilityValidation;
-use App\Rules\OrderVehicleAvailabilityValidation;
 use App\Rules\TechnicianUserTypeValidation;
 use App\Rules\OrderVehicleCapacityValidation;
 use Carbon\Carbon;
@@ -107,19 +105,16 @@ class OrderController extends Controller
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
-                new OrderVehicleAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
             ],
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
-                new OrderUserAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
                 new TechnicianUserTypeValidation(),
-                new OrderUserAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
             ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
@@ -243,19 +238,16 @@ class OrderController extends Controller
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
-                new OrderVehicleAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
             ],            
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
-                new OrderUserAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
-                new TechnicianUserTypeValidation(),
-                new OrderUserAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
+                new TechnicianUserTypeValidation(),                
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
