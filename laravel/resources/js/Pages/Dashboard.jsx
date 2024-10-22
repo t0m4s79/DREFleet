@@ -5,8 +5,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[], orders=[] }) {
     
-    console.log('orders', orders);
-
     // const availableDrivers = drivers.map((driver)=> {   
     //     if(driver.status == "Disponível") {
     //         return driver
@@ -49,7 +47,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                         drivers.filter(driver => driver.status === 'Em Serviço').map(driver => (
                                             <div>
                                                 <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
-                                                    #{driver.id} - {driver.name}
+                                                    #{driver.id} - {driver.name} - {driver.driver.license_number}
                                                 </a>
                                             </div>
                                         ))
@@ -72,7 +70,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                         drivers.filter(driver => driver.status === 'Disponível').map(driver => (
                                             <div>
                                                 <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
-                                                    #{driver.id} - {driver.name}
+                                                    #{driver.id} - {driver.name} - {driver.driver.license_number}
                                                 </a>
                                             </div>
                                         ))
