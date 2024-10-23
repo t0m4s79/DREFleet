@@ -21,9 +21,10 @@
 7. Run servers:
    - backend: php artisan serve
    - frontend: npm run dev
-  
+
+[Windows Task Scheduler](https://gist.github.com/Splode/94bfa9071625e38f7fd76ae210520d94)
+
 
 # Updated Entity Relationship Diagram
 ![Diagrama Relações](https://github.com/user-attachments/assets/ce139e38-8614-4a6f-a0e8-44670f6f3e79)
-
 
