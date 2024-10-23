@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\VehicleAccessory;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
 class VehicleAccessoryController extends Controller
@@ -66,7 +67,12 @@ class VehicleAccessoryController extends Controller
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Acessorio com id ' . $accessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating vehicle accessory', [
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar o acessorio para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
@@ -108,7 +114,12 @@ class VehicleAccessoryController extends Controller
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Dados do acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing vehicle accessory', [
+                'accessory_id' => $vehicleAccessory->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o acessorio com id ' . $vehicleAccessory->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
@@ -123,8 +134,13 @@ class VehicleAccessoryController extends Controller
             return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('message', 'Acessorio com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting vehicle accessory', [
+                'accessory_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('vehicleAccessories.index')->with('error', 'Houve um problema ao apagar o acessorio com id ' . $id . '. Tente novamente.');
         }
     }
 }

@@ -74,7 +74,12 @@ class TechnicianController extends Controller
             return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating technician', [
+                'user_id' => $incomingFields['user_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de técnicos. Tente novamente.');
         }
     }
@@ -116,7 +121,12 @@ class TechnicianController extends Controller
             return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
             
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing technician', [
+                'route_id' => $user->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -132,7 +142,12 @@ class TechnicianController extends Controller
             return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting technician', [
+                'route_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('technicians.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de técnicos. Tente novamente.');
         }
     }

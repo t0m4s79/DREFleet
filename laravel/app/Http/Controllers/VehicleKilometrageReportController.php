@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Models\VehicleKilometrageReport;
 
@@ -41,7 +42,12 @@ class VehicleKilometrageReportController extends Controller
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Registo de kilometragem diário com id ' . $report->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting vehicle kilometrage entry', [
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar o relatório de kilometragem diário para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
@@ -77,7 +83,12 @@ class VehicleKilometrageReportController extends Controller
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Dados do relatório de kilometragem diário com id ' . $vehicleKilometrageReport->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing vehicle kilometrage entry', [
+                'entry_id' => $vehicleKilometrageReport->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o relatório de kilometragem diário com id ' . $vehicleKilometrageReport->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
@@ -92,8 +103,13 @@ class VehicleKilometrageReportController extends Controller
             return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('message', 'Registo de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('error', 'Houve um problema ao apagar o relatório de kilometragem diário com id ' . $id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting vehicle kilometrage entry', [
+                'entry_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o relatório de kilometragem diário com id ' . $id . '. Tente novamente.');
         }
     }
 }

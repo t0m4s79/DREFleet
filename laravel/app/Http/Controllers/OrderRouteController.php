@@ -10,6 +10,7 @@ use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\TechnicianUserTypeValidation;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -103,7 +104,12 @@ class OrderRouteController extends Controller
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating order route', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
         }
     }
@@ -176,7 +182,13 @@ class OrderRouteController extends Controller
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error editing order route', [
+                'route_id' => $orderRoute->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao atualizar os dados da rota com id ' . $orderRoute->user_id . '. Tente novamente.');
         }
     }
@@ -190,7 +202,12 @@ class OrderRouteController extends Controller
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing order route', [
+                'route_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao eliminar a rota com id ' . $id . '. Tente novamente.');
         }
     }

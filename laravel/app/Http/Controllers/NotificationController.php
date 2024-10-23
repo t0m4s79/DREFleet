@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Exception;
 
 class NotificationController extends Controller
 {
@@ -45,7 +46,12 @@ class NotificationController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error marking notification as read', [
+                'notification_id' => $notification->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('notifications.index')->with('error', 'Houve um problema ao marcar a notificação com id ' . $notification->id . ' como lida. Tente novamente.');
         }
     }
@@ -60,8 +66,13 @@ class NotificationController extends Controller
             return redirect()->back()->with('success', 'Notificação apagada com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('notifications.index')->with('error', 'Houve um problema ao apagar a notificação com id ' . $notification->id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting notification', [
+                'notification_id' => $notification->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('notifications.index')->with('error', 'Houve um problema ao apagar a notificação com id ' . $id . '. Tente novamente.');
         }
     }
 

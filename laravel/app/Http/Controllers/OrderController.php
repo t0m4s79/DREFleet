@@ -183,7 +183,12 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating order', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
@@ -314,7 +319,13 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+
+            Log::channel('usererror')->error('Error editing order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -328,8 +339,13 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting order', [
+                'order_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $id . '. Tente novamente.');
         }
     }
 
@@ -356,7 +372,12 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error approving order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -383,7 +404,12 @@ class OrderController extends Controller
             return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error removing order approval', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -412,7 +438,6 @@ class OrderController extends Controller
     public function showOrderStops(Order $order) 
     {
         $order->load(['orderStops']);
-
         $order->orderStops->each(function ($stop) {
             $stop->expected_arrival_date = \Carbon\Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
             $stop->actual_arrival_date = \Carbon\Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');

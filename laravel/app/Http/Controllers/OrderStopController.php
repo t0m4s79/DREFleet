@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderStop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
 // This class doesn't need to implement transactions because it is only
@@ -46,7 +47,12 @@ class OrderStopController extends Controller
             // return redirect()->route('orders.index')->with('message', 'Paragem com id ' . $orderStop->id . ' criada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating order stop', [
+                'order_id' => $incomingFields['order_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             // return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar a paragem. Tente novamente.');
         }
     }
@@ -68,7 +74,12 @@ class OrderStopController extends Controller
             // return redirect()->route('orders.index')->with('message', 'Dados da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing order stop', [
+                'stop_id' => $orderStop->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             // return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -82,7 +93,12 @@ class OrderStopController extends Controller
             // return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting order stop', [
+                'stop_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             // return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -104,7 +120,12 @@ class OrderStopController extends Controller
             // return redirect()->route('orders.index')->with('message', 'Data em que chegou à paragem com id ' . $orderStop->id . ' definida com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error marking order stop as reached', [
+                'stop_id' => $orderRoute->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             // return redirect()->route('orders.index')->with('error', 'Houve um problema ao definir a data em que chegou à paragem com id ' . $orderStop->id);
         }
     }

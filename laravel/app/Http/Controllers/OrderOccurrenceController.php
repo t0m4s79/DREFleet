@@ -9,6 +9,7 @@ use App\Models\Driver;
 use Illuminate\Http\Request;
 use App\Models\OrderOccurrence;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Notifications\OrderOccurrenceNotification;
 
@@ -75,7 +76,12 @@ class OrderOccurrenceController extends Controller
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Ocorrência com id ' . $occurrence->id . ' pertencente ao ao pedido com id ' . $incomingFields['order_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating occurrence', [
+                'order_id' => $incomingFields['order_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('orders.occurrences', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar a ocorrência para o pedido com id ' . $incomingFields['order_id'] . '. Tente novamente.');
         }
     }
@@ -109,7 +115,12 @@ class OrderOccurrenceController extends Controller
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Dados da ocorrência com id ' . $orderOccurrence->id . ' pertencente ao pedido com id ' . $incomingFields['order_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing occurrence', [
+                'order_occurrence_id' => $incomingFields['order_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('error', 'Houve um problema ao atualizar os dados da ocorrência com id ' . $orderOccurrence->id . ' pertencente ao pedido com id ' . $incomingFields['order_id'] . '. Tente novamente.');
         }
     }
@@ -124,8 +135,13 @@ class OrderOccurrenceController extends Controller
             return redirect()->route('orders.occurrences', $orderId)->with('message', 'Occorrência com id ' . $id . ' eliminada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('orders.occurrences', $orderId)->with('error', 'Houve um problema ao apagar a occorrência com id ' . $id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting occurrence', [
+                'order_occurrence_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('occurrences.index')->with('error', 'Houve um problema ao apagar a occorrência com id ' . $id . '. Tente novamente.');
         }
     }
 }

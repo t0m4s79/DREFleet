@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\KidPlaceTypeValidation;
 
@@ -78,7 +79,12 @@ class KidController extends Controller
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating kid', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
@@ -126,7 +132,13 @@ class KidController extends Controller
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error editing kid', [
+                'kid_id' => $kid->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
@@ -140,7 +152,12 @@ class KidController extends Controller
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting kid', [
+                'kid_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }

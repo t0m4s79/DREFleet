@@ -9,9 +9,10 @@ use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
-use App\Rules\DriverLicenseNumberValidation;
 use App\Rules\RoleUserTypeValidation;
+use App\Rules\DriverLicenseNumberValidation;
 
 class DriverController extends Controller
 {
@@ -91,8 +92,15 @@ class DriverController extends Controller
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
-            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de condutores. Tente novamente.');
+            
+            // Log the exception with a custom message and context
+            Log::channel('usererror')->error('Error creating driver', [
+                'user_id' => $incomingFields['user_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('drivers.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $incomingFields['user_id'] . ' à lista de condutores. Tente novamente.');
         }
     }
 
@@ -155,7 +163,14 @@ class DriverController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            // Log the exception with a custom message and context
+            Log::channel('usererror')->error('Error editing driver', [
+                'user_id' => $incomingFields['user_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao atualizar os dados do/a condutor/a com id ' . $driver->user_id . '. Tente novamente.');
         } 
     }
@@ -178,7 +193,13 @@ class DriverController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error deleting driver', [
+                'user_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ])
+            ;
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }
     }
