@@ -3,7 +3,7 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
-use App\Notifications\CustomDbChannel;
+use App\Notifications\Channels\CustomDbChannel;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -134,5 +134,4 @@ return [
         ],
 
     ],
-
 ];
