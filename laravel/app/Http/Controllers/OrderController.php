@@ -408,4 +408,22 @@ class OrderController extends Controller
             'order' => $order
         ]);
     }
+
+    public function showOrderStops(Order $order) 
+    {
+        $order->load(['orderStops']);
+
+        $order->orderStops->each(function ($stop) {
+            $stop->expected_arrival_date = \Carbon\Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
+            $stop->actual_arrival_date = \Carbon\Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');
+        });
+
+        return Inertia::render('Orders/OrderStops', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'order' => $order,
+        ]);
+    }
 }

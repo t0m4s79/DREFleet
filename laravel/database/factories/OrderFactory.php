@@ -95,6 +95,78 @@ class OrderFactory extends Factory
         ];
     }
 
+    public function configure()
+    {
+        return $this->afterCreating(function (Order $order) {
+            $trajectory = json_decode($order->trajectory, true);
+            $totalPoints = count($trajectory);
+            $stopAverageTime = (int) ($order->expected_time / $totalPoints);
+            $stopAverageDistance = (int) ($order->distance / $totalPoints);
+
+            // Introduce buffers for randomness within a reasonable range
+            $timeBuffer = (int) ($stopAverageTime * 0.25); // Random up to 25% of average time
+            $distanceBuffer = (int) ($stopAverageDistance * 0.25); // Random up to 25% of average distance
+
+            // Buffer for actual arrival date variance (15% of average time)
+            $actualTimeVariance = (int) ($stopAverageTime * 0.15);
+
+            if (rand(0, 1) === 1) {
+                OrderOccurrence::factory()->create([
+                    'order_id' => $order->id,
+                ]);
+            }
+
+            $stopExpectedArrivalDate = Carbon::parse($order->expected_begin_date);
+
+            $stopNumber = 0;
+            foreach ($trajectory as $point) {
+                $stopNumber++;
+                $lat = $point['lat'];
+                $lng = $point['lng'];
+
+                $coordinates = new Point($lat, $lng);
+
+                $place = Place::factory()->create([
+                    'coordinates' => $coordinates,
+                ]);
+
+                // Add random variation to time and distance for each stop
+                $randomTimeDeviation = rand(-$timeBuffer, $timeBuffer);
+                $randomDistanceDeviation = rand(-$distanceBuffer, $distanceBuffer);
+
+                $timeFromPreviousStop = $stopAverageTime + $randomTimeDeviation;
+                $distanceFromPreviousStop = $stopAverageDistance + $randomDistanceDeviation;
+
+                // Calculate actual arrival date with a random variation from the expected date
+                $randomActualDeviation = rand(-$actualTimeVariance, $actualTimeVariance);
+                $actualArrivalDate = $stopExpectedArrivalDate->copy()->addSeconds($randomActualDeviation);
+
+                // Create the order stop associated with this order
+                $orderStop = OrderStop::factory()->create([
+                    'order_id' => $order->id,
+                    'place_id' => $place->id,
+                    'stop_number' => $stopNumber,
+                    'time_from_previous_stop' => $timeFromPreviousStop,
+                    'distance_from_previous_stop' => $distanceFromPreviousStop,
+                    'expected_arrival_date' => $stopExpectedArrivalDate,
+                    'actual_arrival_date' => $actualArrivalDate, // Add actual arrival date
+                ]);
+
+                // Move the expected arrival date forward by the adjusted time
+                $stopExpectedArrivalDate = $stopExpectedArrivalDate->addSeconds($timeFromPreviousStop);
+
+                if (rand(0, 1) === 1) {
+                    $place->update([
+                        'place_type' => 'Residência',
+                    ]);
+                    $kid = Kid::factory()->create();
+                    $kid->places()->attach($place->id);
+                    $kid->orderStops()->attach($orderStop->id, ['place_id' => $place->id]);
+                }
+            }
+        });
+    }
+
     private function generateRandomTrajectory()
     {
         $boundsSouthWestCorner = [32.269181, -17.735033];
@@ -122,61 +194,8 @@ class OrderFactory extends Factory
                 'lat' => $lat,
                 'lng' => $lng,
             ];
-    }
+        }
 
-    return $points;
-    }
-
-    public function configure()
-    {
-        return $this->afterCreating(function (Order $order) {
-            $trajectory = json_decode($order->trajectory, true);
-            $totalPoints = count($trajectory);
-            $stopAverageTime = (int) ($order->expected_time / $totalPoints);
-            $stopAverageDistance = (int) ($order->distance / $totalPoints);
-
-            if (rand(0, 1) === 1) {
-                OrderOccurrence::factory()->create([
-                    'order_id' => $order->id,
-                ]);
-            }
-
-            $stopExpectedArrivalDate = Carbon::parse($order->expected_begin_date);
-            
-            $stopNumber = 0;
-            // Create stops for each point
-            foreach ($trajectory as $point) {
-                $stopNumber++;
-                $lat = $point['lat'];
-                $lng = $point['lng'];
-
-                $coordinates = new Point($lat, $lng);
-
-                $place = Place::factory()->create([
-                    'coordinates' => $coordinates,
-                ]);
-
-                // Create the order stop associated with this order
-                $orderStop = OrderStop::factory()->create([
-                    'order_id' => $order->id,
-                    'place_id' => $place->id,
-                    'stop_number' => $stopNumber,
-                    'time_from_previous_stop' => $stopAverageTime,
-                    'distance_from_previous_stop' => $stopAverageDistance,
-                    'expected_arrival_date' => $stopExpectedArrivalDate,
-                ]);
-
-                $stopExpectedArrivalDate = $stopExpectedArrivalDate->addSeconds($stopAverageTime);
-
-                if (rand(0, 1) === 1) {
-                    $place->update([
-                        'place_type' => 'Residência',
-                    ]);
-                    $kid = Kid::factory()->create();
-                    $kid->places()->attach($place->id);
-                    $kid->orderStops()->attach($orderStop->id, ['place_id' => $place->id]);
-                }
-            }
-        });
+        return $points;
     }
 }

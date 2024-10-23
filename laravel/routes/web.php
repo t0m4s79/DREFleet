@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
     Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
+    Route::get('/orders/orderStops/{order}', [OrderController::class, 'showOrderStops'])->name('orders.stops');
 
     //ORDER OCCURRENCES
     Route::get('/orders/occurrences', [OrderOccurrenceController::class, 'index'])->name('orderOccurrences.index');
