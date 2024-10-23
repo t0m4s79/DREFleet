@@ -475,7 +475,6 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 pagination
                 disableSelectionOnClick
                 autosizeOnMount
-                autoHeight
                 density='compact'
                 //loading                           //loading can be used when fetching data
                 hideFooterSelectedRowCount
