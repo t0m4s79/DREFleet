@@ -42,6 +42,12 @@ class OrderController extends Controller
 
         $orders->each(function ($order) {
             // Format the dates as dd-mm-yyyy
+            $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+            $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+            $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : '-';
+            $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d-m-Y H:i');
+            $order->updated_at = \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y H:i');
+
             $order->order_route_id = $order->order_route_id ?? '-';
         });
 

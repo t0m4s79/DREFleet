@@ -21,12 +21,12 @@ class Kid extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function places(): BelongsToMany 
