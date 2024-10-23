@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Place;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -26,12 +27,34 @@ class OrderStop extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i:s');
+    }
+    
+    // Automatically convert to UTC when saving to the database
+    public function setExpectedArrivalDateAttribute($value)
+    {
+        $this->attributes['expected_arrival_date'] = Carbon::parse($value)->setTimezone('UTC');
+    }
+
+    public function setActualArrivalDateAttribute($value)
+    {
+        $this->attributes['actual_arrival_date'] = Carbon::parse($value)->setTimezone('UTC');
+    }
+
+    // Automatically convert back to the app timezone when retrieving
+    public function getExpectedArrivalDateAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i');
+    }
+
+    public function getActualArrivalDateAttribute($value)
+    {
+        return Carbon::parse($value)->setTimezone(config('app.timezone'))->format('d-m-Y H:i');
     }
 
     public function order(): BelongsTo
