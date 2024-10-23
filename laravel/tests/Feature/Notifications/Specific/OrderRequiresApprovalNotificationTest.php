@@ -54,6 +54,6 @@ class OrderRequiresApprovalNotificationTest extends TestCase
         $this->assertInstanceOf(MailMessage::class, $mailMessage);
         $this->assertStringContainsString('Pedido necessita de aprovação.', $mailMessage->introLines[0]);
         $this->assertStringContainsString(route('orders.edit', ['order' => $order->id]), $mailMessage->actionUrl);
-        $this->assertStringContainsString('O pedido com id ' . $order->id . ' com data de início marcada para ' . $expected_begin_date . ', necessita de aprovação.', $mailMessage->outroLines[0]);
+        $this->assertStringContainsString('O pedido com id ' . $order->id . ' com data de início marcada para ' . $expected_begin_date . ' necessita de aprovação.', $mailMessage->outroLines[0]);
     }
 }
