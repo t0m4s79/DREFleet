@@ -53,13 +53,13 @@ class SendOrderRequiresApprovalNotificationTest extends TestCase
         Order::factory()->create([
             'manager_id' => null,
             'approved_date' => now()->now(),
-            'expected_begin_date' => null,
+            'expected_begin_date' => now()->addMonths(2),
         ]);
 
         Order::factory()->create([
             'manager_id' => $user->id,
             'approved_date' => null,
-            'expected_begin_date' => null,
+            'expected_begin_date' => now()->addMonths(2),
         ]);
 
         // Dispatch the job
