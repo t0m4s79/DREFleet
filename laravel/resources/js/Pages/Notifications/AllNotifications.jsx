@@ -24,7 +24,8 @@ export default function AllNotifications({auth, notifications, flash}) {
             setSnackbarMessage(result.message);
             setSnackbarSeverity('success');
 
-            // Optionally, you can update the notifications state or refresh the page
+            // Reload the page after marking the notification as read
+            window.location.reload();
             // Here, you can filter out the marked notification if you want to update the UI immediately
         } catch (error) {
             setSnackbarMessage(error.message);
