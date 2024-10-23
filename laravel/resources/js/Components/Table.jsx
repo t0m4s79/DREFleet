@@ -389,6 +389,14 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            else if(key === 'coordinates'){
+                return (
+                    <div>
+                        <span>{params.value}</span>
+
+                    </div>
+                )
+            }
 
             return params.value;
         }

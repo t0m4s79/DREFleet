@@ -25,14 +25,15 @@ export default function AllPlaces( {auth, places, flash} ) {
         const kidPlacesIds = place.kids.length
             ? place.kids.map((kid) => ({ id: kid.id })) // Store kid id in a more structured way
             : [];
+
+        const coordinates = `lat: ${place.coordinates.coordinates[1]}, lng: ${place.coordinates.coordinates[0]}`
       
         return {
             id: place.id,
             address: place.address,
             known_as: place.known_as,
             place_type: place.place_type,
-            latitude: place.coordinates.coordinates[1],
-            longitude: place.coordinates.coordinates[0],
+            coordinates: coordinates,
             kids_count: place.kids.length,
             kids_ids: kidPlacesIds
         }
@@ -43,8 +44,7 @@ export default function AllPlaces( {auth, places, flash} ) {
         address: 'Morada',
         known_as: 'Conhecido como',
         place_type: 'Tipo',
-        latitude: 'Latitude',
-        longitude: 'Longitude',
+        coordinates: 'Coordenadas',
         kids_count: 'Número de crianças',
         kids_ids: 'Crianças',
     };
