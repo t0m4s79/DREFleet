@@ -1,11 +1,13 @@
 import React from 'react';
-import { DataGrid, } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar, } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import { ptPT } from '@mui/x-data-grid/locales';
 import MapModal from './MapModal';
 import ErrorIcon from '@mui/icons-material/Error';
 import { parse, isBefore } from 'date-fns';
 import { pt } from 'date-fns/locale';
+import MouseHoverPopover from './MouseHoverPopover';
+import OccurrenceModal from './OccurrenceModal';
 
 // Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
@@ -319,22 +321,12 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 )
             }
             else if (key === 'occurrences') {
+                const occurences = params.value
                 // Only render the button if there are occurrences
-                if (params.value > 0) {
+                if(occurences.length > 0){
                     return (
                         <div>
-                            <Button
-                                key={params.value}
-                                variant="outlined"
-                                href={route('orders.occurrences', params.row.id)}
-                                sx={{
-                                    maxHeight: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
-                            >
-                                {params.value} Ocorrência(s) {/* Display the number of occurrences */}
-                            </Button>
+                            <OccurrenceModal occurences={occurences} link={params.row.id}/>
                         </div>
                     );
                 } else {
@@ -397,6 +389,13 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            // else if(key === 'additionalData'){
+            //     return (
+            //         <div>
+            //             <MouseHoverPopover data={params.value} />
+            //         </div>
+            //     )
+            // }
 
             return params.value;
         }
@@ -463,7 +462,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
     };
 
     return (
-        <div>
+        <div style={{ display: 'flex'}}>
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -476,6 +475,14 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 disableSelectionOnClick
                 autosizeOnMount
                 density='compact'
+                disableDensitySelector
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                    toolbar: {
+                        showQuickFilter: true,
+                    },
+                }}
+                ignoreDiacritics={true}
                 //loading                           //loading can be used when fetching data
                 hideFooterSelectedRowCount
                 localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
