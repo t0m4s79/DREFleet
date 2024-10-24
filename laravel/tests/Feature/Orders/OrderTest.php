@@ -27,11 +27,16 @@ class OrderTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+    protected $driver;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
+
+        
+        $this->driver = Driver::factory()->create();
+        User::find($this->driver->user_id)->update(['status' => 'Disponível']);
     }
 
     private function generateRandomTrajectory()
@@ -245,9 +250,9 @@ class OrderTest extends TestCase
 
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1','capacity' => 100])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1','capacity' => 100, 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -331,9 +336,9 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             //Not adapted for wheelchairs
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -356,7 +361,7 @@ class OrderTest extends TestCase
     }
 
     // Wrong order type for kid transportation
-    public function test_order_creation_fails_on_wrong_order_type_with_kid(): void
+    public function test_order_creation_fails_on_wrong_order_type_with_kids(): void
     {  
         $placesData = $this->generateRandomPlacesAndKids($withKids=true);
         
@@ -380,9 +385,9 @@ class OrderTest extends TestCase
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -429,9 +434,9 @@ class OrderTest extends TestCase
             'order_type' => 'Transporte de Crianças',
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -463,6 +468,9 @@ class OrderTest extends TestCase
         $trajectory = $this->generateRandomTrajectory();
      
         //1 -> heavy vehicle with no heavy license
+        $driver_1 = Driver::factory()->create(['heavy_license' => '0']);
+        User::find($driver_1->user_id)->update(['status' => 'Disponível']);
+
         $orderData_1 = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
@@ -473,7 +481,7 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
+            'driver_id' => $driver_1->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
 
@@ -496,7 +504,10 @@ class OrderTest extends TestCase
             'technician_id' => $orderData_1['technician_id'],
         ]);
 
-        //2 -> heavy Passangers vehicle with heavy Goods license     
+        //2 -> heavy Passangers vehicle with heavy Goods license
+        $driver_2 = Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias']);
+        User::find($driver_2->user_id)->update(['status' => 'Disponível']);
+
         $orderData_2 = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
             'expected_end_date' => fake()->dateTimeBetween('2025-01-01', '2025-12-31')->format('Y-m-d H:i:s'),
@@ -507,7 +518,7 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
+            'driver_id' => $driver_2->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
 
@@ -549,7 +560,7 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
+            'driver_id' => $this->driver->user_id,
             'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
         ];
 
@@ -589,9 +600,9 @@ class OrderTest extends TestCase
 
             'places_changed' => false,
             'places' => [],
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
         
         $response = $this
@@ -653,9 +664,9 @@ class OrderTest extends TestCase
                 ]
             ],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
         
         $response = $this
@@ -724,9 +735,9 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             //Not adapted for wheelchairs
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -778,9 +789,9 @@ class OrderTest extends TestCase
             'places_changed' => true,
             'places' => $placesData,
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -832,9 +843,9 @@ class OrderTest extends TestCase
             'places_changed' => true,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
 
         $response = $this
@@ -862,6 +873,9 @@ class OrderTest extends TestCase
         $order = Order::factory()->create();
 
         $trajectory = $this->generateRandomTrajectory();
+
+        $driver_1 = Driver::factory()->create(['heavy_license' => '0']);
+        User::find($driver_1->user_id)->update(['status' => 'Disponível']);
     
         //1 -> heavy vehicle with no heavy license
         $updatedData_1 = [
@@ -875,9 +889,9 @@ class OrderTest extends TestCase
             'places_changed' => false,
             'places' => [],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '0'])->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $driver_1->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
         
         $response = $this
@@ -898,6 +912,9 @@ class OrderTest extends TestCase
             'technician_id' => $updatedData_1['technician_id'],
         ]);
 
+        $driver_2 = Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias']);
+        User::find($driver_2->user_id)->update(['status' => 'Disponível']);
+
         //2 -> heavy Passangers vehicle with heavy Goods license     
         $updatedData_2 = [
             'expected_begin_date' => fake()->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d H:i:s'),
@@ -907,9 +924,9 @@ class OrderTest extends TestCase
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create(['heavy_license' => '1', 'heavy_license_type' => 'Mercadorias'])->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $driver_2->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
         
         $response = $this
@@ -947,9 +964,9 @@ class OrderTest extends TestCase
             'places_changed' => false,
             'places' => [],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador']), 'status' => 'Disponível'])->id,
         ];
         
         $response = $this
@@ -1119,9 +1136,9 @@ class OrderTest extends TestCase
             'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
-            'driver_id' => Driver::factory()->create()->user_id,
-            'technician_id' => TechnicianFactory::new()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'driver_id' => $this->driver->user_id,
+            'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];        
 
         // Mock the Order model to throw an exception
