@@ -15,6 +15,10 @@ class PlaceController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed places page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
         $places->each(function ($place) {
@@ -33,6 +37,10 @@ class PlaceController extends Controller
 
     public function showCreatePlaceForm()
     {
+        Log::channel('user')->info('User accessed place creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Inertia::render('Places/NewPlace');
     }
 
@@ -62,6 +70,11 @@ class PlaceController extends Controller
                 'place_type' => $incomingFields['place_type'],
             ]);
 
+            Log::channel('user')->info('User created a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $place->id ?? null,
+            ]);
+
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');
        
         } catch (\Exception $e) {
@@ -76,6 +89,11 @@ class PlaceController extends Controller
 
     public function showEditPlaceForm(Place $place)
     {
+        Log::channel('user')->info('User accessed place edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'place_id' => $place->id ?? null,
+        ]);
+
         $kids = Kid::all();
         return Inertia::render('Places/EditPlace', ['place' => $place, 'kids' => $kids]);
     }
@@ -106,6 +124,11 @@ class PlaceController extends Controller
                 'place_type' => $incomingFields['place_type'],
             ]);
 
+            Log::channel('user')->info('User edited a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $place->id ?? null,
+            ]);
+
             return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -124,6 +147,11 @@ class PlaceController extends Controller
         try {
             $place = Place::findOrFail($id);
             $place->delete();
+
+            Log::channel('user')->info('User deleted a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $id
+            ]);
 
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $id . ' apagada com sucesso!');
 

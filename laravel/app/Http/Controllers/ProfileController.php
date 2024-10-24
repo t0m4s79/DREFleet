@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +20,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        Log::channel('user')->info('User accessed profile page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -38,6 +43,10 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        Log::channel('user')->info('User updated profile', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Redirect::route('profile.edit');
     }
 
@@ -53,6 +62,7 @@ class ProfileController extends Controller
         ], $customErrorMessages);
 
         $user = $request->user();
+        $userId = $user->id;
 
         Auth::logout();
 
@@ -60,6 +70,10 @@ class ProfileController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        Log::channel('user')->info('User deleted account', [
+            'user_id' => $userId,
+        ]);
 
         return Redirect::to('/');
     }

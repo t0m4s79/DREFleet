@@ -14,6 +14,10 @@ class VehicleKilometrageReportController extends Controller
 {
     public function showCreateVehicleKilometrageReportForm()
     {
+        Log::channel('user')->info('User accessed vehicle kilometrage report entry creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
 
@@ -39,6 +43,12 @@ class VehicleKilometrageReportController extends Controller
         try {
             $report = VehicleKilometrageReport::create($incomingFields);
 
+            Log::channel('user')->info('User created a vehicle kilometrage report entry', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kilometrage_report' => $report->id,
+                'vehicle_id' => $incomingFields['vehicle_id'],
+            ]);
+
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Registo de kilometragem diário com id ' . $report->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -54,6 +64,11 @@ class VehicleKilometrageReportController extends Controller
 
     public function showEditVehicleKilometrageReportForm(VehicleKilometrageReport $vehicleKilometrageReport)
     {
+        Log::channel('user')->info('User accessed vehicle kilometrage report entry edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kilometrage_report' => $vehicleKilometrageReport->id,
+        ]);
+
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
 
@@ -80,6 +95,12 @@ class VehicleKilometrageReportController extends Controller
         try {
             $vehicleKilometrageReport->update($incomingFields);
 
+            Log::channel('user')->info('User edited a vehicle kilometrage report entry', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kilometrage_report' => $vehicleKilometrageReport->id,
+                'vehicle_id' => $incomingFields['vehicle_id'],
+            ]);
+
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Dados do relatório de kilometragem diário com id ' . $vehicleKilometrageReport->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -99,6 +120,12 @@ class VehicleKilometrageReportController extends Controller
             $report = VehicleKilometrageReport::findOrFail($id);
             $vehicleId = $report->vehicle->id;
             $report->delete();
+
+            Log::channel('user')->info('User deleted a vehicle kilometrage report entry', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kilometrage_report' => $id,
+                'vehicle_id' => $vehicleId,
+            ]);
     
             return redirect()->route('vehicles.kilometrageReports', $vehicleId)->with('message', 'Registo de kilometragem diário com id ' . $id . ' eliminado com sucesso!');
 

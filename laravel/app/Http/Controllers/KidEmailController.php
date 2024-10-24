@@ -14,6 +14,10 @@ class KidEmailController extends Controller
 {
     public function showCreateKidEmailForm()
     {
+        Log::channel('user')->info('User accessed kid email creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidEmails/NewKidEmail', [
@@ -40,6 +44,11 @@ class KidEmailController extends Controller
         try {
             $kidEmail = KidEmail::create($incomingFields);
 
+            Log::channel('user')->info('User created a kid email', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $incomingFields['kid_id'] ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
@@ -55,6 +64,11 @@ class KidEmailController extends Controller
 
     public function showEditKidEmailForm(KidEmail $kidEmail)
     {
+        Log::channel('user')->info('User accessed kid edit email page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kid_id' => $kidEmail->id ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidEmails/EditKidEmail', [
@@ -78,6 +92,11 @@ class KidEmailController extends Controller
         try {
             $kidEmail->update($incomingFields);
 
+            Log::channel('user')->info('User edited a kid email', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $kidEmail->id ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Dados do email com id ' . $kidEmail->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
@@ -97,6 +116,11 @@ class KidEmailController extends Controller
             $kidEmail = KidEmail::findOrFail($id);
             $kidId = $kidEmail->kid->id;
             $kidEmail->delete();
+
+            Log::channel('user')->info('User deleted a kid email page', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $id ?? null,
+            ]);
 
             return redirect()->route('kids.contacts', $kidId)->with('message', 'Email com id ' . $id . ' apagado com sucesso!');
 

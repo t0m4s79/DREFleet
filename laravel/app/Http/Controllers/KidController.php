@@ -15,6 +15,10 @@ class KidController extends Controller
 {
     public function index() //: Response
     {
+        Log::channel('user')->info('User accessed kids page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
         $kids->each(function ($kid) {
@@ -36,6 +40,9 @@ class KidController extends Controller
 
     public function showCreateKidForm()
     {
+        Log::channel('user')->info('User accessed kid creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
 
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
@@ -75,6 +82,11 @@ class KidController extends Controller
             
             DB::commit();
 
+            Log::channel('user')->info('User created a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+            ]);
+    
+
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
         
         } catch (\Exception $e) {
@@ -91,6 +103,10 @@ class KidController extends Controller
 
     public function showEditKidForm(Kid $kid)
     {
+        Log::channel('user')->info('User accessed kid edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kid_id' => $kid->id ?? null,
+        ]);
 
         $kidPlaces = $kid->places;
 
@@ -128,6 +144,12 @@ class KidController extends Controller
 
             DB::commit();
 
+            
+            Log::channel('user')->info('User edited a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $kid->id ?? null,
+            ]);
+
             return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -149,6 +171,11 @@ class KidController extends Controller
             $kid = Kid::findOrFail($id);
             $kid->delete();
 
+            Log::channel('user')->info('User deleted a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $id ?? null,
+            ]);
+
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
@@ -164,6 +191,11 @@ class KidController extends Controller
 
     public function showKidContacts(Kid $kid)
     {
+        Log::channel('user')->info('User accessed kids contact page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kid_id' => $kid->id  ?? null,
+        ]);
+
         // Use 'load' to eager load the relationships on the already retrieved kid instance
         $kid->load('phoneNumbers', 'emails');
 

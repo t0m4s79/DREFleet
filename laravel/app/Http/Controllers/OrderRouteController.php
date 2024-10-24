@@ -20,8 +20,12 @@ use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 class OrderRouteController extends Controller
 {
-    public function index() //: Response
+    public function index(): Response
     {
+        Log::channel('user')->info('User accessed order routes page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $orderRoutes = OrderRoute::with(['drivers', 'technicians'])->get();
         
         return Inertia::render('OrderRoutes/AllOrderRoutes', [
@@ -35,6 +39,10 @@ class OrderRouteController extends Controller
 
     public function showCreateOrderRouteForm()
     {
+        Log::channel('user')->info('User accessed order route creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
 
@@ -100,6 +108,11 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User created an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'route_id' => $orderRoute->id ?? null,
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
@@ -116,6 +129,11 @@ class OrderRouteController extends Controller
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
+        Log::channel('user')->info('User accessed order route edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'route_id' => $orderRoute->id ?? null,
+        ]);
+
         $orderRoute->load(['drivers', 'technicians']);
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
@@ -178,6 +196,11 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User edited an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'route_id' => $orderRoute->id ?? null,
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('message', 'Dados da rota com id ' . $orderRoute->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -198,6 +221,11 @@ class OrderRouteController extends Controller
         try {
             $orderRoute = OrderRoute::findOrFail($id);
             $orderRoute->delete();
+
+            Log::channel('user')->info('User deleted an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'occurrence_id' => $id ?? null,
+            ]);
             
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');
 

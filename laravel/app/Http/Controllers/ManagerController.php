@@ -13,7 +13,12 @@ use App\Rules\RoleUserTypeValidation;
 
 class ManagerController extends Controller
 {
-    public function index() {
+    public function index() 
+    {    
+        Log::channel('user')->info('User accessed managers page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $managers = User::where('user_type', 'Gestor')->get();
 
         $managers->each(function ($manager) {
@@ -30,7 +35,12 @@ class ManagerController extends Controller
         ]);
     }
 
-    public function showCreateManagerForm() {
+    public function showCreateManagerForm()
+    {
+        Log::channel('user')->info('User accessed manager creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $users = User::where('user_type', 'Nenhum')->get();
 
         return Inertia::render('Managers/NewManager', [
@@ -42,7 +52,8 @@ class ManagerController extends Controller
         ]);
     }
 
-    public function createManager(Request $request) {
+    public function createManager(Request $request)
+    {
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
@@ -61,6 +72,11 @@ class ManagerController extends Controller
                 'user_type' => "Gestor",
             ]);
 
+            Log::channel('user')->info('User created a manager', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'manager_id' => $incomingFields['user_id'] ?? null,
+            ]);
+
             return redirect()->route('managers.index')->with('message', 'Gestor/a com id ' . $user->id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
@@ -74,7 +90,13 @@ class ManagerController extends Controller
         }
     }
 
-    public function showEditManagerForm(User $user) {
+    public function showEditManagerForm(User $user)
+    {    
+        Log::channel('user')->info('User accessed manager edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'manager_id' => $user->id ?? null,
+        ]);
+
         return Inertia::render('Managers/EditManager', [
             'flash' => [
                 'message' => session('message'),
@@ -84,8 +106,8 @@ class ManagerController extends Controller
         ]);
     }
 
-    public function editManager(User $user, Request $request) {
-
+    public function editManager(User $user, Request $request)
+    {
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -107,6 +129,11 @@ class ManagerController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
+            Log::channel('user')->info('User edited a manager', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'manager_id' => $user->id ?? null,
+            ]);
+
             return redirect()->route('managers.index')->with('message', 'Dados do/a gestor/a com id ' . $user->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -120,11 +147,17 @@ class ManagerController extends Controller
         }
     }
 
-    public function deleteManager($id) {
+    public function deleteManager($id)
+    {
         try {
             $user = User::findOrFail($id);
             $user->update([
                 'user_type' => "Nenhum",
+            ]);
+
+            Log::channel('user')->info('User deleted a manager', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'manager_id' => $id ?? null,
             ]);
 
             return redirect()->route('managers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de gestores com sucesso!');
@@ -140,7 +173,13 @@ class ManagerController extends Controller
         }
     }
 
-    public function showManagerApprovedOrders(User $user) {
+    public function showManagerApprovedOrders(User $user)
+    {
+        Log::channel('user')->info('User accessed manager approved orders page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'manager_id' => $user->id ?? null,
+        ]);
+
         $orders = Order::where('manager_id', $user->id)->get();
         
         return Inertia::render('Managers/ShowApprovedOrders', [

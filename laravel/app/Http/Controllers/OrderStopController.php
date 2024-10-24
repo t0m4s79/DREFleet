@@ -44,6 +44,11 @@ class OrderStopController extends Controller
                 ]);
             }
 
+            Log::channel('user')->info('Order stop created', [
+                'order_stop_id' => $orderStop->id ?? null,
+                'order_id' => $incomingFields['order_id'] ?? null,
+            ]);
+
             // return redirect()->route('orders.index')->with('message', 'Paragem com id ' . $orderStop->id . ' criada com sucesso!');
 
         } catch (\Exception $e) {
@@ -71,6 +76,11 @@ class OrderStopController extends Controller
                 'expected_arrival_date' => $incomingFields['expected_arrival_date'],
             ]);
 
+            Log::channel('user')->info('Order stop edited', [
+                'order_stop_id' => $orderStop->id ?? null,
+                'order_id' => $orderStop->order->id ?? null,
+            ]);
+
             // return redirect()->route('orders.index')->with('message', 'Dados da paragem com ' . $orderStop->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
@@ -88,7 +98,13 @@ class OrderStopController extends Controller
     {
         try {
             $orderStop = OrderStop::findOrFail($id);
+            $order = $orderStop->order;
             $orderStop->delete();
+
+            Log::channel('user')->info('Order stop deleted', [
+                'order_stop_id' => $id ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
 
             // return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $orderStop->id . ' apagado com sucesso!');
 
@@ -115,6 +131,11 @@ class OrderStopController extends Controller
         try {
             $orderStop->update([
                 'actual_arrival_date' => $incomingFields['actual_arrival_date'],
+            ]);
+
+            Log::channel('user')->info('Order stop reached', [
+                'orderStop' => $orderStop->id ?? null,
+                'order' => $orderStop->order->id ?? null,
             ]);
 
             // return redirect()->route('orders.index')->with('message', 'Data em que chegou à paragem com id ' . $orderStop->id . ' definida com sucesso!');

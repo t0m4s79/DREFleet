@@ -38,6 +38,10 @@ class OrderController extends Controller
 
     public function index()
     {
+        Log::channel('user')->info('User accessed orders page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $orders = Order::with(['orderStops', 'occurrences'])->get();
 
         $orders->each(function ($order) {
@@ -63,6 +67,10 @@ class OrderController extends Controller
 
     public function showCreateOrderForm()
     {
+        Log::channel('user')->info('User accessed order creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+        
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
@@ -170,6 +178,11 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User created an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             // Notify managers that order requires approval
             foreach (User::where('user_type', 'Gestor')->get() as $user) {
                 $user->notify(new OrderRequiresApprovalNotification($order));
@@ -195,6 +208,10 @@ class OrderController extends Controller
 
     public function showEditOrderForm(Order $order)
     {
+        Log::channel('user')->info('User accessed order edit page', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
 
         $order->load('orderStops.place')->get();
 
@@ -315,6 +332,11 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User edited an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
@@ -335,6 +357,11 @@ class OrderController extends Controller
         try {
             $order = Order::findOrFail($id);
             $order->delete();
+
+            Log::channel('user')->info('User deleted an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $id ?? null,
+            ]);
 
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' apagado com sucesso!');
 
@@ -369,6 +396,11 @@ class OrderController extends Controller
                 'status' => 'Aprovado'
             ]);
 
+            Log::channel('user')->info('User approved an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
 
         } catch (\Exception $e) {
@@ -401,6 +433,11 @@ class OrderController extends Controller
                 'status' => 'Por aprovar'
             ]);
 
+            Log::channel('user')->info('User unapproved an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
 
         } catch (\Exception $e) {
@@ -416,6 +453,11 @@ class OrderController extends Controller
 
     public function showOrderOccurrences(Order $order)
     {
+        Log::channel('user')->info('User accessed order occurrences page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
         $order->load(['occurrences', 'vehicle', 'driver']);
 
         // Format the fields for each entry
@@ -437,6 +479,11 @@ class OrderController extends Controller
 
     public function showOrderStops(Order $order) 
     {
+        Log::channel('user')->info('User accessed order stops page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
         $order->load(['orderStops']);
         $order->orderStops->each(function ($stop) {
             $stop->expected_arrival_date = \Carbon\Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');

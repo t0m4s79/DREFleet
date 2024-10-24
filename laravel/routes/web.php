@@ -115,11 +115,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/routes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
     Route::delete('/orders/routes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
 
-    //ORDER STOPS
-    Route::post('/orders/stops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
-    Route::put('/orders/stops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
-    Route::delete('/orders/stops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
-    Route::patch('/orders/stops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
+    //ORDER STOPS -> only accessed trough order controller never by user so no need for routes for now
+    // Route::post('/orders/stops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
+    // Route::put('/orders/stops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
+    // Route::delete('/orders/stops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
+    // Route::patch('/orders/stops/stopReached/{orderStop}',  [OrderStopController::class, 'orderStopReached'])->name('orderStops.stopReached');
     
     //PLACES
     Route::get('/places', [PlaceController::class, 'index'])->name('places.index');

@@ -18,6 +18,10 @@ class DriverController extends Controller
 {
     public function index() : Response
     {
+        Log::channel('user')->info('User accessed drivers page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $drivers = Driver::all();
 
         $drivers->each(function ($driver) {
@@ -39,6 +43,10 @@ class DriverController extends Controller
 
     public function showCreateDriverForm()
     {
+        Log::channel('user')->info('User accessed drivers creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $users = User::where('user_type', 'Nenhum')->get();
 
         return Inertia::render('Drivers/NewDriver', ['users' => $users]);
@@ -88,6 +96,11 @@ class DriverController extends Controller
             
             DB::commit();
 
+            Log::channel('user')->info('User created driver', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'driver_id' => $incomingFields['user_id'] ?? null,
+            ]);
+
             return redirect()->route('drivers.index')->with('message', 'Condutor/a com id ' . $driver->user_id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
@@ -106,6 +119,11 @@ class DriverController extends Controller
 
     public function showEditDriverForm(Driver $driver): Response
     {
+        Log::channel('user')->info('User accessed drivers edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'driver_id' => $driver->user_id ?? null,
+        ]);
+
         return Inertia::render('Drivers/EditDriver', [
             'driver' => $driver,
         ]);
@@ -131,6 +149,11 @@ class DriverController extends Controller
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
             'status' => ['required', Rule::in(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido'])],
         ], $customErrorMessages);
+
+        Log::channel('user')->info('User tried editing a driver', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'driver_id' => $incomingFields['user_id'] ?? null,
+        ]);
 
         $incomingFields['name'] = strip_tags($incomingFields['name']);
         $incomingFields['email'] = strip_tags($incomingFields['email']);
@@ -158,6 +181,10 @@ class DriverController extends Controller
             ]);
 
             DB::commit();
+
+            Log::channel('user')->info('User edited a driver ', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+            ]);
 
             return redirect()->route('drivers.index')->with('message', 'Dados do/a Condutor/a com id ' . $driver->user_id . ' atualizados com sucesso!');
 
@@ -189,6 +216,11 @@ class DriverController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User deleted a driver', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'driver_id' => $id ?? null,
+            ]);
+
             return redirect()->route('drivers.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de condutores com sucesso!');
 
         } catch (\Exception $e) {
@@ -198,8 +230,8 @@ class DriverController extends Controller
                 'user_id' => $id ?? null,
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
-            ])
-            ;
+            ]);
+
             return redirect()->route('drivers.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de condutores. Tente novamente.');
         }
     }

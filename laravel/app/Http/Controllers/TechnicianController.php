@@ -13,6 +13,10 @@ class TechnicianController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed technicians page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         // Retrieve all technicians with their related kids, including the pivot priority
         $technicians = User::where('user_type', 'Técnico')->get();
 
@@ -32,6 +36,10 @@ class TechnicianController extends Controller
 
     public function showCreateTechnicianForm()
     {
+        Log::channel('user')->info('User accessed technician creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $users = User::where('user_type', 'Nenhum')->get();
 
         return Inertia::render('Technicians/NewTechnician', [
@@ -71,6 +79,11 @@ class TechnicianController extends Controller
                 'user_type' => "Técnico",
             ]);
 
+            Log::channel('user')->info('User created a technician', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'technician_id' => $user->id ?? null,
+            ]);
+
             return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
@@ -86,6 +99,11 @@ class TechnicianController extends Controller
 
     public function showEditTechnicianForm(User $user)
     {
+        Log::channel('user')->info('User accessed technician edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'technician_id' => $user->id ?? null,
+        ]);
+
         return Inertia::render('Technicians/EditTechnician', [
             'flash' => [
                 'message' => session('message'),
@@ -118,6 +136,11 @@ class TechnicianController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
+            Log::channel('user')->info('User edited a technician', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'technician_id' => $user->id ?? null,
+            ]);
+
             return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
             
         } catch (\Exception $e) {
@@ -137,6 +160,11 @@ class TechnicianController extends Controller
             $user = User::findOrFail($id);
             $user->update([
                 'user_type' => "Nenhum",
+            ]);
+
+            Log::channel('user')->info('User deleted a technician', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'technician_id' => $id ?? null,
             ]);
 
             return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');

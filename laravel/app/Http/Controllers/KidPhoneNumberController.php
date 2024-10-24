@@ -14,6 +14,10 @@ class KidPhoneNumberController extends Controller
 {
     public function showCreateKidPhoneNumberForm()
     {
+        Log::channel('user')->info('User accessed kid phone creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidPhoneNumbers/NewKidPhoneNumber', [
@@ -40,6 +44,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber = KidPhoneNumber::create($incomingFields);
 
+            Log::channel('user')->info('User created a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $kidPhoneNumber->id ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
@@ -55,6 +64,11 @@ class KidPhoneNumberController extends Controller
 
     public function showEditKidPhoneNumberForm(KidPhoneNumber $kidPhoneNumber)
     {
+        Log::channel('user')->info('User accessed kid phone edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'phone_id' => $kidPhoneNumber->id ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidPhoneNumbers/EditKidPhoneNumber', [
@@ -78,6 +92,11 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber->update($incomingFields);
 
+            Log::channel('user')->info('User edited a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $kidPhoneNumber->id ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
@@ -97,6 +116,12 @@ class KidPhoneNumberController extends Controller
             $kidPhoneNumber = KidPhoneNumber::findOrFail($id);
             $kidId = $kidPhoneNumber->kid->id;
             $kidPhoneNumber->delete();
+
+            Log::channel('user')->info('User deleted a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $id ?? null,
+            ]);
+
 
             return redirect()->route('kids.contacts', $kidId)->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
 

@@ -14,6 +14,10 @@ class VehicleDocumentController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed vehicle documents page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicleDocuments = VehicleDocument::All();
 
         $vehicleDocuments->each(function ($document) {
@@ -35,6 +39,10 @@ class VehicleDocumentController extends Controller
 
     public function showCreateVehicleDocumentForm()
     {
+        Log::channel('user')->info('User accessed vehicle document creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicles = Vehicle::all();
 
         return Inertia::render('VehicleDocuments/NewVehicleDocument', [
@@ -81,6 +89,12 @@ class VehicleDocumentController extends Controller
                 'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
+            Log::channel('user')->info('User created a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $document->id ?? null,
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+            ]);
+
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
@@ -96,6 +110,11 @@ class VehicleDocumentController extends Controller
 
     public function showEditVehicleDocumentForm(VehicleDocument $vehicleDocument)
     {
+        Log::channel('user')->info('User accessed vehicle document edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'document_id' => $vehicleDocument->id ?? null,
+        ]);
+
         $vehicles = Vehicle::all();
 
         return Inertia::render('VehicleDocuments/EditVehicleDocument', [
@@ -143,6 +162,12 @@ class VehicleDocumentController extends Controller
                 'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
+            Log::channel('user')->info('User edited a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $vehicleDocument->id ?? null,
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+            ]);
+
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Dados do documento com id ' . $vehicleDocument->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -162,6 +187,12 @@ class VehicleDocumentController extends Controller
             $vehicleDocument = VehicleDocument::findOrFail($id);
             $vehicleId = $vehicleDocument->vehicle->id;
             $vehicleDocument->delete();
+
+            Log::channel('user')->info('User deleted a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $id ?? null,
+                'vehicle_id' => $vehicleId ?? null,
+            ]);
     
             return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
 

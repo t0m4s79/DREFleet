@@ -11,7 +11,12 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    public function index()
+    {
+        Log::channel('user')->info('User accessed dashboard page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Indisponível')->with('driver')->get();
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
         $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->get();

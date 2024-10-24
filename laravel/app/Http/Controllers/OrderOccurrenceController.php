@@ -17,6 +17,10 @@ class OrderOccurrenceController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed occurrences page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $occurrences = OrderOccurrence::with(['order.driver', 'order.vehicle'])->get();
 
         $occurrences->each(function ($occurrence) {
@@ -36,6 +40,10 @@ class OrderOccurrenceController extends Controller
 
     public function showCreateOrderOccurrenceForm()
     {
+        Log::channel('user')->info('User accessed occurrence creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $orders = Order::with(['driver', 'vehicle'])->get();
 
         return Inertia::render('OrderOccurrences/NewOrderOccurence', [
@@ -73,6 +81,11 @@ class OrderOccurrenceController extends Controller
                 $driver->notify(new OrderOccurrenceNotification($order, $occurrence));
             }
 
+            Log::channel('user')->info('User created an occurrence', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'occurrence_id' => $occurrence->id ?? null,
+            ]);
+
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Ocorrência com id ' . $occurrence->id . ' pertencente ao ao pedido com id ' . $incomingFields['order_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
@@ -88,6 +101,11 @@ class OrderOccurrenceController extends Controller
 
     public function showEditOrderOccurrenceForm(OrderOccurrence $orderOccurrence)
     {
+        Log::channel('user')->info('User accessed occurrence edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'occurrence_id' => $orderOccurrence->id ?? null,
+        ]);
+
         $orders = Order::with(['driver', 'vehicle'])->get();
 
         return Inertia::render('OrderOccurrences/EditOrderOccurrence', [
@@ -112,6 +130,11 @@ class OrderOccurrenceController extends Controller
         try {
             $orderOccurrence->update($incomingFields);
 
+            Log::channel('user')->info('User edited an occurrence', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'occurrence_id' => $orderOccurrence->id ?? null,
+            ]);
+
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Dados da ocorrência com id ' . $orderOccurrence->id . ' pertencente ao pedido com id ' . $incomingFields['order_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
@@ -131,6 +154,11 @@ class OrderOccurrenceController extends Controller
             $orderOccurrence = OrderOccurrence::findOrFail($id);
             $orderId = $orderOccurrence->order->id;
             $orderOccurrence->delete();
+
+            Log::channel('user')->info('User deleted an occurrence', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'occurrence_id' => $id ?? null,
+            ]);
     
             return redirect()->route('orders.occurrences', $orderId)->with('message', 'Occorrência com id ' . $id . ' eliminada com sucesso!');
 

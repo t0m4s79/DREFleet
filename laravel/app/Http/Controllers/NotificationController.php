@@ -19,6 +19,10 @@ class NotificationController extends Controller
      */
     public function index()
     {
+        Log::channel('user')->info('User accessed notifications page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $notifications = Auth::user()->notifications->sortByDesc('created_at')->values();
 
         return Inertia::render('Notifications/AllNotifications', [
@@ -30,7 +34,8 @@ class NotificationController extends Controller
         ]);
     }
     
-    public function markAsRead(Notification $notification, Request $request) {
+    public function markAsRead(Notification $notification, Request $request)
+    {
         try {
             if ($notification->user_id != Auth::user()->id) {
                 throw new \InvalidArgumentException("Impossível marcar como lida. Esta notificação não pertence ao utilizador autenticado");
@@ -38,6 +43,11 @@ class NotificationController extends Controller
 
             $notification->update([
                 'is_read' => true,
+            ]);
+
+            Log::channel('user')->info('User marked notification as read', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'manager_id' => $notification->id ?? null,
             ]);
 
             return response()->json(['message' => 'Notificação marcada como lida com sucesso!'], 200);
@@ -62,6 +72,11 @@ class NotificationController extends Controller
         try {
             $notification = Notification::findOrFail($id);
             $notification->delete();
+
+            Log::channel('user')->info('User deleted a notification', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'manager_id' => $id ?? null,
+            ]);
 
             return redirect()->back()->with('success', 'Notificação apagada com sucesso!');
         
