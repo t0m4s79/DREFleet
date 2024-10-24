@@ -115,7 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/routes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
     Route::delete('/orders/routes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
 
-    //ORDER STOPS (only the tests use this route)
+    //ORDER STOPS (only the tests use this routes)
     Route::post('/orders/stops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
     Route::put('/orders/stops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
     Route::delete('/orders/stops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');
