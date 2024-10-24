@@ -35,6 +35,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         updateTrajectory,
     } = useContext(OrderContext);
 
+    const [selectedTechnician, setSelectedTechnician] = useState(null)
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [selectedRouteType, setSelectedRouteType]= useState('');
@@ -135,6 +136,11 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         setSelectedRouteType(type)
         setData('order_type', type)
     }
+
+    const handleTechnicianChange = (e, value) => {
+        setSelectedTechnician(value); // Save selected driver
+        setData('technician_id', value?.value || '');
+    };
 
     const handleDriverChange = (e, value) => {
         setSelectedDriver(value); // Save selected driver
@@ -378,7 +384,7 @@ console.log(data)
                                         options={techniciansList}
                                         getOptionLabel={(option) => option.label}
                                         value={techniciansList.find(technician => technician.value === data.technician_id) || null}
-                                        onChange={(e,value) => setData('technician_id', value.value)}
+                                        onChange={handleTechnicianChange}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}

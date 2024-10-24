@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem } from '@mui/material';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+//import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';      //Package soon to deprecate
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';          //Changed to this new package
 import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
 

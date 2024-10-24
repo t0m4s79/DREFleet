@@ -178,6 +178,9 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
                                                 <Typography>
                                                     Dados Adicionais {index + 1}
                                                 </Typography>
+                                                <Typography variant='caption' color={'grey'}>
+                                                    <strong>Nota: </strong>Se um dos campos não for preenchido, nenhum dado será guardado
+                                                </Typography>
                                             </Grid>
                                             <Grid item xs={12} md={3}>
                                                 <TextField 

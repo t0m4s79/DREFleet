@@ -33,6 +33,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         updateTrajectory,
     } = useContext(OrderContext);
 
+    const [selectedTechnician, setSelectedTechnician] = useState(null)
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [selectedRouteType, setSelectedRouteType]= useState('');
@@ -87,6 +88,11 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     const handleDriverChange = (e, value) => {
         setSelectedDriver(value); // Save selected driver
         setData('driver_id', value?.value || '');
+    };
+
+    const handleTechnicianChange = (e, value) => {
+        setSelectedTechnician(value); // Save selected driver
+        setData('technician_id', value?.value || '');
     };
 
     const handleVehicleChange = (e, value) => {
@@ -285,7 +291,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                     id="techician"
                                                     options={techniciansList}
                                                     getOptionLabel={(option) => option.label}
-                                                    onChange={(e,value) => setData('technician_id', value.value)}
+                                                    onChange={handleTechnicianChange}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}

@@ -6,8 +6,8 @@ import { useState } from 'react';
 
 export default function NewPlace({auth}) {
 
-    const [lat, setLat] = useState('');
-    const [lng, setLng] = useState('');
+    const [lat, setLat] = useState(null);
+    const [lng, setLng] = useState(null);
     // Inertia's built-in useForm hook to manage form data, actions, errors
     // Define data to be sent to the backend
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
@@ -145,7 +145,7 @@ export default function NewPlace({auth}) {
                             </form>
 
                             <br />
-                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: data.latitude, lng: data.longitude}} edditing={true}/>
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: lat, lng: lng}} edditing={true}/>
 
                         </div>
                     </div>

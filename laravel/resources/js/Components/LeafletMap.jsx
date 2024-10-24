@@ -156,6 +156,15 @@ function EditMarker({ initialPos, onPositionChange }) {
 
     useEffect(() => {
 
+        // Check if initialPos has valid coordinates
+        if (initialPos?.lat && initialPos?.lng && (initialPos.lat !== 0 || initialPos.lng !== 0)) {
+            setPosition(initialPos);  // Only set position if valid
+        } else {
+            console.warn("Invalid coordinates", position);
+            // You could set a default position here
+            //setPosition({ lat: 32.6443385, lng: -16.9167589 });
+        }
+        
         // Define the bounds (southwest and northeast corners)
         const bounds = L.latLngBounds(
             boundsSouthWestCorner, // Southwest corner
@@ -167,7 +176,7 @@ function EditMarker({ initialPos, onPositionChange }) {
         map.on('drag', function() {
             map.panInsideBounds(bounds, { animate: false });
         });
-        map.flyTo(position);
+        //map.flyTo(position);
         // Add geocoder search bar only for the edit page
         if (!geocoderRef.current) {
             geocoderRef.current = L.Control.geocoder({
@@ -200,6 +209,7 @@ function EditMarker({ initialPos, onPositionChange }) {
         };
     }, [map, onPositionChange]);
 
+    if(position.lat!=null)
     return (
         <Marker
             draggable={draggable}
