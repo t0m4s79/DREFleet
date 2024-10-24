@@ -388,8 +388,6 @@ class OrderController extends Controller
     //TODO: Add Administrators Role
     public function approveOrder(Order $order, Request $request) 
     {
-        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
-
         $incomingFields = $request->validate([
             'manager_id' => [
                 'required', 
@@ -425,8 +423,6 @@ class OrderController extends Controller
 
     public function removeOrderApproval(Order $order, Request $request) 
     {
-        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
-
         $request->validate([
             'manager_id' => [
                 'required', 
@@ -457,6 +453,56 @@ class OrderController extends Controller
             ]);
 
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function orderStarted(Order $order) 
+    {
+        try {
+            $order->update([
+                'actual_begin_date' => now(),
+            ]);
+
+            Log::channel('user')->info('Order marked as started', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
+            //TODO: REDIRECT
+
+        } catch (\Exception $e) {
+            Log::channel('usererror')->error('Error marking order as started', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao começar o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function orderEnded(Order $order) 
+    {
+        try {
+            $order->update([
+                'actual_end_date' => now(),
+            ]);
+
+            Log::channel('user')->info('Order marked as ended', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
+            //TODO: REDIRECT
+
+        } catch (\Exception $e) {
+            Log::channel('usererror')->error('Error marking order as ended', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao acabar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 

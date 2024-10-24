@@ -13,14 +13,16 @@ use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Support\Arr;
 use App\Models\Notification;
-use Illuminate\Support\Facades\Notification as NotificationFacade;
 use App\Models\OrderOccurrence;
-use App\Notifications\OrderCreationNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Database\Factories\ManagerFactory;
 use Database\Factories\TechnicianFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use App\Notifications\OrderCreationNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 
 class OrderTest extends TestCase
 {
@@ -1117,6 +1119,38 @@ class OrderTest extends TestCase
         ]);
 
         $this->assertNotNull($order->fresh()->approved_date);
+    }
+
+    public function test_marks_order_as_started_successfully()
+    {
+        Auth::login($this->user);
+
+        // Arrange: Create a mock order
+        $order = Order::factory()->create();
+
+        // Act: Send a POST request to the orderStarted route
+        $response = $this->patch(route('orders.start', $order));
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'actual_begin_date' => now()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function test_marks_order_as_ended_successfully()
+    {
+        Auth::login($this->user);
+
+        // Arrange: Create a mock order
+        $order = Order::factory()->create();
+
+        // Act: Send a POST request to the orderStarted route
+        $response = $this->patch(route('orders.end', $order));
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'actual_end_date' => now()->format('Y-m-d H:i:s'),
+        ]);
     }
 
     public function test_order_creation_handles_exception()
