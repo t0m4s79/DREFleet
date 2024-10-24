@@ -19,6 +19,19 @@ export default function NewPlace({auth}) {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    // Handle input changes
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setData(name, type === 'radio' ? value : value);
+
+        // Update map coordinates if latitude or longitude fields are changed
+        if (name === 'latitude') {
+            updateCoordinates(value, data.longitude);
+        } else if (name === 'longitude') {
+            updateCoordinates(data.latitude, value);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('places.create'));
@@ -60,7 +73,7 @@ export default function NewPlace({auth}) {
                                     name="address"
                                     label="Morada"
                                     value={data.address}
-                                    onChange={(e) => setData('address', e.target.value)}
+                                    onChange={handleChange}
                                     error={Boolean(errors.address)}
                                     helperText={errors.address}
                                 />
@@ -72,7 +85,7 @@ export default function NewPlace({auth}) {
                                     name="known_as"
                                     label="Conhecido como"
                                     value={data.known_as}
-                                    onChange={(e) => setData('known_as', e.target.value)}
+                                    onChange={handleChange}
                                     error={Boolean(errors.known_as)}
                                     helperText={errors.known_as}
                                 />
@@ -82,7 +95,7 @@ export default function NewPlace({auth}) {
                                     <RadioGroup
                                         name="place_type"
                                         value={data.place_type}
-                                        onChange={(e) => setData('place_type', e.target.value)}
+                                        onChange={handleChange}
                                         >
                                         <FormControlLabel value="Residência" control={<Radio />} label="Residência" />
                                         <FormControlLabel value="Escola" control={<Radio />} label="Escola" />
@@ -106,7 +119,7 @@ export default function NewPlace({auth}) {
                                                 placeholder: "0.00000"
                                             }}
                                             value={data.latitude}
-                                            onChange={(e) => setData('latitude', e.target.value)}
+                                            onChange={handleChange}
                                             error={Boolean(errors.latitude)}
                                             helperText={errors.latitude}
                                         />
@@ -127,7 +140,7 @@ export default function NewPlace({auth}) {
                                                 placeholder: "0.00000"
                                             }}
                                             value={data.longitude}
-                                            onChange={(e) => setData('longitude', e.target.value)}
+                                            onChange={handleChange}
                                             error={Boolean(errors.longitude)}
                                             helperText={errors.longitude}
                                         />

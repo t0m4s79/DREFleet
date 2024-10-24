@@ -31,6 +31,13 @@ export default function EditPlace({auth, place, kids}) {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setData(name, type === 'radio' ? value : value);
+
+        // Update map coordinates if latitude or longitude fields are changed
+        if (name === 'latitude') {
+            updateCoordinates(value, data.longitude);
+        } else if (name === 'longitude') {
+            updateCoordinates(data.latitude, value);
+        }
     };
 
     const updateCoordinates = (latitude, longitude) => {
@@ -171,7 +178,7 @@ export default function EditPlace({auth, place, kids}) {
                         </form>
                        
                         <br />
-                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: data.latitude, lng: data.longitude}} edditing={true}/>
+                            <LeafletMap routing={false} onLocationSelect={updateCoordinates} initialPosition={{lat: lat, lng: lng}} edditing={true}/>
 
                     </div>
                 </div>
