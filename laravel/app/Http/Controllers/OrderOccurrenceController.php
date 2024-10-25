@@ -25,8 +25,6 @@ class OrderOccurrenceController extends Controller
 
         $occurrences->each(function ($occurrence) {
             $occurrence->order->expected_begin_date = \Carbon\Carbon::parse($occurrence->order->expected_begin_date )->format('d-m-Y');
-            $occurrence->created_at = \Carbon\Carbon::parse($occurrence->created_at)->format('d-m-Y H:i');
-            $occurrence->updated_at = \Carbon\Carbon::parse($occurrence->updated_at)->format('d-m-Y H:i');
         });
 
         return Inertia::render('OrderOccurrences/AllOrderOccurrences', [

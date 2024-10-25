@@ -20,11 +20,6 @@ class TechnicianController extends Controller
         // Retrieve all technicians with their related kids, including the pivot priority
         $technicians = User::where('user_type', 'Técnico')->get();
 
-        $technicians->each(function ($technician) {
-            $technician->created_at = \Carbon\Carbon::parse($technician->created_at)->format('d-m-Y H:i');
-            $technician->updated_at = \Carbon\Carbon::parse($technician->updated_at)->format('d-m-Y H:i');
-        });
-
         return Inertia::render('Technicians/AllTechnicians', [
             'flash' => [
                 'message' => session('message'),

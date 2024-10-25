@@ -21,11 +21,6 @@ class PlaceController extends Controller
 
         $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
-        $places->each(function ($place) {
-            $place->created_at = \Carbon\Carbon::parse($place->created_at)->format('d-m-Y H:i');
-            $place->updated_at = \Carbon\Carbon::parse($place->updated_at)->format('d-m-Y H:i');
-        });
-
         return Inertia::render('Places/AllPlaces', [
             'flash' => [
                 'message' => session('message'),

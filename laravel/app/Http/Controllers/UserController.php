@@ -24,8 +24,6 @@ class UserController extends Controller
         $users = User::All();
 
         $users->each(function ($user) {
-            $user->created_at = \Carbon\Carbon::parse($user->created_at)->format('d-m-Y H:i');
-            $user->updated_at = \Carbon\Carbon::parse($user->updated_at)->format('d-m-Y H:i');
             $user->phone = $user->phone ?? '-';
         });
 

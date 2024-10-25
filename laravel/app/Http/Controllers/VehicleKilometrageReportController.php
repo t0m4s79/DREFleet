@@ -45,14 +45,14 @@ class VehicleKilometrageReportController extends Controller
 
             Log::channel('user')->info('User created a vehicle kilometrage report entry', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'kilometrage_report' => $report->id,
+                'kilometrage_report_id' => $report->id,
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
             return redirect()->route('vehicles.kilometrageReports', $incomingFields['vehicle_id'])->with('message', 'Registo de kilometragem diário com id ' . $report->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error deleting vehicle kilometrage entry', [
+            Log::channel('usererror')->error('Error creating vehicle kilometrage entry', [
                 'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
@@ -66,7 +66,7 @@ class VehicleKilometrageReportController extends Controller
     {
         Log::channel('user')->info('User accessed vehicle kilometrage report entry edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
-            'kilometrage_report' => $vehicleKilometrageReport->id,
+            'kilometrage_report_id' => $vehicleKilometrageReport->id,
         ]);
 
         $vehicles = Vehicle::all();
@@ -97,7 +97,7 @@ class VehicleKilometrageReportController extends Controller
 
             Log::channel('user')->info('User edited a vehicle kilometrage report entry', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'kilometrage_report' => $vehicleKilometrageReport->id,
+                'kilometrage_report_id' => $vehicleKilometrageReport->id,
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
@@ -123,7 +123,7 @@ class VehicleKilometrageReportController extends Controller
 
             Log::channel('user')->info('User deleted a vehicle kilometrage report entry', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'kilometrage_report' => $id,
+                'kilometrage_report_id' => $id,
                 'vehicle_id' => $vehicleId,
             ]);
     
