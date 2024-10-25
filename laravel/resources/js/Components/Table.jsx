@@ -187,6 +187,20 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            else if (key === 'expiration_date' || key === 'license_expiration_date') {
+                const parsedDate = parse(params.value, 'dd-MM-yyyy', new Date(), { locale: pt });
+                const now = new Date();
+                
+                if (isBefore(parsedDate, now)) {
+                    return (
+                        <div style={{ color: 'red' }}>
+                            <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                            {params.value}
+                        </div>
+                    );
+                }
+                return params.value
+            }
             else if(key == 'approved_by'){
                 if(params.value==null) return params.value
                 return (
