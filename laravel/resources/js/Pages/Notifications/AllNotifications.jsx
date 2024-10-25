@@ -24,15 +24,19 @@ export default function AllNotifications({auth, notifications, flash}) {
             setSnackbarMessage(result.message);
             setSnackbarSeverity('success');
 
-            // Reload the page after marking the notification as read
-            window.location.reload();
             // Here, you can filter out the marked notification if you want to update the UI immediately
         } catch (error) {
             setSnackbarMessage(error.message);
             setSnackbarSeverity('error');
+            console.log(error)
         } finally {
             setOpenSnackbar(true);
         }
+    };
+
+    const handleSnackbarClose = () => {
+        setOpenSnackbar(false);
+        window.location.reload(); // Reload the page after Snackbar closes
     };
 
     return (
@@ -82,7 +86,7 @@ export default function AllNotifications({auth, notifications, flash}) {
             <Snackbar 
                 open={openSnackbar} 
                 autoHideDuration={3000}
-                onClose={() => setOpenSnackbar(false)}
+                onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
                 <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
