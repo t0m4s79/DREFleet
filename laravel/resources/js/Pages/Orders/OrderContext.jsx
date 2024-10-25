@@ -26,8 +26,6 @@ export const OrderProvider = ({ children }) => {
 		setSummary(newSummary);
 	};
 	
-console.log('waypoints', waypoints)
-console.log('places', places)
 	return (
 		<OrderContext.Provider 
 			value={{

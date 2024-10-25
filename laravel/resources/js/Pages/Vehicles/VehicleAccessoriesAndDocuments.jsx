@@ -78,7 +78,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
 
             {<Head title='Documentos e Acessórios de Veículo' />}
 
-            {/*TODO: TABLES WITH DOCUMENTS AND ACCESSORIES */}
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     

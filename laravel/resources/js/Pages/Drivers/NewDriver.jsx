@@ -4,9 +4,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
 
-{/*TODO: LICENSE NUMBER FIELDS ERRORS SHOWING*/}
-{/*TODO: ALLIGN EXPIRATION DATE AND LICENSE NUMBER CORRECTLY*/}
-{/*TODO: REMOVE "null" APPEARING WHEN X IS CLICKED ON LICENSE NUMBER*/}
 export default function NewDriver( {auth, users} ) {
 
     //const [license, setLicense] = useState('');

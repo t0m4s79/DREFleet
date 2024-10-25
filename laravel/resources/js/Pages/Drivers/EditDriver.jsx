@@ -6,11 +6,6 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import LicenseNumberInput from '@/Components/LicenseNumberInput';
 
-{/*TODO: LICENSE NUMBER FIELDS ERRORS SHOWING*/}
-{/*TODO: ALLIGN EXPIRATION DATE AND LICENSE NUMBER CORRECTLY*/}
-{/*TODO: REMOVE "null" APPEARING WHEN X IS CLICKED ON LICENSE NUMBER*/}
-{/*TODO: HEAVY LICENSE OPTIONS NEXT TO EACH OTHER*/}
-{/*TODO: HEAVY LICENSE TYPE OPTIONS NEXT TO EACH OTHER*/}
 export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
