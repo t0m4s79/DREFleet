@@ -69,6 +69,26 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 );
             }
+            else if(key == 'place_id'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('vehicles.showEdit', params.value)}
+                            sx={{
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </div>
+                )
+            }
             // Display kidsList with buttons, each button redirecting to the respective kid's page
             // Shown in Technician "table"
             else if (key === 'kidsList1' || key === 'kidsList2') {
@@ -234,20 +254,6 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     )
                 }
             }
-            else if (key === 'expiration_date' || key === 'license_expiration_date') {
-                const parsedDate = parse(params.value, 'dd-MM-yyyy', new Date(), { locale: pt });
-                const now = new Date();
-                
-                if (isBefore(parsedDate, now)) {
-                    return (
-                        <div style={{ color: 'red' }}>
-                            <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
-                            {params.value}
-                        </div>
-                    );
-                }
-                return params.value
-            }
             else if(key === 'all_approved_orders'){
                 return (
                     <div>
@@ -333,6 +339,27 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     return null; // Don't render anything if there are no occurrences
                 }
             }
+            else if (key === 'stops') {
+                // Only render the button if there are occurrences
+                if (params.value > 0) {
+                    return (
+                        <div>
+                            <Button
+                                key={params.value}
+                                variant="outlined"
+                                href={route('orders.stops', params.row.id)}
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value} Paragem(ns) {/* Display the number of occurrences */}
+                            </Button>
+                        </div>
+                    );
+                }
+            }
             // Display drivers with buttons, each button redirecting to the respective drivers's page
             // Shown in OrderRoutes "table"
             else if (key === 'drivers') {
@@ -401,32 +428,34 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
         }
     }));
     // Add static column with Edit and Delete buttons
-    columns.push({
-        field: 'actions',
-        headerName: 'Ações',
-        renderCell: (params) => (
-            <div>
-                {editAction && 
-                    <a
-                        href={route(editAction, params.row.id)}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                        Editar
-                    </a>
-                }
-                {deleteAction && 
-                    <button
-                        onClick={() => handleDelete(params.row.id)}
-                        className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
-                    >
-                        Eliminar
-                    </button>
-                }
-            </div>
-        ),
-        sortable: false, // Disable sorting for actions column
-        minWidth: 150, // Adjust as needed
-    });
+    if (editAction || deleteAction) {
+        columns.push({
+            field: 'actions',
+            headerName: 'Ações',
+            renderCell: (params) => (
+                <div>
+                    {editAction && 
+                        <a
+                            href={route(editAction, params.row.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                            Editar
+                        </a>
+                    }
+                    {deleteAction && 
+                        <button
+                            onClick={() => handleDelete(params.row.id)}
+                            className="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline"
+                        >
+                            Eliminar
+                        </button>
+                    }
+                </div>
+            ),
+            sortable: false, // Disable sorting for actions column
+            minWidth: 150, // Adjust as needed
+        });
+    }
 
     const rows = data.map((elem) => ({
         id: elem[dataId], // DataGrid requires an 'id' field

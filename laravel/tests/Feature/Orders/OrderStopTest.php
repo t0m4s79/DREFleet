@@ -164,9 +164,11 @@ class OrderStopTest extends TestCase
         $orderStop = OrderStop::factory()->create([
             'order_id' => Order::factory(),
             'place_id' => Place::factory(),
+            'actual_arrival_date' => null,
         ]);
 
         $this->assertDatabaseHas('order_stops', [
+            'id' => $orderStop->id,
             'actual_arrival_date' => null,
         ]);
 

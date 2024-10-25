@@ -17,7 +17,7 @@ class RoleUserTypeValidation implements ValidationRule
     {
         $user = User::find($value);
         
-        if ($user && $user->user_type != 'Nenhum') {
+        if (!$user || $user->user_type != 'Nenhum') {
             $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em condutores');
         }
     }

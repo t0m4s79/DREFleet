@@ -96,7 +96,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
+    Route::patch('/orders/started/{order}',  [OrderController::class, 'orderStarted'])->name('orders.start');
+    Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');
     Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
+    Route::get('/orders/orderStops/{order}', [OrderController::class, 'showOrderStops'])->name('orders.stops');
 
     //ORDER OCCURRENCES
     Route::get('/orders/occurrences', [OrderOccurrenceController::class, 'index'])->name('orderOccurrences.index');
@@ -114,7 +117,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/routes/edit/{orderRoute}', [OrderRouteController::class, 'editOrderRoute'])->name('orderRoutes.edit');
     Route::delete('/orders/routes/delete/{orderRoute}', [OrderRouteController::class, 'deleteOrderRoute'])->name('orderRoutes.delete');
 
-    //ORDER STOPS
+    //ORDER STOPS (only the tests use this routes)
     Route::post('/orders/stops/create', [OrderStopController::class, 'createOrderStop'])->name('orderStops.create');
     Route::put('/orders/stops/edit/{orderStop}', [OrderStopController::class, 'editOrderStop'])->name('orderStops.edit');
     Route::delete('/orders/stops/delete/{orderStop}', [OrderStopController::class, 'deleteOrderStop'])->name('orderStops.delete');

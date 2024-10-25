@@ -128,9 +128,21 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        'custom' => [
+        'custom' => [                   // for custom notifications db table
             'driver' => 'custom',
             'via' => CustomDbChannel::class,
+        ],
+
+        'user' => [                     // for logging user interaction with system
+            'driver' => 'single',
+            'path' => storage_path('logs/user.log'),
+            'level' => 'info',
+        ],
+
+        'usererror' => [                     // for logging system errors
+            'driver' => 'single',
+            'path' => storage_path('logs/error.log'),
+            'level' => 'error',
         ],
 
     ],

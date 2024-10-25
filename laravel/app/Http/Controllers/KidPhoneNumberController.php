@@ -7,12 +7,17 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\KidPhoneNumber;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 
 class KidPhoneNumberController extends Controller
 {
     public function showCreateKidPhoneNumberForm()
     {
+        Log::channel('user')->info('User accessed kid phone creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidPhoneNumbers/NewKidPhoneNumber', [
@@ -39,16 +44,31 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber = KidPhoneNumber::create($incomingFields);
 
+            Log::channel('user')->info('User created a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $kidPhoneNumber->id ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' criada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating kid phone number', [
+                'kid_id' => $incomingFields['kid_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao criar o número de telemóvel. Tente novamente.');
         }
     }
 
     public function showEditKidPhoneNumberForm(KidPhoneNumber $kidPhoneNumber)
     {
+        Log::channel('user')->info('User accessed kid phone edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'phone_id' => $kidPhoneNumber->id ?? null,
+        ]);
+
         $kids = Kid::all();
 
         return Inertia::render('KidPhoneNumbers/EditKidPhoneNumber', [
@@ -72,10 +92,20 @@ class KidPhoneNumberController extends Controller
         try {
             $kidPhoneNumber->update($incomingFields);
 
+            Log::channel('user')->info('User edited a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $kidPhoneNumber->id ?? null,
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('message', 'Dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing kid phone number', [
+                'kid_id' => $incomingFields['kid_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.contacts', $incomingFields['kid_id'])->with('error', 'Houve um problema ao editar os dados do número de telemóvel com id ' . $kidPhoneNumber->id . ' da criança com id ' . $incomingFields['kid_id'] . '. Tente novamente.');
         }
     }
@@ -87,11 +117,22 @@ class KidPhoneNumberController extends Controller
             $kidId = $kidPhoneNumber->kid->id;
             $kidPhoneNumber->delete();
 
+            Log::channel('user')->info('User deleted a kid phone', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'phone_id' => $id ?? null,
+            ]);
+
+
             return redirect()->route('kids.contacts', $kidId)->with('message', 'Número de telemóvel com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('kids.contacts', $kidId)->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting kid phone number', [
+                'kid_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('kids.index')->with('error', 'Houve um problema ao apagar o número de telemóvel com id ' . $id . '. Tente novamente.');
         }
     }
 }

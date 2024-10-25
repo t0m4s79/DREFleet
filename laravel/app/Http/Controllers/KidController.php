@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\KidPlaceTypeValidation;
 
@@ -14,6 +15,10 @@ class KidController extends Controller
 {
     public function index() //: Response
     {
+        Log::channel('user')->info('User accessed kids page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
         $kids->each(function ($kid) {
@@ -35,6 +40,9 @@ class KidController extends Controller
 
     public function showCreateKidForm()
     {
+        Log::channel('user')->info('User accessed kid creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
 
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
@@ -74,17 +82,31 @@ class KidController extends Controller
             
             DB::commit();
 
+            Log::channel('user')->info('User created a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+            ]);
+    
+
             return redirect()->route('kids.index')->with('message', 'Criança com id ' . $kid->id . ' criada com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating kid', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao criar a criança. Tente novamente.');
         }
     }
 
     public function showEditKidForm(Kid $kid)
     {
+        Log::channel('user')->info('User accessed kid edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kid_id' => $kid->id ?? null,
+        ]);
 
         $kidPlaces = $kid->places;
 
@@ -122,11 +144,23 @@ class KidController extends Controller
 
             DB::commit();
 
+            
+            Log::channel('user')->info('User edited a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $kid->id ?? null,
+            ]);
+
             return redirect()->route('kids.index')->with('message', 'Dados da criança #' . $kid->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error editing kid', [
+                'kid_id' => $kid->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao atualizar os dados da criança com id ' . $kid->id . '. Tente novamente.');
         }
     }
@@ -137,16 +171,31 @@ class KidController extends Controller
             $kid = Kid::findOrFail($id);
             $kid->delete();
 
+            Log::channel('user')->info('User deleted a kid', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'kid_id' => $id ?? null,
+            ]);
+
             return redirect()->route('kids.index')->with('message', 'Dados da criança com id ' . $id . ' apagados com sucesso!');
             
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting kid', [
+                'kid_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('kids.index')->with('error', 'Houve um problema ao eliminar os dados da criança com id ' . $id . '. Tente novamente.');
         }
     }
 
     public function showKidContacts(Kid $kid)
     {
+        Log::channel('user')->info('User accessed kids contact page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'kid_id' => $kid->id  ?? null,
+        ]);
+
         // Use 'load' to eager load the relationships on the already retrieved kid instance
         $kid->load('phoneNumbers', 'emails');
 

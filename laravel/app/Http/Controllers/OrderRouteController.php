@@ -10,6 +10,7 @@ use App\Models\OrderRoute;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\TechnicianUserTypeValidation;
 use MatanYadaev\EloquentSpatial\Objects\Point;
@@ -19,8 +20,12 @@ use MatanYadaev\EloquentSpatial\Objects\LineString;
 
 class OrderRouteController extends Controller
 {
-    public function index() //: Response
+    public function index(): Response
     {
+        Log::channel('user')->info('User accessed order routes page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $orderRoutes = OrderRoute::with(['drivers', 'technicians'])->get();
         
         return Inertia::render('OrderRoutes/AllOrderRoutes', [
@@ -34,6 +39,10 @@ class OrderRouteController extends Controller
 
     public function showCreateOrderRouteForm()
     {
+        Log::channel('user')->info('User accessed order route creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
 
@@ -99,17 +108,32 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User created an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'route_id' => $orderRoute->id ?? null,
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $orderRoute->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating order route', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao tentar criar a rota. Tente novamente.');
         }
     }
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
+        Log::channel('user')->info('User accessed order route edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'route_id' => $orderRoute->id ?? null,
+        ]);
+
         $orderRoute->load(['drivers', 'technicians']);
         $technicians = User::where('user_type', 'Técnico')->get();
         $drivers = Driver::all();
@@ -172,11 +196,22 @@ class OrderRouteController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User edited an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'route_id' => $orderRoute->id ?? null,
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('message', 'Dados da rota com id ' . $orderRoute->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error editing order route', [
+                'route_id' => $orderRoute->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao atualizar os dados da rota com id ' . $orderRoute->user_id . '. Tente novamente.');
         }
     }
@@ -186,11 +221,21 @@ class OrderRouteController extends Controller
         try {
             $orderRoute = OrderRoute::findOrFail($id);
             $orderRoute->delete();
+
+            Log::channel('user')->info('User deleted an order route', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'occurrence_id' => $id ?? null,
+            ]);
             
             return redirect()->route('orderRoutes.index')->with('message', 'Rota com id ' . $id . ' eliminada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing order route', [
+                'route_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orderRoutes.index')->with('error', 'Houve um problema ao eliminar a rota com id ' . $id . '. Tente novamente.');
         }
     }

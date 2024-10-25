@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,6 +16,10 @@ class VehicleController extends Controller
     
     public function index()
     {
+        Log::channel('user')->info('User accessed vehicles page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicles = Vehicle::All();
 
         $vehicles->each(function ($vehicle) {
@@ -34,6 +39,10 @@ class VehicleController extends Controller
 
     public function showCreateVehicleForm()
     {
+        Log::channel('user')->info('User accessed vehicle creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Inertia::render('Vehicles/NewVehicle');
     }
 
@@ -85,8 +94,6 @@ class VehicleController extends Controller
                 // Store the image in the private 'storage/app/vehicles' folder
                 $path = $file->storeAs('vehicles', $fileName); // Store in a private folder (not public)
 
-            } else {
-                $path = null;
             }
 
             $vehicle = Vehicle::create([
@@ -104,19 +111,33 @@ class VehicleController extends Controller
                 'current_month_fuel_requests' => $incomingFields['current_month_fuel_requests'],
                 'fuel_type' => $incomingFields['fuel_type'],
                 'current_kilometrage' => $incomingFields['current_kilometrage'],
-                'image_path' => $path,
+                'image_path' => $path ?? null,
+            ]);
+
+            Log::channel('user')->info('User created a vehicle', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'vehicle_id' => $vehicle->id ?? null,
             ]);
 
             return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $vehicle->id . ' criado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating vehicle', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao criar o veículo. Tente novamente.');
         }
     }
 
     public function showEditVehicleForm(Vehicle $vehicle)
     {
+        Log::channel('user')->info('User accessed vehicle edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'vehicle_id' => $vehicle->id ?? null,
+        ]);
+
         return Inertia::render('Vehicles/EditVehicle', ['vehicle' => $vehicle]);
     }
 
@@ -172,9 +193,6 @@ class VehicleController extends Controller
                 
                 // Store the image in the private 'storage/app/vehicles' folder
                 $path = $file->storeAs('vehicles', $fileName); // Store in a private folder
-
-            } else {
-                $path = null;
             }
 
             $vehicle->update([
@@ -192,13 +210,23 @@ class VehicleController extends Controller
                 'current_month_fuel_requests' => $incomingFields['current_month_fuel_requests'],
                 'fuel_type' => $incomingFields['fuel_type'],
                 'current_kilometrage' => $incomingFields['current_kilometrage'],
-                'image_path' => $path,
+                'image_path' => $path ?? null,
+            ]);
+
+            Log::channel('user')->info('User edited a vehicle', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'vehicle_id' => $vehicle->id ?? null,
             ]);
 
             return redirect()->route('vehicles.index')->with('message', 'Dados do veículocom id ' . $vehicle->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing vehicle', [
+                'vehicle_id' => $vehicle->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao atualizar os dados do veículo com id ' . $vehicle->id . '. Tente novamente.');
         }
     }
@@ -208,17 +236,32 @@ class VehicleController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
+
+            Log::channel('user')->info('User deleted a vehicle', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'vehicle_id' => $id ?? null,
+            ]);
     
             return redirect()->route('vehicles.index')->with('message', 'Veículo com id ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting vehicle', [
+                'vehicle_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o veículo com id ' . $id . '. Tente novamente.');
         }
     }
 
     public function showVehicleAccessoriesAndDocuments(Vehicle $vehicle)
     {
+        Log::channel('user')->info('User accessed vehicle accessories and documents page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'vehicle_id' => $vehicle->id ?? null,
+        ]);
+
         // Eager load the 'documents' and 'accessories' relationships
         $vehicle->load('documents', 'accessories');
 
@@ -250,6 +293,11 @@ class VehicleController extends Controller
 
     public function showVehicleKilometrageReports(Vehicle $vehicle)
     {
+        Log::channel('user')->info('User accessed vehicle kilometrage reports page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'vehicle_id' => $vehicle->id ?? null,
+        ]);
+
         $vehicle->load('kilometrageReports');
 
         // Format the fields for each report entry

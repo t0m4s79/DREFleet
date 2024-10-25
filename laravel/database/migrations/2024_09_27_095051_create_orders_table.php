@@ -18,6 +18,8 @@ return new class extends Migration
             $table->json('trajectory');
             $table->dateTime('expected_begin_date');
             $table->dateTime('expected_end_date');
+            $table->dateTime('actual_begin_date')->nullable();
+            $table->dateTime('actual_end_date')->nullable();
             $table->decimal('expected_time');                       //in seconds
             $table->decimal('distance');                            //in meters
             $table->dateTime('approved_date')->nullable();

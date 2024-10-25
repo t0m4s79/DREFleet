@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Notifications\OrderCreationNotification;
 use App\Notifications\OrderRequiresApprovalNotification;
+use App\Rules\EntityOrderAvailabilityValidation;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
@@ -38,6 +39,10 @@ class OrderController extends Controller
 
     public function index()
     {
+        Log::channel('user')->info('User accessed orders page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $orders = Order::with(['orderStops', 'occurrences'])->get();
 
         $orders->each(function ($order) {
@@ -63,6 +68,10 @@ class OrderController extends Controller
 
     public function showCreateOrderForm()
     {
+        Log::channel('user')->info('User accessed order creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+        
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
@@ -105,16 +114,20 @@ class OrderController extends Controller
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
             ],
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
                 'exists:users,id',
+                'nullable',
                 new TechnicianUserTypeValidation(),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
             ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
@@ -170,6 +183,11 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User created an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             // Notify managers that order requires approval
             foreach (User::where('user_type', 'Gestor')->get() as $user) {
                 $user->notify(new OrderRequiresApprovalNotification($order));
@@ -183,13 +201,22 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+            
+            Log::channel('usererror')->error('Error creating order', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao criar o pedido. Tente novamente.');
         }
     }
 
     public function showEditOrderForm(Order $order)
     {
+        Log::channel('user')->info('User accessed order edit page', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
 
         $order->load('orderStops.place')->get();
 
@@ -238,16 +265,20 @@ class OrderController extends Controller
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
             ],            
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
+                'nullable',
                 'exists:users,id',
                 new TechnicianUserTypeValidation(),                
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
             ],            
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
@@ -310,11 +341,22 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Log::channel('user')->info('User edited an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Dados do pedido com ' . $order->id . ' atualizados com sucesso!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
+
+            Log::channel('usererror')->error('Error editing order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao editar os dados do pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
@@ -325,19 +367,27 @@ class OrderController extends Controller
             $order = Order::findOrFail($id);
             $order->delete();
 
+            Log::channel('user')->info('User deleted an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $order->id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting order', [
+                'order_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao apagar o pedido com id ' . $id . '. Tente novamente.');
         }
     }
 
     //TODO: Add Administrators Role
     public function approveOrder(Order $order, Request $request) 
     {
-        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
-
         $incomingFields = $request->validate([
             'manager_id' => [
                 'required', 
@@ -353,18 +403,26 @@ class OrderController extends Controller
                 'status' => 'Aprovado'
             ]);
 
+            Log::channel('user')->info('User approved an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Pedido com id ' . $order->id . ' aprovado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error approving order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao aprovar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
     public function removeOrderApproval(Order $order, Request $request) 
     {
-        //$managerId = Auth::id(); --------> to use on calling this page to get logged in user id
-
         $request->validate([
             'manager_id' => [
                 'required', 
@@ -380,16 +438,81 @@ class OrderController extends Controller
                 'status' => 'Por aprovar'
             ]);
 
+            Log::channel('user')->info('User unapproved an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
             return redirect()->route('orders.index')->with('message', 'Aprovação removida do pedido com id ' . $order->id . ' com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error removing order approval', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('orders.index')->with('error', 'Houve um problema ao remover a aprovação o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function orderStarted(Order $order) 
+    {
+        try {
+            $order->update([
+                'actual_begin_date' => now(),
+            ]);
+
+            Log::channel('user')->info('Order marked as started', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
+            //TODO: REDIRECT
+
+        } catch (\Exception $e) {
+            Log::channel('usererror')->error('Error marking order as started', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao começar o pedido com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function orderEnded(Order $order) 
+    {
+        try {
+            $order->update([
+                'actual_end_date' => now(),
+            ]);
+
+            Log::channel('user')->info('Order marked as ended', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
+            //TODO: REDIRECT
+
+        } catch (\Exception $e) {
+            Log::channel('usererror')->error('Error marking order as ended', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao acabar o pedido com id ' . $order->id . '. Tente novamente.');
         }
     }
 
     public function showOrderOccurrences(Order $order)
     {
+        Log::channel('user')->info('User accessed order occurrences page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
         $order->load(['occurrences', 'vehicle', 'driver']);
 
         // Format the fields for each entry
@@ -406,6 +529,28 @@ class OrderController extends Controller
                 'error' => session('error'),
             ],
             'order' => $order
+        ]);
+    }
+
+    public function showOrderStops(Order $order) 
+    {
+        Log::channel('user')->info('User accessed order stops page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
+        $order->load(['orderStops']);
+        $order->orderStops->each(function ($stop) {
+            $stop->expected_arrival_date = \Carbon\Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
+            $stop->actual_arrival_date = \Carbon\Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');
+        });
+
+        return Inertia::render('Orders/OrderStops', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'order' => $order,
         ]);
     }
 }

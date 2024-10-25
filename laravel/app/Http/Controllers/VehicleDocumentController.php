@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Models\VehicleDocument;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\VehicleDocumentDataValidation;
 
@@ -13,6 +14,10 @@ class VehicleDocumentController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed vehicle documents page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicleDocuments = VehicleDocument::All();
 
         $vehicleDocuments->each(function ($document) {
@@ -34,6 +39,10 @@ class VehicleDocumentController extends Controller
 
     public function showCreateVehicleDocumentForm()
     {
+        Log::channel('user')->info('User accessed vehicle document creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $vehicles = Vehicle::all();
 
         return Inertia::render('VehicleDocuments/NewVehicleDocument', [
@@ -80,16 +89,32 @@ class VehicleDocumentController extends Controller
                 'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
+            Log::channel('user')->info('User created a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $document->id ?? null,
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+            ]);
+
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating vehicle document', [
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar o documento para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
     public function showEditVehicleDocumentForm(VehicleDocument $vehicleDocument)
     {
+        Log::channel('user')->info('User accessed vehicle document edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'document_id' => $vehicleDocument->id ?? null,
+        ]);
+
         $vehicles = Vehicle::all();
 
         return Inertia::render('VehicleDocuments/EditVehicleDocument', [
@@ -137,11 +162,22 @@ class VehicleDocumentController extends Controller
                 'data' => $formattedData != [] ? $formattedData : null,
             ]);
 
+            Log::channel('user')->info('User edited a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $vehicleDocument->id ?? null,
+                'vehicle_id' => $incomingFields['vehicle_id'] ?? null,
+            ]);
+
             return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('message', 'Dados do documento com id ' . $vehicleDocument->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o documento com id ' . $document->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            Log::channel('usererror')->error('Error editing vehicle document', [
+                'document_id' => $vehicleDocument->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('vehicles.documentsAndAccessories', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o documento com id ' . $vehicleDocument->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -151,12 +187,23 @@ class VehicleDocumentController extends Controller
             $vehicleDocument = VehicleDocument::findOrFail($id);
             $vehicleId = $vehicleDocument->vehicle->id;
             $vehicleDocument->delete();
+
+            Log::channel('user')->info('User deleted a vehicle document', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'document_id' => $id ?? null,
+                'vehicle_id' => $vehicleId ?? null,
+            ]);
     
             return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('message', 'Documento com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->route('vehicles.documentsAndAccessories', $vehicleId)->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
+            Log::channel('usererror')->error('Error deleting vehicle document', [
+                'document_id' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('vehicleDocuments.index')->with('error', 'Houve um problema ao apagar o documento com id ' . $id . '. Tente novamente.');
         }
     }
 }

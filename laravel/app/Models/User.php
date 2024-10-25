@@ -67,12 +67,12 @@ class User extends Authenticatable
         return $this->hasOne(Driver::class);
     }
 
-    public function ordersTechnician(): HasMany
+    public function technicianOrders(): HasMany
     {
         return $this->hasMany(Order::class, 'technician_id');
     }
 
-    public function ordersManager(): HasMany
+    public function managerOrders(): HasMany
     {
         return $this->hasMany(Order::class, 'manager_id');
     }

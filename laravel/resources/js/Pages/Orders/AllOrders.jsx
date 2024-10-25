@@ -39,9 +39,9 @@ export default function AllOrders({auth, orders, flash}) {
             technician_id: order.technician_id,
             route: order.order_route_id,
             order_type: order.order_type,
-            number_of_stops: order.order_stops.length,
+            stops: order.order_stops.length,
             trajectory: order.trajectory,
-            expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm:ss
+            expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm
             distance: (order.distance / 1000).toFixed(2) + 'km',
             occurrences: order.occurrences, // Number of occurrences
             approved_date: order.approved_date,
@@ -61,7 +61,7 @@ export default function AllOrders({auth, orders, flash}) {
         technician_id: 'Técnico',
         route: 'Rota',
         order_type: 'Tipo',
-        number_of_stops: 'Número de Paragens',
+        stops: 'Paragens',
         trajectory: 'Trajeto',
         expected_time: 'Tempo de Viagem Esperado',
         distance: 'Distância',

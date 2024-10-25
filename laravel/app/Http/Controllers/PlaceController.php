@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
@@ -14,6 +15,10 @@ class PlaceController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed places page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $places = Place::with(['kids'])->get(); //Load kids with number of places each has
 
         $places->each(function ($place) {
@@ -32,6 +37,10 @@ class PlaceController extends Controller
 
     public function showCreatePlaceForm()
     {
+        Log::channel('user')->info('User accessed place creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Inertia::render('Places/NewPlace');
     }
 
@@ -61,16 +70,30 @@ class PlaceController extends Controller
                 'place_type' => $incomingFields['place_type'],
             ]);
 
+            Log::channel('user')->info('User created a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $place->id ?? null,
+            ]);
+
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $place->id . ' criada com sucesso!');
        
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating place', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('places.index')->with('error', 'Houve um problema ao criar a morada. Tente novamente.');
         }
     }
 
     public function showEditPlaceForm(Place $place)
     {
+        Log::channel('user')->info('User accessed place edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'place_id' => $place->id ?? null,
+        ]);
+
         $kids = Kid::all();
         return Inertia::render('Places/EditPlace', ['place' => $place, 'kids' => $kids]);
     }
@@ -101,10 +124,20 @@ class PlaceController extends Controller
                 'place_type' => $incomingFields['place_type'],
             ]);
 
+            Log::channel('user')->info('User edited a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $place->id ?? null,
+            ]);
+
             return redirect()->route('places.index')->with('message', 'Dados da morada com id ' . $place->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing place', [
+                'place_id' => $place->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('places.index')->with('error', 'Houve um problema ao atualizar os dados da morada com id ' . $place->id . '. Tente novamente.');
         }
     }
@@ -115,10 +148,20 @@ class PlaceController extends Controller
             $place = Place::findOrFail($id);
             $place->delete();
 
+            Log::channel('user')->info('User deleted a place', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'place_id' => $id
+            ]);
+
             return redirect()->route('places.index')->with('message', 'Morada com id ' . $id . ' apagada com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting place', [
+                'place' => $id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('places.index')->with('error', 'Houve um problema ao apagar a morada com id ' . $id . '. Tente novamente.');
         }
     }

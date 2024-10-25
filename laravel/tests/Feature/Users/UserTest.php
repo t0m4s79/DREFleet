@@ -45,10 +45,10 @@ class UserTest extends TestCase
             'technician_id' => $technician->id,
         ]);
 
-        $this->assertCount(3, $technician->ordersTechnician);
+        $this->assertCount(3, $technician->technicianOrders);
 
         foreach ($orders as $order) {
-            $this->assertTrue($technician->ordersTechnician->contains($order));
+            $this->assertTrue($technician->technicianOrders->contains($order));
         }
     }
 
@@ -62,10 +62,10 @@ class UserTest extends TestCase
             'manager_id' => $manager->id,
         ]);
 
-        $this->assertCount(3, $manager->ordersManager);
+        $this->assertCount(3, $manager->managerOrders);
 
         foreach ($orders as $order) {
-            $this->assertTrue($manager->ordersManager->contains($order));
+            $this->assertTrue($manager->managerOrders->contains($order));
         }
     }
 

@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ErrorMessagesHelper;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
-
 use Illuminate\Validation\Rule;
+
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Log;
+use App\Helpers\ErrorMessagesHelper;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
+        Log::channel('user')->info('User accessed users page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         $users = User::All();
 
         $users->each(function ($user) {
@@ -35,6 +40,10 @@ class UserController extends Controller
 
     public function showCreateUserForm()
     {
+        Log::channel('user')->info('User accessed user creation page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
         return Inertia::render('Users/NewUser', [
             'flash' => [
                 'message' => session('message'),
@@ -72,16 +81,30 @@ class UserController extends Controller
                 'password' => Hash::make($incomingFields['password']),
             ]);
 
+            Log::channel('user')->info('User created another user', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'user_id' => $user->id ?? null,
+            ]);
+
             return redirect()->route('users.index')->with('message', 'Utilizador com id ' . $user->id . ' criado com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error creating user', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return redirect()->route('users.index')->with('error', 'Houve um problema ao criar o utilizador. Tente novamente.');
         }
     }
 
     public function showEditUserForm(User $user)
     {
+        Log::channel('user')->info('User accessed user edit page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'user_id' => $user->id ?? null,
+        ]);
+
         return Inertia::render('Users/EditUser', [
             'user' => $user,
             'flash' => [
@@ -109,10 +132,21 @@ class UserController extends Controller
 
         try {
             $user->update($incomingFields);
+
+            Log::channel('user')->info('User edited another user', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'user_id' => $user->id ?? null,
+            ]);
+
             return redirect()->route('users.index')->with('message', 'Dados do/a utilizador/a com id ' . $user->id . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error editing user', [
+                'user_id' => $user->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('users.index')->with('error', 'Houve um problema ao atualizar os dados do utilizador com id ' . $user->id . '. Tente novamente.');
         }
     }
@@ -122,11 +156,21 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
+
+            Log::channel('user')->info('User deleted another user', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'user_id' => $id ?? null,
+            ]);
     
             return redirect()->route('users.index')->with('message', 'Utilizador com ' . $id . ' apagado com sucesso!');
 
         } catch (\Exception $e) {
-            dd($e);
+            Log::channel('usererror')->error('Error deleting user', [
+                'user_id' => $user->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->route('users.index')->with('error', 'Houve um  problema ao eliminar os dados do utilizador com id ' . $id . '. Tente novamente.');
         }
     }
