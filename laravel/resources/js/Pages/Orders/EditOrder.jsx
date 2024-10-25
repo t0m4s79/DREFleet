@@ -41,6 +41,8 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
     const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
+    const [preferredDrivers, setPreferredDrivers] = useState([]);
+    const [preferredTechnicians, setPreferredTechnicians] = useState([]);
     const [isEditMode, setisEditMode] = useState(false)
 
     const orderStops = order.order_stops.map((stop)=> {
@@ -94,17 +96,35 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         lng: place.coordinates.coordinates[0],
     }));
 
-    const driversList = drivers.map((driver) => {
-        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`, heavy_license: driver.heavy_license}
-    })
+    const driversList = [
+        ...preferredDrivers.map((driver) => ({
+            group: 'Condutores Habituais',
+            value: driver.user_id,
+            label: `#${driver.user_id} - ${driver.name}`,
+        })),
+            ...drivers.map((driver) => ({
+            group: 'Todos os Condutores',
+            value: driver.user_id,
+            label: `#${driver.user_id} - ${driver.name}`,
+        })),
+      ];
 
     const vehicleList = vehicles.map((vehicle) => {
         return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
     })
 
-    const techniciansList = technicians.map((technician) => {
-        return {value: technician.id, label: `#${technician.id} - ${technician.name}`}
-    })
+    const techniciansList = [
+        ...preferredTechnicians.map((technician) => ({
+            group: 'Técnicos Habituais',
+            value: technician.id,
+            label: `#${technician.id} - ${technician.name}`,
+        })),
+        ...technicians.map((technician) => ({
+            group: 'Todos os Técnicos',
+            value: technician.id,
+            label: `#${technician.id} - ${technician.name}`,
+        })),
+    ];
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -128,8 +148,11 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     }
 
     const handleRouteChange =(route) => {
-        setSelectedRouteID(route)
-        setData('order_route_id',route)
+        console.log(route)
+        setSelectedRouteID(route.id)
+        setPreferredDrivers(route.drivers)
+        setPreferredTechnicians(route.technicians)
+        setData('order_route_id',route.id)
     }
 
     const handleRouteType = (type) => {
@@ -244,7 +267,7 @@ console.log(data)
                                             options={orderRoutes}
                                             getOptionLabel={(option) => option.name}
                                             value={orderRoutes.find(route => route.id === data.order_route_id) || null}
-                                            onChange={(event, route) => handleRouteChange(route?.id)}
+                                            onChange={(event, route) => handleRouteChange(route)}
                                             renderInput={(params) => <TextField {...params} label="Rota" />}
                                             error={errors.order_route_id}
                                             helperText={errors.order_route_id}
@@ -351,6 +374,7 @@ console.log(data)
                                     <Autocomplete
                                         id="driver"
                                         options={driversList}
+                                        groupBy={(option) => option.group}
                                         getOptionLabel={(option) => option.label}
                                             getOptionDisabled={(option) => {
                                                 // Disable drivers who don't have a heavy license if the selected vehicle requires one
@@ -382,6 +406,7 @@ console.log(data)
                                     <Autocomplete
                                         id="techician"
                                         options={techniciansList}
+                                        groupBy={(option) => option.group}
                                         getOptionLabel={(option) => option.label}
                                         value={techniciansList.find(technician => technician.value === data.technician_id) || null}
                                         onChange={handleTechnicianChange}

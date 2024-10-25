@@ -78,7 +78,7 @@ class OrderController extends Controller
         $managers = User::where('user_type', 'Gestor')->get();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
-        $routes = OrderRoute::all();
+        $routes = OrderRoute::with(['drivers', 'technicians'])->get();
 
         return Inertia::render('Orders/NewOrder', [
             'flash' => [
@@ -227,7 +227,7 @@ class OrderController extends Controller
         $places = Place::all();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
-        $routes = OrderRoute::all();
+        $routes = OrderRoute::with(['drivers', 'technicians'])->get();
 
         return Inertia::render('Orders/EditOrder', [
             'flash' => [

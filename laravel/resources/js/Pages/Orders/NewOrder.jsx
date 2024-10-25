@@ -38,6 +38,8 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [selectedRouteType, setSelectedRouteType]= useState('');
     const [selectedRouteID, setSelectedRouteID] =useState('');
+    const [preferredDrivers, setPreferredDrivers] = useState([]);
+    const [preferredTechnicians, setPreferredTechnicians] = useState([]);
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -47,17 +49,35 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         lng: place.coordinates.coordinates[0],
     }));
 
-    const driversList = drivers.map((driver) => {
-        return {value: driver.user_id, label: `#${driver.user_id} - ${driver.name}`, heavy_license: driver.heavy_license}
-    })
+    const driversList = [
+        ...preferredDrivers.map((driver) => ({
+            group: 'Condutores Habituais',
+            value: driver.user_id,
+            label: `#${driver.user_id} - ${driver.name}`,
+        })),
+            ...drivers.map((driver) => ({
+            group: 'Todos os Condutores',
+            value: driver.user_id,
+            label: `#${driver.user_id} - ${driver.name}`,
+        })),
+      ];
 
     const vehicleList = vehicles.map((vehicle) => {
         return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
     })
 
-    const techniciansList = technicians.map((technician) => {
-        return {value: technician.id, label: `#${technician.id} - ${technician.name}`}
-    })
+    const techniciansList = [
+        ...preferredTechnicians.map((technician) => ({
+            group: 'Técnicos Habituais',
+            value: technician.id,
+            label: `#${technician.id} - ${technician.name}`,
+        })),
+        ...technicians.map((technician) => ({
+            group: 'Todos os Técnicos',
+            value: technician.id,
+            label: `#${technician.id} - ${technician.name}`,
+        })),
+    ];
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -76,8 +96,10 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     })
 
     const handleRouteChange =(route) => {
-        setSelectedRouteID(route)
-        setData('order_route_id',route)
+        setSelectedRouteID(route.id)
+        setPreferredDrivers(route.drivers)
+        setPreferredTechnicians(route.technicians)
+        setData('order_route_id',route.id)
     }
 
     const handleRouteType = (type) => {
@@ -157,7 +179,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         options={orderRoutes}
                                                         getOptionLabel={(option) => option.name}
                                                         value={orderRoutes.find(route => route.id === data.order_route_id) || null}
-                                                        onChange={(event, route) => handleRouteChange(route?.id)}
+                                                        onChange={(event, route) => handleRouteChange(route)}
                                                         renderInput={(params) => <TextField {...params} label="Rota" />}
                                                         error={errors.order_route_id}
                                                         helperText={errors.order_route_id}
@@ -261,6 +283,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                 <Autocomplete
                                                     id="driver"
                                                     options={driversList}
+                                                    groupBy={(option) => option.group}
                                                     getOptionLabel={(option) => option.label}
                                                     getOptionDisabled={(option) => {
                                                         // Disable drivers who don't have a heavy license if the selected vehicle requires one
@@ -290,6 +313,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                 <Autocomplete
                                                     id="techician"
                                                     options={techniciansList}
+                                                    groupBy={(option) => option.group}
                                                     getOptionLabel={(option) => option.label}
                                                     onChange={handleTechnicianChange}
                                                     renderInput={(params) => (
