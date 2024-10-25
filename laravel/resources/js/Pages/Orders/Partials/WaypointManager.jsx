@@ -19,9 +19,6 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
     const [selectedKidPlace, setSelectedKidPlace] = useState(null);
     const [selectedOtherPlace, setSelectedOtherPlace] = useState(null);
 
-    console.log('waypoint manager receives waypoints', waypoints)
-    console.log('waypoint manager receives places', places)
-
     useEffect(() => {
         if (waypoints.length > 0) {
             const newPlaces = waypoints.map((waypoint, index) => {
@@ -57,7 +54,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
     };
 
     const updateMetricData = (newMetrics) => {
-        console.log('metric data being updated')
+        //console.log('metric data being updated')
         const updatedPlaces = places.map((place, index) => ({
             ...place,
             distance: newMetrics[index]?.distance || place.distance,
