@@ -61,7 +61,12 @@ class Vehicle extends Model
 
     public function kilometrageReports(): HasMany
     {
-        return $this->hasMany(VehicleKilometrageReport::class); // Specify the foreign key explicitly
+        return $this->hasMany(VehicleKilometrageReport::class);
+    }
+
+    public function refuelRequests(): HasMany
+    {
+        return $this->hasMany(VehicleRefuelRequest::class);
     }
 
     // Define inverse polymorphic relationship

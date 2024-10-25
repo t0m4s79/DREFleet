@@ -23,8 +23,6 @@ class VehicleController extends Controller
         $vehicles = Vehicle::All();
 
         $vehicles->each(function ($vehicle) {
-            $vehicle->created_at = \Carbon\Carbon::parse($vehicle->created_at)->format('d-m-Y H:i');
-            $vehicle->updated_at = \Carbon\Carbon::parse($vehicle->updated_at)->format('d-m-Y H:i');
             $vehicle->heavy_type = $vehicle->heavy_type ?? '-';
         });
 
@@ -267,15 +265,11 @@ class VehicleController extends Controller
 
         // Format the fields for each accessory
         $vehicle->accessories->each(function ($accessory) {
-            $accessory->created_at = \Carbon\Carbon::parse($accessory->created_at)->format('d-m-Y H:i');
-            $accessory->updated_at = \Carbon\Carbon::parse($accessory->updated_at)->format('d-m-Y H:i');
             $accessory->expiration_date = $accessory->expiration_date ? \Carbon\Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
         }); 
 
         // Format the fields for each document
         $vehicle->documents->each(function ($document) {
-            $document->created_at = \Carbon\Carbon::parse($document->created_at)->format('d-m-Y H:i');
-            $document->updated_at = \Carbon\Carbon::parse($document->updated_at)->format('d-m-Y H:i');
             $document->issue_date = \Carbon\Carbon::parse($document->issue_date)->format('d-m-Y');
             $document->expiration_date = \Carbon\Carbon::parse($document->expiration_date)->format('d-m-Y');
             $document->expired = $document->expired ? 'Sim' : 'Não';
@@ -302,12 +296,33 @@ class VehicleController extends Controller
 
         // Format the fields for each report entry
         $vehicle->kilometrageReports->each(function ($report) {
-            $report->created_at = \Carbon\Carbon::parse($report->created_at)->format('d-m-Y');
-            $report->updated_at = \Carbon\Carbon::parse($report->updated_at)->format('d-m-Y');
             $report->date = \Carbon\Carbon::parse($report->date)->format('d-m-Y');
         });
         
         return Inertia::render('Vehicles/VehicleKilometrageReports', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'vehicle' => $vehicle
+        ]);
+    }
+
+    public function showVehicleRefuelRequests(Vehicle $vehicle)
+    {
+        Log::channel('user')->info('User accessed vehicle refuel requests page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'vehicle_id' => $vehicle->id ?? null,
+        ]);
+
+        $vehicle->load('refuelRequests');
+
+        // Format the fields for each report entry
+        $vehicle->kilometrageReports->each(function ($request) {
+            $request->date = \Carbon\Carbon::parse($request->date)->format('d-m-Y');
+        });
+        
+        return Inertia::render('Vehicles/VehicleRefuelRequests', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
