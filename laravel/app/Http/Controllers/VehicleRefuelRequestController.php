@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Models\VehicleRefuelRequest;
+use App\Notifications\VehicleRefuelRequestNotification;
 
 class VehicleRefuelRequestController extends Controller
 {
@@ -68,6 +70,10 @@ class VehicleRefuelRequestController extends Controller
                 'refuel_request_id' => $request->id,
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
+
+            foreach (User::where('user_type', 'Gestor')->get() as $user) {
+                $user->notify(new VehicleRefuelRequestNotification($request, Vehicle::find($incomingFields['vehicle_id'])));
+            }
 
             return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Pedido de reabastecimento com id ' . $request->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
