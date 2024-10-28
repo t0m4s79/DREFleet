@@ -20,16 +20,16 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     }, [flash]);
 
     //Deconstruct props to send to Table
-    const vehicleReports = vehicle.kilometrage_reports.map((reports) => {
+    const vehicleReports = vehicle.kilometrage_reports.map((report) => {
         return {
-            id: reports.id,
-            date: reports.date,
-            begin_kilometrage: reports.begin_kilometrage,
-            end_kilometrage: reports.end_kilometrage,
-            vehicle_id: reports.vehicle_id,
-            driver_id: reports.driver_id,
-            created_at: reports.created_at,
-            updated_at: reports.updated_at,
+            id: report.id,
+            date: report.date,
+            begin_kilometrage: report.begin_kilometrage,
+            end_kilometrage: report.end_kilometrage,
+            vehicle_id: report.vehicle_id,
+            driver_id: report.driver_id,
+            created_at: report.created_at,
+            updated_at: report.updated_at,
         }
     });
 

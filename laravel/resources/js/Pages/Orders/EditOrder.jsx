@@ -203,7 +203,6 @@ console.log(data)
 
                             <form onSubmit={handleSubmit}>
                                 <input type="hidden" name="_token" value={csrfToken} />
-                                <input type="hidden" name="_method" value="PUT" />
 
                                 { isEditMode === false ? 
                                     (<div className='mb-4'>

@@ -20,7 +20,7 @@ class VehicleRefuelRequestController extends Controller
 
         $vehicles = Vehicle::all();
 
-        return Inertia::render('VehicleRefuelRequest/NewVehicleRefuelRequest', [
+        return Inertia::render('VehicleRefuelRequests/NewVehicleRefuelRequest', [
             'vehicles' => $vehicles,
         ]);
     }
@@ -46,7 +46,7 @@ class VehicleRefuelRequestController extends Controller
             if ($requestNumber <= 4) {
                 $requestType = 'Normal';
             } else if ($requestNumber <= 10) {
-                $requestType = 'Com Autorização';
+                $requestType = 'Especial';
             } else {
                 $requestType = 'Excepcional';
             }
@@ -91,7 +91,7 @@ class VehicleRefuelRequestController extends Controller
 
         $vehicles = Vehicle::all();
 
-        return Inertia::render('VehicleRefuelRequest/EditVehicleRefuelRequest', [
+        return Inertia::render('VehicleRefuelRequests/EditVehicleRefuelRequest', [
             'request' => $vehicleRefuelRequest,
             'vehicles' => $vehicles,
         ]);
@@ -109,7 +109,7 @@ class VehicleRefuelRequestController extends Controller
             'total_cost' => ['required', 'decimal:0,2', 'min:0'],
             'kilometrage' => ['required', 'integer', 'min:0'],
             'fuel_type' => ['required', 'string', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Elétrico'])],
-            'request_type' => ['required', 'string' , Rule::in(['Normal', 'Com Autorização', 'Excepcional'])],
+            'request_type' => ['required', 'string' , Rule::in(['Normal', 'Especial', 'Excepcional'])],
             'monthly_request_number' => ['required', 'integer', 'min:1'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
         ], $customErrorMessages);

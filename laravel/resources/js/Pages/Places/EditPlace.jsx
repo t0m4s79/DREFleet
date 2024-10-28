@@ -7,8 +7,8 @@ import { useState } from 'react';
 
 export default function EditPlace({auth, place, kids}) {
 
-    const [lat, setLat] = useState('');
-    const [lng, setLng] = useState('');
+    const [lat, setLat] = useState(place.coordinates.coordinates[1]);
+    const [lng, setLng] = useState(place.coordinates.coordinates[0]);  
     const [isEditMode, setisEditMode] = useState(false)
 
     // Inertia's built-in useForm hook to manage form data, actions, errors

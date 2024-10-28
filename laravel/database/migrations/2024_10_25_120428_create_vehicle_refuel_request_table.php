@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('total_cost', 8, 2);
             $table->integer('kilometrage');
             $table->enum('fuel_type', ['Gasóleo','Gasolina 95','Gasolina 98','Elétrico']);
-            $table->enum('request_type', ['Normal', 'Com Autorização', 'Excepcional']);
+            $table->enum('request_type', ['Normal', 'Especial', 'Excepcional']);
             $table->integer('monthly_request_number');
 
             $table->unsignedBigInteger('vehicle_id');

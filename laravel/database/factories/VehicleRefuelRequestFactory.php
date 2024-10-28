@@ -22,7 +22,7 @@ class VehicleRefuelRequestFactory extends Factory
         if ($requestNumber <= 4) {
             $requestType = 'Normal';
         } else if ($requestNumber <= 10) {
-            $requestType = 'Com Autorização';
+            $requestType = 'Especial';
         } else {
             $requestType = 'Excepcional';
         }

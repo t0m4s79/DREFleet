@@ -88,7 +88,7 @@ class VehicleFactory extends Factory
                 if ($i <= 4) {
                     $requestType = 'Normal';
                 } else if ($i <= 10) {
-                    $requestType = 'Com Autorização';
+                    $requestType = 'Especial';
                 } else {
                     $requestType = 'Excepcional';
                 }

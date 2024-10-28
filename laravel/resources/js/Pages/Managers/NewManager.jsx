@@ -72,7 +72,9 @@ export default function NewManager( {auth, users, flash} ) {
                                     {user}
                                 </select> */}
 
-                                <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
+                                <Button variant="outlined" type="submit" value="Submit">
+                                    Submeter
+                                </Button>
                             </form>
                                             
                             <Snackbar 

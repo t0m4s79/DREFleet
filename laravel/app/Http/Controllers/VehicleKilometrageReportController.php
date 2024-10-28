@@ -21,7 +21,7 @@ class VehicleKilometrageReportController extends Controller
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
 
-        return Inertia::render('VehicleKilometrageReports/NewVehicleKilometrageReports', [
+        return Inertia::render('VehicleKilometrageReports/NewVehicleKilometrageReport', [
             'vehicles' => $vehicles,
             'drivers' => $drivers,
         ]);
@@ -72,7 +72,7 @@ class VehicleKilometrageReportController extends Controller
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
 
-        return Inertia::render('VehicleKilometrageReports/EditVehicleKilometrageReports', [
+        return Inertia::render('VehicleKilometrageReports/EditVehicleKilometrageReport', [
             'report' => $vehicleKilometrageReport,
             'vehicles' => $vehicles,
             'drivers' => $drivers,
