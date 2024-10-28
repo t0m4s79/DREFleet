@@ -54,11 +54,13 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
             group: 'Condutores Habituais',
             value: driver.user_id,
             label: `#${driver.user_id} - ${driver.name}`,
+            heavy_license: driver.heavy_license,
         })),
             ...drivers.map((driver) => ({
             group: 'Todos os Condutores',
             value: driver.user_id,
             label: `#${driver.user_id} - ${driver.name}`,
+            heavy_license: driver.heavy_license,
         })),
       ];
 
