@@ -339,6 +339,23 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     return null; // Don't render anything if there are no occurrences
                 }
             }
+            else if (key === 'current_month_fuel_requests') {
+                return (
+                    <div>
+                        <Button
+                            variant="outlined"
+                            href={route('vehicles.refuelRequests', params.row.id)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value} (Ver todos) {/* Display the number of occurrences */}
+                        </Button>
+                    </div>
+                );
+            }
             else if (key === 'stops') {
                 // Only render the button if there are occurrences
                 if (params.value > 0) {
