@@ -21,11 +21,6 @@ class KidController extends Controller
 
         $kids = Kid::with(['places'])->get(); //Load kids with number of places each has
 
-        $kids->each(function ($kid) {
-            $kid->created_at = \Carbon\Carbon::parse($kid->created_at)->format('d-m-Y H:i');
-            $kid->updated_at = \Carbon\Carbon::parse($kid->updated_at)->format('d-m-Y H:i');
-        });
-
         $places = Place::all();
 
         return Inertia::render('Kids/AllKids', [
@@ -198,18 +193,6 @@ class KidController extends Controller
 
         // Use 'load' to eager load the relationships on the already retrieved kid instance
         $kid->load('phoneNumbers', 'emails');
-
-        // Format the fields for each accessory
-        $kid->phoneNumbers->each(function ($phone) {
-            $phone->created_at = \Carbon\Carbon::parse($phone->created_at)->format('d-m-Y H:i');
-            $phone->updated_at = \Carbon\Carbon::parse($phone->updated_at)->format('d-m-Y H:i');
-        }); 
-
-        // Format the fields for each document
-        $kid->emails->each(function ($email) {
-            $email->created_at = \Carbon\Carbon::parse($email->created_at)->format('d-m-Y H:i');
-            $email->updated_at = \Carbon\Carbon::parse($email->updated_at)->format('d-m-Y H:i');
-        });
         
         return Inertia::render('Kids/KidContacts', [
             'flash' => [

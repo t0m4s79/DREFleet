@@ -73,7 +73,9 @@ export default function NewTechnician( {auth, users, flash} ) {
                                 </select> */}
                                 <br/>
 
-                                <Button variant="outlined" type="submit" value="Submit">Submeter</Button>
+                                <Button variant="outlined" type="submit" value="Submit">
+                                    Submeter
+                                </Button>
                             </form>
 
                                             

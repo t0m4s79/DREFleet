@@ -25,8 +25,6 @@ class DriverController extends Controller
         $drivers = Driver::all();
 
         $drivers->each(function ($driver) {
-            $driver->created_at = \Carbon\Carbon::parse($driver->created_at)->format('d-m-Y H:i');
-            $driver->updated_at = \Carbon\Carbon::parse($driver->updated_at)->format('d-m-Y H:i');
             $driver->license_expiration_date = \Carbon\Carbon::parse($driver->license_expiration_date)->format('d-m-Y');
             $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
             $driver->phone = $driver->phone ?? '-';

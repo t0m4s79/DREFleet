@@ -20,8 +20,8 @@ class ErrorMessagesHelper
             'in' => 'O valor do campo não corresponde aos valores permitidos',
             'integer' => 'Apenas são permitidos números positivos neste campo',
             'json' => 'Formato inválido (json)',
-            'max' => 'O campo não pode ultrapassar :max caracteres',
-            'min' => 'O campo deve ter pelo menos :min caracteres',
+            'max' => 'O campo não pode ultrapassar :max caráter(es)',
+            'min' => 'O campo deve ter pelo menos :min caráter(es)',
             'numeric' => 'Apenas são permitidos números positivos neste campo',
             'required' => 'Este campo é obrigatório',
             'status.in' => 'Este campo contém valores não permitidos',
@@ -88,10 +88,10 @@ class ErrorMessagesHelper
             // Password
             'current_password.current_password' => 'A password introduzida está incorreta',
             'password.confirmed' => 'As senhas não coincidem',
-            'password.min' => 'A senha deve ter pelo menos 8 caracteres',
+            'password.min' => 'A senha deve ter pelo menos 8 caráteres',
             'password.mixed_case' => 'A senha deve conter pelo menos uma letra maiúscula e uma letra minúscula',
             'password.numbers' => 'A senha deve conter pelo menos um número',
-            'password.symbols' => 'A senha deve conter pelo menos um caracter especial',
+            'password.symbols' => 'A senha deve conter pelo menos um caráter especial',
 
             // Places
             'known_as.regex' => 'O campo "Conhecido como" deve conter apenas letras e espaços',
@@ -103,7 +103,7 @@ class ErrorMessagesHelper
 
             // Vehicles
             'heavy_type.required_if' => 'Tipo de Pesado deve ser especificado caso o veículo seja pesado',
-            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caracteres, aceitando apenas letras e números',
+            'license_plate.regex' => 'A matrícula deve ter no mínimo 2 letras e pode ter até 6 caráteres, aceitando apenas letras e números',
             'license_plate.unique' => 'Já existe um veículo com esta matrícula',
 
             // Vehicle Documents

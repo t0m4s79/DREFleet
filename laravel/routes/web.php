@@ -23,6 +23,7 @@ use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\OrderOccurrenceController;
 use App\Http\Controllers\VehicleKilometrageReportController;
+use App\Http\Controllers\VehicleRefuelRequestController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -161,6 +162,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
     Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
     Route::get('/vehicles/kilometrageReports/{vehicle}', [VehicleController::class, 'showVehicleKilometrageReports'])->name('vehicles.kilometrageReports');
+    Route::get('/vehicles/refuelRequests/{vehicle}', [VehicleController::class, 'showVehicleRefuelRequests'])->name('vehicles.refuelRequests');
 
     //VEHICLES ACCESSORIES
     Route::get('/vehicle/accessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
@@ -184,6 +186,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'showEditVehicleKilometrageReportForm'])->name('vehicleKilometrageReports.showEdit');
     Route::put('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'editVehicleKilometrageReport'])->name('vehicleKilometrageReports.edit');
     Route::delete('/vehicle/kilometrageReports/delete/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'deleteVehicleKilometrageReport'])->name('vehicleKilometrageReports.delete');
+
+    //VEHICLES REFUEL REQUESTS
+    Route::get('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'showCreateVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showCreate');
+    Route::post('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'createVehicleRefuelRequest'])->name('vehicleRefuelRequests.create');
+    Route::get('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'showEditVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showEdit');
+    Route::put('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'editVehicleRefuelRequest'])->name('vehicleRefuelRequests.edit');
+    Route::delete('/vehicle/refuelRequests/delete/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'deleteVehicleRefuelRequest'])->name('vehicleRefuelRequests.delete');
 });
 
 require __DIR__.'/auth.php';

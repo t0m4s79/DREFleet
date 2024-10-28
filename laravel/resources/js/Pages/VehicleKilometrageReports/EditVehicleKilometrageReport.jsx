@@ -54,7 +54,6 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles, 
                                 <div className='my-6'>                                    
                                     <form onSubmit={handleSubmit}>
                                         <input type="hidden" name="_token" value={csrfToken} />
-                                        <input type="hidden" name="_method" value="PUT" />
 
                                         { isEditMode === false ? 
                                             (<div className='mb-4'>
@@ -186,10 +185,6 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles, 
                                                 />
                                             </Grid>
                                         </Grid>
-
-                                        <Button variant="outlined" type="submit" disabled={processing}>
-                                            Submeter
-                                        </Button>
                                     </form> 
                                 </div>
                             </div>

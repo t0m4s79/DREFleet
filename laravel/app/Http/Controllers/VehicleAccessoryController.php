@@ -22,8 +22,6 @@ class VehicleAccessoryController extends Controller
 
         $vehicleAccessories->each(function ($accessory) {
             $accessory->expiration_date = $accessory->expiration_date ? \Carbon\Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
-            $accessory->created_at = \Carbon\Carbon::parse($accessory->created_at)->format('d-m-Y H:i');
-            $accessory->updated_at = \Carbon\Carbon::parse($accessory->updated_at)->format('d-m-Y H:i');
         });
 
         return Inertia::render('VehicleAccessories/AllVehicleAccessories', [

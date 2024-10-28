@@ -66,7 +66,6 @@ export default function EditDriver({ auth, driver }) {
 
                         <form onSubmit={handleSubmit}>
                             <input type="hidden" name="_token" value={csrfToken} />
-                            <input type="hidden" name="_method" value="PUT" />
                             <input type="hidden" name="user_id" value={driver.user_id} />
 
                             { isEditMode === false ? 

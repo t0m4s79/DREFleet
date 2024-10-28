@@ -50,8 +50,6 @@ class OrderController extends Controller
             $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
             $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
             $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : '-';
-            $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d-m-Y H:i');
-            $order->updated_at = \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y H:i');
 
             $order->order_route_id = $order->order_route_id ?? '-';
         });
@@ -514,12 +512,6 @@ class OrderController extends Controller
         ]);
 
         $order->load(['occurrences', 'vehicle', 'driver']);
-
-        // Format the fields for each entry
-        $order->occurrences->each(function ($occurrence) {
-            $occurrence->created_at = \Carbon\Carbon::parse($occurrence->created_at)->format('d-m-Y');
-            $occurrence->updated_at = \Carbon\Carbon::parse($occurrence->updated_at)->format('d-m-Y');
-        });
 
         $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y');
 

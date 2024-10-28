@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ResetVehicleMonthlyRefuelRequests;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -25,3 +26,6 @@ Schedule::job(new SendDriverLicenseExpiryNotification)->weekly();
 Schedule::job(new SendOrderRequiresApprovalNotification)->weekly();
 
 Schedule::job(new SendUnfilledKilometrageReportEntryNotification)->monthly();
+
+// Other Jobs
+Schedule::job(new ResetVehicleMonthlyRefuelRequests)->monthlyOn(1, '00:00');   //every first day of the month at midnight

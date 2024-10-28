@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
 use App\Models\VehicleKilometrageReport;
+use App\Models\VehicleRefuelRequest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -55,7 +56,7 @@ class VehicleFactory extends Factory
         
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,
-                'name' => 'Ficha de Inspeção',
+                'name' => 'Inspeção',
             ]);
         
             VehicleDocument::factory()->create([
@@ -79,6 +80,24 @@ class VehicleFactory extends Factory
                     'date' => $date,
                     'vehicle_id' => $vehicle->id,
                     'driver_id' => $driver->user_id,
+                ]);
+            }
+
+            for ($i= 1; $i <= $vehicle->current_month_fuel_requests; $i++) {
+                
+                if ($i <= 4) {
+                    $requestType = 'Normal';
+                } else if ($i <= 10) {
+                    $requestType = 'Especial';
+                } else {
+                    $requestType = 'Excepcional';
+                }
+
+                VehicleRefuelRequest::factory()->create([
+                    'vehicle_id' => $vehicle->id,
+                    'fuel_type' => $vehicle->fuel_type == 'Híbrido' ? 'Elétrico' : $vehicle->fuel_type,
+                    'monthly_request_number' => $i,
+                    'request_type' => $requestType,
                 ]);
             }
         });

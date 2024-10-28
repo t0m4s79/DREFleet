@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
-
+    console.log(vehicle);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -20,26 +20,34 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     }, [flash]);
 
     //Deconstruct props to send to Table
-    const vehicleReports = vehicle.kilometrage_reports.map((report) => {
+    const vehicleRequests = vehicle.refuel_requests.map((request) => {
         return {
-            id: report.id,
-            date: report.date,
-            begin_kilometrage: report.begin_kilometrage,
-            end_kilometrage: report.end_kilometrage,
-            vehicle_id: report.vehicle_id,
-            driver_id: report.driver_id,
-            created_at: report.created_at,
-            updated_at: report.updated_at,
+            id: request.id,
+            date: request.date,
+            kilometrage: request.kilometrage,
+            quantity: request.quantity,
+            cost_per_unit: request.cost_per_unit,
+            total_cost: request.total_cost,
+            fuel_type: request.fuel_type,
+            monthly_request_number: request.monthly_request_number,
+            request_type: request.request_type,
+            vehicle_id: request.vehicle_id,
+            created_at: request.created_at,
+            updated_at: request.updated_at,
         }
     });
 
-    const vehicleReportsColumnLabels = {
+    const vehicleRequestsColumnLabels = {
         id: 'ID',
         date: 'Data',
-        begin_kilometrage: 'Kilometragem Inicial',
-        end_kilometrage: 'Kilometragem Final',
+        kilometrage: 'Kilometragem',
+        quantity: 'Quantidade depositada',
+        cost_per_unit: 'Custo por unidade',
+        total_cost: 'Custo total',
+        fuel_type: 'Tipo de combustível',
+        monthly_request_number: 'Pedido mensal número',
+        request_type: 'Tipo de pedido',
         vehicle_id: 'Veículo',
-        driver_id: 'Condutor',
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };
@@ -47,29 +55,30 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registo de Kilometragem do Veículo #{vehicle.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos de Reabastecimento do Veículo #{vehicle.id}</h2>}
         >
 
-            {<Head title='Registo de Kilometragem do Veículo' />}
+            {<Head title='Pedidos de Reabastecimento do Veículo' />}
 
+            {/*TODO: TABLES WITH DOCUMENTS AND ACCESSORIES */}
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     
                     <div className="py-12 px-6">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                            <Button href={route('vehicleKilometrageReports.showCreate')}>
+                            <Button href={route('vehicleRefuelRequests.showCreate')}>
                                 <AddIcon />
                                 <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Nova Entrada
+                                    Novo Pedido de Reabastecimento
                                 </a>
                             </Button>
 
                             <Table
-                                data={vehicleReports}
-                                columnsLabel={vehicleReportsColumnLabels}
-                                editAction="vehicleKilometrageReports.showEdit"
-                                deleteAction="vehicleKilometrageReports.delete"
+                                data={vehicleRequests}
+                                columnsLabel={vehicleRequestsColumnLabels}
+                                editAction="vehicleRefuelRequests.showEdit"
+                                deleteAction="vehicleRefuelRequests.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
                         </div>

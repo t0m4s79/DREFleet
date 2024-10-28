@@ -236,7 +236,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                             </div>
                                         ))
                                     ) : (
-                                        <div>Nenhuma pedido em curso.</div>
+                                        <div>Nenhum pedido em curso.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
@@ -259,7 +259,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                             </div>
                                         ))
                                     ) : (
-                                        <div>Nenhuma pedido agendado.</div>
+                                        <div>Nenhum pedido agendado.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
@@ -282,7 +282,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                             </div>
                                         ))
                                     ) : (
-                                        <div>Nenhuma pedido por aprovar.</div>
+                                        <div>Nenhum pedido por aprovar.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>

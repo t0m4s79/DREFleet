@@ -15,6 +15,7 @@ use App\Models\VehicleAccessory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Models\VehicleKilometrageReport;
+use App\Models\VehicleRefuelRequest;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -105,7 +106,20 @@ class VehicleTest extends TestCase
         }
     }
 
-    public function test_notifications_related_to_other_user()
+    public function test_vehicle_has_many_refuel_requests(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $requests = VehicleRefuelRequest::factory()->count(3)->create([
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        foreach ($requests as $request) {
+            $this->assertTrue($vehicle->refuelRequests->contains($request));
+        }
+    }
+
+    public function test_notifications_related_vehicle()
     {
         // User who receives notification
         $user = User::factory()->create();
@@ -174,6 +188,17 @@ class VehicleTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->get(route('vehicles.kilometrageReports', $vehicle->id));
+
+        $response->assertOk();
+    }
+
+    public function test_vehicle_refuel_requests_page_is_displayed(): void
+    {
+        $vehicle = Vehicle::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('vehicles.refuelRequests', $vehicle->id));
 
         $response->assertOk();
     }
