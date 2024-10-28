@@ -90,7 +90,7 @@ class VehicleRefuelRequestTest extends TestCase
             'kilometrage' => rand(10000,200000),
             'fuel_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Elétrico']),
             'request_type' => Arr::random(['Normal','Especial', 'Excepcional']),
-            'monthly_request_number' => rand(0, 15),
+            'monthly_request_number' => rand(1, 15),
             'vehicle_id' => Vehicle::factory()->create()->id,
         ];
 
