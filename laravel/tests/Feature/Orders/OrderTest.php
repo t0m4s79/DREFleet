@@ -1121,37 +1121,38 @@ class OrderTest extends TestCase
         $this->assertNotNull($order->fresh()->approved_date);
     }
 
-    public function test_marks_order_as_started_successfully()
-    {
-        Auth::login($this->user);
+    //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
+    // public function test_marks_order_as_started_successfully()
+    // {
+    //     Auth::login($this->user);
 
-        // Arrange: Create a mock order
-        $order = Order::factory()->create();
+    //     // Arrange: Create a mock order
+    //     $order = Order::factory()->create();
 
-        // Act: Send a POST request to the orderStarted route
-        $response = $this->patch(route('orders.start', $order));
+    //     // Act: Send a POST request to the orderStarted route
+    //     $response = $this->patch(route('orders.start', $order));
 
-        $this->assertDatabaseHas('orders', [
-            'id' => $order->id,
-            'actual_begin_date' => now()->format('Y-m-d H:i:s'),
-        ]);
-    }
+    //     $this->assertDatabaseHas('orders', [
+    //         'id' => $order->id,
+    //         'actual_begin_date' => now()->format('Y-m-d H:i:s'),
+    //     ]);
+    // }
 
-    public function test_marks_order_as_ended_successfully()
-    {
-        Auth::login($this->user);
+    // public function test_marks_order_as_ended_successfully()
+    // {
+    //     Auth::login($this->user);
 
-        // Arrange: Create a mock order
-        $order = Order::factory()->create();
+    //     // Arrange: Create a mock order
+    //     $order = Order::factory()->create();
 
-        // Act: Send a POST request to the orderStarted route
-        $response = $this->patch(route('orders.end', $order));
+    //     // Act: Send a POST request to the orderStarted route
+    //     $response = $this->patch(route('orders.end', $order));
 
-        $this->assertDatabaseHas('orders', [
-            'id' => $order->id,
-            'actual_end_date' => now()->format('Y-m-d H:i:s'),
-        ]);
-    }
+    //     $this->assertDatabaseHas('orders', [
+    //         'id' => $order->id,
+    //         'actual_end_date' => now()->format('Y-m-d H:i:s'),
+    //     ]);
+    // }
 
     public function test_order_creation_handles_exception()
     {

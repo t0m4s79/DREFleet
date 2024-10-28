@@ -5,7 +5,6 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 use App\Jobs\SendDocumentExpiryNotification;
-use App\Jobs\SendOrderOccurrenceNotification;
 use App\Jobs\SendAccesssoryExpiryNotification;
 use App\Jobs\SendDriverLicenseExpiryNotification;
 use App\Jobs\SendOrderRequiresApprovalNotification;

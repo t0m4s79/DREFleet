@@ -454,55 +454,56 @@ class OrderController extends Controller
         }
     }
 
-    public function orderStarted(Order $order) 
-    {
-        try {
-            $order->update([
-                'actual_begin_date' => now(),
-            ]);
+    //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
+    // public function orderStarted(Order $order) 
+    // {
+    //     try {
+    //         $order->update([
+    //             'actual_begin_date' => now(),
+    //         ]);
 
-            Log::channel('user')->info('Order marked as started', [
-                'auth_user_id' => $this->loggedInUserId ?? null,
-                'order_id' => $order->id ?? null,
-            ]);
+    //         Log::channel('user')->info('Order marked as started', [
+    //             'auth_user_id' => $this->loggedInUserId ?? null,
+    //             'order_id' => $order->id ?? null,
+    //         ]);
 
-            //TODO: REDIRECT
+    //         //TODO: REDIRECT
 
-        } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error marking order as started', [
-                'order_id' => $order->id ?? null,
-                'exception' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString(),
-            ]);
+    //     } catch (\Exception $e) {
+    //         Log::channel('usererror')->error('Error marking order as started', [
+    //             'order_id' => $order->id ?? null,
+    //             'exception' => $e->getMessage(),
+    //             'stack_trace' => $e->getTraceAsString(),
+    //         ]);
 
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao começar o pedido com id ' . $order->id . '. Tente novamente.');
-        }
-    }
+    //         return redirect()->route('orders.index')->with('error', 'Houve um problema ao começar o pedido com id ' . $order->id . '. Tente novamente.');
+    //     }
+    // }
 
-    public function orderEnded(Order $order) 
-    {
-        try {
-            $order->update([
-                'actual_end_date' => now(),
-            ]);
+    // public function orderEnded(Order $order) 
+    // {
+    //     try {
+    //         $order->update([
+    //             'actual_end_date' => now(),
+    //         ]);
 
-            Log::channel('user')->info('Order marked as ended', [
-                'auth_user_id' => $this->loggedInUserId ?? null,
-                'order_id' => $order->id ?? null,
-            ]);
+    //         Log::channel('user')->info('Order marked as ended', [
+    //             'auth_user_id' => $this->loggedInUserId ?? null,
+    //             'order_id' => $order->id ?? null,
+    //         ]);
 
-            //TODO: REDIRECT
+    //         //TODO: REDIRECT
 
-        } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error marking order as ended', [
-                'order_id' => $order->id ?? null,
-                'exception' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString(),
-            ]);
+    //     } catch (\Exception $e) {
+    //         Log::channel('usererror')->error('Error marking order as ended', [
+    //             'order_id' => $order->id ?? null,
+    //             'exception' => $e->getMessage(),
+    //             'stack_trace' => $e->getTraceAsString(),
+    //         ]);
 
-            return redirect()->route('orders.index')->with('error', 'Houve um problema ao acabar o pedido com id ' . $order->id . '. Tente novamente.');
-        }
-    }
+    //         return redirect()->route('orders.index')->with('error', 'Houve um problema ao acabar o pedido com id ' . $order->id . '. Tente novamente.');
+    //     }
+    // }
 
     public function showOrderOccurrences(Order $order)
     {

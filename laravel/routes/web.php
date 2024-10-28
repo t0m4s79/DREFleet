@@ -97,8 +97,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
-    Route::patch('/orders/started/{order}',  [OrderController::class, 'orderStarted'])->name('orders.start');
-    Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');
+    //Route::patch('/orders/started/{order}',  [OrderController::class, 'orderStarted'])->name('orders.start');                     //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
+    //Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');                           //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
     Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
     Route::get('/orders/orderStops/{order}', [OrderController::class, 'showOrderStops'])->name('orders.stops');
 
