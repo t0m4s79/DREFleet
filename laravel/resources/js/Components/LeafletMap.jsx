@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polygon, Polyline } from 'react-leaflet';
-import L, { latLng } from 'leaflet';
+import L, { latLng, latLngBounds } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
@@ -241,8 +241,10 @@ export default function LeafletMap({ routing, onLocationSelect, onTrajectoryChan
         console.log(polyCoords)
     }
     
+    const mapBounds = latLngBounds([[32.269181, -17.735033],[33.350247, -15.861279]]);
+
     return (
-        <MapContainer center={[32.6443385, -16.9167589]} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
+        <MapContainer center={[32.6443385, -16.9167589]} bounds={mapBounds} maxBounds={mapBounds} maxBoundsViscosity={1.0} zoom={12} style={{ height: '500px', width: '100%', margin: 'auto', zIndex: '5' }}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
