@@ -23,7 +23,7 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
     const vehicleDocs = vehicle.documents.map((doc) => {
         // Parse the JSON data field for each document
         const additionalData = doc.data
-            ? Object.entries(doc.data).map(([key, value]) => `${key}: ${value}`)
+            ? Object.entries(doc.data).map(([key, value]) => `${key}: ${value}`).join("\n")
             : [];
     
         return {

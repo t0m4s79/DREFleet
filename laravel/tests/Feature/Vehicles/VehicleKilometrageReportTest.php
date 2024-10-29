@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class VehicleKilometrageReportTest extends TestCase
 {    
+    use RefreshDatabase;
+
     protected $user;
 
     protected function setUp(): void
@@ -114,23 +116,23 @@ class VehicleKilometrageReportTest extends TestCase
         $this->assertDatabaseHas('vehicle_kilometrage_reports', $updatedData);
     }
 
-    public function test_user_can_delete_a_vehicle(): void
+    public function test_user_can_delete_a_vehicle_kilometrage_report(): void
     {
-        $vehicleDocument = VehicleKilometrageReport::factory()->create([
+        $report = VehicleKilometrageReport::factory()->create([
             'vehicle_id' => Vehicle::factory(),
             'driver_id' => Driver::factory(),
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete(route('vehicleKilometrageReports.delete', $vehicleDocument->id));
+            ->delete(route('vehicleKilometrageReports.delete', $report->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('vehicles.kilometrageReports', $vehicleDocument->vehicle->id));
+            ->assertRedirect(route('vehicles.kilometrageReports', $report->vehicle->id));
 
         $this->assertDatabaseMissing('vehicle_kilometrage_reports', [
-            'id' => $vehicleDocument->id,
+            'id' => $report->id,
         ]);
     }
 
@@ -144,13 +146,13 @@ class VehicleKilometrageReportTest extends TestCase
             'driver_id' => Driver::factory()->create()->user_id,
         ];
 
-        // Mock the Vehicle Document model to throw an exception
+        // Mock the Vehicle Kilometrage Report model to throw an exception
         $this->mock(VehicleKilometrageReport::class, function ($mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create vehicle document route
+        // Act: Send a POST request to the create vehicle kilometrage report entry route
         $response = $this
             ->actingAs($this->user)
             ->post(route('vehicleKilometrageReports.create'), $data);

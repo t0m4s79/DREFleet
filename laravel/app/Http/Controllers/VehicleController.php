@@ -256,7 +256,7 @@ class VehicleController extends Controller
 
     public function showVehicleAccessoriesAndDocuments(Vehicle $vehicle)
     {
-        Log::channel('user')->info('User accessed vehicle accessories and documents page', [
+        Log::channel('user')->info('User accessed a vehicle accessories and documents page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
         ]);
@@ -288,7 +288,7 @@ class VehicleController extends Controller
 
     public function showVehicleKilometrageReports(Vehicle $vehicle)
     {
-        Log::channel('user')->info('User accessed vehicle kilometrage reports page', [
+        Log::channel('user')->info('User accessed a vehicle kilometrage reports page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
         ]);
@@ -311,7 +311,7 @@ class VehicleController extends Controller
 
     public function showVehicleRefuelRequests(Vehicle $vehicle)
     {
-        Log::channel('user')->info('User accessed vehicle refuel requests page', [
+        Log::channel('user')->info('User accessed a vehicle refuel requests page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
         ]);
@@ -324,6 +324,30 @@ class VehicleController extends Controller
         });
         
         return Inertia::render('Vehicles/VehicleRefuelRequests', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'vehicle' => $vehicle
+        ]);
+    }
+
+    public function showVehicleMaintenanceReports(Vehicle $vehicle)
+    {
+        Log::channel('user')->info('User accessed a vehicle maintenance reports page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'vehicle_id' => $vehicle->id ?? null,
+        ]);
+
+        $vehicle->load('maintenanceReports');
+
+        // Format the fields for each report entry
+        $vehicle->maintenanceReports->each(function ($request) {
+            $request->begin_date = Carbon::parse($request->issue_date)->format('d-m-Y');
+            $request->end_date = Carbon::parse($request->expiration_date)->format('d-m-Y');
+        });
+        
+        return Inertia::render('Vehicles/VehicleMaintenanceReports', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),

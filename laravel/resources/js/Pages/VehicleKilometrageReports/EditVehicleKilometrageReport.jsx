@@ -42,7 +42,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles, 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Editar Entrada de Kilometragem do Veículo</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Editar Registo de Kilometragem do Veículo</h2>}
         >
 
             {<Head title='Registos de Kilometragem do Veículo' />}

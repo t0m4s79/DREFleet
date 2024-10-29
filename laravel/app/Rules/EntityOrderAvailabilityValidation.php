@@ -56,7 +56,7 @@ class EntityOrderAvailabilityValidation implements ValidationRule
             return;
         }
 
-        if ($user->status == 'Indisponível' || $user->status == 'Escondido') {
+        if ($user->status == 'Escondido') {
             $fail('Técnico não disponível: estado = ' . $user->status);
         }
 
@@ -102,7 +102,7 @@ class EntityOrderAvailabilityValidation implements ValidationRule
             return;
         }
 
-        if ($driver->status == 'Indisponível' || $driver->status == 'Escondido') {
+        if ($driver->status == 'Escondido') {
             $fail('Condutor não disponível: estado = ' . $driver->status);
         }
 
@@ -147,7 +147,7 @@ class EntityOrderAvailabilityValidation implements ValidationRule
             return;
         }
 
-        if ($vehicle->status == 'Indisponível' || $vehicle->status == 'Escondido' || $vehicle->status == 'Em manutenção') {
+        if ($vehicle->status == 'Escondido') {
             $fail('Veículo não disponível: estado = ' . $vehicle->status);
         }
 

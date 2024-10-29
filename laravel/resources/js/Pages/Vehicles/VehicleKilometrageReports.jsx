@@ -47,7 +47,7 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registo de Kilometragem do Veículo #{vehicle.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Kilometragem do Veículo #{vehicle.id}</h2>}
         >
 
             {<Head title='Registo de Kilometragem do Veículo' />}

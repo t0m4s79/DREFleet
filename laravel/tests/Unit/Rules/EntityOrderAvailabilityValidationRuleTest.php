@@ -266,9 +266,9 @@ class EntityOrderAvailabilityValidationRuleTest extends TestCase
         );
     }
 
-    public function test_fails_validation_if_technician_has_unavailable_status()
+    public function test_fails_validation_if_technician_has_hidden_status()
     {
-        $this->technician->update(['status' => Arr::random(['Escondido', 'Indisponível'])]);
+        $this->technician->update(['status' => 'Escondido']);
         $validation = Validator::make(
             [
                 'technician_id' => $this->technician->id, // Non-existing technician ID
@@ -279,7 +279,7 @@ class EntityOrderAvailabilityValidationRuleTest extends TestCase
                 'technician_id' => [
                     new EntityOrderAvailabilityValidation(
                         now()->addDays(3), // New order start date
-                        now()->addDays(5) // New order end date
+                        now()->addDays(5)  // New order end date
                     ),
                 ],
             ]
@@ -292,10 +292,10 @@ class EntityOrderAvailabilityValidationRuleTest extends TestCase
         );
     }
 
-    public function test_fails_validation_if_driver_has_unavailable_status()
+    public function test_fails_validation_if_driver_has_hidden_status()
     {
         $user = User::find($this->driver->user_id);
-        $user->update(['status' => Arr::random(['Escondido', 'Indisponível'])]);
+        $user->update(['status' => 'Escondido']);
 
         $validation = Validator::make(
             [
@@ -320,9 +320,9 @@ class EntityOrderAvailabilityValidationRuleTest extends TestCase
         );
     }
 
-    public function test_fails_validation_if_vehicle_has_unavailable_status()
+    public function test_fails_validation_if_vehicle_has_hidden_status()
     {
-        $this->vehicle->update(['status' => Arr::random(['Escondido', 'Em manutenção', 'Indisponível'])]);
+        $this->vehicle->update(['status' => 'Escondido']);
         $validation = Validator::make(
             [
                 'vehicle_id' => $this->vehicle->id, // Non-existing technician ID
