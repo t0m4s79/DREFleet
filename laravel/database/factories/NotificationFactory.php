@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +23,7 @@ class NotificationFactory extends Factory
     public function definition(): array
     {
         // Randomly choose the related entity type
-        $type = $this->faker->randomElement(['Veículo', 'Pedido', 'Utilizador', 'Condutor', 'Criança']);
+        $type = Arr::random(['Veículo', 'Pedido', 'Utilizador', 'Condutor', 'Criança']);
 
         // Determine the related entity ID and type based on the selected entity type
         switch ($type) {
@@ -67,9 +68,9 @@ class NotificationFactory extends Factory
             'related_entity_type' => $relatedEntityType,
             'related_entity_id' => $relatedEntityId,
             'type' => $type,
-            'title' => $this->faker->sentence,
-            'message' => $this->faker->text,
-            'is_read' => $this->faker->boolean,
+            'title' => fake()->sentence,
+            'message' => fake()->text,
+            'is_read' => fake()->boolean,
         ];
     }
 }
