@@ -10,6 +10,7 @@ use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
 use App\Models\VehicleRefuelRequest;
 use App\Models\VehicleKilometrageReport;
+use App\Models\VehicleMaintenanceReport;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -101,6 +102,37 @@ class VehicleFactory extends Factory
                     'request_type' => $requestType,
                 ]);
             }
+
+            if ($vehicle->status == 'Em manutenção') {
+                $maintenanceDate = now();
+
+                VehicleMaintenanceReport::factory()->create([
+                    'begin_date' => $maintenanceDate,
+                    'end_date' => Carbon::parse($maintenanceDate)->addDays(rand(1,10)),
+                    'kilometrage' => $vehicle->current_kilometrage,
+                    'status' => 'A decorrer',
+                    'vehicle_id' => $vehicle->id,
+                ]);
+            }
+
+            //PAST
+            $pastMaintenanceDate = fake()->dateTimeBetween(now()->subYears(2), now()->subYear());
+            VehicleMaintenanceReport::factory()->create([
+                'begin_date' => $pastMaintenanceDate,
+                'end_date' => Carbon::parse($pastMaintenanceDate)->addDays(rand(1,10)),
+                'kilometrage' => rand(0, $vehicle->current_kilometrage),
+                'status' => 'Finalizado',
+                'vehicle_id' => $vehicle->id,
+            ]);
+
+            //FUTURE
+            $futureMaintenanceDate = fake()->dateTimeBetween(now()->addYear(), now()->addYears(2));
+            VehicleMaintenanceReport::factory()->create([
+                'begin_date' => $futureMaintenanceDate,
+                'end_date' => Carbon::parse($futureMaintenanceDate)->addDays(rand(1,10)),
+                'status' => 'Agendado',
+                'vehicle_id' => $vehicle->id,
+            ]);
         });
     }
 }

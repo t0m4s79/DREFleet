@@ -65,6 +65,11 @@ class Vehicle extends Model
         return $this->hasMany(VehicleKilometrageReport::class);
     }
 
+    public function maintenanceReports(): HasMany
+    {
+        return $this->hasMany(VehicleMaintenanceReport::class);
+    }
+
     public function refuelRequests(): HasMany
     {
         return $this->hasMany(VehicleRefuelRequest::class);

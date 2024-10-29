@@ -322,6 +322,24 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
+            else if(key === 'vehicle_maintenance_reports'){
+                return (
+                    <div>
+                        <Button
+                            key={params.value}
+                            variant="outlined"
+                            href={route('vehicles.maintenanceReports', params.value)}
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Consultar
+                        </Button>
+                    </div>
+                )
+            }
             else if(key === 'kid_contacts'){
                 return (
                     <div>
