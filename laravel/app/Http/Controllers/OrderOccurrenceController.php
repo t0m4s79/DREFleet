@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\OrderOccurrence;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +25,7 @@ class OrderOccurrenceController extends Controller
         $occurrences = OrderOccurrence::with(['order.driver', 'order.vehicle'])->get();
 
         $occurrences->each(function ($occurrence) {
-            $occurrence->order->expected_begin_date = \Carbon\Carbon::parse($occurrence->order->expected_begin_date )->format('d-m-Y');
+            $occurrence->order->expected_begin_date = Carbon::parse($occurrence->order->expected_begin_date )->format('d-m-Y');
         });
 
         return Inertia::render('OrderOccurrences/AllOrderOccurrences', [

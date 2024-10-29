@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +26,7 @@ class DriverController extends Controller
         $drivers = Driver::all();
 
         $drivers->each(function ($driver) {
-            $driver->license_expiration_date = \Carbon\Carbon::parse($driver->license_expiration_date)->format('d-m-Y');
+            $driver->license_expiration_date = Carbon::parse($driver->license_expiration_date)->format('d-m-Y');
             $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
             $driver->phone = $driver->phone ?? '-';
         });

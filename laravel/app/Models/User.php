@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Kid;
+use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,12 +55,12 @@ class User extends Authenticatable
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function driver(): HasOne

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,7 +49,7 @@ class OrderRequiresApprovalNotificationTest extends TestCase
         // Act: Call the toMail method
         $mailMessage = $notification->toMail($notifiable);
 
-        $expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+        $expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
 
         // Assert: Verify that the mail message is properly structured
         $this->assertInstanceOf(MailMessage::class, $mailMessage);

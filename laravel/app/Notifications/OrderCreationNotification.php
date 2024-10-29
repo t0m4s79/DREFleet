@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
@@ -38,7 +39,7 @@ class OrderCreationNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $expected_begin_date = \Carbon\Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
+        $expected_begin_date = Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
 
         return (new MailMessage)
             ->line('Novo pedido.')
@@ -53,7 +54,7 @@ class OrderCreationNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $expected_begin_date = \Carbon\Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
+        $expected_begin_date = Carbon::parse($this->order->expected_begin_date)->format('d-m-Y H:i');
 
         return [
             'user_id' => $notifiable->id,

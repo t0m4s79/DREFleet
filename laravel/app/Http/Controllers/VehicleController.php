@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
@@ -265,13 +266,13 @@ class VehicleController extends Controller
 
         // Format the fields for each accessory
         $vehicle->accessories->each(function ($accessory) {
-            $accessory->expiration_date = $accessory->expiration_date ? \Carbon\Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
+            $accessory->expiration_date = $accessory->expiration_date ? Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
         }); 
 
         // Format the fields for each document
         $vehicle->documents->each(function ($document) {
-            $document->issue_date = \Carbon\Carbon::parse($document->issue_date)->format('d-m-Y');
-            $document->expiration_date = \Carbon\Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->issue_date = Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = Carbon::parse($document->expiration_date)->format('d-m-Y');
             $document->expired = $document->expired ? 'Sim' : 'Não';
         });
 
@@ -296,7 +297,7 @@ class VehicleController extends Controller
 
         // Format the fields for each report entry
         $vehicle->kilometrageReports->each(function ($report) {
-            $report->date = \Carbon\Carbon::parse($report->date)->format('d-m-Y');
+            $report->date = Carbon::parse($report->date)->format('d-m-Y');
         });
         
         return Inertia::render('Vehicles/VehicleKilometrageReports', [
@@ -319,7 +320,7 @@ class VehicleController extends Controller
 
         // Format the fields for each report entry
         $vehicle->kilometrageReports->each(function ($request) {
-            $request->date = \Carbon\Carbon::parse($request->date)->format('d-m-Y');
+            $request->date = Carbon::parse($request->date)->format('d-m-Y');
         });
         
         return Inertia::render('Vehicles/VehicleRefuelRequests', [

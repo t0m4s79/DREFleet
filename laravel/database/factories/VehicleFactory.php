@@ -5,10 +5,11 @@ namespace Database\Factories;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use App\Models\VehicleAccessory;
-use App\Models\VehicleKilometrageReport;
 use App\Models\VehicleRefuelRequest;
+use App\Models\VehicleKilometrageReport;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -47,7 +48,7 @@ class VehicleFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Vehicle $vehicle) {
-            $date = \Carbon\Carbon::parse(fake()->dateTimeBetween(now()->subDays(20), now()->subDays(10)));
+            $date = Carbon::parse(fake()->dateTimeBetween(now()->subDays(20), now()->subDays(10)));
         
             VehicleDocument::factory()->create([
                 'vehicle_id' => $vehicle->id,

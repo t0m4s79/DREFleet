@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
@@ -24,8 +25,8 @@ class DashboardController extends Controller
 
         $orders->each(function ($order) {
             // Format the dates as dd-mm-yyyy
-            $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
-            $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+            $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+            $order->expected_end_date = Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
         });
 
         return Inertia::render('Dashboard', [

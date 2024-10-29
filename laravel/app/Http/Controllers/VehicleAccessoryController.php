@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use App\Models\VehicleAccessory;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +22,7 @@ class VehicleAccessoryController extends Controller
         $vehicleAccessories = VehicleAccessory::All();
 
         $vehicleAccessories->each(function ($accessory) {
-            $accessory->expiration_date = $accessory->expiration_date ? \Carbon\Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
+            $accessory->expiration_date = $accessory->expiration_date ? Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
         });
 
         return Inertia::render('VehicleAccessories/AllVehicleAccessories', [

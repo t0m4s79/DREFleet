@@ -13,19 +13,19 @@ use App\Models\Vehicle;
 use App\Models\OrderStop;
 use App\Models\OrderRoute;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Rules\KidVehicleValidation;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
-use App\Notifications\OrderCreationNotification;
-use App\Notifications\OrderRequiresApprovalNotification;
-use App\Rules\EntityOrderAvailabilityValidation;
 use App\Rules\ManagerUserTypeValidation;
 use App\Rules\OrderDriverLicenseValidation;
 use App\Rules\TechnicianUserTypeValidation;
 use App\Rules\OrderVehicleCapacityValidation;
-use Carbon\Carbon;
+use App\Notifications\OrderCreationNotification;
+use App\Rules\EntityOrderAvailabilityValidation;
+use App\Notifications\OrderRequiresApprovalNotification;
 
 class OrderController extends Controller
 {
@@ -47,9 +47,9 @@ class OrderController extends Controller
 
         $orders->each(function ($order) {
             // Format the dates as dd-mm-yyyy
-            $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
-            $order->expected_end_date = \Carbon\Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
-            $order->approved_date = $order->approved_date ? \Carbon\Carbon::parse($order->approved_date)->format('d-m-Y H:i') : '-';
+            $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+            $order->expected_end_date = Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+            $order->approved_date = $order->approved_date ? Carbon::parse($order->approved_date)->format('d-m-Y H:i') : '-';
 
             $order->order_route_id = $order->order_route_id ?? '-';
         });
@@ -514,7 +514,7 @@ class OrderController extends Controller
 
         $order->load(['occurrences', 'vehicle', 'driver']);
 
-        $order->expected_begin_date = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y');
+        $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y');
 
         return Inertia::render('Orders/OrderOccurrences', [
             'flash' => [
@@ -534,8 +534,8 @@ class OrderController extends Controller
 
         $order->load(['orderStops']);
         $order->orderStops->each(function ($stop) {
-            $stop->expected_arrival_date = \Carbon\Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
-            $stop->actual_arrival_date = \Carbon\Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');
+            $stop->expected_arrival_date = Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
+            $stop->actual_arrival_date = Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');
         });
 
         return Inertia::render('Orders/OrderStops', [
