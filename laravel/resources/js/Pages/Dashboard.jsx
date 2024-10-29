@@ -13,6 +13,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
     //     }
     // })
 
+    console.log(orders.filter(order => new Date(order.expected_begin_date) > new Date()))
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -250,7 +251,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 Pedidos Agendados
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {orders.filter(order => new Date(order.expected_begin_date) > new Date()).length > 0 ? (
+                                    {orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').length > 0 ? (
                                         orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').map(order => (
                                             <div key={`order-${order.id}`}>
                                                 <a href={route('orders.edit', order)}>
