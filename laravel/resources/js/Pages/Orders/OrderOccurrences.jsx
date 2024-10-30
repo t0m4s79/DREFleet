@@ -60,7 +60,7 @@ export default function OrderOccurences({auth, order, flash}) {
                     <Button href={route('orderOccurrences.showCreate')}>
                         <AddIcon />
                         <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Nova Occorrência
+                            Nova Ocorrência
                         </a>
                     </Button>
 

@@ -107,7 +107,7 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
 
                             {/* Radio Buttons for Occurrence Type */}
                             <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Tipo de Occorrência</FormLabel>
+                                <FormLabel component="legend">Tipo de Ocorrência</FormLabel>
                                 <RadioGroup
                                     name="type"
                                     value={data.type}
@@ -126,7 +126,7 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
 
                             {/* Text Field for Description */}
                             <TextField
-                                label="Descrição da Occorrência"
+                                label="Descrição da Ocorrência"
                                 multiline
                                 rows={4}
                                 fullWidth

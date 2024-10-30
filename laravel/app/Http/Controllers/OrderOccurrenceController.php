@@ -158,7 +158,7 @@ class OrderOccurrenceController extends Controller
                 'occurrence_id' => $id ?? null,
             ]);
     
-            return redirect()->route('orders.occurrences', $orderId)->with('message', 'Occorrência com id ' . $id . ' eliminada com sucesso!');
+            return redirect()->route('orders.occurrences', $orderId)->with('message', 'Ocorrência com id ' . $id . ' eliminada com sucesso!');
 
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error deleting occurrence', [
@@ -167,7 +167,7 @@ class OrderOccurrenceController extends Controller
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('occurrences.index')->with('error', 'Houve um problema ao apagar a occorrência com id ' . $id . '. Tente novamente.');
+            return redirect()->route('occurrences.index')->with('error', 'Houve um problema ao apagar a ocorrência com id ' . $id . '. Tente novamente.');
         }
     }
 }
