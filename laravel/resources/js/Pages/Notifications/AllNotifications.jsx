@@ -47,8 +47,8 @@ export default function AllNotifications({auth, notifications, flash}) {
 
             <Head title="Notificações" />
 
-            <div className="mt-12 max-w-full overflow-x-auto mx-6 shadow-sm sm:rounded-lg">
-                <div className='mb-12'>
+            <div className="my-12 max-w-full overflow-x-auto mx-6 shadow-sm sm:rounded-lg">
+                <div>
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
