@@ -2,36 +2,40 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class VehicleDocument extends Model
+// TODO: NOTIFICATIONS AND JOBS (INCLUDING REQUIRED TESTS) FOR THIS FEATURE
+class VehicleMaintenanceReport extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'issue_date',
-        'expiration_date',
-        'expired',
+        'begin_date',
+        'end_date',
+        'type',
+        'description',
+        'kilometrage',
+        'total_cost',
+        'items_cost',
+        'service_provider',
+        'status',
         'vehicle_id',
-        'data',
     ];
 
     protected $casts = [
-        'data' => 'array',  // This will allow Laravel to cast the JSON to an array
+        'items_cost' => 'array',
     ];
 
     public function getCreatedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y H:i:s');
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function vehicle(): BelongsTo

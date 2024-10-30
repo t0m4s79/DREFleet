@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,8 +16,6 @@ class Order extends Model
     protected $fillable = [
         'expected_begin_date',
         'expected_end_date',
-        'actual_begin_date',
-        'actual_end_date',
         'expected_time',
         'distance',
         'trajectory',
@@ -39,12 +38,12 @@ class Order extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
     
     public function orderStops(): HasMany

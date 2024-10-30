@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\VehicleDocument;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
@@ -21,8 +22,8 @@ class VehicleDocumentController extends Controller
         $vehicleDocuments = VehicleDocument::All();
 
         $vehicleDocuments->each(function ($document) {
-            $document->issue_date = \Carbon\Carbon::parse($document->issue_date)->format('d-m-Y');
-            $document->expiration_date = \Carbon\Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->issue_date = Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = Carbon::parse($document->expiration_date)->format('d-m-Y');
             $document->expired = $document->expired ? 'Sim' : 'Não';
         });
 

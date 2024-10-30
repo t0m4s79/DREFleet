@@ -5,7 +5,7 @@ import { Head, useForm } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import { useState } from 'react';
 
-export default function EditPlace({auth, place, kids}) {
+export default function EditPlace({auth, place }) {
 
     const [lat, setLat] = useState(place.coordinates.coordinates[1]);
     const [lng, setLng] = useState(place.coordinates.coordinates[0]);  

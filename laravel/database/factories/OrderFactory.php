@@ -41,13 +41,10 @@ class OrderFactory extends Factory
         // Past Order
         } else if (now() > $endDate) {
             $status = Arr::random(['Cancelado/Não aprovado', 'Finalizado', 'Interrompido']);
-            $actualBeginDate = Carbon::parse($beginDate)->addSeconds(rand(-3600, 3600));
-            $actualEndDate = Carbon::parse($endDate)->addSeconds(rand(-3600, 3600));
 
         // Current Order
         } else {
             $status = 'Em curso';
-            $actualBeginDate = Carbon::parse($beginDate)->addSeconds(rand(-3600, 3600));
         }
 
         // Check if there are any drivers in the database, otherwise create one
@@ -82,8 +79,6 @@ class OrderFactory extends Factory
         return [
             'expected_begin_date' => $beginDate,
             'expected_end_date' => $endDate,
-            'actual_begin_date' => $actualBeginDate ?? null,
-            'actual_end_date' => $actualEndDate ?? null,
             'expected_time' => $orderTime,
             'distance' => rand(1000,20000),
             'status' => $status,

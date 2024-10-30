@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -48,7 +49,7 @@ class SendUnfilledKilometrageReportEntryNotification implements ShouldQueue
 
             // Get actual report dates for the vehicle
             $actualDates = $vehicle->kilometrageReports->pluck('date')->map(function ($date) {
-                return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                return Carbon::parse($date)->format('Y-m-d');
             })->toArray();
 
             // Find missing dates

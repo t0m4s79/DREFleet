@@ -32,7 +32,7 @@ export default function NewVehicleKilometrageReports( {auth, vehicles, drivers} 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Entrada de Kilometragem de Veículo</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Registo de Kilometragem de Veículo</h2>}
         >
 
             {<Head title='Registo de Kilometragem do Veículo' />}

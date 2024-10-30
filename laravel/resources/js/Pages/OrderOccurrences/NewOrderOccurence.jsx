@@ -104,7 +104,7 @@ export default function NewOrderOccurrence({ auth, orders }) {
                                 />
 
                                 {/* Character Counter */}
-                                <div style={{ textAlign: 'right', color: data.description.length > 500 ? 'red' : 'black' }}>
+                                <div style={{ textAlign: 'right', color: data.description.length >= 500 ? 'red' : 'black' }}>
                                     {500 - data.description.length} caracteres restantes
                                 </div>
 

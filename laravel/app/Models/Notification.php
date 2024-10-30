@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,12 +24,12 @@ class Notification extends DatabaseNotification
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+        return Carbon::parse($value)->format('d-m-Y H:i:s');
     }
 
     public function user()

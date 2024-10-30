@@ -5,7 +5,8 @@ import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
-export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
+{/*TODO: DESCRIPTION POPUP LIKE ORDER OCCURRENCES */}
+export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -20,14 +21,24 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     }, [flash]);
 
     //Deconstruct props to send to Table
-    const vehicleReports = vehicle.kilometrage_reports.map((report) => {
+    const vehicleReports = vehicle.maintenance_reports.map((report) => {
+        // Parse the JSON data field
+        const additionalData = report.items_cost
+            ? Object.entries(report.items_cost).map(([key, value]) => `${key}: ${value}`).join("\n")
+            : [];
+            
         return {
             id: report.id,
-            date: report.date,
-            begin_kilometrage: report.begin_kilometrage,
-            end_kilometrage: report.end_kilometrage,
+            begin_date: report.begin_date,
+            end_date: report.end_date,
+            type: report.type,
+            description: 'Popup com descrição',
+            kilometrage: report.kilometrage,
+            total_cost: report.total_cost,
+            items_cost: additionalData,
+            service_provider: report.service_provider,
+            status: report.status,
             vehicle_id: report.vehicle_id,
-            driver_id: report.driver_id,
             created_at: report.created_at,
             updated_at: report.updated_at,
         }
@@ -35,11 +46,16 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
 
     const vehicleReportsColumnLabels = {
         id: 'ID',
-        date: 'Data',
-        begin_kilometrage: 'Kilometragem Inicial',
-        end_kilometrage: 'Kilometragem Final',
+        begin_date: 'Data de Início',
+        end_date: 'Data de Fim',
+        type: 'Tipo',
+        description: 'Descrição',
+        kilometrage: 'Kilometragem',
+        total_cost: 'Custo Total',
+        items_cost: 'Materiais',
+        service_provider: 'Providenciador de Serviços',
+        status: 'Estado',
         vehicle_id: 'Veículo',
-        driver_id: 'Condutor',
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };
@@ -47,10 +63,10 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Kilometragem do Veículo #{vehicle.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registo de Manutenção do Veículo #{vehicle.id}</h2>}
         >
 
-            {<Head title='Registo de Kilometragem do Veículo' />}
+            {<Head title='Registo de Manutenção do Veículo' />}
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -58,18 +74,18 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
                     <div className="py-12 px-6">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                            <Button href={route('vehicleKilometrageReports.showCreate')}>
+                            <Button href={route('vehicleMaintenanceReports.showCreate')}>
                                 <AddIcon />
                                 <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Nova Entrada
+                                    Novo Registo
                                 </a>
                             </Button>
 
                             <Table
                                 data={vehicleReports}
                                 columnsLabel={vehicleReportsColumnLabels}
-                                editAction="vehicleKilometrageReports.showEdit"
-                                deleteAction="vehicleKilometrageReports.delete"
+                                editAction="vehicleMaintenanceReports.showEdit"
+                                deleteAction="vehicleMaintenanceReports.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
                         </div>

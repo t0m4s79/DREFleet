@@ -111,6 +111,9 @@ class ErrorMessagesHelper
 
             // Vehicle Kilometrage Reports
             'end_kilometrage.gte' => 'A kilometragem final tem de ser maior ou igual à inicial',
+
+            // Vehicle Maintenance Reports
+            'end_date.after' => 'A data de fim tem de ser após a data de início'
         ];
     }
 }

@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function AllVehicles( {auth, vehicles, flash}) {
-
+    
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -33,10 +33,11 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             capacity: vehicle.capacity,
             fuel_consumption: vehicle.fuel_consumption,
             status: vehicle.status,
-            current_month_fuel_requests: vehicle.current_month_fuel_requests,
             fuel_type: vehicle.fuel_type,
+            current_month_fuel_requests: vehicle.current_month_fuel_requests,
             current_kilometrage: vehicle.current_kilometrage,
             vehicle_kilometrage_reports: vehicle.id,
+            vehicle_maintenance_reports: vehicle.id,
             vehicle_accesories_docs: vehicle.id,
         }
     })
@@ -54,10 +55,11 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
-        current_month_fuel_requests: 'Pedidos Mensais de Reabastecimento',
         fuel_type: 'Tipo de Combustível',
+        current_month_fuel_requests: 'Pedidos Mensais de Reabastecimento',
         current_kilometrage: 'Kilometragem Atual',
         vehicle_kilometrage_reports: 'Registo de Kilometragem',
+        vehicle_maintenance_reports: 'Registos de Manutenção',
         vehicle_accesories_docs: 'Documentos e Acessórios',
     };
 

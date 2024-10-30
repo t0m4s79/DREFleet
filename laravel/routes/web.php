@@ -23,6 +23,7 @@ use App\Http\Controllers\VehicleAccessoryController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\OrderOccurrenceController;
 use App\Http\Controllers\VehicleKilometrageReportController;
+use App\Http\Controllers\VehicleMaintenanceReportController;
 use App\Http\Controllers\VehicleRefuelRequestController;
 
 Route::get('/', function () {
@@ -97,8 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');
     Route::patch('/orders/approve/{order}',  [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::patch('/orders/removeApproval/{order}',  [OrderController::class, 'removeOrderApproval'])->name('orders.unapprove');
-    Route::patch('/orders/started/{order}',  [OrderController::class, 'orderStarted'])->name('orders.start');
-    Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');
+    //Route::patch('/orders/started/{order}',  [OrderController::class, 'orderStarted'])->name('orders.start');                     //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
+    //Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');                           //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
     Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
     Route::get('/orders/orderStops/{order}', [OrderController::class, 'showOrderStops'])->name('orders.stops');
 
@@ -160,9 +161,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/edit/{vehicle}', [VehicleController::class, 'showEditVehicleForm'])->name('vehicles.showEdit');
     Route::put('/vehicles/edit/{vehicle}', [VehicleController::class, 'editVehicle'])->name('vehicles.edit');
     Route::delete('/vehicles/delete/{vehicle}', [VehicleController::class, 'deleteVehicle'])->name('vehicles.delete');
-    Route::get('/vehicles/documentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
-    Route::get('/vehicles/kilometrageReports/{vehicle}', [VehicleController::class, 'showVehicleKilometrageReports'])->name('vehicles.kilometrageReports');
-    Route::get('/vehicles/refuelRequests/{vehicle}', [VehicleController::class, 'showVehicleRefuelRequests'])->name('vehicles.refuelRequests');
+    Route::get('/vehicles/vehicleDocumentsAndAccessories/{vehicle}', [VehicleController::class, 'showVehicleAccessoriesAndDocuments'])->name('vehicles.documentsAndAccessories');
+    Route::get('/vehicles/vehicleKilometrageReports/{vehicle}', [VehicleController::class, 'showVehicleKilometrageReports'])->name('vehicles.kilometrageReports');
+    Route::get('/vehicles/vehicleRefuelRequests/{vehicle}', [VehicleController::class, 'showVehicleRefuelRequests'])->name('vehicles.refuelRequests');
+    Route::get('/vehicles/vehicleMaintenanceReports/{vehicle}', [VehicleController::class, 'showVehicleMaintenanceReports'])->name('vehicles.maintenanceReports');
 
     //VEHICLES ACCESSORIES
     Route::get('/vehicle/accessories', [VehicleAccessoryController::class, 'index'])->name('vehicleAccessories.index');
@@ -187,7 +189,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/vehicle/kilometrageReports/edit/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'editVehicleKilometrageReport'])->name('vehicleKilometrageReports.edit');
     Route::delete('/vehicle/kilometrageReports/delete/{vehicleKilometrageReport}', [VehicleKilometrageReportController::class, 'deleteVehicleKilometrageReport'])->name('vehicleKilometrageReports.delete');
 
+    //VEHICLES MAINTENANCE REPORTS
+    Route::get('/vehicle/maintenanceReports', [VehicleMaintenanceReportController::class, 'index'])->name('vehicleMaintenanceReports.index');
+    Route::get('/vehicle/maintenanceReports/create', [VehicleMaintenanceReportController::class, 'showCreateVehicleMaintenanceReportForm'])->name('vehicleMaintenanceReports.showCreate');
+    Route::post('/vehicle/maintenanceReports/create', [VehicleMaintenanceReportController::class, 'createVehicleMaintenanceReport'])->name('vehicleMaintenanceReports.create');
+    Route::get('/vehicle/maintenanceReports/edit/{vehicleMaintenanceReport}', [VehicleMaintenanceReportController::class, 'showEditVehicleMaintenanceReportForm'])->name('vehicleMaintenanceReports.showEdit');
+    Route::put('/vehicle/maintenanceReports/edit/{vehicleMaintenanceReport}', [VehicleMaintenanceReportController::class, 'editVehicleMaintenanceReport'])->name('vehicleMaintenanceReports.edit');
+    Route::delete('/vehicle/maintenanceReports/delete/{vehicleMaintenanceReport}', [VehicleMaintenanceReportController::class, 'deleteVehicleMaintenanceReport'])->name('vehicleMaintenanceReports.delete');
+
     //VEHICLES REFUEL REQUESTS
+    //TODO: index page for this?
     Route::get('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'showCreateVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showCreate');
     Route::post('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'createVehicleRefuelRequest'])->name('vehicleRefuelRequests.create');
     Route::get('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'showEditVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showEdit');

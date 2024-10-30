@@ -27,11 +27,11 @@ class VehicleRefuelRequestFactory extends Factory
             $requestType = 'Excepcional';
         }
 
-        $quantity = fake()->randomFloat(3, 1, 80); // Random volume, 3 decimals
-        $costPerUnit = fake()->randomFloat(3, 0.5, 3.0); // Random cost per unit, e.g., between 0.5 and 3.0
+        $quantity = fake()->randomFloat(3, 5, 50); // Random volume, 3 decimals
+        $costPerUnit = fake()->randomFloat(3, 0.5, 2.0); // Random cost per unit, e.g., between 0.5 and 3.0
         $totalCost = $quantity * $costPerUnit; // Calculates total cost based on quantity and cost per uni
 
-        // Vehicle id and driver id need to be passed explicitily when using this factory
+        // Vehicle id needs to be passed explicitily when using this factory
         return [
             'date' => fake()->dateTimeBetween(now()->subYear(), now()),
             'quantity' =>  $quantity,

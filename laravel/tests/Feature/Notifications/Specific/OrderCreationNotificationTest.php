@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
+use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Notifications\OrderCreationNotification;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -55,7 +56,7 @@ class OrderCreationNotificationTest extends TestCase
         $this->assertStringContainsString(route('orders.edit', ['order' => $order->id]), $mailMessage->actionUrl);
 
         // Verify the outro line contains the correct information about the order
-        $expectedBeginDate = \Carbon\Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+        $expectedBeginDate = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
         $this->assertStringContainsString('Foi criado um novo pedido com id ' . $order->id . ' com data de início marcada para ' . $expectedBeginDate, $mailMessage->outroLines[0]);
     }
 }
