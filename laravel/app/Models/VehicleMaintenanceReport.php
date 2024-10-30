@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+// TODO: NOTIFICATIONS AND JOBS (INCLUDING REQUIRED TESTS) FOR THIS FEATURE
 class VehicleMaintenanceReport extends Model
 {
     use HasFactory;
