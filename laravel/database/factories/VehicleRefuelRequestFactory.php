@@ -19,7 +19,7 @@ class VehicleRefuelRequestFactory extends Factory
     {
         $requestNumber = rand(0, 15);
 
-        if ($requestNumber <= 4) {
+        if ($requestNumber <= 6) {
             $requestType = 'Normal';
         } else if ($requestNumber <= 10) {
             $requestType = 'Especial';

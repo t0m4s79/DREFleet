@@ -87,7 +87,7 @@ class VehicleFactory extends Factory
 
             for ($i= 1; $i <= $vehicle->current_month_fuel_requests; $i++) {
                 
-                if ($i <= 4) {
+                if ($i <= 6) {
                     $requestType = 'Normal';
                 } else if ($i <= 10) {
                     $requestType = 'Especial';

@@ -45,7 +45,7 @@ class VehicleRefuelRequestController extends Controller
         try {
             $requestNumber = Vehicle::findOrFail($incomingFields['vehicle_id'])->refuelRequests()->count() + 1;
 
-            if ($requestNumber <= 4) {
+            if ($requestNumber <= 6) {
                 $requestType = 'Normal';
             } else if ($requestNumber <= 10) {
                 $requestType = 'Especial';

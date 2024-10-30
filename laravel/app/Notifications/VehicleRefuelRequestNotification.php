@@ -43,7 +43,7 @@ class VehicleRefuelRequestNotification extends Notification
         return (new MailMessage)
                     ->line('Novo pedido de reabastecimento do tipo ' . $this->request->request_type . '.')
                     ->action('Ver detalhes em', route('vehicles.refuelRequests', ['vehicle' => $this->vehicle->id]))
-                    ->line('Foi criado um novo pedido de reabastecimento com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.');
+                    ->line('Foi criado um novo pedido de reabastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.');
     }
 
     /**
@@ -59,7 +59,7 @@ class VehicleRefuelRequestNotification extends Notification
             'related_entity_id' => $this->vehicle->id,
             'type' => 'Pedido de Reabastecimento',
             'title' => 'Novo pedido de reabastecimento do tipo ' . $this->request->request_type,
-            'message' => 'Foi criado um novo pedido de reabastecimento com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.',
+            'message' => 'Foi criado um novo pedido de reabastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.',
             'is_read' => false,
         ];
     }

@@ -70,7 +70,7 @@ class VehicleRefuelRequestNotificationTest extends TestCase
         
         // Verify the outro line matches exactly
         $this->assertEquals(
-            'Foi criado um novo pedido de reabastecimento com id ' . $request->id . ' do tipo ' . $request->request_type . ' para o veículo ' . $vehicle->id . '.',
+            'Foi criado um novo pedido de reabastecimento (' . $vehicle->current_month_fuel_requests . 'º este mês) com id ' . $request->id . ' do tipo ' . $request->request_type . ' para o veículo ' . $vehicle->id . '.',
             $mailMessage->outroLines[0]
         );
     }
