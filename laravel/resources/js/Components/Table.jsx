@@ -8,6 +8,7 @@ import { parse, isBefore } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import MouseHoverPopover from './MouseHoverPopover';
 import OccurrenceModal from './OccurrenceModal';
+import { Link } from '@inertiajs/react';
 
 // Custom table using Material UI's DataGrid
 const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) => {
@@ -27,20 +28,23 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 return (
                     <div>
                         {params.value.map((kid) => (
-                            <Button
+                            <Link
                                 key={kid.id}
-                                variant="outlined"
                                 href={route('kids.showEdit', kid)}
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
                             >
-                                {kid.id}
-                            </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {kid.id}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
                 );
@@ -51,10 +55,36 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 return (
                     <div>
                         {params.value.map((kid) => (
-                            <Button
+                            <Link
                                 key={kid.id}
-                                variant="outlined"
                                 href={route('places.showEdit', kid)}
+                            >
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {kid.id}
+                                </Button>
+                            </Link>
+                        ))}
+                    </div>
+                );
+            }
+            else if(key == 'place_id'){
+                return (
+                    <div>
+                        <Link
+                            key={params.value}
+                            href={route('vehicles.showEdit', params.value)}
+                        >
+                            <Button
+                                variant="outlined"
                                 sx={{
                                     maxWidth: '30px',
                                     maxHeight: '30px',
@@ -63,29 +93,9 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                                     margin: '0px 4px'
                                 }}
                             >
-                                {kid.id}
+                                {params.value}
                             </Button>
-                        ))}
-                    </div>
-                );
-            }
-            else if(key == 'place_id'){
-                return (
-                    <div>
-                        <Button
-                            key={params.value}
-                            variant="outlined"
-                            href={route('vehicles.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
-                        >
-                            {params.value}
-                        </Button>
+                        </Link>
                     </div>
                 )
             }
@@ -95,20 +105,23 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 return (
                     <div>
                         {params.value.map((kid) => (
-                            <Button
+                            <Link
                                 key={kid.id}
-                                variant="outlined"
                                 href={route('kids.showEdit', kid)}
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
                             >
-                                {kid.id}
-                            </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {kid.id}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
                 );
@@ -130,60 +143,69 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             else if(key == 'vehicle_id'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('vehicles.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            {params.value}
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value}
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
             else if(key == 'driver_id'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('drivers.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            {params.value}
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value}
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
             else if(key == 'technician_id'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('technicians.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            {params.value}
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value}
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
@@ -205,51 +227,12 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 if(params.value==null) return params.value
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('managers.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            {params.value}
-                        </Button>
-                    </div>
-                )
-            }
-            else if(key == 'order_id'){
-                return (
-                    <div>
-                        <Button
-                            key={params.value}
-                            variant="outlined"
-                            href={route('orders.showEdit', params.value)}
-                            sx={{
-                                maxWidth: '30px',
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
-                        >
-                            {params.value}
-                        </Button>
-                    </div>
-                )
-            }
-            else if(key == 'route'){
-                if(params.value != '-'){
-                    return (
-                        <div>
                             <Button
-                                key={params.value}
                                 variant="outlined"
-                                href={route('orderRoutes.showEdit', params.value)}
                                 sx={{
                                     maxWidth: '30px',
                                     maxHeight: '30px',
@@ -260,6 +243,54 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                             >
                                 {params.value}
                             </Button>
+                        </Link>
+                    </div>
+                )
+            }
+            else if(key == 'order_id'){
+                return (
+                    <div>
+                        <Link
+                            key={params.value}
+                            href={route('orders.showEdit', params.value)}
+                        >
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value}
+                            </Button>
+                        </Link>
+                    </div>
+                )
+            }
+            else if(key == 'route'){
+                if(params.value != '-'){
+                    return (
+                        <div>
+                            <Link
+                                key={params.value}
+                                href={route('orderRoutes.showEdit', params.value)}
+                            >
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {params.value}
+                                </Button>
+                            </Link>
                         </div>
                     )
                 } else{
@@ -271,46 +302,54 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             else if(key === 'all_approved_orders'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('managers.approved', params.value)}
-                            sx={{
-                                maxHeight: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            Consultar
-                        </Button>
+                            <Button                
+                                variant="outlined"
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                Consultar
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
             else if(key === 'vehicle_accesories_docs'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('vehicles.documentsAndAccessories', params.value)}
-                            sx={{
-                                maxHeight: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            Consultar
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                Consultar
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
             else if(key === 'vehicle_kilometrage_reports'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('vehicles.kilometrageReports', params.value)}
+                        >
+                        <Button
+                            variant="outlined"
                             sx={{
                                 maxHeight: '30px',
                                 minHeight: '30px',
@@ -319,6 +358,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                         >
                             Consultar
                         </Button>
+                        </Link>
                     </div>
                 )
             }
@@ -343,18 +383,21 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             else if(key === 'kid_contacts'){
                 return (
                     <div>
-                        <Button
+                        <Link
                             key={params.value}
-                            variant="outlined"
                             href={route('kids.contacts', params.value)}
-                            sx={{
-                                maxHeight: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            Consultar
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                Consultar
+                            </Button>
+                        </Link>
                     </div>
                 )
             }
@@ -374,17 +417,20 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
             else if (key === 'current_month_fuel_requests') {
                 return (
                     <div>
-                        <Button
-                            variant="outlined"
+                        <Link
                             href={route('vehicles.refuelRequests', params.row.id)}
-                            sx={{
-                                maxHeight: '30px',
-                                minHeight: '30px',
-                                margin: '0px 4px'
-                            }}
                         >
-                            {params.value} (Ver todos) {/* Display the number of occurrences */}
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxHeight: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {params.value} (Ver todos) {/* Display the number of occurrences */}
+                            </Button>
+                        </Link>
                     </div>
                 );
             }
@@ -393,18 +439,21 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 if (params.value > 0) {
                     return (
                         <div>
-                            <Button
+                            <Link
                                 key={params.value}
-                                variant="outlined"
                                 href={route('orders.stops', params.row.id)}
-                                sx={{
-                                    maxHeight: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
                             >
-                                {params.value} Paragem(ns) {/* Display the number of occurrences */}
-                            </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxHeight: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {params.value} Paragem(ns) {/* Display the number of occurrences */}
+                                </Button>
+                            </Link>
                         </div>
                     );
                 }
@@ -415,20 +464,23 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 return (
                     <div>
                         {params.value.map((driver) => (
-                            <Button
+                            <Link
                                 key={driver.user_id}
-                                variant="outlined"
                                 href={route('drivers.showEdit', driver)}
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
                             >
-                                {driver.user_id}
-                            </Button>
+                                <Button
+                                    variant="outlined"
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {driver.user_id}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
                 );
@@ -439,20 +491,25 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                 return (
                     <div>
                         {params.value.map((tech) => (
-                            <Button
+                            <Link
                                 key={tech.id}
-                                variant="outlined"
                                 href={route('technicians.showEdit', tech)}
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
                             >
-                                {tech.id}
-                            </Button>
+                                <Button
+                                    //key={tech.id}
+                                    variant="outlined"
+                                    //href={route('technicians.showEdit', tech)}
+                                    sx={{
+                                        maxWidth: '30px',
+                                        maxHeight: '30px',
+                                        minWidth: '30px',
+                                        minHeight: '30px',
+                                        margin: '0px 4px'
+                                    }}
+                                >
+                                    {tech.id}
+                                </Button>
+                            </Link>
                         ))}
                     </div>
                 );
