@@ -1,13 +1,13 @@
 import React from 'react';
 import './../../css/loading.css'
-import loading_animation from './../../../public/img/video/loading_animation.gif'
+import loading_animation from './../../../public/img/video/LoadingAnimation(no-watermark).svg'
 
 const LoadingAnimation = () => {
   return (
-    <div className="spinner-container">
+    <div className="loading-container">
+      <div className="">
         <img src={loading_animation} alt="Loading animation"/>
-      {/* <div className="spinner">
-      </div> */}
+      </div>
     </div>
   );
 };
