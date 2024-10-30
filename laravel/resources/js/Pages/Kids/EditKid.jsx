@@ -14,8 +14,6 @@ export default function EditKid({auth, kid, availablePlaces}) {
     // Define data to be sent to the backend
     const { data, setData, put, errors, processing } = useForm({
         name: kid.name,
-        email: kid.email,
-        phone: kid.phone,
         wheelchair: kid.wheelchair,
         addPlaces: [],
         removePlaces: [],
@@ -111,36 +109,6 @@ export default function EditKid({auth, kid, availablePlaces}) {
                                 disabled={!isEditMode}
                                 error={!!errors.name}
                                 helperText={errors.name && <InputError message={errors.name} />}
-                            />
-
-                            <TextField
-                                label="Email"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                id="email"
-                                name="email"
-                                value={data.email}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                error={!!errors.email}
-                                helperText={errors.email && <InputError message={errors.email} />}
-                            />
-
-                            <TextField
-                                label="Número de telemóvel"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                id="phone"
-                                name="phone"
-                                value={data.phone}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                error={!!errors.phone}
-                                helperText={errors.phone && <InputError message={errors.phone} />}
                             />
 
                             <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>

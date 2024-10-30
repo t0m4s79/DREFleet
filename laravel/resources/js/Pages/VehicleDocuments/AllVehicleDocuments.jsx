@@ -30,7 +30,7 @@ console.log(vehicleDocuments);
             name: vehicleDocument.name,
             issue_date: vehicleDocument.issue_date,
             expiration_date: vehicleDocument.expiration_date,
-            expired: vehicleDocument.expired ? 'Sim' : 'Não', // Handle boolean for display
+            expired: vehicleDocument.expired,
             vehicle_id: vehicleDocument.vehicle_id,
             data: additionalData, // Store key-value pairs as array
         };

@@ -534,8 +534,8 @@ class OrderController extends Controller
 
         $order->load(['orderStops']);
         $order->orderStops->each(function ($stop) {
-            $stop->expected_arrival_date = Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i');
-            $stop->actual_arrival_date = Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i');
+            $stop->expected_arrival_date = $stop->expected_arrival_date ? Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i') : null;
+            $stop->actual_arrival_date = $stop->actual_arrival_date ? Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i') : null;
         });
 
         return Inertia::render('Orders/OrderStops', [

@@ -81,7 +81,7 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     <div>
                         <Link
                             key={params.value}
-                            href={route('vehicles.showEdit', params.value)}
+                            href={route('places.showEdit', params.value)}
                         >
                             <Button
                                 variant="outlined"
