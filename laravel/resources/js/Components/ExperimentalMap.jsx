@@ -26,18 +26,18 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
             map.panInsideBounds(bounds);
         });
 
-        if (!map || waypoints.length < 2) return;
+        if (!map || waypoints.length < 1) return;
 
         // Check if the OSRM server URL is defined in the environment variable
         const osrmServerUrl = import.meta.env.VITE_OSRM_SERVER_URL;
         
         const routerOptions = osrmServerUrl
             ? { serviceUrl: osrmServerUrl } // If the variable exists, use the OSRM server
-            : {}; // If not, fall back to the default configuration
+            : { serviceUrl: 'http://router.project-osrm.org'}; // If not, fall back to the default configuration
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
-            router: L.Routing.osrmv1(routerOptions), // Use the conditional router
+            router: L.Routing.osrmv1(`${routerOptions}/route/v1`), // Use the conditional router
             language: 'pt-PT',
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
