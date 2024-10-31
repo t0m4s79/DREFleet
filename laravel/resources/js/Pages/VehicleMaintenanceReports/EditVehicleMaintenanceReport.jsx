@@ -18,7 +18,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles} 
         kilometrage: report.kilometrage,
         total_cost: report.total_cost,
         items_cost: report.items_cost,
-        service_provider: report.service_provider,
+        service_provider: report.service_provider ? report.service_provider : '',
         vehicle_id: report.vehicle_id,
     });
 
@@ -147,7 +147,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles} 
                                         </Grid>
 
                                         <Grid container spacing={3}>
-                                            <Grid item xs={6}>
+                                            <Grid item xs={12} md={6}>
                                                 <TextField
                                                     label="Kilometragem (opcional)"
                                                     name="kilometrage"
@@ -164,7 +164,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles} 
                                                 />      
                                             </Grid>
 
-                                            <Grid item xs={6}>
+                                            <Grid item xs={12} md={6}>
                                                 <TextField
                                                     label="Providenciador de Serviços (opcional)"
                                                     multiline
