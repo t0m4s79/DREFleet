@@ -252,7 +252,7 @@ class OrderTest extends TestCase
 
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1','capacity' => 100, 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1','capacity' => 100, 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -338,7 +338,7 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             //Not adapted for wheelchairs
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -387,7 +387,7 @@ class OrderTest extends TestCase
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias', 'Outros']),
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -436,7 +436,7 @@ class OrderTest extends TestCase
             'order_type' => 'Transporte de Crianças',
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -482,7 +482,7 @@ class OrderTest extends TestCase
             'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'tcc' => 1])->id,
             'driver_id' => $driver_1->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -519,7 +519,7 @@ class OrderTest extends TestCase
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1', 'tcc' => 1])->id,
             'driver_id' => $driver_2->user_id,
             'technician_id' => TechnicianFactory::new()->create()->id,
         ];
@@ -561,7 +561,7 @@ class OrderTest extends TestCase
             'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador'])])->id,
         ];
@@ -606,7 +606,7 @@ class OrderTest extends TestCase
             'trajectory' => json_encode($trajectory),
             'order_type' => $orderType,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -647,7 +647,7 @@ class OrderTest extends TestCase
 
             'places_changed' => false,
             'places' => [],
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -711,7 +711,7 @@ class OrderTest extends TestCase
                 ]
             ],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -782,7 +782,7 @@ class OrderTest extends TestCase
             'places' => $placesData,
             
             //Not adapted for wheelchairs
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '0', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -836,7 +836,7 @@ class OrderTest extends TestCase
             'places_changed' => true,
             'places' => $placesData,
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -890,7 +890,7 @@ class OrderTest extends TestCase
             'places_changed' => true,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'capacity' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -936,7 +936,7 @@ class OrderTest extends TestCase
             'places_changed' => false,
             'places' => [],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $driver_1->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -971,7 +971,7 @@ class OrderTest extends TestCase
             'trajectory' => json_encode($trajectory),
             'order_type' => Arr::random(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']),
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '1', 'heavy_type' => 'Passageiros', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $driver_2->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];
@@ -1011,7 +1011,7 @@ class OrderTest extends TestCase
             'places_changed' => false,
             'places' => [],
 
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => User::factory()->create(['user_type' => Arr::random(['Gestor', 'Condutor', 'Administrador']), 'status' => 'Disponível'])->id,
         ];
@@ -1266,7 +1266,7 @@ class OrderTest extends TestCase
             'order_type' => $orderType,
             'places' => $placesData,
             
-            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível'])->id,
+            'vehicle_id' => Vehicle::factory()->create(['heavy_vehicle' => '0', 'wheelchair_adapted' => '1', 'status' => 'Disponível', 'capacity' => 20, 'tcc' => 1])->id,
             'driver_id' => $this->driver->user_id,
             'technician_id' => TechnicianFactory::new()->create(['status' => 'Disponível'])->id,
         ];        

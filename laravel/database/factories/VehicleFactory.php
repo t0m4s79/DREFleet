@@ -37,6 +37,7 @@ class VehicleFactory extends Factory
             'heavy_type' => $heavyType,
             'wheelchair_adapted' => fake()->boolean(),
             'wheelchair_certified' => fake()->boolean(),
+            'tcc' => fake()->boolean(),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
             'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),

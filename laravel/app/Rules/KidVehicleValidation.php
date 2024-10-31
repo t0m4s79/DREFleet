@@ -34,6 +34,10 @@ class KidVehicleValidation implements ValidationRule
                 $fail('Crianças não podem ser incluídas a menos que o tipo de pedido seja "Transporte de Crianças"');
             }
 
+            if ($kid && !$vehicle->tcc) {
+                $fail("Este veículo não tem certificado de transporte coletivo de crianças (tcc)");
+            }
+
             // Check if the vehicle is wheelchair-adapted for kids with a wheelchair
             if ($kid && $kid->wheelchair && !$vehicle->wheelchair_adapted) {
                 $fail("Este veículo não está preparado para transportar crianças com cadeira de rodas");

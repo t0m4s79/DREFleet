@@ -60,10 +60,11 @@ class VehicleController extends Controller
                 Rule::unique(Vehicle::class),
             ],
             'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
-            'heavy_vehicle' => 'required',
+            'heavy_vehicle' => ['required', 'boolean'],
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
-            'wheelchair_adapted' => 'required',
-            'wheelchair_certified' => 'required',
+            'wheelchair_adapted' => ['required', 'boolean'],
+            'wheelchair_certified' => ['required', 'boolean'],
+            'tcc' => ['required', 'boolean'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -104,6 +105,7 @@ class VehicleController extends Controller
                 'heavy_type' => $incomingFields['heavy_type'],
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'tcc' => $incomingFields['tcc'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],
@@ -155,10 +157,11 @@ class VehicleController extends Controller
                 Rule::unique('vehicles')->ignore($vehicle->id), // Unique rule that ignores the current vehicle's ID during editing
             ],
             'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
-            'heavy_vehicle' => 'required',
+            'heavy_vehicle' => ['required', 'boolean'],
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null ,'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
-            'wheelchair_adapted' => 'required',
-            'wheelchair_certified' => 'required',
+            'wheelchair_adapted' => ['required', 'boolean'],
+            'wheelchair_certified' => ['required', 'boolean'],
+            'tcc' => ['required', 'boolean'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -203,6 +206,7 @@ class VehicleController extends Controller
                 'heavy_type' => $incomingFields['heavy_type'],
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'tcc' => $incomingFields['tcc'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],

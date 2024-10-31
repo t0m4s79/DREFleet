@@ -17,6 +17,7 @@ export default function EditVehicle({ auth, vehicle}) {
         heavy_type: vehicle.heavy_type,
         wheelchair_adapted: vehicle.wheelchair_adapted,
         wheelchair_certified: vehicle.wheelchair_certified,
+        tcc: vehicle.tcc,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
@@ -149,7 +150,7 @@ export default function EditVehicle({ auth, vehicle}) {
                             <Grid container>
                                 <Grid item xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Veículo Pesado?</FormLabel>
+                                        <FormLabel component="legend">Veículo Pesado</FormLabel>
                                         <RadioGroup
                                             name="heavy_vehicle"
                                             value={data.heavy_vehicle}
@@ -175,7 +176,7 @@ export default function EditVehicle({ auth, vehicle}) {
 
                                 <Grid item  xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
+                                        <FormLabel component="legend">Adaptado a cadeira de rodas</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
                                             value={data.wheelchair_adapted}
@@ -189,10 +190,24 @@ export default function EditVehicle({ auth, vehicle}) {
 
                                 <Grid item  xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
+                                        <FormLabel component="legend">Certificado a cadeira de rodas</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_certified"
                                             value={data.wheelchair_certified}
+                                            onChange={handleChange}
+                                        >
+                                            <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                            <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item  xs={12} md={6}>
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
+                                        <FormLabel component="legend">TCC</FormLabel>
+                                        <RadioGroup
+                                            name="tcc"
+                                            value={data.tcc}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />

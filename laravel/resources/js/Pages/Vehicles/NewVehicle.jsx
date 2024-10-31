@@ -17,6 +17,7 @@ export default function NewVehicle( {auth} ) {
         heavy_type:'',
         wheelchair_adapted: '',
         wheelchair_certified: '',
+        tcc: '',
         capacity: '',
         fuel_consumption: '',
         status: '',
@@ -142,6 +143,7 @@ export default function NewVehicle( {auth} ) {
                                             {errors.heavy_vehicle && <InputError message={errors.heavy_vehicle} />}
                                         </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} md={6}>
                                         <FormControl component="fieldset" margin="normal">
                                             <FormLabel component="legend">Tipo de Pesado</FormLabel>
@@ -157,6 +159,7 @@ export default function NewVehicle( {auth} ) {
                                             {errors.heavy_type && <InputError message={errors.heavy_type} />}
                                         </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} md={6}>
                                         <FormControl component="fieldset" margin="normal">
                                             <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
@@ -172,6 +175,7 @@ export default function NewVehicle( {auth} ) {
                                             {errors.wheelchair_adapted && <InputError message={errors.wheelchair_adapted} />}
                                         </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} md={6}>
                                         <FormControl component="fieldset" margin="normal">
                                             <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
@@ -185,6 +189,22 @@ export default function NewVehicle( {auth} ) {
                                                 <FormControlLabel value="1" control={<Radio />} label="Sim" />
                                             </RadioGroup>
                                             {errors.wheelchair_certified && <InputError message={errors.wheelchair_certified} />}
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item  xs={12} md={6}>
+                                        <FormControl component="fieldset" margin="normal">
+                                            <FormLabel component="legend">TCC</FormLabel>
+                                            <RadioGroup
+                                                aria-label="tcc"
+                                                name="tcc"
+                                                value={data.tcc}
+                                                onChange={(e) => setData('tcc', e.target.value)}
+                                            >
+                                                <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                                <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                            </RadioGroup>
+                                            {errors.tcc && <InputError message={errors.tcc} />}
                                         </FormControl>
                                     </Grid>
                                 </Grid>
