@@ -42,7 +42,7 @@ class VehicleRefuelRequestNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Novo pedido de reabastecimento do tipo ' . $this->request->request_type . '.')
-                    ->action('Ver detalhes em', route('vehicles.refuelRequests', ['vehicle' => $this->vehicle->id]))
+                    ->action('Ver detalhes do veículo em ', route('vehicles.refuelRequests', ['vehicle' => $this->vehicle->id]))
                     ->line('Foi criado um novo pedido de reabastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.');
     }
 

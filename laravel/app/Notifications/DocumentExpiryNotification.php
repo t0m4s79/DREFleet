@@ -43,7 +43,7 @@ class DocumentExpiryNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Documento prestes a expirar.')
-                    ->action('Ver documento em', route('vehicleDocuments.edit', ['vehicleDocument' => $this->document->id]))
+                    ->action('Ver detalhes do documento em ', route('vehicleDocuments.edit', ['vehicleDocument' => $this->document->id]))
                     ->line('O documento com id ' . $this->document->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.');
     }
 

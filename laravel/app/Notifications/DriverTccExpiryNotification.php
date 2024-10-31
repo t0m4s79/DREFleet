@@ -40,7 +40,7 @@ class DriverTccExpiryNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Tcc prestes a expirar.')
-                    ->action('Ver tcc em ', route('drivers.edit', ['driver' => $this->driver->user_id]))
+                    ->action('Ver detalhes do condutor em ', route('drivers.edit', ['driver' => $this->driver->user_id]))
                     ->line('O tcc do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.');
     }
 
