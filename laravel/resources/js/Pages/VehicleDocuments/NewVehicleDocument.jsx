@@ -85,7 +85,7 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('vehicleDocuments.create'));     //TODO: fix issue where characters are missing from data
+        post(route('vehicleDocuments.create'));
     };
     
     console.log('data', data);
