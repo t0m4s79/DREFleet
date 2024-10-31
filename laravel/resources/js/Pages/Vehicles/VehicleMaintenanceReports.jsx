@@ -32,7 +32,7 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
             begin_date: report.begin_date,
             end_date: report.end_date,
             type: report.type,
-            description: 'Popup com descrição',
+            description: report.description,
             kilometrage: report.kilometrage,
             total_cost: report.total_cost,
             items_cost: additionalData,

@@ -16,15 +16,13 @@ export default function MouseHoverPopover({ data }) {
 	const open = Boolean(anchorEl);
 
 	return (
-		<div>
-			<Typography
-				aria-owns={open ? 'mouse-over-popover' : undefined}
-				aria-haspopup="true"
-				onMouseEnter={handlePopoverOpen}
-				onMouseLeave={handlePopoverClose}
-			>
-				{data}
-			</Typography>
+		<div
+			aria-owns={open ? 'mouse-over-popover' : undefined}
+			aria-haspopup="true"
+			onMouseEnter={handlePopoverOpen}
+			onMouseLeave={handlePopoverClose}
+		>
+			{data}
 			<Popover
 				id="mouse-over-popover"
 				sx={{ pointerEvents: 'none' }}
@@ -41,9 +39,8 @@ export default function MouseHoverPopover({ data }) {
 				onClose={handlePopoverClose}
 				disableRestoreFocus
 			>
-				{data?.map((elem,index)=>(
-					<Typography sx={{ p: 1 }}>{elem}</Typography>
-				))}	
+					<Typography sx={{ p: 1, maxWidth: '400px' }}>{data}</Typography>
+	
 			</Popover>
 		</div>
 	);

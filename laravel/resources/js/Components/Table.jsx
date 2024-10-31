@@ -522,13 +522,13 @@ const Table = ({ data, columnsLabel = {}, editAction, deleteAction, dataId }) =>
                     </div>
                 )
             }
-            // else if(key === 'additionalData'){
-            //     return (
-            //         <div>
-            //             <MouseHoverPopover data={params.value} />
-            //         </div>
-            //     )
-            // }
+            else if(key === 'description'){
+                return (
+                    <div>
+                        <MouseHoverPopover data={params.value} />
+                    </div>
+                )
+            }
 
             return params.value;
         }
