@@ -18,6 +18,7 @@ export default function NewVehicle( {auth} ) {
         wheelchair_adapted: '',
         wheelchair_certified: '',
         tcc: '',
+        current_year_tows: '',
         capacity: '',
         fuel_consumption: '',
         status: '',
@@ -286,19 +287,32 @@ export default function NewVehicle( {auth} ) {
                                 </FormControl>
                                 
                                 <TextField
-                                label="Kilometragem Atual"
-                                name="current_kilometrage"
-                                type="number"
-                                value={data.current_kilometrage}
-                                onChange={(e) => setData('current_kilometrage', e.target.value)}
-                                fullWidth
-                                margin="normal"
-                                inputProps={{ min: 0}}
-                                error={!!errors.current_kilometrage}
-                                helperText={errors.current_kilometrage}
+                                    label="Kilometragem Atual"
+                                    name="current_kilometrage"
+                                    type="number"
+                                    value={data.current_kilometrage}
+                                    onChange={(e) => setData('current_kilometrage', e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    inputProps={{ min: 0}}
+                                    error={!!errors.current_kilometrage}
+                                    helperText={errors.current_kilometrage}
                                 />
 
-                                <br />
+                                <TextField
+                                    label="Reboques utilizados este ano"
+                                    name="current_year_tows"
+                                    type="number"
+                                    value={data.current_year_tows}
+                                    onChange={(e) => setData('current_year_tows', e.target.value)}
+                                    fullWidth
+                                    margin="normal"
+                                    inputProps={{ min: 0}}
+                                    error={!!errors.current_year_tows}
+                                    helperText={errors.current_year_tows}
+                                />
+
+                                <br /> <br />
 
                                 <Button variant="outlined" type="submit" disabled={processing}>
                                     Submeter

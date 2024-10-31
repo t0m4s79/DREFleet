@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('wheelchair_adapted');
             $table->boolean('wheelchair_certified');
             $table->boolean('tcc');             //Certified to transport kids
+            $table->integer('current_year_tows');
             $table->integer('capacity');
             $table->decimal('fuel_consumption', 6, 3);
             $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido', 'Em Serviço']);

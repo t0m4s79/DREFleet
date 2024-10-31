@@ -38,6 +38,7 @@ class VehicleFactory extends Factory
             'wheelchair_adapted' => fake()->boolean(),
             'wheelchair_certified' => fake()->boolean(),
             'tcc' => fake()->boolean(),
+            'current_year_tows' => rand(0,10),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
             'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),

@@ -65,6 +65,7 @@ class VehicleController extends Controller
             'wheelchair_adapted' => ['required', 'boolean'],
             'wheelchair_certified' => ['required', 'boolean'],
             'tcc' => ['required', 'boolean'],
+            'current_year_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -106,6 +107,7 @@ class VehicleController extends Controller
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
                 'tcc' => $incomingFields['tcc'],
+                'current_year_tows' => $incomingFields['current_year_tows'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],
@@ -162,6 +164,7 @@ class VehicleController extends Controller
             'wheelchair_adapted' => ['required', 'boolean'],
             'wheelchair_certified' => ['required', 'boolean'],
             'tcc' => ['required', 'boolean'],
+            'current_year_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -207,6 +210,7 @@ class VehicleController extends Controller
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
                 'tcc' => $incomingFields['tcc'],
+                'current_year_tows' => $incomingFields['current_year_tows'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],
