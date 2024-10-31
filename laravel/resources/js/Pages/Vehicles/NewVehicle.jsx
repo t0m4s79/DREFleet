@@ -18,7 +18,7 @@ export default function NewVehicle( {auth} ) {
         wheelchair_adapted: '',
         wheelchair_certified: '',
         tcc: '',
-        current_year_tows: '',
+        yearly_allowed_tows: '',
         capacity: '',
         fuel_consumption: '',
         status: '',
@@ -300,16 +300,16 @@ export default function NewVehicle( {auth} ) {
                                 />
 
                                 <TextField
-                                    label="Reboques utilizados este ano"
-                                    name="current_year_tows"
+                                    label="Reboques anuais permitidos"
+                                    name="yearly_allowed_tows"
                                     type="number"
-                                    value={data.current_year_tows}
-                                    onChange={(e) => setData('current_year_tows', e.target.value)}
+                                    value={data.yearly_allowed_tows}
+                                    onChange={(e) => setData('yearly_allowed_tows', e.target.value)}
                                     fullWidth
                                     margin="normal"
                                     inputProps={{ min: 0}}
-                                    error={!!errors.current_year_tows}
-                                    helperText={errors.current_year_tows}
+                                    error={!!errors.yearly_allowed_tows}
+                                    helperText={errors.yearly_allowed_tows}
                                 />
 
                                 <br /> <br />

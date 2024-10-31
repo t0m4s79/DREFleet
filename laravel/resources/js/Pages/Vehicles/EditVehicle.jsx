@@ -18,7 +18,7 @@ export default function EditVehicle({ auth, vehicle}) {
         wheelchair_adapted: vehicle.wheelchair_adapted,
         wheelchair_certified: vehicle.wheelchair_certified,
         tcc: vehicle.tcc,
-        current_year_tows: vehicle.current_year_tows,
+        yearly_allowed_tows: vehicle.yearly_allowed_tows,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
@@ -311,18 +311,18 @@ export default function EditVehicle({ auth, vehicle}) {
                             />
 
                             <TextField
-                                label="Reboques utilizados este ano"
-                                name="current_year_tows"
+                                label="Reboques anuais permitidos"
+                                name="yearly_allowed_tows"
                                 type="number"
-                                value={data.current_year_tows}
+                                value={data.yearly_allowed_tows}
                                 onChange={handleChange}
                                 className={!isEditMode ? 'read-only-field' : ''}
                                 disabled={!isEditMode}
                                 fullWidth
                                 margin="normal"
                                 inputProps={{ min: 0}}
-                                error={!!errors.current_year_tows}
-                                helperText={errors.current_year_tows}
+                                error={!!errors.yearly_allowed_tows}
+                                helperText={errors.yearly_allowed_tows}
                             />
 
                             <br />
