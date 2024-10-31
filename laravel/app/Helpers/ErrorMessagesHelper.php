@@ -67,6 +67,7 @@ class ErrorMessagesHelper
 
             'license_middle_digits.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 6 dígitos',
             'license_last_digit.regex' => 'Este campo só permite números positivos com, obrigatoriamente, 1 dígito',
+            'tcc_expiration_date.required_if' => 'Necessário preencher a data se condutor tiver tcc',
 
             // Email
             'email.email' => 'Este campo deve ser um endereço email válido',

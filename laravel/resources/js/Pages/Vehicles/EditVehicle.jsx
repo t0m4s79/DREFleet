@@ -17,6 +17,8 @@ export default function EditVehicle({ auth, vehicle}) {
         heavy_type: vehicle.heavy_type,
         wheelchair_adapted: vehicle.wheelchair_adapted,
         wheelchair_certified: vehicle.wheelchair_certified,
+        tcc: vehicle.tcc,
+        yearly_allowed_tows: vehicle.yearly_allowed_tows,
         capacity: vehicle.capacity,
         fuel_consumption: vehicle.fuel_consumption,
         status: vehicle.status,
@@ -154,7 +156,7 @@ export default function EditVehicle({ auth, vehicle}) {
                             <Grid container>
                                 <Grid item xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Veículo Pesado?</FormLabel>
+                                        <FormLabel component="legend">Veículo Pesado</FormLabel>
                                         <RadioGroup
                                             name="heavy_vehicle"
                                             value={data.heavy_vehicle}
@@ -180,7 +182,7 @@ export default function EditVehicle({ auth, vehicle}) {
 
                                 <Grid item  xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Adaptado a cadeira de rodas?</FormLabel>
+                                        <FormLabel component="legend">Adaptado a cadeira de rodas</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_adapted"
                                             value={data.wheelchair_adapted}
@@ -194,10 +196,24 @@ export default function EditVehicle({ auth, vehicle}) {
 
                                 <Grid item  xs={12} md={6}>
                                     <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                        <FormLabel component="legend">Certificado a cadeira de rodas?</FormLabel>
+                                        <FormLabel component="legend">Certificado a cadeira de rodas</FormLabel>
                                         <RadioGroup
                                             name="wheelchair_certified"
                                             value={data.wheelchair_certified}
+                                            onChange={handleChange}
+                                        >
+                                            <FormControlLabel value="0" control={<Radio />} label="Não" />
+                                            <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+
+                                <Grid item  xs={12} md={6}>
+                                    <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
+                                        <FormLabel component="legend">TCC</FormLabel>
+                                        <RadioGroup
+                                            name="tcc"
+                                            value={data.tcc}
                                             onChange={handleChange}
                                         >
                                             <FormControlLabel value="0" control={<Radio />} label="Não" />
@@ -297,6 +313,21 @@ export default function EditVehicle({ auth, vehicle}) {
                                 inputProps={{ min: 0}}
                                 error={!!errors.current_kilometrage}
                                 helperText={errors.current_kilometrage}
+                            />
+
+                            <TextField
+                                label="Reboques anuais permitidos"
+                                name="yearly_allowed_tows"
+                                type="number"
+                                value={data.yearly_allowed_tows}
+                                onChange={handleChange}
+                                className={!isEditMode ? 'read-only-field' : ''}
+                                disabled={!isEditMode}
+                                fullWidth
+                                margin="normal"
+                                inputProps={{ min: 0}}
+                                error={!!errors.yearly_allowed_tows}
+                                helperText={errors.yearly_allowed_tows}
                             />
 
                             <br />

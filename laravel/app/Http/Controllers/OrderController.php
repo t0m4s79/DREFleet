@@ -26,6 +26,7 @@ use App\Rules\OrderVehicleCapacityValidation;
 use App\Notifications\OrderCreationNotification;
 use App\Rules\EntityOrderAvailabilityValidation;
 use App\Notifications\OrderRequiresApprovalNotification;
+use App\Rules\KidDriverValidation;
 
 class OrderController extends Controller
 {
@@ -119,6 +120,7 @@ class OrderController extends Controller
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
                 new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
+                new KidDriverValidation($request->input('order_type')),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
@@ -270,6 +272,7 @@ class OrderController extends Controller
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
                 new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
+                new KidDriverValidation($request->input('order_type')),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
@@ -515,6 +518,11 @@ class OrderController extends Controller
         $order->load(['occurrences', 'vehicle', 'driver']);
 
         $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y');
+
+        $order->occurrences->each(function ($occurrence) {
+            $occurrence->vehicle_towed = $occurrence->vehicle_towed == 1 ? 'Sim' : 'Não';
+        });
+
 
         return Inertia::render('Orders/OrderOccurrences', [
             'flash' => [

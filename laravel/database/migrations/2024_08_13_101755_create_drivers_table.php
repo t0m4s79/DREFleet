@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('heavy_license');
             $table->enum('heavy_license_type',['Mercadorias', 'Passageiros'])->nullable();
             $table->date('license_expiration_date');
+            $table->boolean('tcc');                 // Children transportation certified (trasnporte certificado de crianças)
+            $table->date('tcc_expiration_date')->nullable();
             $table->timestamps();
 
             $table->index('license_number');

@@ -20,6 +20,8 @@ class Vehicle extends Model
         'heavy_type',
         'wheelchair_adapted',
         'wheelchair_certified',
+        'tcc',
+        'yearly_allowed_tows',
         'capacity',
         'fuel_consumption',
         'status',

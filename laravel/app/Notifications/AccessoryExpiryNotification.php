@@ -43,7 +43,7 @@ class AccessoryExpiryNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Acessório prestes a expirar.')
-                    ->action('Ver acessório em', route('vehicleAccessories.edit', ['vehicleAccessory' => $this->accessory->id]))
+                    ->action('Ver detalhes do acessório em ', route('vehicleAccessories.edit', ['vehicleAccessory' => $this->accessory->id]))
                     ->line('O acessório com id ' . $this->accessory->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.');
     }
 

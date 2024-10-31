@@ -21,7 +21,14 @@ class VehicleController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $vehicles = Vehicle::All();
+        $vehicles = Vehicle::withCount([
+            'orders as this_year_tow_counts' => function ($query) {
+                $query->whereYear('expected_begin_date', now()->year)
+                      ->whereHas('occurrences', function ($query) {
+                          $query->where('vehicle_towed', 1);
+                      });
+            }
+        ])->get();
 
         $vehicles->each(function ($vehicle) {
             $vehicle->heavy_type = $vehicle->heavy_type ?? '-';
@@ -60,10 +67,12 @@ class VehicleController extends Controller
                 Rule::unique(Vehicle::class),
             ],
             'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
-            'heavy_vehicle' => 'required',
+            'heavy_vehicle' => ['required', 'boolean'],
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
-            'wheelchair_adapted' => 'required',
-            'wheelchair_certified' => 'required',
+            'wheelchair_adapted' => ['required', 'boolean'],
+            'wheelchair_certified' => ['required', 'boolean'],
+            'tcc' => ['required', 'boolean'],
+            'yearly_allowed_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -104,6 +113,8 @@ class VehicleController extends Controller
                 'heavy_type' => $incomingFields['heavy_type'],
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'tcc' => $incomingFields['tcc'],
+                'yearly_allowed_tows' => $incomingFields['yearly_allowed_tows'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],
@@ -155,10 +166,12 @@ class VehicleController extends Controller
                 Rule::unique('vehicles')->ignore($vehicle->id), // Unique rule that ignores the current vehicle's ID during editing
             ],
             'year' => ['required', 'integer', 'digits:4'], // Ensure the year is a 4-digit integer
-            'heavy_vehicle' => 'required',
+            'heavy_vehicle' => ['required', 'boolean'],
             'heavy_type' => ['required_if:heavy_vehicle,1', Rule::in([null ,'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
-            'wheelchair_adapted' => 'required',
-            'wheelchair_certified' => 'required',
+            'wheelchair_adapted' => ['required', 'boolean'],
+            'wheelchair_certified' => ['required', 'boolean'],
+            'tcc' => ['required', 'boolean'],
+            'yearly_allowed_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
             'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
@@ -203,6 +216,8 @@ class VehicleController extends Controller
                 'heavy_type' => $incomingFields['heavy_type'],
                 'wheelchair_adapted' => $incomingFields['wheelchair_adapted'],
                 'wheelchair_certified' => $incomingFields['wheelchair_certified'],
+                'tcc' => $incomingFields['tcc'],
+                'yearly_allowed_tows' => $incomingFields['yearly_allowed_tows'],
                 'capacity' => $incomingFields['capacity'],
                 'fuel_consumption' => $incomingFields['fuel_consumption'],
                 'status' => $incomingFields['status'],

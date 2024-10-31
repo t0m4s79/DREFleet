@@ -3,26 +3,23 @@
 namespace App\Notifications;
 
 use App\Models\Vehicle;
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class DocumentExpiryNotification extends Notification
+class VehicleTowLimitReachedNotification extends Notification
 {
     use Queueable;
-
-    protected $document;
 
     protected $vehicle;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($vehicle, $document)
+    public function __construct($vehicle)
     {
-        $this->document = $document;
         $this->vehicle = $vehicle;
     }
 
@@ -33,7 +30,7 @@ class DocumentExpiryNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [CustomDbChannel::class];        //can include 'mail' after mail system is ready and show pages are built
+        return [CustomDbChannel::class];
     }
 
     /**
@@ -42,9 +39,9 @@ class DocumentExpiryNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Documento prestes a expirar.')
-                    ->action('Ver detalhes do documento em ', route('vehicleDocuments.edit', ['vehicleDocument' => $this->document->id]))
-                    ->line('O documento com id ' . $this->document->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.');
+                    ->line('Limite de reboques do veículo atingido')
+                    ->action('Ver detalhes do veículo em ', route('vehicles.edit', ['vehicle' => $this->vehicle->id]))
+                    ->line('O limite de reboques do veículo com id ' . $this->vehicle->id . ' foi atingido (' . $this->vehicle->yearly_allowed_tows . ' reboques)');
     }
 
     /**
@@ -58,9 +55,9 @@ class DocumentExpiryNotification extends Notification
             'user_id' => $notifiable->id,
             'related_entity_type' => Vehicle::class,
             'related_entity_id' => $this->vehicle->id,
-            'type' => 'Documento',
-            'title' => 'Documento perto de expirar',
-            'message' => 'O documento com id ' . $this->document->id . ' do veículo ' . $this->vehicle->id . ' está prestes a expirar.',
+            'type' => 'Veículo',
+            'title' => 'Limite de reboques do veículo atingido',
+            'message' => 'O limite de reboques do veículo com id ' . $this->vehicle->id . ' foi atingido (' . $this->vehicle->yearly_allowed_tows . ' reboques)',
             'is_read' => false,
         ];
     }

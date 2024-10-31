@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('heavy_type',['Mercadorias', 'Passageiros'])->nullable();
             $table->boolean('wheelchair_adapted');
             $table->boolean('wheelchair_certified');
+            $table->boolean('tcc');             //Certified to transport kids
+            $table->integer('yearly_allowed_tows');
             $table->integer('capacity');
             $table->decimal('fuel_consumption', 6, 3);
             $table->enum('status',['Disponível','Indisponível','Em manutenção','Escondido', 'Em Serviço']);

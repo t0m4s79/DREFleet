@@ -13,6 +13,7 @@ class OrderOccurrence extends Model
 
     protected $fillable = [
         'type',
+        'vehicle_towed',
         'description',
         'order_id',
     ];

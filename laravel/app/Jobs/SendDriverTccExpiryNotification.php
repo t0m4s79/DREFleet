@@ -4,14 +4,14 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Models\Driver;
-use App\Notifications\DriverLicenseExpiryNotification;
+use App\Notifications\DriverTccExpiryNotification;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SendDriverLicenseExpiryNotification implements ShouldQueue
+class SendDriverTccExpiryNotification implements ShouldQueue
 {
     use Queueable;
 
@@ -32,9 +32,9 @@ class SendDriverLicenseExpiryNotification implements ShouldQueue
         $currentDate = now();
         $oneMonthFromNow = now()->addMonth();
 
-        // Fetch drivers with license that expires within one month
-        $drivers = Driver::where('license_expiration_date', '>=', $currentDate)
-                    ->where('license_expiration_date', '<=', $oneMonthFromNow)
+        // Fetch drivers with tcc that expires within one month
+        $drivers = Driver::where('tcc_expiration_date', '>=', $currentDate)
+                    ->where('tcc_expiration_date', '<=', $oneMonthFromNow)
                     ->get();
 
         foreach ($drivers as $driver) {
@@ -43,12 +43,12 @@ class SendDriverLicenseExpiryNotification implements ShouldQueue
                 ->get();  // Retrieve the collection of users
 
             foreach ($users as $user) {
-                if ($driver->license_expiration_date >= $currentDate && $driver->license_expiration_date <= $oneMonthFromNow) {
-                    $user->notify(new DriverLicenseExpiryNotification($driver));                            // Notify each manager
+                if ($driver->tcc_expiration_date >= $currentDate && $driver->tcc_expiration_date <= $oneMonthFromNow) {
+                    $user->notify(new DriverTccExpiryNotification($driver));                            // Notify each manager
                 }
             }
 
-            User::find($driver->user_id)->notify(new DriverLicenseExpiryNotification($driver));     // Notify the driver
+            User::find($driver->user_id)->notify(new DriverTccExpiryNotification($driver));     // Notify the driver
         }
     }
 }

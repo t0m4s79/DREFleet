@@ -3,13 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Driver;
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\Channels\CustomDbChannel;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class DriverLicenseExpiryNotification extends Notification
+class DriverTccExpiryNotification extends Notification
 {
     use Queueable;
 
@@ -39,9 +39,9 @@ class DriverLicenseExpiryNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Carta de condução prestes a expirar.')
-            ->action('Ver detalhes do condutor em ', route('drivers.edit', ['driver' => $this->driver->user_id]))
-            ->line('A carta de condução do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.');
+                    ->line('Tcc prestes a expirar.')
+                    ->action('Ver detalhes do condutor em ', route('drivers.edit', ['driver' => $this->driver->user_id]))
+                    ->line('O tcc do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.');
     }
 
     /**
@@ -56,8 +56,8 @@ class DriverLicenseExpiryNotification extends Notification
             'related_entity_type' => Driver::class,
             'related_entity_id' => $this->driver->user_id,
             'type' => 'Condutor',
-            'title' => 'Carta de condução perto de expirar',
-            'message' => 'A carta de condução do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.',
+            'title' => 'Tcc prestes a expirar',
+            'message' => 'O tcc do condutor com id ' . $this->driver->user_id . ' está prestes a expirar.',
             'is_read' => false,
         ];
     }

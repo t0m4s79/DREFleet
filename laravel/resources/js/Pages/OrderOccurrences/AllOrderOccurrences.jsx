@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 
 export default function AllOrderOccurences({auth, occurrences, flash}) {
-    console.log(occurrences)
+
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -27,6 +27,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             driver_id: occurrence.order.driver.user_id,
             vehicle_id: occurrence.order.vehicle.id,
             type: occurrence.type,
+            vehicle_towed: occurrence.vehicle_towed,
             description: occurrence.description,
             created_at: occurrence.created_at,
             updated_at: occurrence.updated_at
@@ -40,6 +41,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
         driver_id: 'Condutor',
         vehicle_id: 'Veículo',
         type: 'Tipo',
+        vehicle_towed: 'Veículo rebocado',
         description: 'Descrição',
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização'

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('order_occurrences', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['Manutenções', 'Reparações', 'Lavagens', 'Outros']);
+            $table->boolean('vehicle_towed');
             $table->text('description');
 
             $table->unsignedBigInteger('order_id');

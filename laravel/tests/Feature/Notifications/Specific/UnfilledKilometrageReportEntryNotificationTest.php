@@ -59,7 +59,7 @@ class UnfilledKilometrageReportEntryNotificationTest extends TestCase
 
         // Assert: Verify that the mail message is properly structured
         $this->assertInstanceOf(MailMessage::class, $mailMessage);
-        $this->assertStringContainsString('Entrada de relatório de kilometragem em falta.', $mailMessage->introLines[0]);
+        $this->assertStringContainsString('Entrada de registo de kilometragem em falta.', $mailMessage->introLines[0]);
         $this->assertStringContainsString(route('vehicles.kilometrageReports', ['vehicle' => $vehicle->id]), $mailMessage->actionUrl);
         $this->assertStringContainsString('No mês passado, uma entrada do relatório de kilometragem não foi preenchida na data ' . $missingDate . ' para o veículo ' . $vehicle->id . '.', $mailMessage->outroLines[0]);
     }

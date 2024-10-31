@@ -20,6 +20,8 @@ class DriverFactory extends Factory
     {
         $heavyLicense = fake()->boolean();
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $childrenTransportationCertified = rand(0,1);
+        $certificationExpiration = $childrenTransportationCertified ? fake()->date() : null;
 
         return [
             'user_id' => User::factory()->state([
@@ -29,6 +31,8 @@ class DriverFactory extends Factory
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
             'license_expiration_date' => fake()->date(now()->addYears(rand(1,5))),
+            'tcc' => $childrenTransportationCertified,
+            'tcc_expiration_date' => $certificationExpiration,
         ];    
     }
 

@@ -15,6 +15,8 @@ export default function NewDriver( {auth, users} ) {
         license_number: '',
         heavy_license: '',
         heavy_license_type: '',
+        tcc: '',
+        tcc_expiration_date: '',
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -31,7 +33,6 @@ export default function NewDriver( {auth, users} ) {
     };
 
     const handleLicenseChange = (license) => {
-        console.log('license', license)
         setData('license_number', license)
     };
 
@@ -40,9 +41,15 @@ export default function NewDriver( {auth, users} ) {
             setData('heavy_license_type', null)
     }
 
+    const handleTccChange = () => {
+        if(data.tcc != 1)
+            setData('tcc_expiration_date', null)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         handleHeavyChange();
+        handleTccChange();
         post(route('drivers.create'));
     };
 
@@ -90,7 +97,7 @@ export default function NewDriver( {auth, users} ) {
                                     </Grid>
 
                                     <Grid item xs={3} sx={{marginTop: 2}}>
-                                    <Typography>Data de Validade</Typography>
+                                    <Typography>Data de Validade da Carta</Typography>
                                     <TextField
                                             //label="Data e Hora de Início"
                                             id='license_expiration_date'
@@ -160,6 +167,52 @@ export default function NewDriver( {auth, users} ) {
                                         {errors.heavy_license_type && (
                                             <InputError message={errors.heavy_license_type} />
                                         )}
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body1">TCC</Typography>
+                                        {/* Radio buttons for heavy_license */}
+                                        <FormControl component="fieldset">
+                                            <RadioGroup
+                                                aria-label="tcc"
+                                                name="tcc"
+                                                value={data.tcc}
+                                                onChange={(e) => setData('tcc', e.target.value)}
+                                            >
+                                                <FormControlLabel
+                                                    value="0"
+                                                    control={<Radio />}
+                                                    label="Não"
+                                                />
+                                                <FormControlLabel
+                                                    value="1"
+                                                    control={<Radio />}
+                                                    label="Sim"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        {errors.tcc && (
+                                            <InputError message={errors.tcc} />
+                                        )}                                    
+                                    </Grid>
+
+                                    <Grid item xs={3} sx={{marginTop: 2}}>
+                                        <Typography>Data de Validade do TCC</Typography>
+                                        <TextField
+                                                //label="Data e Hora de Início"
+                                                id='tcc_expiration_date'
+                                                name='tcc_expiration_date'
+                                                type="date"
+                                                fullWidth
+                                                value={data.tcc_expiration_date}
+                                                onChange={(e) => setData('tcc_expiration_date', e.target.value)}
+                                                disabled={data.tcc == '0'}
+                                                error={errors.tcc_expiration_date}
+                                                helperText={errors.tcc_expiration_date}
+                                                sx={{ mb: 2 }}
+                                            />
                                     </Grid>
                                 </Grid>
 

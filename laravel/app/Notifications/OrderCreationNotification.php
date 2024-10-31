@@ -43,7 +43,7 @@ class OrderCreationNotification extends Notification
 
         return (new MailMessage)
             ->line('Novo pedido.')
-            ->action('Ver pedido em', route('orders.edit', ['order' => $this->order->id]))
+            ->action('Ver detalhes do pedido em ', route('orders.edit', ['order' => $this->order->id]))
             ->line('Foi criado um novo pedido com id ' . $this->order->id . ' com data de início marcada para ' . $expected_begin_date . ' ao qual está atribuído.');
     }
 

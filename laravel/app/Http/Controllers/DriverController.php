@@ -29,6 +29,8 @@ class DriverController extends Controller
             $driver->license_expiration_date = Carbon::parse($driver->license_expiration_date)->format('d-m-Y');
             $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
             $driver->phone = $driver->phone ?? '-';
+            $driver->tcc = $driver->tcc == 1 ? 'Sim' : 'Não';
+            $driver->tcc_expiration_date =  $driver->tcc_expiration_date != null ? Carbon::parse($driver->tcc_expiration_date)->format('d-m-Y') : '-';
         });
 
         return Inertia::render('Drivers/AllDrivers', [
@@ -70,6 +72,8 @@ class DriverController extends Controller
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'license_expiration_date' => ['required', 'date'],
+            'tcc' => ['required', 'boolean'],
+            'tcc_expiration_date' => ['nullable' , 'date', 'required_if:tcc,1'],
         ], $customErrorMessages);
 
         $incomingFields['license_number'] = strip_tags($incomingFields['license_number']);
@@ -85,7 +89,9 @@ class DriverController extends Controller
                 'license_number' => $incomingFields['license_number'],
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
-                'license_expiration_date' => $incomingFields['license_expiration_date']
+                'license_expiration_date' => $incomingFields['license_expiration_date'],
+                'tcc' => $incomingFields['tcc'],
+                'tcc_expiration_date' => $incomingFields['tcc_expiration_date'],
             ]);
 
             $user = User::findOrFail($incomingFields['user_id']);
@@ -143,6 +149,8 @@ class DriverController extends Controller
             'heavy_license' => ['required', 'boolean'],
             'heavy_license_type' => ['required_if:heavy_license,1', Rule::in([null, 'Mercadorias', 'Passageiros'])], // Required only if heavy_vehicle is 1
             'license_expiration_date' => ['required', 'date'],
+            'tcc' => ['required', 'boolean'],
+            'tcc_expiration_date' => ['nullable' , 'date', 'required_if:tcc,1'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'lowercase'],
             'phone' => ['required', 'numeric', 'regex:/^[0-9]{9,15}$/'],
@@ -169,6 +177,8 @@ class DriverController extends Controller
                 'heavy_license' => $incomingFields['heavy_license'],
                 'heavy_license_type' => $incomingFields['heavy_license_type'],
                 'license_expiration_date' => $incomingFields['license_expiration_date'],
+                'tcc' => $incomingFields['tcc'],
+                'tcc_expiration_date' => $incomingFields['tcc_expiration_date'],
             ]);
 
             $user = User::findOrFail($incomingFields['user_id']);

@@ -151,6 +151,8 @@ class DriverTest extends TestCase
     {
         $heavyLicense = fake()->boolean();
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $childrenTransportationCertified = rand(0,1);
+        $certificationExpiration = $childrenTransportationCertified ? fake()->date() : null;
 
         $driverData = [
             'user_id' => User::factory()->create()->id,
@@ -158,6 +160,8 @@ class DriverTest extends TestCase
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => $childrenTransportationCertified,
+            'tcc_expiration_date' => $certificationExpiration,
         ];
 
         $response = $this
@@ -174,6 +178,8 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData['heavy_license'],
             'heavy_license_type' => $driverData['heavy_license_type'],
             'license_expiration_date' => $driverData['license_expiration_date'],
+            'tcc' => $driverData['tcc'],
+            'tcc_expiration_date' => $driverData['tcc_expiration_date'],
         ]);
     }
 
@@ -186,6 +192,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -200,6 +207,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData_1['heavy_license'],
             'heavy_license_type' => $driverData_1['heavy_license_type'],
             'license_expiration_date' => $driverData_1['license_expiration_date'],
+            'tcc' => $driverData_1['tcc'],
         ]);
 
         // Invalid middle 6 digits (input max is 5)
@@ -209,6 +217,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -223,6 +232,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData_2['heavy_license'],
             'heavy_license_type' => $driverData_2['heavy_license_type'],
             'license_expiration_date' => $driverData_2['license_expiration_date'],
+            'tcc' => $driverData_2['tcc'],
         ]);
 
         // Invalid last digit (input is a letter)
@@ -232,6 +242,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -246,6 +257,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData_3['heavy_license'],
             'heavy_license_type' => $driverData_3['heavy_license_type'],
             'license_expiration_date' => $driverData_3['license_expiration_date'],
+            'tcc' => $driverData_3['tcc'],
         ]);
 
         // Invalid format altogether
@@ -255,6 +267,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -269,6 +282,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData_4['heavy_license'],
             'heavy_license_type' => $driverData_4['heavy_license_type'],
             'license_expiration_date' => $driverData_4['license_expiration_date'],
+            'tcc' => $driverData_4['tcc'],
         ]);
 
         // License number already exists
@@ -278,6 +292,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -292,6 +307,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData_5['heavy_license'],
             'heavy_license_type' => $driverData_5['heavy_license_type'],
             'license_expiration_date' => $driverData_5['license_expiration_date'],
+            'tcc' => $driverData_5['tcc'],
         ]);
     }
 
@@ -307,6 +323,7 @@ class DriverTest extends TestCase
             'heavy_license' => 1,
             'heavy_license_type' => 'Mercadorias',
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         $response = $this
@@ -321,6 +338,7 @@ class DriverTest extends TestCase
             'heavy_license' => $driverData['heavy_license'],
             'heavy_license_type' => $driverData['heavy_license_type'],
             'license_expiration_date' => $driverData['license_expiration_date'],
+            'tcc' => $driverData['tcc'],
         ]);
     }
 
@@ -328,16 +346,22 @@ class DriverTest extends TestCase
     {
         $heavyLicense = rand(0,1);
         $heavyLicenseType = $heavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $childrenTransportationCertified = rand(0,1);
+        $certificationExpiration = $childrenTransportationCertified ? fake()->date() : null;
 
         $driver = Driver::factory()->create([
             'user_id' => User::factory()->create()->id,
             'heavy_license' => $heavyLicense,
             'heavy_license_type' => $heavyLicenseType,
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => $childrenTransportationCertified,
+            'tcc_expiration_date' => $certificationExpiration,
         ]);
     
         $newHeavyLicense = rand(0,1);
         $newHeavyLicenseType = $newHeavyLicense ? Arr::random(['Mercadorias', 'Passageiros']) : null;
+        $newChildrenTransportationCertified = rand(0,1);
+        $newCertificationExpiration = $newChildrenTransportationCertified ? fake()->date() : null;
 
         $updatedData = [
             'user_id' => $driver->user_id,
@@ -349,6 +373,8 @@ class DriverTest extends TestCase
             'heavy_license' => $newHeavyLicense,
             'heavy_license_type' => $newHeavyLicenseType,
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => $newChildrenTransportationCertified,
+            'tcc_expiration_date' => $newCertificationExpiration,
         ]; 
         
         $response = $this
@@ -365,6 +391,8 @@ class DriverTest extends TestCase
             'heavy_license' => $newHeavyLicense,
             'heavy_license_type' => $newHeavyLicenseType,
             'license_expiration_date' => $updatedData['license_expiration_date'],
+            'tcc' => $updatedData['tcc'],
+            'tcc_expiration_date' => $updatedData['tcc_expiration_date'],
         ]);
     }
 
@@ -392,8 +420,9 @@ class DriverTest extends TestCase
         $data = [
             'user_id' => User::factory()->create()->id,
             'license_number' => $this->getRandomRegionIdentifier() . '-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT) . ' ' . rand(0, 9),
-            'heavy_license' => '0',
+            'heavy_license' => 0,
             'license_expiration_date' => fake()->date('Y-m-d', now()->addYears(rand(1,5))),
+            'tcc' => 0,
         ];
 
         // Mock the Driver model to throw an exception
