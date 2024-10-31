@@ -11,20 +11,26 @@ export default function EditPlace({auth, place }) {
     const [lng, setLng] = useState(place.coordinates.coordinates[0]);  
     const [isEditMode, setisEditMode] = useState(false)
 
-    // Inertia's built-in useForm hook to manage form data, actions, errors
-    // Define data to be sent to the backend
-    const { data, setData, put, errors, processing } = useForm({    //TODO: TRY TO CHANGE COORDINATES ATTRIBUTE TO SOMETHING MORE SIMPLE
+    const initialData = {
         address: place.address,
         known_as: place.known_as,
         place_type: place.place_type,
         latitude: place.coordinates.coordinates[1],
         longitude: place.coordinates.coordinates[0],
-    });
+    }
+
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
+    const { data, setData, put, errors, processing } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            updateCoordinates(place.coordinates.coordinates[1], place.coordinates.coordinates[0])
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle input changes

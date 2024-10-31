@@ -8,21 +8,27 @@ export default function EditKid({auth, kid, availablePlaces}) {
 
     const [selectedAddPlaces, setSelectedAddPlaces] = useState([]);                 // state variable that holds the places to be added
     const [selectedRemovePlaces, setSelectedRemovePlaces] = useState([]);           // state variable that holds the places to be removed
-    //console.log(kid)
     const [isEditMode, setisEditMode] = useState(false)
-    // Inertia's built-in useForm hook to manage form data, actions, errors
-    // Define data to be sent to the backend
-    const { data, setData, put, errors, processing } = useForm({
+
+    const initialData = {
         name: kid.name,
         wheelchair: kid.wheelchair,
         addPlaces: [],
         removePlaces: [],
-    });
+    }
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
+    const { data, setData, put, errors, processing } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setSelectedAddPlaces([])
+            setSelectedRemovePlaces([])
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle input changes

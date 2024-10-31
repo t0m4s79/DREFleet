@@ -46,17 +46,23 @@ export default function EditOrderRoute({ auth, orderRoute, drivers, technicians 
         )
     );
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         id: orderRoute.id,
         name: orderRoute.name,
         area_coordinates: reversedCoordinates,
         area_color: orderRoute.area_color,
         usual_drivers: orderRoute.drivers.map(driver => driver.user_id),
         usual_technicians: orderRoute.technicians.map(tech => tech.id),
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setColor(orderRoute.area_color)
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const onAreaChange = (area) => {

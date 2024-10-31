@@ -9,15 +9,20 @@ export default function EditVehicleAccessory({ auth, vehicleAccessory, vehicles}
 
     const [isEditMode, setisEditMode] = useState(false)
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         name: vehicleAccessory.name,
         condition: vehicleAccessory.condition,
         expiration_date: vehicleAccessory.expiration_date,
         vehicle_id: vehicleAccessory.vehicle_id,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleChange = (e) => {

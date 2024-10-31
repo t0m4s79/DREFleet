@@ -14,13 +14,15 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
     const [documents, setDocuments] = useState([{}]); // Empty object for dynamic keys
     const [titleErrors, setTitleErrors] = useState([]);
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         name: vehicleDocument.name,
         issue_date: vehicleDocument.issue_date,
         expiration_date: vehicleDocument.expiration_date,
         vehicle_id: vehicleDocument.vehicle_id,
         data: vehicleDocument.data,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
@@ -28,17 +30,24 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
         return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`}
     })
 
+    // Transform the data object into an array of { title: description } objects
+    const initialDocuments = Object.entries(vehicleDocument.data).map(([key, value]) => ({ [key]: value }));
+    
     useEffect(() => {
         if (vehicleDocument?.data) {
             console.log('vehicleDocument?.data', vehicleDocument?.data)
             // Transform the data object into an array of { title: description } objects
-            const initialDocuments = Object.entries(vehicleDocument.data).map(([key, value]) => ({ [key]: value }));
+            //const initialDocuments = Object.entries(vehicleDocument.data).map(([key, value]) => ({ [key]: value }));
             setDocuments(initialDocuments);
         }
     }, []);
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setDocuments(initialDocuments)
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const debouncedSetData = debounce((key, value) => {

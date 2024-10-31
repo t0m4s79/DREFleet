@@ -10,9 +10,8 @@ export default function EditDriver({ auth, driver }) {
 
     //console.log(driver)
     const [isEditMode, setisEditMode] = useState(false)
-    // Inertia's built-in useForm hook to manage form data, actions, errors
-    // Define data to be sent to the backend
-    const { data, setData, put, errors, processing } = useForm({
+
+    const initialData = {
         user_id: driver.user_id,
         name: driver.name,
         email: driver.email,
@@ -22,12 +21,18 @@ export default function EditDriver({ auth, driver }) {
         heavy_license_type: driver.heavy_license_type,
         license_expiration_date: driver.license_expiration_date,
         status: driver.status,
-    });
+    }
+    // Inertia's built-in useForm hook to manage form data, actions, errors
+    // Define data to be sent to the backend
+    const { data, setData, put, errors, processing } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle input changes

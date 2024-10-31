@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Snackbar, Alert, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Button, TextField, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
+import { Snackbar, Alert, FormControl, Button, TextField, FormControlLabel, Radio, RadioGroup, FormLabel } from '@mui/material';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from '@inertiajs/react';
 
-export default function EditTechnician({ auth, technician, associatedKids, addPriority1, addPriority2, flash}) {
+export default function EditTechnician({ auth, technician, flash}) {
     
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -18,18 +18,23 @@ export default function EditTechnician({ auth, technician, associatedKids, addPr
         }
     }, [flash]);
 
-    const { data, setData, put, errors, processing } = useForm({
+    const initialData = {
         id: technician.id,
         name: technician.name,
         email: technician.email,
         phone: technician.phone,
         status: technician.status,
-    });
+    }
+
+    const { data, setData, put, errors, processing } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle input changes

@@ -10,7 +10,7 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles} 
     console.log(report);
     const [isEditMode, setisEditMode] = useState(false)
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         begin_date: report.begin_date,
         end_date: report.end_date,
         type: report.type,
@@ -20,10 +20,15 @@ export default function EditVehicleKilometrageReports( {auth, report, vehicles} 
         items_cost: report.items_cost,
         service_provider: report.service_provider ? report.service_provider : '',
         vehicle_id: report.vehicle_id,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleChange = (e) => {

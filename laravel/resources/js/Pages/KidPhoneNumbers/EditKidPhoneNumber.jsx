@@ -18,18 +18,23 @@ export default function EditKidPhoneNumber( {auth, kids, kidPhoneNumber} ) {
         }
     })
 
-    const {data, setData, put, errors, processing} = useForm({
+    const initialData = {
         kid_id: kidPhoneNumber.kid_id,
         owner_name: kidPhoneNumber.owner_name,
         phone: kidPhoneNumber.phone,
         relationship_to_kid: kidPhoneNumber.relationship_to_kid,
         preference: kidPhoneNumber.preference,
-    })
-    console.log(data)
+    }
+
+    const {data, setData, put, errors, processing} = useForm({...initialData})
+
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleKidChange = (event, newValue) => {

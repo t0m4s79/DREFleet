@@ -16,18 +16,23 @@ export default function EditKidEmail( {auth, kids, kidEmail} ) {
         }
     })
 
-    const {data, setData, put, errors, processing} = useForm({
+    const initialData = {
         kid_id: kidEmail.kid_id,
         owner_name: kidEmail.owner_name,
         email: kidEmail.email,
         relationship_to_kid: kidEmail.relationship_to_kid,
         preference: kidEmail.preference,
-    })
+    }
+
+    const {data, setData, put, errors, processing} = useForm({...initialData})
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleKidChange = (event, newValue) => {

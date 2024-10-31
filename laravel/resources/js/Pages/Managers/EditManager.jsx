@@ -17,18 +17,23 @@ export default function EditManager({ auth, manager, flash}) {
         }
     }, [flash]);
 
-    const { data, setData, put, errors, processing } = useForm({
+    const initialData = {
         id: manager.id,
         name: manager.name,
         email: manager.email,
         phone: manager.phone,
         status: manager.status,
-    });
+    }
+
+    const { data, setData, put, errors, processing } = useForm({...initialData});
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle input changes

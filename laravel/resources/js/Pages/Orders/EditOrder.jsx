@@ -130,7 +130,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    const { data, setData, put, errors, processing} = useForm({
+    const initialData = {
         expected_begin_date: order.expected_begin_date,
         expected_end_date: order.expected_end_date,
         expected_time: order.expected_time,
@@ -143,10 +143,15 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         order_route_id: order.order_route_id,
         places: [],
         places_changed: isPlacesModified,
-    })
+    }
+
+    const { data, setData, put, errors, processing} = useForm({...initialData})
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleRouteChange =(route) => {

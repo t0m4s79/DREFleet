@@ -6,13 +6,18 @@ import React, { useState } from 'react';
 export default function EditOrderOccurrence({ auth, occurrence, orders }) {
     const [isEditMode, setisEditMode] = useState(false);
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         type: occurrence.type,
         description: occurrence.description,
         order_id: occurrence.order_id,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
         setisEditMode(!isEditMode);
     };
 
@@ -52,38 +57,36 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
                         <form onSubmit={handleSubmit} noValidate>
                             <input type="hidden" name="_token" value={csrfToken} />
 
-                            <div className='mb-4'>
-                                {!isEditMode ? 
+                            { isEditMode === false ? 
+                                (<div className='mb-4'>
                                     <Button
-                                        variant="contained"
-                                        color="primary"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={processing}
+                                    onClick={toggleEdit}
+                                >
+                                    Editar
+                                    </Button>
+                                </div>) : 
+
+                                (<div className='mb-4 space-x-4'>
+                                    <Button 
+                                        variant="outlined"
+                                        color="error"
                                         disabled={processing}
                                         onClick={toggleEdit}
                                     >
-                                        Editar
-                                    </Button> 
-                                    :
-                                    <>
-                                        <Button 
-                                            variant="contained"
-                                            color="error"
-                                            disabled={processing}
-                                            onClick={toggleEdit}
-                                        >
-                                            Cancelar Edição
-                                        </Button>
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            disabled={processing}
-                                        >
-                                            Submeter
-                                        </Button>
-                                    </>
-                                }
-                                <br /> <br />
-                            </div>
+                                        Cancelar Edição
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="outlined"
+                                        color="primary"
+                                        disabled={processing}
+                                    >
+                                        Submeter
+                                    </Button>
+                            </div>)}
 
                             {/* Autocomplete for Order List */}
                             <Autocomplete
@@ -102,7 +105,7 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
                                         helperText={errors.order_id}
                                     />
                                 )}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2, mt: 4 }}
                             />
 
                             {/* Radio Buttons for Occurrence Type */}

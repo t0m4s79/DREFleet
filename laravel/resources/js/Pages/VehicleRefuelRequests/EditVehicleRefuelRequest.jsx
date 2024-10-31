@@ -8,7 +8,7 @@ export default function EditVehicleRefuelRequests( {auth, request, vehicles} ) {
 
     const [isEditMode, setisEditMode] = useState(false)
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         date: request.date,
         kilometrage: request.kilometrage,
         quantity: request.quantity,
@@ -18,10 +18,15 @@ export default function EditVehicleRefuelRequests( {auth, request, vehicles} ) {
         request_type: request.request_type,
         monthly_request_number: request.monthly_request_number,
         vehicle_id: request.vehicle_id,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleChange = (e) => {

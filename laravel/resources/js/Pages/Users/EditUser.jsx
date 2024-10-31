@@ -7,15 +7,20 @@ export default function EditUser({ auth, user }) {
 
     const [isEditMode, setisEditMode] = useState(false)
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         name: user.name,
         email: user.email,
         phone: user.phone,
         status: user.status,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     // Handle form input changes and update data using setData

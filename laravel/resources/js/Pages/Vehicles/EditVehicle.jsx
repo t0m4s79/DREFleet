@@ -8,7 +8,7 @@ export default function EditVehicle({ auth, vehicle}) {
 
     const [isEditMode, setisEditMode] = useState(false)
 
-    const { data, setData, put, processing, errors } = useForm({
+    const initialData = {
         make: vehicle.make,
         model: vehicle.model,
         license_plate: vehicle.license_plate,
@@ -23,10 +23,15 @@ export default function EditVehicle({ auth, vehicle}) {
         current_month_fuel_requests: vehicle.current_month_fuel_requests,
         fuel_type: vehicle.fuel_type,
         current_kilometrage: vehicle.current_kilometrage,
-    });
+    }
+
+    const { data, setData, put, processing, errors } = useForm({...initialData});
 
     const toggleEdit = () => {
-        setisEditMode(!isEditMode)
+        if (isEditMode) {
+            setData({ ...initialData });  // Reset to initial values if canceling edit
+        }
+        setisEditMode(!isEditMode);
     }
 
     const handleChange = (e) => {
