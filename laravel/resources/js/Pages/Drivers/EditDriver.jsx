@@ -21,6 +21,8 @@ export default function EditDriver({ auth, driver }) {
         heavy_license: driver.heavy_license,
         heavy_license_type: driver.heavy_license_type,
         license_expiration_date: driver.license_expiration_date,
+        tcc: driver.tcc,
+        tcc_expiration_date: driver.tcc_expiration_date,
         status: driver.status,
     });
 
@@ -45,10 +47,16 @@ export default function EditDriver({ auth, driver }) {
         if(data.heavy_license != 1)
             setData('heavy_license_type', null)
     }
+
+    const handleTccChange = () => {
+        if(data.tcc != 1)
+            setData('tcc_expiration_date', null)
+    }
     
     const handleSubmit = (e) => {
         e.preventDefault();
         handleHeavyChange();
+        handleTccChange();
         put(route('drivers.edit', driver.user_id));
     };
 
@@ -152,7 +160,7 @@ export default function EditDriver({ auth, driver }) {
                                 </Grid>
 
                                 <Grid item xs={3} sx={{marginTop: 2}}>
-                                <Typography>Data de Validade</Typography>
+                                <Typography>Data de Validade da Carta</Typography>
                                 <TextField
                                     //label="Data e Hora de Início"
                                     id='license_expiration_date'
@@ -219,6 +227,52 @@ export default function EditDriver({ auth, driver }) {
                                 </Grid>
                             </Grid>
                             <br/>
+
+                            <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <Typography variant="body1">TCC</Typography>
+                                    {/* Radio buttons for heavy_license */}
+                                    <FormControl component="fieldset" disabled={!isEditMode}>
+                                        <RadioGroup
+                                            name="tcc"
+                                            value={data.tcc}
+                                            onChange={handleChange}
+                                            row
+                                        >
+                                            <FormControlLabel
+                                                value="0"
+                                                control={<Radio />}
+                                                label="Não"
+                                            />
+                                            <FormControlLabel
+                                                value="1"
+                                                control={<Radio />}
+                                                label="Sim"
+                                            />
+                                        </RadioGroup>
+                                    </FormControl>
+                                    {errors.tcc && (
+                                        <InputError message={errors.tcc} />
+                                    )}                                    
+                                </Grid>
+
+                                <Grid item xs={3} sx={{marginTop: 2}}>
+                                    <Typography>Data de Validade do TCC</Typography>
+                                    <TextField
+                                            //label="Data e Hora de Início"
+                                            id='tcc_expiration_date'
+                                            name='tcc_expiration_date'
+                                            type="date"
+                                            fullWidth
+                                            value={data.tcc_expiration_date}
+                                            onChange={handleChange}
+                                            disabled={!isEditMode || data.tcc == '0'}
+                                            error={errors.tcc_expiration_date}
+                                            helperText={errors.tcc_expiration_date}
+                                            sx={{ mb: 2 }}
+                                        />
+                                </Grid>
+                            </Grid>
 
                             <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Estado</FormLabel>

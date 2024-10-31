@@ -23,6 +23,8 @@ class Driver extends Model
         'heavy_license',
         'heavy_license_type',
         'license_expiration_date',
+        'tcc',
+        'tcc_expiration_date',
     ];
 
     protected $appends = [

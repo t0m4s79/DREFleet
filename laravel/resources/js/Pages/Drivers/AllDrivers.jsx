@@ -29,7 +29,9 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             heavy_license: driver.heavy_license ? 'Sim' : 'Não', 
             license_number: driver.license_number, 
             heavy_license_type: driver.heavy_license_type, 
-            license_expiration_date: driver.license_expiration_date, 
+            license_expiration_date: driver.license_expiration_date,
+            tcc: driver.tcc,
+            tcc_expiration_date: driver.tcc_expiration_date, 
             status: driver.status 
         }
     ))
@@ -43,6 +45,8 @@ export default function AllDrivers( {auth, drivers, flash} ) {
         heavy_license: 'Carta de Pesados',
         heavy_license_type: 'Tipo de Carta de Pesados',
         license_expiration_date: 'Data de Validade da Carta',
+        tcc: 'TCC',
+        tcc_expiration_date: 'Data de Validade de TCC',
         status: 'Estado',
     };
     
