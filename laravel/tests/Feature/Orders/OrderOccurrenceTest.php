@@ -79,8 +79,11 @@ class OrderOccurrenceTest extends TestCase
             'user_type' => 'Gestor',
         ]);
 
+        $vehicleTowed = fake()->boolean();
+
         $occurrenceData = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
+            'vehicle_towed' => $vehicleTowed,
             'description' => fake()->sentence(),
             'order_id' => Order::factory()->create(['driver_id' => $driver->user_id])->id,
         ];
@@ -123,8 +126,11 @@ class OrderOccurrenceTest extends TestCase
             'order_id' => Order::factory()->create()
         ]);
 
+        $vehicleTowed = fake()->boolean();
+
         $updatedData = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
+            'vehicle_towed' => $vehicleTowed,
             'description' => fake()->sentence(),
             'order_id' => Order::factory()->create()->id,
         ];
@@ -163,6 +169,7 @@ class OrderOccurrenceTest extends TestCase
     {
         $data = [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
+            'vehicle_towed' => fake()->boolean(),
             'description' => fake()->sentence(),
             'order_id' => Order::factory()->create()->id,
         ];

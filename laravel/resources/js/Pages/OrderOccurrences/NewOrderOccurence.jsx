@@ -6,6 +6,7 @@ export default function NewOrderOccurrence({ auth, orders }) {
     
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         type: '',
+        vehicle_towed: '',
         description: '',
         order_id: '',
     });
@@ -79,6 +80,23 @@ export default function NewOrderOccurrence({ auth, orders }) {
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <FormControlLabel value="Manutenções" control={<Radio />} label="Manutenções" />
                                             <FormControlLabel value="Outros" control={<Radio />} label="Outros" />
+                                        </div>
+                                    </RadioGroup>
+                                </FormControl>
+
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Veículo Rebocado</FormLabel>
+                                    <RadioGroup
+                                        name="vehicle_towed"
+                                        value={data.vehicle_towed}
+                                        onChange={(e) => setData('vehicle_towed', e.target.value)}
+                                        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }} // Use flexbox
+                                        error={errors.vehicle_towed}
+                                        helperText={errors.vehicle_towed}
+                                    >
+                                        <div style={{ display: 'flex', flexDirection: 'column'}}>
+                                            <FormControlLabel value="1" control={<Radio />} label="Sim" />
+                                            <FormControlLabel value="0" control={<Radio />} label="Não" />
                                         </div>
                                     </RadioGroup>
                                 </FormControl>

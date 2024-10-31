@@ -6,10 +6,12 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Driver;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\OrderOccurrence;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Notifications\OrderOccurrenceNotification;
@@ -26,6 +28,7 @@ class OrderOccurrenceController extends Controller
 
         $occurrences->each(function ($occurrence) {
             $occurrence->order->expected_begin_date = Carbon::parse($occurrence->order->expected_begin_date )->format('d-m-Y');
+            $occurrence->vehicle_towed = $occurrence->vehicle_towed == 1 ? 'Sim' : 'Não';
         });
 
         return Inertia::render('OrderOccurrences/AllOrderOccurrences', [
@@ -57,6 +60,7 @@ class OrderOccurrenceController extends Controller
 
         $incomingFields = $request->validate([
             'type' => ['required', Rule::in(['Manutenções','Reparações','Lavagens', 'Outros'])],
+            'vehicle_towed' => ['required', 'boolean'],
             'description' => ['required', 'string', 'max:500'],
             'order_id' => ['required', 'exists:orders,id'],
         ], $customErrorMessages);
@@ -64,9 +68,9 @@ class OrderOccurrenceController extends Controller
         $incomingFields['description'] = strip_tags($incomingFields['description']);
 
         try {
-            $occurrence = OrderOccurrence::create($incomingFields);
-
             $order = Order::findOrFail($incomingFields['order_id']);
+            
+            $occurrence = OrderOccurrence::create($incomingFields);
 
             // Notify all users with the user_type 'Gestor'
             foreach (User::where('user_type', 'Gestor')->get() as $user) {
@@ -120,14 +124,18 @@ class OrderOccurrenceController extends Controller
 
         $incomingFields = $request->validate([
             'type' => ['required', Rule::in(['Manutenções','Reparações','Lavagens', 'Outros'])],
+            'vehicle_towed' => ['required', 'boolean'],
             'description' => ['required', 'string', 'max:500'],
             'order_id' => ['required', 'exists:orders,id'],
         ], $customErrorMessages);
 
         $incomingFields['description'] = strip_tags($incomingFields['description']);
 
-        try {
+        DB::beginTransaction();
+        try {            
             $orderOccurrence->update($incomingFields);
+
+            DB::commit();
 
             Log::channel('user')->info('User edited an occurrence', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
@@ -137,6 +145,8 @@ class OrderOccurrenceController extends Controller
             return redirect()->route('orders.occurrences', $incomingFields['order_id'])->with('message', 'Dados da ocorrência com id ' . $orderOccurrence->id . ' pertencente ao pedido com id ' . $incomingFields['order_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
+            DB::rollBack();
+
             Log::channel('usererror')->error('Error editing occurrence', [
                 'order_occurrence_id' => $incomingFields['order_id'] ?? null,
                 'exception' => $e->getMessage(),

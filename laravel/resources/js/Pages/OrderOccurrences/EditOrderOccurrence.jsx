@@ -8,6 +8,7 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
 
     const { data, setData, put, processing, errors } = useForm({
         type: occurrence.type,
+        vehicle_towed: occurrence.vehicle_towed,
         description: occurrence.description,
         order_id: occurrence.order_id,
     });
@@ -123,6 +124,20 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
                                     </div>
                                 </RadioGroup>
                             </FormControl>
+
+                            <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Veículo Rebocado</FormLabel>
+                                    <RadioGroup
+                                        name="vehicle_towed"
+                                        value={data.vehicle_towed}
+                                        onChange={handleChange}
+                                    >
+                                        <div style={{ display: 'flex', flexDirection: 'column'}}>
+                                            <FormControlLabel value="1" control={<Radio />} label="Sim" disabled={!isEditMode}/>
+                                            <FormControlLabel value="0" control={<Radio />} label="Não" disabled={!isEditMode}/>
+                                        </div>
+                                    </RadioGroup>
+                                </FormControl>
 
                             {/* Text Field for Description */}
                             <TextField

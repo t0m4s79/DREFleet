@@ -21,6 +21,7 @@ class OrderOccurrenceFactory extends Factory
         // Order id needs to be passed explicitily when using this factory
         return [
             'type' => Arr::random(['Manutenções', 'Reparações', 'Lavagens', 'Outros']),
+            'vehicle_towed' => fake()->boolean(),
             'description' => fake()->sentence(),
             //'order_id' => Order::factory(),
         ];

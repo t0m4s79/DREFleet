@@ -519,6 +519,11 @@ class OrderController extends Controller
 
         $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y');
 
+        $order->occurrences->each(function ($occurrence) {
+            $occurrence->vehicle_towed = $occurrence->vehicle_towed == 1 ? 'Sim' : 'Não';
+        });
+
+
         return Inertia::render('Orders/OrderOccurrences', [
             'flash' => [
                 'message' => session('message'),

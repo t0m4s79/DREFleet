@@ -7,7 +7,7 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 
 export default function OrderOccurences({auth, order, flash}) {
-    console.log(order)
+    
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -28,6 +28,7 @@ export default function OrderOccurences({auth, order, flash}) {
             driver_id: order.driver.user_id,
             vehicle_id: order.vehicle.id,
             type: occurrence.type,
+            vehicle_towed: occurrence.vehicle_towed,
             description: 'Pop-up com descrição da ocorrência',
             created_at: occurrence.created_at,
             updated_at: occurrence.updated_at,
@@ -41,6 +42,7 @@ export default function OrderOccurences({auth, order, flash}) {
         driver_id: 'Condutor',
         vehicle_id: 'Veículo',
         type: 'Tipo',
+        vehicle_towed: 'Reboque Utilizado',
         description: 'Descrição',
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização'
