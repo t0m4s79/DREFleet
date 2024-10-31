@@ -21,7 +21,14 @@ class VehicleController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $vehicles = Vehicle::All();
+        $vehicles = Vehicle::withCount([
+            'orders as this_year_tow_counts' => function ($query) {
+                $query->whereYear('expected_begin_date', now()->year)
+                      ->whereHas('occurrences', function ($query) {
+                          $query->where('vehicle_towed', 1);
+                      });
+            }
+        ])->get();
 
         $vehicles->each(function ($vehicle) {
             $vehicle->heavy_type = $vehicle->heavy_type ?? '-';

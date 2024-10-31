@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 
 export default function AllVehicles( {auth, vehicles, flash}) {
-    
+
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -32,6 +32,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             wheelchair_certified: vehicle.wheelchair_certified ? 'Sim' : 'Não',
             tcc: vehicle.tcc ? 'Sim' : 'Não',
             yearly_allowed_tows: vehicle.yearly_allowed_tows,
+            this_year_tow_counts: vehicle.this_year_tow_counts,
             capacity: vehicle.capacity,
             fuel_consumption: vehicle.fuel_consumption,
             status: vehicle.status,
@@ -56,6 +57,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         wheelchair_certified: 'Certificado para Cadeira de Rodas',
         tcc: 'TCC',
         yearly_allowed_tows: 'Reboques Anuais Permitidos',
+        this_year_tow_counts: 'Reboques Anuais Utilizados',
         capacity: 'Capacidade',
         fuel_consumption: 'Consumo',
         status: 'Estado',
