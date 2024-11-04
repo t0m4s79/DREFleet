@@ -14,7 +14,6 @@ export default function NewVehicle( {auth} ) {
         year: '',
         heavy_vehicle: '',
         heavy_type: '',
-        heavy_type:'',
         wheelchair_adapted: '',
         wheelchair_certified: '',
         tcc: '',
