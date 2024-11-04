@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import LicenseNumberInput from '@/Components/LicenseNumberInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid } from '@mui/material';
+import { Autocomplete, Button, RadioGroup, FormControl, FormControlLabel, Radio, TextField, Typography, Grid, FormLabel } from '@mui/material';
 
 export default function NewDriver( {auth, users} ) {
 
@@ -92,11 +92,11 @@ export default function NewDriver( {auth, users} ) {
                                 />
 
                                 <Grid container spacing={3}>
-                                    <Grid item xs={6}>
+                                    <Grid item xs={12} md={6}>
                                         <LicenseNumberInput value={data.license_number} onChange={handleLicenseChange} />
                                     </Grid>
 
-                                    <Grid item xs={3} sx={{marginTop: 2}}>
+                                    <Grid item xs={12} md={3} sx={{marginTop: 2}}>
                                     <Typography>Data de Validade da Carta</Typography>
                                     <TextField
                                             //label="Data e Hora de Início"
@@ -115,14 +115,14 @@ export default function NewDriver( {auth, users} ) {
 
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
-                                        <Typography variant="body1">Carta de Pesados</Typography>
-                                        {/* Radio buttons for heavy_license */}
                                         <FormControl component="fieldset">
+                                            <FormLabel component="legend">Carta de Pesados</FormLabel>
                                             <RadioGroup
                                                 aria-label="heavy_license"
                                                 name="heavy_license"
                                                 value={data.heavy_license}
                                                 onChange={(e) => setData('heavy_license', e.target.value)}
+                                                row
                                             >
                                                 <FormControlLabel
                                                     value="0"
@@ -143,14 +143,14 @@ export default function NewDriver( {auth, users} ) {
 
 
                                     <Grid item xs={6}>
-                                        <Typography variant="body1">Tipo de Carta de Pesados</Typography>
-                                        {/* Radio buttons for heavy_license_type */}
                                         <FormControl component="fieldset" disabled={data.heavy_license == '0'}>
+                                            <FormLabel component="legend">Tipo de Carta de Pesados</FormLabel>
                                             <RadioGroup
                                                 aria-label="heavy_license_type"
                                                 name="heavy_license_type"
                                                 value={data.heavy_license_type}
                                                 onChange={(e) => setData('heavy_license_type', e.target.value)}
+                                                row
                                             >
                                                 <FormControlLabel
                                                     value="Mercadorias"
@@ -170,7 +170,7 @@ export default function NewDriver( {auth, users} ) {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container spacing={3}>
+                                <Grid container spacing={3} sx={{marginTop: 1}}>
                                     <Grid item xs={6}>
                                         <Typography variant="body1">TCC</Typography>
                                         {/* Radio buttons for heavy_license */}
@@ -180,6 +180,7 @@ export default function NewDriver( {auth, users} ) {
                                                 name="tcc"
                                                 value={data.tcc}
                                                 onChange={(e) => setData('tcc', e.target.value)}
+                                                row
                                             >
                                                 <FormControlLabel
                                                     value="0"
@@ -198,7 +199,7 @@ export default function NewDriver( {auth, users} ) {
                                         )}                                    
                                     </Grid>
 
-                                    <Grid item xs={3} sx={{marginTop: 2}}>
+                                    <Grid item xs={6} md={3}>
                                         <Typography>Data de Validade do TCC</Typography>
                                         <TextField
                                                 //label="Data e Hora de Início"

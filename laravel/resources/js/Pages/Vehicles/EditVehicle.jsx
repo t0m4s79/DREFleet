@@ -99,59 +99,71 @@ export default function EditVehicle({ auth, vehicle}) {
                                 </Button>
                             </div>)}
 
-                            <TextField
-                                label="Marca"
-                                name="make"
-                                value={data.make}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                error={!!errors.make}
-                                helperText={errors.make}
-                            />
+                            <Grid container columnSpacing={2}>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Marca"
+                                        name="make"
+                                        value={data.make}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        error={!!errors.make}
+                                        helperText={errors.make}
+                                    />
+                                </Grid>
 
-                            <TextField
-                                label="Modelo"
-                                name="model"
-                                value={data.model}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                error={!!errors.model}
-                                helperText={errors.model}
-                            />
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Modelo"
+                                        name="model"
+                                        value={data.model}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        error={!!errors.model}
+                                        helperText={errors.model}
+                                    />
+                                </Grid>
+                            </Grid>
 
-                            <TextField
-                                label="Matrícula (sem '-')"
-                                name="license_plate"
-                                value={data.license_plate}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                inputProps={{ pattern: "[A-Za-z0-9]+" }}
-                                error={!!errors.license_plate}
-                                helperText={errors.license_plate || "Só são permitidos números e letras"}
-                            />
+                            <Grid container columnSpacing={2}>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Matrícula (sem '-')"
+                                        name="license_plate"
+                                        value={data.license_plate}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        inputProps={{ pattern: "[A-Za-z0-9]+" }}
+                                        error={!!errors.license_plate}
+                                        helperText={errors.license_plate || "Só são permitidos números e letras"}
+                                    />
+                                </Grid>
 
-                            <TextField
-                                label="Ano"
-                                name="year"
-                                value={data.year}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                inputProps={{ pattern: "[0-9]+" }}
-                                error={!!errors.year}
-                                helperText={errors.year || "Só são permitidos números"}
-                            />
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Ano"
+                                        name="year"
+                                        value={data.year}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        inputProps={{ pattern: "[0-9]+" }}
+                                        error={!!errors.year}
+                                        helperText={errors.year || "Só são permitidos números"}
+                                    />
+                                </Grid>
+                            </Grid>
 
                             <Grid container>
                                 <Grid item xs={12} md={6}>
@@ -238,50 +250,41 @@ export default function EditVehicle({ auth, vehicle}) {
                                 helperText={errors.capacity}
                             />
 
-                            <TextField
-                                label="Consumo de combustível (L/100Km)"
-                                name="fuel_consumption"
-                                type="number"
-                                value={data.fuel_consumption}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                inputProps={{ step: "0.001" }}
-                                error={!!errors.fuel_consumption}
-                                helperText={errors.fuel_consumption}
-                            />
+                            <Grid container columnSpacing={2}>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Consumo de combustível (L/100Km)"
+                                        name="fuel_consumption"
+                                        type="number"
+                                        value={data.fuel_consumption}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        inputProps={{ step: "0.001" }}
+                                        error={!!errors.fuel_consumption}
+                                        helperText={errors.fuel_consumption}
+                                    />
+                                </Grid>
 
-                            {/* Use MUI Radio for status */}
-                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
-                                <FormLabel component="legend">Estado</FormLabel>
-                                <RadioGroup
-                                    name="status"
-                                    value={data.status}
-                                    onChange={handleChange}
-                                >
-                                    <FormControlLabel value="Disponível" control={<Radio />} label="Disponível" />
-                                    <FormControlLabel value="Indisponível" control={<Radio />} label="Indisponível" />
-                                    <FormControlLabel value="Em manutenção" control={<Radio />} label="Em manutenção" />
-                                    <FormControlLabel value="Escondido" control={<Radio />} label="Escondido" />
-                                </RadioGroup>
-                            </FormControl>
-
-                            <TextField
-                                label="Pedidos de combustível efetuados este mês"
-                                name="current_month_fuel_requests"
-                                type="number"
-                                value={data.current_month_fuel_requests}
-                                onChange={handleChange}
-                                className={!isEditMode ? 'read-only-field' : ''}
-                                disabled={!isEditMode}
-                                fullWidth
-                                margin="normal"
-                                inputProps={{ min: 0, max: 100 }}
-                                error={!!errors.current_month_fuel_requests}
-                                helperText={errors.current_month_fuel_requests}
-                            />
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Pedidos de combustível efetuados este mês"
+                                        name="current_month_fuel_requests"
+                                        type="number"
+                                        value={data.current_month_fuel_requests}
+                                        onChange={handleChange}
+                                        className={!isEditMode ? 'read-only-field' : ''}
+                                        disabled={!isEditMode}
+                                        fullWidth
+                                        margin="normal"
+                                        inputProps={{ min: 0, max: 100 }}
+                                        error={!!errors.current_month_fuel_requests}
+                                        helperText={errors.current_month_fuel_requests}
+                                    />
+                                </Grid>
+                            </Grid>
 
                             <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
                                 <FormLabel component="legend">Tipo de Combustível</FormLabel>
@@ -330,6 +333,20 @@ export default function EditVehicle({ auth, vehicle}) {
                                 helperText={errors.yearly_allowed_tows}
                             />
 
+                            {/* Use MUI Radio for status */}
+                            <FormControl component="fieldset" margin="normal" disabled={!isEditMode}>
+                                <FormLabel component="legend">Estado</FormLabel>
+                                <RadioGroup
+                                    name="status"
+                                    value={data.status}
+                                    onChange={handleChange}
+                                >
+                                    <FormControlLabel value="Disponível" control={<Radio />} label="Disponível" />
+                                    <FormControlLabel value="Indisponível" control={<Radio />} label="Indisponível" />
+                                    <FormControlLabel value="Em manutenção" control={<Radio />} label="Em manutenção" />
+                                    <FormControlLabel value="Escondido" control={<Radio />} label="Escondido" />
+                                </RadioGroup>
+                            </FormControl>
                             <br />
                         </form>
                         

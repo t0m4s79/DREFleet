@@ -60,57 +60,68 @@ export default function NewVehicle( {auth} ) {
                             <form onSubmit={handleSubmit} id="newVehicleForm">
                                 <input type="hidden" name="_token" value={csrfToken} />
 
-                                <TextField
-                                    fullWidth
-                                    label="Marca"
-                                    id="make"
-                                    name="make"
-                                    value={data.make}
-                                    onChange={(e) => setData('make', e.target.value)}
-                                    error={Boolean(errors.make)}
-                                    helperText={errors.make && <InputError message={errors.make} />}
-                                    margin="normal"
-                                />
+                                <Grid container columnSpacing={2}>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Marca"
+                                            id="make"
+                                            name="make"
+                                            value={data.make}
+                                            onChange={(e) => setData('make', e.target.value)}
+                                            error={Boolean(errors.make)}
+                                            helperText={errors.make && <InputError message={errors.make} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
 
-                                <TextField
-                                    fullWidth
-                                    label="Modelo"
-                                    id="model"
-                                    name="model"
-                                    value={data.model}
-                                    onChange={(e) => setData('model', e.target.value)}
-                                    error={Boolean(errors.model)}
-                                    helperText={errors.model && <InputError message={errors.model} />}
-                                    margin="normal"
-                                />
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Modelo"
+                                            id="model"
+                                            name="model"
+                                            value={data.model}
+                                            onChange={(e) => setData('model', e.target.value)}
+                                            error={Boolean(errors.model)}
+                                            helperText={errors.model && <InputError message={errors.model} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                </Grid>
 
-                                <TextField
-                                    fullWidth
-                                    label="Matrícula (sem '-')"
-                                    id="license_plate"
-                                    name="license_plate"
-                                    placeholder='AAXXBB'
-                                    value={data.license_plate}
-                                    onChange={(e) => setData('license_plate', e.target.value)}
-                                    //inputProps={{ pattern: "[A-Za-z0-9]+", maxLength: 6, title: "Só são permitidos números e letras" }}
-                                    error={Boolean(errors.license_plate)}
-                                    helperText={errors.license_plate && <InputError message={errors.license_plate} />}
-                                    margin="normal"
-                                />
-
-                                <TextField
-                                    fullWidth
-                                    label="Ano"
-                                    id="year"
-                                    name="year"
-                                    placeholder='2024'
-                                    value={data.year}
-                                    onChange={(e) => setData('year', e.target.value)}
-                                    //inputProps={{ pattern: "[0-9]+", maxLength: 4 }}
-                                    error={Boolean(errors.year)}
-                                    helperText={errors.year && <InputError message={errors.year} />}
-                                    margin="normal"
-                                />
+                                <Grid container columnSpacing={2}>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Matrícula (sem '-')"
+                                            id="license_plate"
+                                            name="license_plate"
+                                            placeholder='AAXXBB'
+                                            value={data.license_plate}
+                                            onChange={(e) => setData('license_plate', e.target.value)}
+                                            //inputProps={{ pattern: "[A-Za-z0-9]+", maxLength: 6, title: "Só são permitidos números e letras" }}
+                                            error={Boolean(errors.license_plate)}
+                                            helperText={errors.license_plate && <InputError message={errors.license_plate} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Ano"
+                                            id="year"
+                                            name="year"
+                                            placeholder='2024'
+                                            value={data.year}
+                                            onChange={(e) => setData('year', e.target.value)}
+                                            //inputProps={{ pattern: "[0-9]+", maxLength: 4 }}
+                                            error={Boolean(errors.year)}
+                                            helperText={errors.year && <InputError message={errors.year} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                </Grid>
 
                                 <div>
                                     <label htmlFor="image">Foto do veículo (opcional)</label>
@@ -224,50 +235,39 @@ export default function NewVehicle( {auth} ) {
                                     margin="normal"
                                 />
 
-                                <TextField
-                                    fullWidth
-                                    label="Consumo de combustível (L/100Km)"
-                                    id="fuel_consumption"
-                                    name="fuel_consumption"
-                                    type="number"
-                                    step=".001"
-                                    placeholder="0.000"
-                                    value={data.fuel_consumption}
-                                    onChange={(e) => setData('fuel_consumption', e.target.value)}
-                                    error={Boolean(errors.fuel_consumption)}
-                                    helperText={errors.fuel_consumption && <InputError message={errors.fuel_consumption} />}
-                                    margin="normal"
-                                />
-
-                                <FormControl component="fieldset" margin="normal">
-                                    <FormLabel component="legend">Estado do Veículo</FormLabel>
-                                    <RadioGroup
-                                        aria-label="status"
-                                        name="status"
-                                        value={data.status}
-                                        onChange={(e) => setData('status', e.target.value)}
-                                    >
-                                        <FormControlLabel value="Disponível" control={<Radio />} label="Disponível" />
-                                        <FormControlLabel value="Indisponível" control={<Radio />} label="Indisponível" />
-                                        <FormControlLabel value="Em manutenção" control={<Radio />} label="Em manutenção" />
-                                        <FormControlLabel value="Escondido" control={<Radio />} label="Escondido" />
-                                    </RadioGroup>
-                                    {errors.status && <InputError message={errors.status} />}
-                                </FormControl>
-
-                                <TextField
-                                    fullWidth
-                                    label="Pedidos de combustível efetuados este mês"
-                                    id="current_month_fuel_requests"
-                                    name="current_month_fuel_requests"
-                                    type="number"
-                                    inputProps={{ min: 0, max: 100 }}
-                                    value={data.current_month_fuel_requests}
-                                    onChange={(e) => setData('current_month_fuel_requests', e.target.value)}
-                                    error={Boolean(errors.current_month_fuel_requests)}
-                                    helperText={errors.current_month_fuel_requests && <InputError message={errors.current_month_fuel_requests} />}
-                                    margin="normal"
-                                />
+                                <Grid container columnSpacing={2}>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Consumo de combustível (L/100Km)"
+                                            id="fuel_consumption"
+                                            name="fuel_consumption"
+                                            type="number"
+                                            step=".001"
+                                            placeholder="0.000"
+                                            value={data.fuel_consumption}
+                                            onChange={(e) => setData('fuel_consumption', e.target.value)}
+                                            error={Boolean(errors.fuel_consumption)}
+                                            helperText={errors.fuel_consumption && <InputError message={errors.fuel_consumption} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pedidos de combustível efetuados este mês"
+                                            id="current_month_fuel_requests"
+                                            name="current_month_fuel_requests"
+                                            type="number"
+                                            inputProps={{ min: 0, max: 100 }}
+                                            value={data.current_month_fuel_requests}
+                                            onChange={(e) => setData('current_month_fuel_requests', e.target.value)}
+                                            error={Boolean(errors.current_month_fuel_requests)}
+                                            helperText={errors.current_month_fuel_requests && <InputError message={errors.current_month_fuel_requests} />}
+                                            margin="normal"
+                                        />
+                                    </Grid>
+                                </Grid>
 
                                 <FormControl component="fieldset" margin="normal">
                                     <FormLabel component="legend">Tipo de Combustível</FormLabel>
@@ -311,8 +311,23 @@ export default function NewVehicle( {auth} ) {
                                     error={!!errors.yearly_allowed_tows}
                                     helperText={errors.yearly_allowed_tows}
                                 />
-
-                                <br /> <br />
+                                
+                                <FormControl component="fieldset" margin="normal">
+                                    <FormLabel component="legend">Estado do Veículo</FormLabel>
+                                    <RadioGroup
+                                        aria-label="status"
+                                        name="status"
+                                        value={data.status}
+                                        onChange={(e) => setData('status', e.target.value)}
+                                    >
+                                        <FormControlLabel value="Disponível" control={<Radio />} label="Disponível" />
+                                        <FormControlLabel value="Indisponível" control={<Radio />} label="Indisponível" />
+                                        <FormControlLabel value="Em manutenção" control={<Radio />} label="Em manutenção" />
+                                        <FormControlLabel value="Escondido" control={<Radio />} label="Escondido" />
+                                    </RadioGroup>
+                                    {errors.status && <InputError message={errors.status} />}
+                                </FormControl>
+                                <br />
 
                                 <Button variant="outlined" type="submit" disabled={processing}>
                                     Submeter
