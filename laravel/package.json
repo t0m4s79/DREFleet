@@ -20,7 +20,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@emotion/react": "^11.13.0",
+        "@emotion/react": "^11.13.3",
         "@emotion/styled": "^11.13.0",
         "@geoman-io/leaflet-geoman-free": "^2.17.0",
         "@hello-pangea/dnd": "^17.0.0",
