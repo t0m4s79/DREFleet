@@ -131,7 +131,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                                     ref={provided.innerRef}
                                 >
                                     {waypoints.map((waypoint, index) => (
-                                        <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index}>
+                                        <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index} isDragDisabled={disabled}>
                                             {(provided) => (
                                                 <ListItem
                                                     ref={provided.innerRef}
