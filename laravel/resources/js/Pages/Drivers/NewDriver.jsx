@@ -13,6 +13,7 @@ export default function NewDriver( {auth, users} ) {
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         user_id: '',
         license_number: '',
+        license_expiration_date: '',
         heavy_license: '',
         heavy_license_type: '',
         tcc: '',
@@ -43,7 +44,7 @@ export default function NewDriver( {auth, users} ) {
 
     const handleTccChange = () => {
         if(data.tcc != 1)
-            setData('tcc_expiration_date', null)
+            setData('tcc_expiration_date', '')
     }
 
     const handleSubmit = (e) => {
@@ -73,7 +74,7 @@ export default function NewDriver( {auth, users} ) {
                                 <p>Selecione o utilizador</p>
 
                                 <Autocomplete
-                                    id="user-combo-box"
+                                    id="user"
                                     options={userList}
                                     getOptionLabel={(option) => option.label}
                                     onChange={handleUserChange}
