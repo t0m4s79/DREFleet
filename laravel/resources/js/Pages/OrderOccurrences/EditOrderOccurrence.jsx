@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { Autocomplete, Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, } from '@mui/material';
+import { Autocomplete, Button, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Grid, } from '@mui/material';
 import React, { useState } from 'react';
 
 export default function EditOrderOccurrence({ auth, occurrence, orders }) {
@@ -109,24 +109,25 @@ export default function EditOrderOccurrence({ auth, occurrence, orders }) {
                                 sx={{ mb: 2, mt: 4 }}
                             />
 
-                            {/* Radio Buttons for Occurrence Type */}
-                            <FormControl component="fieldset" margin="normal">
-                                <FormLabel component="legend">Tipo de Ocorrência</FormLabel>
-                                <RadioGroup
-                                    name="type"
-                                    value={data.type}
-                                    onChange={handleChange}
-                                >
-                                    <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
-                                        <FormControlLabel value="Reparações" control={<Radio />} label="Reparações" disabled={!isEditMode} />
-                                        <FormControlLabel value="Lavagens" control={<Radio />} label="Lavagens" disabled={!isEditMode} />
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <FormControlLabel value="Manutenções" control={<Radio />} label="Manutenções" disabled={!isEditMode} />
-                                        <FormControlLabel value="Outros" control={<Radio />} label="Outros" disabled={!isEditMode} />
-                                    </div>
-                                </RadioGroup>
-                            </FormControl>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} md={8}>
+                                    {/* Radio Buttons for Occurrence Type */}
+                                    <FormControl component="fieldset" margin="normal">
+                                        <FormLabel component="legend">Tipo de Ocorrência</FormLabel>
+                                        <RadioGroup
+                                            name="type"
+                                            value={data.type}
+                                            onChange={handleChange}
+                                            style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }} // Use flexbox
+                                        >
+                                            <FormControlLabel value="Reparações" control={<Radio />} label="Reparações" disabled={!isEditMode} />
+                                            <FormControlLabel value="Lavagens" control={<Radio />} label="Lavagens" disabled={!isEditMode} />
+                                            <FormControlLabel value="Manutenções" control={<Radio />} label="Manutenções" disabled={!isEditMode} />
+                                            <FormControlLabel value="Outros" control={<Radio />} label="Outros" disabled={!isEditMode} />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                            </Grid>
 
                             <FormControl component="fieldset" margin="normal">
                                     <FormLabel component="legend">Veículo Rebocado</FormLabel>
