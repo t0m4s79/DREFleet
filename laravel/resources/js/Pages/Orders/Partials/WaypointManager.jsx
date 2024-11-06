@@ -4,6 +4,7 @@ import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem } fro
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';          //Changed to this new package
 import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
+import { DragIndicator } from '@mui/icons-material';
 
 export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled }) {
     console.log('selectedRoute is:',selectedRoute)
@@ -126,18 +127,35 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                         <Droppable droppableId="waypoints-list">
                             {(provided) => (
                                 <List
-                                    style={{ minHeight: '200px', maxHeight: '500px', overflowY: 'scroll' }}
+                                    style={{ 
+                                        minHeight: '200px', 
+                                        maxHeight: '500px', 
+                                        overflowY: 'scroll', 
+                                        padding: '8px',
+                                    }}
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
                                 >
                                     {waypoints.map((waypoint, index) => (
                                         <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index} isDragDisabled={disabled}>
-                                            {(provided) => (
+                                            {(provided, snapshot) => (
                                                 <ListItem
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
+                                                    style={{
+                                                        ...provided.draggableProps.style,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        backgroundColor: snapshot.isDragging ? '#f0f0f0' : 'white',
+                                                        borderRadius: '4px',
+                                                        boxShadow: snapshot.isDragging ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
+                                                        marginBottom: '8px',
+                                                        padding: '8px 12px',
+                                                        cursor: !disabled ? 'grab' : 'default',
+                                                    }}
                                                 >
+                                                    {!disabled && <DragIndicator style={{ marginRight: '8px', color: '#666' }} />}
                                                     <Typography>
                                                         {waypoint.kid ? `${waypoint.kid.name} - ${waypoint.label}` : waypoint.label}
                                                     </Typography>
