@@ -31,7 +31,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
     })
 
     // Transform the data object into an array of { title: description } objects
-    const initialDocuments = Object.entries(vehicleDocument.data).map(([key, value]) => ({ [key]: value }));
+    const initialDocuments = vehicleDocument.data ? Object.entries(vehicleDocument.data).map(([key, value]) => ({ [key]: value })): {}
     
     useEffect(() => {
         if (vehicleDocument?.data) {
