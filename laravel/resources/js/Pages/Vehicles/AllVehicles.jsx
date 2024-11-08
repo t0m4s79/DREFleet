@@ -1,9 +1,23 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import { Button, Alert, Snackbar } from '@mui/material';
+import { Head, Link } from '@inertiajs/react';
+import { Button, Alert, Snackbar, Icon, Chip, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { Accessible, Verified } from '@mui/icons-material';
+
+function renderStatus(status) {
+    const colors = {
+        'Disponível': 'success',
+        'Em Serviço': 'info',
+        'Em manutenção': 'warning',
+        'Indisponível': 'error',
+        'Escondido': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllVehicles( {auth, vehicles, flash}) {
 
@@ -20,17 +34,18 @@ export default function AllVehicles( {auth, vehicles, flash}) {
     }, [flash]);
 
     const vehicleInfo = vehicles.map((vehicle) => {
+        //console.log(vehicle)
         return {
             id: vehicle.id,
             make: vehicle.make,
             model: vehicle.model,
             license_plate: vehicle.license_plate,
             year: vehicle.year,
-            heavy_vehicle: vehicle.heavy_vehicle ? 'Sim' : 'Não',
+            heavy_vehicle: vehicle.heavy_vehicle,// ? 'Sim' : 'Não',
             heavy_type: vehicle.heavy_type,
-            wheelchair_adapted: vehicle.wheelchair_adapted ? 'Sim' : 'Não' ,
-            wheelchair_certified: vehicle.wheelchair_certified ? 'Sim' : 'Não',
-            tcc: vehicle.tcc ? 'Sim' : 'Não',
+            wheelchair_adapted: vehicle.wheelchair_adapted,// ? 'Sim' : 'Não' ,
+            wheelchair_certified: vehicle.wheelchair_certified,// ? 'Sim' : 'Não',
+            tcc: vehicle.tcc,// ? 'Sim' : 'Não',
             yearly_allowed_tows: vehicle.yearly_allowed_tows,
             this_year_tow_counts: vehicle.this_year_tow_counts,
             capacity: vehicle.capacity,
@@ -69,6 +84,209 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         vehicle_accesories_docs: 'Documentos e Acessórios',
     };
 
+    const VehicleColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'make',
+            headerName: 'Marca',
+            flex: 1,
+        },
+        {
+            field: 'model',
+            headerName: 'Modelo',
+            flex: 1,
+        },
+        {
+            field: 'license_plate',
+            headerName: 'Matrícula',
+            flex: 1,
+        },
+        {
+            field: 'year',
+            headerName: 'Ano',
+            flex: 1,
+        },
+        {
+            field: 'heavy_vehicle',
+            headerName: 'Veículo Pesado',
+            flex: 1,
+            type: 'boolean',
+        },
+        {
+            field: 'heavy_type',
+            headerName: 'Tipo de Pesado',
+            flex: 1,
+            renderCell: (params)=> (
+                params.value != '-'? <Chip label={params.value} variant="outlined" size="small"/> : '-'
+            )
+        },
+        {
+            field: 'wheelchair_adapted',
+            headerName: 'Adaptado a Cadeiras de Rodas',
+            description: 'Adaptado a Cadeiras de Rodas',
+            disableColumnMenu: true,
+            headerAlign: 'left',
+            flex: 1,
+            minWidth: 60,
+            type: 'boolean',
+            renderHeader: ()=> (
+                <Tooltip title='Adaptado a Cadeiras de Rodas'>
+                    <Accessible />
+                </Tooltip>
+            ),
+        },
+        {
+            field: 'wheelchair_certified',
+            headerName: 'Certificado para Cadeira de Rodas',
+            description: 'Certificado para Cadeira de Rodas',
+            disableColumnMenu: true,
+            flex: 1,
+            minWidth: 80,
+            type: 'boolean',
+            renderHeader: ()=> (
+                <Tooltip title='Certificado para Cadeira de Rodas'>
+                    <Verified/>
+                    <Accessible/>
+                </Tooltip>
+            ),
+        },
+        {
+            field: 'tcc',
+            headerName: 'TCC',
+            flex: 1,
+            type: 'boolean'
+        },
+        {
+            field: 'yearly_allowed_tows',
+            headerName: 'Reboques Anuais Permitidos',
+            description: 'Reboques Anuais Permitidos',
+            flex: 1,
+        },
+        {
+            field: 'this_year_tow_counts',
+            headerName: 'Reboques Anuais Utilizados',
+            description: 'Reboques Anuais Utilizados',
+            flex: 1,
+        },
+        {
+            field: 'capacity',
+            headerName: 'Passageiros',
+            flex: 1,
+        },
+        {
+            field: 'fuel_consumption',
+            headerName: 'Consumo (l/100km)',
+            flex: 1,
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => renderStatus(params.value)
+        },
+        {
+            field: 'fuel_type',
+            headerName: 'Tipo de combustível',
+            description: 'Tipo de combustível',
+            flex: 1,
+        },
+        {
+            field: 'current_month_fuel_requests',
+            headerName: 'Pedidos Mensais de Reabastecimento',
+            description: 'Pedidos Mensais de Reabastecimento',
+            disableColumnMenu: true,
+            flex: 1,
+        },
+        {
+            field: 'current_kilometrage',
+            headerName: 'Kilometragem Atual',
+            description: 'Kilometragem Atual',
+            disableColumnMenu: true,
+            flex: 1,
+        },
+        {
+            field: 'vehicle_kilometrage_reports',
+            headerName: 'Registo de Kilometragem',
+            description: 'Registo de Kilometragem',
+            sortable: false,
+            disableColumnMenu: true,
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('vehicles.kilometrageReports', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Consultar
+                    </Button>
+                </Link>
+            ),
+        },
+        {
+            field: 'vehicle_maintenance_reports',
+            headerName: 'Registo de Manutenção',
+            description: 'Registo de Manutenção',
+            sortable: false,
+            disableColumnMenu: true,
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('vehicles.maintenanceReports', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Consultar
+                    </Button>
+                </Link>
+            )
+        },
+        {
+            field: 'vehicle_accesories_docs',
+            headerName: 'Documentos e Acessórios',
+            description: 'Documentos e Acessórios',
+            sortable: false,
+            disableColumnMenu: true,
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('vehicles.documentsAndAccessories', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Consultar
+                    </Button>
+                </Link>
+            )
+        },
+    ]
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -92,6 +310,12 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                         editAction="vehicles.showEdit"
                         deleteAction="vehicles.delete"
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                    />
+                    
+                    <DataGrid 
+                        rows={vehicleInfo}
+                        columns={VehicleColumns}
+                        density='compact'
                     />
                 </div>
             </div>

@@ -17,3 +17,7 @@
 .read-only-field label {
     color: #BDBDBD !important;
 }
+
+.expired-row {
+    background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+}
