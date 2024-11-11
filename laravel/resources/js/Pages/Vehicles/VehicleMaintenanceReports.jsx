@@ -1,9 +1,12 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { parse } from 'date-fns';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
 {/*TODO: DESCRIPTION POPUP LIKE ORDER OCCURRENCES */}
 export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
@@ -59,6 +62,109 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };
+
+    const vehicleMaintenanceColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'begin_date',
+            headerName: 'Data de Início',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'end_date',
+            headerName: 'Data de Fim',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'type',
+            headerName: 'Tipo',
+            flex: 1,
+        },
+        {
+            field: 'description',
+            headerName: 'Descrição',
+            flex: 1,
+            renderCell: (params) => (
+                <MouseHoverPopover data={params.value} />
+            )
+        },
+        {
+            field: 'kilometrage',
+            headerName: 'Kilometragem',
+            flex: 1,
+        },
+        {
+            field: 'total_cost',
+            headerName: 'Custo Total',
+            flex: 1,
+        },
+        {
+            field: 'items_cost',
+            headerName: 'Materiais',
+            flex: 1,
+        },
+        {
+            field: 'service_provider',
+            headerName: 'Prestador de serviço',
+            flex: 1,
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+        },
+        {
+            field: 'vehicle_id',
+            headerName: 'Veículo',
+            flex: 1,
+            disableColumnMenu: true,
+            sortable: false,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link href={route('vehicles.showEdit', params.value)}>
+                    <Button >{vehicle.license_plate}</Button>
+                </Link>
+            )
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -87,6 +193,12 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
                                 editAction="vehicleMaintenanceReports.showEdit"
                                 deleteAction="vehicleMaintenanceReports.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                            />
+
+                            <DataGrid 
+                                rows={vehicleReports}
+                                columns={vehicleMaintenanceColumns}
+                                density='compact'
                             />
                         </div>
                     </div>
