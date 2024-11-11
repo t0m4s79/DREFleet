@@ -5,7 +5,7 @@ import { Button, Alert, Snackbar, Icon, Chip, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Accessible, Verified } from '@mui/icons-material';
+import { Accessible, Build, ReadMoreOutlined, Verified } from '@mui/icons-material';
 
 function renderStatus(status) {
     const colors = {
@@ -137,7 +137,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             type: 'boolean',
             renderHeader: ()=> (
                 <Tooltip title='Adaptado a Cadeiras de Rodas'>
-                    <Accessible />
+                    <Accessible /> Adaptado a Cadeiras de Rodas
                 </Tooltip>
             ),
         },
@@ -152,7 +152,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             renderHeader: ()=> (
                 <Tooltip title='Certificado para Cadeira de Rodas'>
                     <Verified/>
-                    <Accessible/>
+                    <Accessible/> Certificado para Cadeira de Rodas
                 </Tooltip>
             ),
         },
@@ -222,16 +222,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                     key={params.value}
                     href={route('vehicles.kilometrageReports', params.value)}
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            maxHeight: '30px',
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
-                        Consultar
-                    </Button>
+                    <ReadMoreOutlined color='primary'/>
                 </Link>
             ),
         },
@@ -242,6 +233,11 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             sortable: false,
             disableColumnMenu: true,
             flex: 1,
+            renderHeader: () => (
+                <Tooltip title='Registo de Manutenção'>
+                    <Build/> Registo de Manutenção
+                </Tooltip>
+            ),
             renderCell: (params) => (
                 <Link
                     key={params.value}
