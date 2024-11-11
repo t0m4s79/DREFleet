@@ -21,3 +21,7 @@
 .expired-row {
     background-color: rgba(255, 0, 0, 0.1); /* Light red background */
 }
+
+.warning-row {
+    background-color: rgba(232, 176, 18, 0.1);
+}
