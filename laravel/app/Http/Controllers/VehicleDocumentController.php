@@ -19,7 +19,7 @@ class VehicleDocumentController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $vehicleDocuments = VehicleDocument::All();
+        $vehicleDocuments = VehicleDocument::with('vehicle')->get();
 
         $vehicleDocuments->each(function ($document) {
             $document->issue_date = Carbon::parse($document->issue_date)->format('d-m-Y');

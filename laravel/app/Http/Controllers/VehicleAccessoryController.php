@@ -19,7 +19,7 @@ class VehicleAccessoryController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $vehicleAccessories = VehicleAccessory::All();
+        $vehicleAccessories = VehicleAccessory::with('vehicle')->get();
 
         $vehicleAccessories->each(function ($accessory) {
             $accessory->expiration_date = $accessory->expiration_date ? Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
