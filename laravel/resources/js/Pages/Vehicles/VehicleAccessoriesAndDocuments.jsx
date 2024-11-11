@@ -14,14 +14,18 @@ const isExpired = (date) => {
         : date.value;
     const now = new Date();
 
-    if (isBefore(parsedDate, now)){
-        return (
-            <div style={{ color: 'red' }}>
-                <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
-                {date.formattedValue}
-            </div>
-        );
-    } else return date.formattedValue
+    if(parsedDate != null){
+        if (isBefore(parsedDate, now)){
+            return (
+                <div style={{ color: 'red' }}>
+                    <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else return date.formattedValue
+    } else {
+        return null
+    }
 }
 
 const displayData = (data) => {
@@ -190,8 +194,11 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             flex: 1,
             //maxWidth: 140,
             valueGetter: (params) => {
-                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
-                return parsedDate
+                console.log(params)
+                if(params != '-') {
+                    const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                    return parsedDate
+                } else return null
             },
             renderCell: (params) => (isExpired(params)),
         },
