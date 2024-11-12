@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Alert, Button, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 
 
 export default function AllPlaces( {auth, places, flash} ) {
@@ -48,6 +49,72 @@ export default function AllPlaces( {auth, places, flash} ) {
         kids_count: 'Número de crianças',
         kids_ids: 'Crianças',
     };
+
+    const placeColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'address',
+            headerName: 'Morada',
+            flex: 1,
+        },
+        {
+            field: 'known_as',
+            headerName: 'Conhecido como',
+            flex: 1,
+            maxWidth: 200,
+        },
+        {
+            field: 'place_type',
+            headerName: 'Tipo',
+            flex: 1,
+            maxWidth: 120,
+        },
+        {
+            field: 'coordinates',
+            headerName: 'Coordenadas',
+            flex: 1,
+        },
+        {
+            field: 'kids_count',
+            headerName: 'Número de crianças',
+            flex: 1,
+            maxWidth: 150,
+        },
+        {
+            field: 'kids_ids',
+            headerName: 'Crianças',
+            flex: 1,
+            renderCell: (params) => (
+                <div>
+                    {params.value.map((kid) => (
+                        <Link
+                            key={kid.id}
+                            href={route('kids.showEdit', kid)}
+                        >
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    maxWidth: '30px',
+                                    maxHeight: '30px',
+                                    minWidth: '30px',
+                                    minHeight: '30px',
+                                    margin: '0px 4px'
+                                }}
+                            >
+                                {kid.id}
+                            </Button>
+                        </Link>
+                    ))}
+                </div>
+            )
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -69,6 +136,12 @@ export default function AllPlaces( {auth, places, flash} ) {
                     </Button>
 
                     <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
+                
+                    <DataGrid 
+                        rows={placeInfo}
+                        columns={placeColumns}
+                        density='compact'
+                    />
                 </div>
             </div>
 

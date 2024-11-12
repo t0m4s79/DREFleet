@@ -2,8 +2,20 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
-import { Button, Snackbar, Alert } from '@mui/material';
+import { Button, Snackbar, Alert, Chip } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+
+function renderStatus(status) {
+    const colors = {
+        'Disponível': 'success',
+        'Em Serviço': 'warning',
+        'Indisponível': 'error',
+        'Escondido': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllDrivers( {auth, users, flash} ) {
     
@@ -32,6 +44,42 @@ export default function AllDrivers( {auth, users, flash} ) {
         user_type: 'Tipo de Utilizador',
         status: 'Estado'
     };
+
+    const userColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+        },
+        {
+            field: 'phone',
+            headerName: 'Número de Telefone',
+            flex: 1,
+        },
+        {
+            field: 'user_type',
+            headerName: 'Tipo de utilizador',
+            flex: 1,
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => (renderStatus(params.value))
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -51,6 +99,12 @@ export default function AllDrivers( {auth, users, flash} ) {
                     </Button>
 
                     <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
+                
+                    <DataGrid
+                        rows={userInfo}
+                        columns={userColumns}
+                        density='compact'
+                    />
                 </div>
             </div>
 
