@@ -4,7 +4,8 @@ import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
 import Table from '@/Components/Table';
-import { useEffect, useState } from 'react';
+import { parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 {/**TODO: KID SHOWING IN STOP IF ASSOCIATED WITH IT */}
 export default function OrderOccurences({auth, order}) {
@@ -39,6 +40,80 @@ export default function OrderOccurences({auth, order}) {
         distance_previous_stop: 'Distância desde paragem anterior',
         place_id: 'Morada',
     }
+
+    const orderStopsColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'arrival_date',
+            headerName: 'Data de chegada real',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params){
+                    const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
+                    return parsedDate
+                } else return null
+            },
+            
+        },
+        {
+            field: 'expected_date',
+            headerName: 'Data de chegada prevista',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params){
+                    const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
+                    return parsedDate
+                } else return null
+            },
+        },
+        {
+            field: 'stop_number',
+            headerName: 'Número de paragem',
+            flex: 1,
+            maxWidth: 150,
+        },
+        {
+            field: 'time_previous_stop',
+            headerName: 'Tempo estimado desde paragem anterior',
+            flex: 1,
+        },
+        {
+            field: 'distance_previous_stop',
+            headerName: 'Distância desde paragem anterior',
+            flex: 1,
+        },
+        {
+            field: 'place_id',
+            headerName: 'Morada',
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    key={params}
+                    href={route('places.showEdit', params.value)}                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}
+                    </Button>
+                </Link>
+            )
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -51,6 +126,11 @@ export default function OrderOccurences({auth, order}) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <Table data={orderStopsInfo} columnsLabel={orderStopsLabels} dataId={'id'}/>
+
+                    <CustomDataGrid 
+                        rows={orderStopsInfo}
+                        columns={orderStopsColumns}
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>
