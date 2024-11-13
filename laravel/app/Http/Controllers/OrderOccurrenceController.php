@@ -28,7 +28,7 @@ class OrderOccurrenceController extends Controller
 
         $occurrences->each(function ($occurrence) {
             $occurrence->order->expected_begin_date = Carbon::parse($occurrence->order->expected_begin_date )->format('d-m-Y');
-            $occurrence->vehicle_towed = $occurrence->vehicle_towed == 1 ? 'Sim' : 'Não';
+            //$occurrence->vehicle_towed = $occurrence->vehicle_towed == 1 ? 'Sim' : 'Não';
         });
 
         return Inertia::render('OrderOccurrences/AllOrderOccurrences', [
