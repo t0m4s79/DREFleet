@@ -5,6 +5,7 @@ import { Alert, Button, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
 export default function AllPlaces( {auth, places, flash} ) {
@@ -137,10 +138,11 @@ export default function AllPlaces( {auth, places, flash} ) {
 
                     <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
                 
-                    <DataGrid 
+                    <CustomDataGrid 
                         rows={placeInfo}
                         columns={placeColumns}
-                        density='compact'
+                        editAction="places.showEdit"
+                        deleteAction="places.delete"
                     />
                 </div>
             </div>
