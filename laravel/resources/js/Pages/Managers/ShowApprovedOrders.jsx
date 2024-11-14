@@ -2,10 +2,10 @@ import { Head } from '@inertiajs/react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React from 'react'
 import Table from '@/Components/Table';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+import { parse } from 'date-fns';
 
 export default function ShowApprovedOrders({auth, orders, userId}) {
-
-	console.log('orders', orders)
 
 	// Deconstruct order to just show relevant information
 	const managerOrderInfo = orders.map((order)=> {
@@ -26,6 +26,53 @@ export default function ShowApprovedOrders({auth, orders, userId}) {
 		approved_date: 'Data de Aprovação',
 	}
 
+	const ApprovedOrderColumns = [
+		{
+            field: 'id',
+            headerName: 'ID do Pedido',
+            flex: 1,
+            //maxWidth: 60,
+            hideable: false
+        },
+		{
+			field: 'begin_date',
+			headerName: 'Data de início',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'yyyy-MM-dd HH:mm:ss', new Date());
+                return parsedDate
+            },
+		},
+		{
+			field: 'end_date',
+			headerName: 'Data de fim',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'yyyy-MM-dd HH:mm:ss', new Date());
+                return parsedDate
+            },
+		},
+		{
+            field: 'approved_by',
+            headerName: 'Aprovado por',
+            flex: 1,
+        },
+		{
+            field: 'approved_date',
+            headerName: 'Data de aprovação',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params != '-'){
+                    const parsedDate = parse(params, 'yyyy-MM-dd HH:mm:ss', new Date());
+                    return parsedDate
+                } else return null
+            },
+        },
+	]
+
 	return (
 		<AuthenticatedLayout
             user={auth.user}
@@ -39,7 +86,13 @@ export default function ShowApprovedOrders({auth, orders, userId}) {
 
 
                     <Table data={managerOrderInfo} columnsLabel={managerOrderColumns} editAction={'orders.showEdit'} dataId="id"/>
-                </div>
+                
+					<CustomDataGrid 
+						rows={managerOrderInfo}
+						columns={ApprovedOrderColumns}
+						editAction={'orders.showEdit'}
+					/>
+				</div>
             </div>
 		</AuthenticatedLayout>
 	)

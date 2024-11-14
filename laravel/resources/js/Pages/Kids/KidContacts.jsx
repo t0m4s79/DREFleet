@@ -4,6 +4,8 @@ import { Head } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
+import { parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 export default function KidContacts( {auth, kid, flash} ) {
 
@@ -42,6 +44,58 @@ export default function KidContacts( {auth, kid, flash} ) {
         updated_at: 'Data da última atualização',
     }
 
+    const kidEmailColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 100,
+            hideable: false
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+        },
+        {
+            field: 'owner_name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'relationship_to_kid',
+            headerName: 'Parentesco',
+            flex: 1,
+        },
+        {
+            field: 'preference',
+            headerName: 'Forma de Contacto',
+            flex: 1,
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
+
     //Deconstruct data to display on "table"
     const kidPhones = kid.phone_numbers.map((phoneNumber) => {
         return {
@@ -64,6 +118,58 @@ export default function KidContacts( {auth, kid, flash} ) {
         created_at: 'Data de criação',
         updated_at: 'Data da última atualização',
     }
+
+    const kidPhonesColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 100,
+            hideable: false
+        },
+        {
+            field: 'phone',
+            headerName: 'Número de Telemóvel',
+            flex: 1,
+        },
+        {
+            field: 'owner_name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'relationship_to_kid',
+            headerName: 'Parentesco',
+            flex: 1,
+        },
+        {
+            field: 'preference',
+            headerName: 'Forma de Contacto',
+            flex: 1,
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -92,6 +198,13 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 deleteAction="kidPhoneNumbers.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
+
+                            <CustomDataGrid 
+                                rows={kidPhones}
+                                columns={kidPhonesColumns}
+                                editAction="kidPhoneNumbers.showEdit"
+                                deleteAction="kidPhoneNumbers.delete"
+                            />
                         </div>
                     </div>
 
@@ -111,6 +224,13 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 editAction="kidEmails.showEdit"
                                 deleteAction="kidEmails.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                            />
+                            
+                            <CustomDataGrid
+                                rows={kidEmails}
+                                columns={kidEmailColumns}
+                                editAction="kidEmails.showEdit"
+                                deleteAction="kidEmails.delete"
                             />
                         </div>
                     </div>
