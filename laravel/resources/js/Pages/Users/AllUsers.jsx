@@ -5,6 +5,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Button, Snackbar, Alert, Chip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 function renderStatus(status) {
     const colors = {
@@ -100,10 +101,11 @@ export default function AllDrivers( {auth, users, flash} ) {
 
                     <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
                 
-                    <DataGrid
+                    <CustomDataGrid
                         rows={userInfo}
                         columns={userColumns}
-                        density='compact'
+                        editAction="users.showEdit"
+                        deleteAction="users.delete"
                     />
                 </div>
             </div>

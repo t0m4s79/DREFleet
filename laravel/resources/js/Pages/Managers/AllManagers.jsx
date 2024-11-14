@@ -5,6 +5,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Button, Snackbar, Alert, Chip  } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 function renderStatus(status) {
     const colors = {
@@ -126,10 +127,11 @@ export default function AllManagers({ auth, managers, flash }) {
 
                     <Table data={managerInfo} columnsLabel={managerColumnLabels} editAction="managers.showEdit" deleteAction="managers.delete" dataId="id"/>
                 
-                    <DataGrid 
+                    <CustomDataGrid 
                         rows={managerInfo}
                         columns={managerColumns}
-                        density='compact'
+                        editAction="managers.showEdit"
+                        deleteAction="managers.delete"
                     />
                 </div>
             </div>

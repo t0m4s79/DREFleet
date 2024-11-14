@@ -7,6 +7,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
 const isExpired = (date) => {
@@ -189,10 +190,11 @@ export default function AllDrivers( {auth, drivers, flash} ) {
 
                     <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/>
                 
-                    <DataGrid 
+                    <CustomDataGrid 
                         rows={driverInfo}
                         columns={driverColumns}
-                        density='compact'
+                        editAction={"drivers.showEdit"}
+                        deleteAction={"drivers.delete"}
                         getRowClassName={(params) => {
                             const licenseExpirationDate = parse(params.row.license_expiration_date, 'dd-MM-yyyy', new Date());
                             const tccExpirationDate = parse(params.row.tcc_expiration_date, 'dd-MM-yyyy', new Date())
