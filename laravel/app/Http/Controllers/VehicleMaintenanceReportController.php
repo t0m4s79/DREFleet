@@ -80,7 +80,7 @@ class VehicleMaintenanceReportController extends Controller
             if ($incomingFields['begin_date'] > now()) {
                 $status = 'Agendado';
 
-            } else if (isset($incomingFields['end_date']) && $incomingFields['end_date'] > now()) {
+            } else if (isset($incomingFields['end_date']) && $incomingFields['end_date'] < now()) {
                 $status = 'Finalizado';
 
             } else {
@@ -168,7 +168,7 @@ class VehicleMaintenanceReportController extends Controller
             if ($incomingFields['begin_date'] > now()) {
                 $status = 'Agendado';
 
-            } else if (isset($incomingFields['end_date']) && $incomingFields['end_date'] > now()) {
+            } else if (isset($incomingFields['end_date']) && $incomingFields['end_date'] < now()) {
                 $status = 'Finalizado';
 
             } else {
