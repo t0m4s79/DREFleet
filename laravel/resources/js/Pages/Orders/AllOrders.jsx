@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import LeafletMap from '@/Components/LeafletMap';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Button, Snackbar, Alert } from '@mui/material';
+import { Button, Snackbar, Alert, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
 import Table from '@/Components/Table';
@@ -10,6 +10,19 @@ import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 import OccurrenceModal from '@/Components/OccurrenceModal';
 import MapModal from '@/Components/MapModal';
+
+const renderOrderStatus = (status) => {
+    const colors = {
+        'Finalizado': 'success',
+        'Aprovado': 'success',
+        'Em curso': 'info',
+        'Interrompido': 'warning',
+        'Cancelado/Não aprovado': 'error',
+        'Por aprovar': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllOrders({auth, orders, flash}) {
 
@@ -33,14 +46,15 @@ export default function AllOrders({auth, orders, flash}) {
         return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}m`;
     };
 
-    const OrderInfo = orders.map((order) => {  
+    const OrderInfo = orders.map((order) => {
+        //console.log(order)
         return {
             id: order.id,
             expected_begin_date: order.expected_begin_date,
             expected_end_date: order.expected_end_date,
-            vehicle_id: order.vehicle_id,
-            driver_id: order.driver_id,
-            technician_id: order.technician_id,
+            vehicle_id: order.vehicle,
+            driver_id: order.driver,
+            technician_id: order.technician,
             route: order.order_route_id,
             order_type: order.order_type,
             stops: order.order_stops.length,
@@ -89,7 +103,7 @@ export default function AllOrders({auth, orders, flash}) {
             field: 'expected_begin_date',
             headerName: 'Data de início',
             type: 'dateTime',
-            flex: 1,
+            //flex: 1,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
                 return parsedDate
@@ -99,7 +113,7 @@ export default function AllOrders({auth, orders, flash}) {
             field: 'expected_end_date',
             headerName: 'Data de fim',
             type: 'dateTime',
-            flex: 1,
+            //flex: 1,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
                 return parsedDate
@@ -108,24 +122,22 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'vehicle_id',
             headerName: 'Veículo',
-            flex: 1,
+            //flex: 1,
             maxWidth: 100,
+            valueFormatter: (value) => value.license_plate,
             renderCell: (params) => (
                 <Link
-                    key={params.value}
-                    href={route('vehicles.showEdit', params.value)}
+                    key={params.value.id}
+                    href={route('vehicles.showEdit', params.value.id)}
                 >
                     <Button
                         variant="outlined"
                         sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
                             minHeight: '30px',
                             margin: '0px 4px'
                         }}
                     >
-                        {params.value}
+                        {params.value.license_plate}
                     </Button>
                 </Link>
             )
@@ -133,24 +145,22 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'driver_id',
             headerName: 'Condutor',
-            flex: 1,
-            maxWidth: 100,
+            //flex: 1,
+            minWidth: 100,
+            valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
-                    key={params.value}
-                    href={route('drivers.showEdit', params.value)}
+                    key={params.value.id}
+                    href={route('drivers.showEdit', params.value.user_id)}
                 >
                     <Button
                         variant="outlined"
                         sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
                             minHeight: '30px',
                             margin: '0px 4px'
                         }}
                     >
-                        {params.value}
+                        {params.value.name}
                     </Button>
                 </Link>
             )
@@ -158,24 +168,22 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'technician_id',
             headerName: 'Técnico',
-            flex: 1,
-            maxWidth: 100,
+            //flex: 1,
+            minWidth: 100,
+            valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
                     key={params.value}
-                    href={route('technicians.showEdit', params.value)}
+                    href={route('technicians.showEdit', params.value.id)}
                 >
                     <Button
                         variant="outlined"
                         sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
                             minHeight: '30px',
                             margin: '0px 4px'
                         }}
                     >
-                        {params.value}
+                        {params.value.name}
                     </Button>
                 </Link>
             )
@@ -183,7 +191,7 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'route',
             headerName: 'Rota',
-            flex: 1,
+            //flex: 1,
             renderCell: (params) => {
                 if(params.value != '-'){
                     return (
@@ -211,12 +219,12 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'order_type',
             headerName: 'Tipo',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'stops',
             headerName: 'Paragens',
-            flex: 1,
+            //flex: 1,
             renderCell: (params) => (
                 <Link
                     key={params.value}
@@ -238,7 +246,8 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'trajectory',
             headerName: 'Trajeto',
-            flex: 1,
+            disableExport: true,
+            //flex: 1,
             renderCell: (params) => (
                 <MapModal trajectory={params.value}/>
             )
@@ -246,17 +255,18 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'expected_time',
             headerName: 'Tempo de Viagem Esperado',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'distance',
             headerName: 'Distância',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'occurrences',
             headerName: 'Ocorrências',
-            flex: 1,
+            //flex: 1,
+            valueFormatter: (value) => (value.map((elem)=> (`${elem.type}:${elem.description}`))),
             renderCell: (params) => {
                 const occurences = params.value
                 // Only render the button if there are occurrences
@@ -275,7 +285,7 @@ export default function AllOrders({auth, orders, flash}) {
             field: 'approved_date',
             headerName: 'Data de aprovação',
             type: 'dateTime',
-            flex: 1,
+            //flex: 1,
             valueGetter: (params) => {
                 if(params != '-'){
                     const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
@@ -286,18 +296,39 @@ export default function AllOrders({auth, orders, flash}) {
         {
             field: 'approved_by',
             headerName: 'Aprovado por',
-            flex: 1,
+            //flex: 1,
+            renderCell: (params) => {
+                if(params.value==null) return params.value
+                return (
+                    <Link
+                        key={params.value}
+                        href={route('managers.showEdit', params.value)}
+                    >
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                maxHeight: '30px',
+                                minWidth: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            {params.value}
+                        </Button>
+                    </Link>
+                )
+            },
         },
         {
             field: 'status',
             headerName: 'Estado',
-            flex: 1,
+            renderCell: (params) => (renderOrderStatus(params.value))
+            //flex: 1,
         },
         {
             field: 'created_at',
             headerName: 'Data de Criação',
             type: 'dateTime',
-            flex: 1,
+            //flex: 1,
             //maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -308,7 +339,7 @@ export default function AllOrders({auth, orders, flash}) {
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
-            flex: 1,
+            //flex: 1,
             //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -335,7 +366,7 @@ export default function AllOrders({auth, orders, flash}) {
                         </a>
                     </Button>
 
-                    <Table data={OrderInfo} columnsLabel={orderColumnLabels} editAction={'orders.edit'} deleteAction={'orders.delete'} dataId={'id'}/>
+                    {/* <Table data={OrderInfo} columnsLabel={orderColumnLabels} editAction={'orders.edit'} deleteAction={'orders.delete'} dataId={'id'}/> */}
                 
                     <CustomDataGrid
                         rows={OrderInfo}
