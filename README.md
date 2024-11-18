@@ -39,7 +39,7 @@ To better understand how the system works, we recommend reviewing the documentat
 - **React.js**: [React Documentation](https://react.dev/)  
 - **Leaflet.js (Map Library)**: [Leaflet Documentation](https://leafletjs.com/)  
 - **Material-UI (MUI)**: [MUI Documentation](https://mui.com/material-ui/getting-started/)  
-- **OSRM Backend**: [OSRM Documentation](http://project-osrm.org/docs/)  
+- **OSRM Backend**: [OSRM Documentation](https://project-osrm.org/docs/v5.24.0/api/#) 
 
 ---
 
