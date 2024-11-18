@@ -9,6 +9,19 @@ A fleet management system designed to support the operational needs of our organ
 
 ---
 
+## 📖 Table of Contents
+
+1. [About](#-fleet-management-system)  
+2. [Getting Started](#-getting-started)  
+   - [Prerequisites](#prerequisites)  
+   - [Recommended Reading](#recommended-reading)  
+   - [Installation](#-installation)  
+3. [Additional Resources](#-additional-resources)  
+4. [Entity Relationship Diagram](#-entity-relationship-diagram)  
+5. [Features](#-features)
+
+---
+
 ## 📚 Getting Started
 
 ### Prerequisites
@@ -41,6 +54,7 @@ Follow these steps to set up the project locally:
    cd DREFleet
    ```
 2. **Environment setup**
+
    - Add **composer**, **nodejs** and **php** to your system's environment variables.
    - Copy the `.env.example` file to `.env`
    - Fill in your database credentials in the newly created `.env` file.
@@ -49,7 +63,8 @@ Follow these steps to set up the project locally:
    php artisan key:generate
    ```
 
-3. Install Dependencies
+3. **Install Dependencies**
+
    Navigate to the Laravel directory and install backend and frontend dependencies:
    ```bash
    cd laravel
@@ -57,14 +72,16 @@ Follow these steps to set up the project locally:
    npm install
    ```
    
-4. Run Database Migrations
+4. **Run Database Migrations**
+
    Apply the database migrations:
    ```bash
    php artisan migrate
    ```
 
-5. Start the Servers
-   To make things easier open two terminals, where one will run the backend server and the other one will run the frontend.
+5. **Start the Servers**
+
+   If possible, to make things easier, open two terminals. One will run the backend server and the other one will run the frontend. Then, run the following commands:
    - Backend
       ```bash
       php artisan serve
@@ -76,7 +93,7 @@ Follow these steps to set up the project locally:
 
 ---
 
-⚙️ Additional Resources
+## ⚙️ Additional Resources
 If you're on Windows and want to automate recurring tasks, such as scheduling database backups, check out this guide:
 Windows Task Scheduler Guide
 
@@ -87,18 +104,17 @@ Windows Task Scheduler Guide
 ## 🗂️ Entity Relationship Diagram
 Below is the most up-to-date entity relationship diagram for this project:
 
-# Updated Entity Relationship Diagram
+### Updated Entity Relationship Diagram
 ![Diagrama Relações](https://github.com/user-attachments/assets/ce139e38-8614-4a6f-a0e8-44670f6f3e79)
 
 ---
 
 ## ✨ Features
 Highlighting the key features of this fleet management system:
-- Driver and Vehicle Management: Track and manage driver and vehicle information.
-- Interactive Maps: Plan and optimize routes using Leaflet.js and OSRM.
-- Dynamic DataTables: Present data with custom columns and filters using MUI DataGrid.
-- Real-Time Updates: Keep dashboards in sync with backend data changes.
-- Drag-and-Drop: Rearrange lists and orders interactively.
+- **Driver and Vehicle Management:** Track and manage driver and vehicle information.
+- **Interactive Maps:** Plan and optimize routes using Leaflet.js and OSRM.
+- **Dynamic DataTables:** Present data with custom columns and filters using MUI DataGrid.
+- **Drag-and-Drop:** Rearrange lists and orders interactively.
 
 ---
 
