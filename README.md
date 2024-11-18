@@ -1,30 +1,105 @@
-# Basic Installation and Config
+# 🚛 Fleet Management System
 
-1. Download dependency manager tools:
-   - [composer](https://getcomposer.org/download/)
-   - [nodejs](https://nodejs.org/en/download/prebuilt-installer)
+A fleet management system designed to support the operational needs of our organization. The system handles multiple **entities**, including:
+- 🧑‍✈️ Drivers
+- 🚗 Vehicles
+- 🗺️ Places
+- 👶 Kids  
+...and more!
 
-2. Clone repository;
+---
 
-3. Include **composer** **nodejs** and **php** in the system environment variables;
+## 📚 Getting Started
 
-4. Install project depencies inside laravel directory:
-   - `npm install`
-   - `composer install`
+### Prerequisites
 
-5. Copy .env.example file to .env and:
-   - fill database information;
-   - on the laravel dir, run `php artisan key:generate` to generate aplication key (APP_KEY);
+Before setting up the project, ensure you have the following tools installed:
 
-6. Run database migrations with `php artisan migrate`;
+- [Composer](https://getcomposer.org/download/) (PHP dependency manager)  
+- [Node.js](https://nodejs.org/en/download/prebuilt-installer) (JavaScript runtime environment)  
+- [PHP](https://www.php.net/downloads)  
 
-7. Run servers:
-   - backend: php artisan serve
-   - frontend: npm run dev
+### Recommended Reading
+
+To better understand how the system works, we recommend reviewing the documentation for the following key libraries/packages used in the project:
+- **Laravel Breeze (React)**: [Laravel Breeze Docs](https://laravel.com/docs/11.x/starter-kits#laravel-breeze)
+- **React.js**: [React Documentation](https://react.dev/)  
+- **Leaflet.js (Map Library)**: [Leaflet Documentation](https://leafletjs.com/)  
+- **Material-UI (MUI)**: [MUI Documentation](https://mui.com/material-ui/getting-started/)  
+- **OSRM Backend**: [OSRM Documentation](http://project-osrm.org/docs/)  
+
+---
+
+### 🛠️ Installation
+
+Follow these steps to set up the project locally:
+
+1. **Clone the Repository**  
+   Open a terminal and run:
+   ```bash
+   git clone https://github.com/t0m4s79/DREFleet.git
+   cd DREFleet
+   ```
+2. **Environment setup**
+   - Add **composer**, **nodejs** and **php** to your system's environment variables.
+   - Copy the `.env.example` file to `.env`
+   - Fill in your database credentials in the newly created `.env` file.
+   - Generate the Laravel application key with:
+   ```bash
+   php artisan key:generate
+   ```
+
+3. Install Dependencies
+   Navigate to the Laravel directory and install backend and frontend dependencies:
+   ```bash
+   cd laravel
+   composer install
+   npm install
+   ```
+   
+4. Run Database Migrations
+   Apply the database migrations:
+   ```bash
+   php artisan migrate
+   ```
+
+5. Start the Servers
+   To make things easier open two terminals, where one will run the backend server and the other one will run the frontend.
+   - Backend
+      ```bash
+      php artisan serve
+      ```
+   - Frontend
+      ```bash
+      npm run dev
+      ```
+
+---
+
+⚙️ Additional Resources
+If you're on Windows and want to automate recurring tasks, such as scheduling database backups, check out this guide:
+Windows Task Scheduler Guide
 
 [Windows Task Scheduler](https://gist.github.com/Splode/94bfa9071625e38f7fd76ae210520d94)
 
+---
+
+## 🗂️ Entity Relationship Diagram
+Below is the most up-to-date entity relationship diagram for this project:
 
 # Updated Entity Relationship Diagram
 ![Diagrama Relações](https://github.com/user-attachments/assets/ce139e38-8614-4a6f-a0e8-44670f6f3e79)
+
+---
+
+## ✨ Features
+Highlighting the key features of this fleet management system:
+- Driver and Vehicle Management: Track and manage driver and vehicle information.
+- Interactive Maps: Plan and optimize routes using Leaflet.js and OSRM.
+- Dynamic DataTables: Present data with custom columns and filters using MUI DataGrid.
+- Real-Time Updates: Keep dashboards in sync with backend data changes.
+- Drag-and-Drop: Rearrange lists and orders interactively.
+
+---
+
 
