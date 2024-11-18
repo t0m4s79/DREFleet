@@ -1,7 +1,7 @@
 # 🚛 Fleet Management System
 
 A fleet management system designed to support the operational needs of our organization. The system handles multiple **entities**, including:
-- 🧑‍✈️ Drivers
+- Drivers
 - 🚗 Vehicles
 - 🗺️ Places
 - 👶 Kids  
