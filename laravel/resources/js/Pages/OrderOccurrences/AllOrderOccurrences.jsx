@@ -6,6 +6,7 @@ import { Head, Link } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
 import CustomDataGrid from '@/Components/CustomDataGrid';
 import { parse } from 'date-fns';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
 export default function AllOrderOccurences({auth, occurrences, flash}) {
 
@@ -158,6 +159,9 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             field: 'description',
             headerName: 'Descrição',
             flex: 1,
+            renderCell: (params) => (
+                <MouseHoverPopover data={params.value} />
+            )
         },
         {
             field: 'created_at',

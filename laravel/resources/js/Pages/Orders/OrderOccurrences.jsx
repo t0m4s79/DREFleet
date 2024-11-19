@@ -7,6 +7,7 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
 export default function OrderOccurences({auth, order, flash}) {
     
@@ -31,7 +32,7 @@ export default function OrderOccurences({auth, order, flash}) {
             vehicle_id: order.vehicle.id,
             type: occurrence.type,
             vehicle_towed: occurrence.vehicle_towed,
-            description: 'Pop-up com descrição da ocorrência',
+            description: occurrence.description,
             created_at: occurrence.created_at,
             updated_at: occurrence.updated_at,
         };
@@ -158,6 +159,9 @@ export default function OrderOccurences({auth, order, flash}) {
             field: 'description',
             headerName: 'Descrição',
             flex: 1,
+            renderCell: (params) => (
+                <MouseHoverPopover data={params.value} />
+            )
         },
         {
             field: 'created_at',
