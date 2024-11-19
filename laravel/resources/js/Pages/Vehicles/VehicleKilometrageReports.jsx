@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
 
@@ -164,10 +165,11 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
 
-                            <DataGrid 
+                            <CustomDataGrid
                                 rows={vehicleReports}
                                 columns={vehicleKilometrageColumns}
-                                density='compact'
+                                editAction="vehicleKilometrageReports.showEdit"
+                                deleteAction="vehicleKilometrageReports.delete"
                             />
                         </div>
                     </div>

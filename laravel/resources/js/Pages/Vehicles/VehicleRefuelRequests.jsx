@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { parse } from 'date-fns';
 import { DataGrid } from '@mui/x-data-grid';
 import { WarningAmber } from '@mui/icons-material';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 const isRequestExceptional = (n) => {
     if(n > 6) {
@@ -200,10 +201,11 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
 
-                            <DataGrid
+                            <CustomDataGrid
                                 rows={vehicleRequests}
                                 columns={vehicleRefuelColumns}
-                                density='compact'
+                                editAction="vehicleRefuelRequests.showEdit"
+                                deleteAction="vehicleRefuelRequests.delete"
                                 getRowClassName={(params) => {
                                     return params.row.monthly_request_number > 6 ? 'warning-row' : '';
                                 }}

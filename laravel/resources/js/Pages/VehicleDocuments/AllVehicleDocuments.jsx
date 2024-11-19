@@ -7,6 +7,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 const isExpired = (date) => {
     const parsedDate = typeof date.value === 'string' 
@@ -196,10 +197,11 @@ console.log(vehicleDocuments);
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                     /> */}
 
-                    <DataGrid 
+                    <CustomDataGrid
                         rows={vehicleDocumentInfo}
                         columns={vehicleDocsColumns}
-                        density='compact'
+                        editAction="vehicleDocuments.showEdit"
+                        deleteAction="vehicleDocuments.delete"
                         getRowClassName={(params) => {
                             const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
                             return expirationDate < new Date() ? 'expired-row' : '';

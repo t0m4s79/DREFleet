@@ -7,6 +7,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 const isExpired = (date) => {
     const parsedDate = typeof date.value === 'string' 
@@ -266,12 +267,11 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
 
-                            <DataGrid
+                            <CustomDataGrid
                                 columns={vehicleDocsColumns}
                                 rows={vehicleDocs}
-                                disableRowSelectionOnClick
-                                hideFooterSelectedRowCount
-                                //localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
+                                editAction="vehicleDocuments.showEdit"
+                                deleteAction="vehicleDocuments.delete"
                                 getRowClassName={(params) => {
                                     const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
                                     return expirationDate < new Date() ? 'expired-row' : '';
@@ -297,12 +297,11 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
 
-                            <DataGrid
+                            <CustomDataGrid
                                 columns={vehicleAccColumns}
                                 rows={vehicleAccessories}
-                                disableRowSelectionOnClick
-                                hideFooterSelectedRowCount
-                                //localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
+                                editAction="vehicleAccessories.showEdit"
+                                deleteAction="vehicleAccessories.delete"
                                 getRowClassName={(params) => {
                                     const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
                                     return expirationDate < new Date() ? 'expired-row' : '';

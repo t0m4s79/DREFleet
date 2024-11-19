@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Accessible, Build, ReadMoreOutlined, Verified } from '@mui/icons-material';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 function renderStatus(status) {
     const colors = {
@@ -95,33 +96,33 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         {
             field: 'make',
             headerName: 'Marca',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'model',
             headerName: 'Modelo',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'license_plate',
             headerName: 'Matrícula',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'year',
             headerName: 'Ano',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'heavy_vehicle',
             headerName: 'Veículo Pesado',
-            flex: 1,
+            //flex: 1,
             type: 'boolean',
         },
         {
             field: 'heavy_type',
             headerName: 'Tipo de Pesado',
-            flex: 1,
+            //flex: 1,
             renderCell: (params)=> (
                 params.value != '-'? <Chip label={params.value} variant="outlined" size="small"/> : '-'
             )
@@ -132,7 +133,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Adaptado a Cadeiras de Rodas',
             disableColumnMenu: true,
             headerAlign: 'left',
-            flex: 1,
+            //flex: 1,
             minWidth: 60,
             type: 'boolean',
             renderHeader: ()=> (
@@ -146,7 +147,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             headerName: 'Certificado para Cadeira de Rodas',
             description: 'Certificado para Cadeira de Rodas',
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
             minWidth: 80,
             type: 'boolean',
             renderHeader: ()=> (
@@ -159,56 +160,56 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         {
             field: 'tcc',
             headerName: 'TCC',
-            flex: 1,
+            //flex: 1,
             type: 'boolean'
         },
         {
             field: 'yearly_allowed_tows',
             headerName: 'Reboques Anuais Permitidos',
             description: 'Reboques Anuais Permitidos',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'this_year_tow_counts',
             headerName: 'Reboques Anuais Utilizados',
             description: 'Reboques Anuais Utilizados',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'capacity',
             headerName: 'Passageiros',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'fuel_consumption',
             headerName: 'Consumo (l/100km)',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'status',
             headerName: 'Estado',
-            flex: 1,
+            //flex: 1,
             renderCell: (params) => renderStatus(params.value)
         },
         {
             field: 'fuel_type',
             headerName: 'Tipo de combustível',
             description: 'Tipo de combustível',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'current_month_fuel_requests',
             headerName: 'Pedidos Mensais de Reabastecimento',
             description: 'Pedidos Mensais de Reabastecimento',
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'current_kilometrage',
             headerName: 'Kilometragem Atual',
             description: 'Kilometragem Atual',
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'vehicle_kilometrage_reports',
@@ -216,7 +217,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Registo de Kilometragem',
             sortable: false,
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
             renderCell: (params) => (
                 <Link
                     key={params.value}
@@ -232,7 +233,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Registo de Manutenção',
             sortable: false,
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
             renderHeader: () => (
                 <Tooltip title='Registo de Manutenção'>
                     <Build/> Registo de Manutenção
@@ -262,7 +263,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Documentos e Acessórios',
             sortable: false,
             disableColumnMenu: true,
-            flex: 1,
+            //flex: 1,
             renderCell: (params) => (
                 <Link
                     key={params.value}
@@ -308,10 +309,11 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                     />
                     
-                    <DataGrid 
+                    <CustomDataGrid 
                         rows={vehicleInfo}
                         columns={VehicleColumns}
-                        density='compact'
+                        editAction="vehicles.showEdit"
+                        deleteAction="vehicles.delete"
                     />
                 </div>
             </div>

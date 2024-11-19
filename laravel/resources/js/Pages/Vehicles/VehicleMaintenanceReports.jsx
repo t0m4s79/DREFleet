@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { parse } from 'date-fns';
 import MouseHoverPopover from '@/Components/MouseHoverPopover';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 {/*TODO: DESCRIPTION POPUP LIKE ORDER OCCURRENCES */}
 export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
@@ -195,10 +196,11 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
 
-                            <DataGrid 
+                            <CustomDataGrid
                                 rows={vehicleReports}
                                 columns={vehicleMaintenanceColumns}
-                                density='compact'
+                                editAction="vehicleMaintenanceReports.showEdit"
+                                deleteAction="vehicleMaintenanceReports.delete"
                             />
                         </div>
                     </div>
