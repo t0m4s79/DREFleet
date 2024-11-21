@@ -47,6 +47,6 @@ class OrderStop extends Model
 
     public function kids(): BelongsToMany
     {
-        return $this->belongsToMany(Kid::class)->withPivot('place_id');
+        return $this->belongsToMany(Kid::class, 'kid_order_stop', 'order_stop_id', 'kid_id')->withPivot('place_id');
     }
 }

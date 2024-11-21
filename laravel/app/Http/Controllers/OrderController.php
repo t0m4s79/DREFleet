@@ -218,7 +218,7 @@ class OrderController extends Controller
                 'order_id' => $order->id ?? null,
             ]);
 
-        $order->load('orderStops.place')->get();
+        $order->load(['orderStops.place', 'orderStops.kids'])->get();
 
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
@@ -296,7 +296,7 @@ class OrderController extends Controller
             ],
 
         ], $customErrorMessages);
-
+        
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
         DB::beginTransaction();
@@ -540,7 +540,7 @@ class OrderController extends Controller
             'order_id' => $order->id ?? null,
         ]);
 
-        $order->load(['orderStops']);
+        $order->load(['orderStops', 'orderStops.kids']);
         $order->orderStops->each(function ($stop) {
             $stop->expected_arrival_date = $stop->expected_arrival_date ? Carbon::parse($stop->expected_arrival_date)->format('d-m-Y H:i') : null;
             $stop->actual_arrival_date = $stop->actual_arrival_date ? Carbon::parse($stop->actual_arrival_date)->format('d-m-Y H:i') : null;
