@@ -7,7 +7,6 @@ import Table from '@/Components/Table';
 import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-{/**TODO: KID SHOWING IN STOP IF ASSOCIATED WITH IT */}
 export default function OrderOccurences({auth, order}) {
 
     const formatTime = (seconds) => {
@@ -19,6 +18,9 @@ export default function OrderOccurences({auth, order}) {
     };
 
     const orderStopsInfo = order.order_stops.map((stop) => {
+        console.log(stop)
+        const kid = stop.kids.length > 0 ? stop.kids[0] : null;    //Assuming there is only 1 kid per stop
+
         return {
             id: stop.id,
             arrival_date: stop.actual_arrival_date,
@@ -27,7 +29,7 @@ export default function OrderOccurences({auth, order}) {
             time_previous_stop: formatTime(stop.time_from_previous_stop),
             distance_previous_stop: (stop.distance_from_previous_stop/ 1000).toFixed(2) + 'km',
             place_id: stop.place_id,
-            /**falta kid */
+            kid_id: kid,
         };
     });
 
@@ -94,6 +96,7 @@ export default function OrderOccurences({auth, order}) {
             field: 'place_id',
             headerName: 'Morada',
             flex: 1,
+            maxWidth: 150,
             renderCell: (params) => (
                 <Link
                     key={params}
@@ -113,6 +116,24 @@ export default function OrderOccurences({auth, order}) {
                 </Link>
             )
         },
+        {
+            field: 'kid_id',
+            headerName: 'Criança',
+            flex: 1,
+            renderCell: (params) => {
+                if(params.value != null) {
+                    return (
+                        <Link
+                            key={params.value.id}
+                            href={route('kids.showEdit', params.value.id)}
+                            className='text-blue-500'
+                        >
+                                {params.value.name}
+                        </Link>
+                    )
+                } else return null
+            }
+        }
     ]
     
     return (

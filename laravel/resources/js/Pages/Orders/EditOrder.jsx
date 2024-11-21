@@ -46,9 +46,12 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     const [isEditMode, setisEditMode] = useState(false)
 
     const orderStops = order.order_stops.map((stop)=> {
+
+        const kidId = stop.kids.length > 0 ? stop.kids[0].id : null;    //Assuming there is only 1 kid per stop
+
         return { 
             place_id: stop.place_id,
-            kid_id: stop.kid_id,
+            kid_id: kidId,
             label: `#${stop.place.id} - ${stop.place.address}`,
             lat: stop.place.coordinates.coordinates[1],
             lng: stop.place.coordinates.coordinates[0],
@@ -57,10 +60,11 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
             time: stop.time_from_previous_stop || 0,         // Keep existing metric data if available
         }
     })
+    //console.log('orderStops', orderStops)
     
     useEffect(() => {
         if (orderStops.length > 0) {
-            console.log('Initializing order stops:', orderStops);
+            //console.log('Initializing order stops:', orderStops);
     
             // Batch context updates together
             updateWaypoints(orderStops);
@@ -155,7 +159,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     }
 
     const handleRouteChange =(route) => {
-        console.log(route)
+        //console.log(route)
         setSelectedRouteID(route.id)
         setPreferredDrivers(route.drivers)
         setPreferredTechnicians(route.technicians)
