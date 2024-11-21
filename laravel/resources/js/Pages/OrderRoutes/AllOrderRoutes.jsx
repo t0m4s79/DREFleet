@@ -10,7 +10,7 @@ import MapModal from '@/Components/MapModal';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
 export default function AllOrderRoutes({auth, orderRoutes, flash}) {
-    console.log(orderRoutes)
+    //console.log(orderRoutes)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -122,6 +122,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
             field: 'orderArea',
             headerName: 'Área',
             flex: 1,
+            disableExport: true,
             renderCell: (params) => (
                 <MapModal route={params.value}/>
             )
