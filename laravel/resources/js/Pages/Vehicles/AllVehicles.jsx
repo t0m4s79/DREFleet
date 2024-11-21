@@ -203,6 +203,22 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Pedidos Mensais de Reabastecimento',
             disableColumnMenu: true,
             //flex: 1,
+            renderCell: (params) => (
+                <Link
+                    href={route('vehicles.refuelRequests', params.row.id)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value} (Ver todos) {/* Display the number of occurrences */}
+                    </Button>
+                </Link>
+            )
         },
         {
             field: 'current_kilometrage',
