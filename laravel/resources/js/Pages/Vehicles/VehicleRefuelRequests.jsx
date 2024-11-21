@@ -179,7 +179,6 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
 
             {<Head title='Pedidos de Reabastecimento do Veículo' />}
 
-            {/*TODO: TABLES WITH DOCUMENTS AND ACCESSORIES */}
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     

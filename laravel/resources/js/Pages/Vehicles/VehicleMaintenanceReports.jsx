@@ -9,7 +9,7 @@ import { parse } from 'date-fns';
 import MouseHoverPopover from '@/Components/MouseHoverPopover';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-{/*TODO: DESCRIPTION POPUP LIKE ORDER OCCURRENCES */}
+
 export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);

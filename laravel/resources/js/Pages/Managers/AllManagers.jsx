@@ -33,7 +33,6 @@ export default function AllManagers({ auth, managers, flash }) {
     }, [flash]);
     
     
-    console.log(managers)
     //Deconstruct data to send to table component
     const managerInfo = managers.map((manager) => {         
         return {
