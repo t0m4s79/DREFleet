@@ -280,7 +280,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                                     variant="outlined"
                                                     color="error" 
                                                     onClick={() => removeDocument(index)} 
-                                                    disabled={!isEditMode && documents.length < 2}
+                                                    disabled={!isEditMode || documents.length < 2}
                                                     sx={{ marginBottom: 2 }}
                                                     startIcon={<Remove />}
                                                 >
