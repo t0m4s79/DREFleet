@@ -6,6 +6,7 @@ import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import React, { useState, useEffect } from 'react';
 import LoadingAnimation from './components/LoadingAnimation'; // Import your spinner component
+import { NotificationsProvider } from './Pages/Notifications/NotificationContext';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -36,7 +37,9 @@ createInertiaApp({
             return (
                 <>
                     {loading && <LoadingAnimation />}
-                    <App {...props} />
+                    <NotificationsProvider>
+                        <App {...props} />
+                    </NotificationsProvider>
                 </>
             );
         };
