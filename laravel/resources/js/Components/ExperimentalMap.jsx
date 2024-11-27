@@ -37,10 +37,12 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
 
         const routingControl = L.Routing.control({
             waypoints: waypoints.map(wp => L.latLng(wp.lat, wp.lng)),
-            router: L.Routing.osrmv1(`${routerOptions}/route/v1`), // Use the conditional router
-            language: 'pt-PT',
+            router: L.Routing.osrmv1({serviceUrl: `${routerOptions.serviceUrl}/route/v1`, language: 'pt-PT',}), // Use the conditional router
+            //language: 'pt',
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
+
+        console.log(routingControl)
 
         routingControl.on('routesfound', function (e) {
             console.log('routes found ', e.routes)                      // TODO: CHECK THIS CONSOLE.LOG
