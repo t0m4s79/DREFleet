@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { isBefore, parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
 const isExpired = (date) => {
     const parsedDate = typeof date.value === 'string' 
@@ -97,14 +98,14 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
         {
             field: 'name',
             headerName: 'Nome',
-            flex: 1,
+            //flex: 1,
         },
         {
             field: 'issue_date',
             headerName: 'Data de Emissão',
             type: 'date',
-            flex: 1,
-            maxWidth: 140,
+            //flex: 1,
+            minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
@@ -114,8 +115,8 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             field: 'expiration_date',
             headerName: 'Data de Validade',
             type: 'date',
-            flex: 1,
-            maxWidth: 140,
+            //flex: 1,
+            minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
@@ -133,14 +134,14 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             headerName: 'Dados Adicionais',
             flex: 1,
             display: 'flex',
-            renderCell: (params) => (displayData(params))
+            renderCell: (params) => (<MouseHoverPopover data={displayData(params)} />)
         },
         {
             field: 'created_at',
             headerName: 'Data de Criação',
             type: 'dateTime',
-            flex: 1,
-            maxWidth: 180,
+            //flex: 1,
+            //maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -150,8 +151,8 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
-            flex: 1,
-            maxWidth: 200,
+            //flex: 1,
+            //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -195,7 +196,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             flex: 1,
             //maxWidth: 140,
             valueGetter: (params) => {
-                console.log(params)
                 if(params != '-') {
                     const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                     return parsedDate

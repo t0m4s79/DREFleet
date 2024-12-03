@@ -129,16 +129,9 @@ export default function AllOrders({auth, orders, flash}) {
                 <Link
                     key={params.value.id}
                     href={route('vehicles.showEdit', params.value.id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
                         {params.value.license_plate}
-                    </Button>
                 </Link>
             )
         },
@@ -152,16 +145,9 @@ export default function AllOrders({auth, orders, flash}) {
                 <Link
                     key={params.value.id}
                     href={route('drivers.showEdit', params.value.user_id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
                         {params.value.name}
-                    </Button>
                 </Link>
             )
         },
@@ -175,16 +161,9 @@ export default function AllOrders({auth, orders, flash}) {
                 <Link
                     key={params.value}
                     href={route('technicians.showEdit', params.value.id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
                         {params.value.name}
-                    </Button>
                 </Link>
             )
         },

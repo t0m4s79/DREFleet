@@ -63,11 +63,11 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             name: driver.name, 
             email: driver.email, 
             phone: driver.phone, 
-            heavy_license: driver.heavy_license, //? 'Sim' : 'Não', 
+            heavy_license: driver.heavy_license ? 'Sim' : 'Não', 
             license_number: driver.license_number, 
             heavy_license_type: driver.heavy_license_type, 
             license_expiration_date: driver.license_expiration_date,
-            tcc: driver.tcc,
+            tcc: driver.tcc ? 'Sim' : 'Não',
             tcc_expiration_date: driver.tcc_expiration_date, 
             status: driver.status 
         }
@@ -119,7 +119,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             field: 'heavy_license',
             headerName: 'Carta de Pesados',
             flex: 1,
-            type: 'boolean',
+            //type: 'boolean',
             maxWidth: 100,
         },
         {
@@ -145,7 +145,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             field: 'tcc',
             headerName: 'TCC',
             flex: 1,
-            type: 'boolean',
+            //type: 'boolean',
             maxWidth: 80,
         },
         {
