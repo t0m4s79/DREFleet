@@ -1,14 +1,17 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { ptPT } from '@mui/x-data-grid/locales'
-import React from 'react'
+import React, { useState } from 'react'
 
-export default function CustomDataGrid({ rows, columns, getRowClassName, editAction, deleteAction }) {
+export default function CustomDataGrid({ rows, columns, columnVisibility, getRowClassName, editAction, deleteAction }) {
+
+    const [columnVisibilityModel, setColumnVisibilityModel] = useState(columnVisibility)
 
     // Add static column with Edit and Delete buttons
     if (editAction || deleteAction) {
         columns.push({
             field: 'actions',
             headerName: 'Ações',
+            hideable: false,
             renderCell: (params) => (
                 <div>
                     {editAction && 
@@ -40,6 +43,10 @@ export default function CustomDataGrid({ rows, columns, getRowClassName, editAct
                 rows={rows}
                 columns={columns}
                 getRowClassName={getRowClassName}
+                columnVisibilityModel={columnVisibilityModel}
+                onColumnVisibilityModelChange={(newModel) =>
+                    setColumnVisibilityModel(newModel)
+                }
                 initialState={{
                     pagination: {
                         paginationModel: { pageSize: 25,},
@@ -56,6 +63,7 @@ export default function CustomDataGrid({ rows, columns, getRowClassName, editAct
                         showQuickFilter: true,
                     },
                 }}
+                columnBufferPx={100}
                 ignoreDiacritics={true}
                 hideFooterSelectedRowCount
                 localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
@@ -66,7 +74,13 @@ export default function CustomDataGrid({ rows, columns, getRowClassName, editAct
                         whiteSpace: "nowrap",
                         lineHeight: "normal",
                         marginTop: "12px", 
-                        marginBottom: "12px", color: "#A6A6A6", fontSize: 12, textTransform: "uppercase", fontWeight:"500", fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif", letterSpacing: "0.05em"
+                        marginBottom: "12px", 
+                        color: "#A6A6A6", 
+                        fontSize: 12, 
+                        textTransform: "uppercase", 
+                        fontWeight:"500", 
+                        fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif", 
+                        letterSpacing: "0.05em"
                     },
                 }}
             />

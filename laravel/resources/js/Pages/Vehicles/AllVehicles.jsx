@@ -133,29 +133,29 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Adaptado a Cadeiras de Rodas',
             disableColumnMenu: true,
             headerAlign: 'left',
-            //flex: 1,
+            flex: 1,
             minWidth: 60,
             type: 'boolean',
-            renderHeader: ()=> (
-                <Tooltip title='Adaptado a Cadeiras de Rodas'>
-                    <Accessible /> Adaptado a Cadeiras de Rodas
-                </Tooltip>
-            ),
+            // renderHeader: ()=> (
+            //     <Tooltip title='Adaptado a Cadeiras de Rodas'>
+            //         <Accessible /> Adaptado a Cadeiras de Rodas
+            //     </Tooltip>
+            // ),
         },
         {
             field: 'wheelchair_certified',
             headerName: 'Certificado para Cadeira de Rodas',
             description: 'Certificado para Cadeira de Rodas',
             disableColumnMenu: true,
-            //flex: 1,
+            flex: 1,
             minWidth: 80,
             type: 'boolean',
-            renderHeader: ()=> (
-                <Tooltip title='Certificado para Cadeira de Rodas'>
-                    <Verified/>
-                    <Accessible/> Certificado para Cadeira de Rodas
-                </Tooltip>
-            ),
+            // renderHeader: ()=> (
+            //     <Tooltip title='Certificado para Cadeira de Rodas'>
+            //         <Verified/>
+            //         <Accessible/> Certificado para Cadeira de Rodas
+            //     </Tooltip>
+            // ),
         },
         {
             field: 'tcc',
@@ -164,20 +164,23 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             type: 'boolean'
         },
         {
-            field: 'yearly_allowed_tows',
-            headerName: 'Reboques Anuais Permitidos',
-            description: 'Reboques Anuais Permitidos',
+            field: 'tow_summary',
+            headerName: 'Reboques Anuais (Utilizados/Permitidos)',
+            description: 'Número de reboques anuais utilizados versus permitidos',
             //flex: 1,
-        },
-        {
-            field: 'this_year_tow_counts',
-            headerName: 'Reboques Anuais Utilizados',
-            description: 'Reboques Anuais Utilizados',
-            //flex: 1,
+            renderCell: (params) => {
+                const utilized = params.row.this_year_tow_counts || 0;
+                const allowed = params.row.yearly_allowed_tows || 0;
+                return (
+                    <span>
+                        {utilized} / {allowed}
+                    </span>
+                );
+            },
         },
         {
             field: 'capacity',
-            headerName: 'Passageiros',
+            headerName: 'Capacidade',
             //flex: 1,
         },
         {
@@ -330,6 +333,10 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                         columns={VehicleColumns}
                         editAction="vehicles.showEdit"
                         deleteAction="vehicles.delete"
+                        columnVisibility={{
+                            capacity: false,
+                            fuel_consumption: false,
+                        }}
                     />
                 </div>
             </div>
