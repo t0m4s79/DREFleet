@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
 import { TextField, Button, Grid, Autocomplete } from '@mui/material';
@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
 import { OrderContext, OrderProvider } from './OrderContext';
+import axios from 'axios';
 
 export default function EditOrder({auth, order, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
     return (
@@ -133,6 +134,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     ];
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
     const initialData = {
         expected_begin_date: order.expected_begin_date,
@@ -149,7 +151,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         places_changed: isPlacesModified,
     }
 
-    const { data, setData, put, errors, processing} = useForm({...initialData})
+    const { data, setData, put, patch, errors, processing} = useForm({...initialData})
 
     const toggleEdit = () => {
         if (isEditMode) {
@@ -220,8 +222,26 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         // Submit the form
         put(route('orders.edit', order.id));
     };
+
+    const handleApprove = (id) => {
+        // manager_id is missing from the data
+        // TODO: TO BE DISCUSSED WHERE THESE BUTTONS SHOULD APPEAR  
+        try{
+            patch(route('orders.approve', id))
+        } catch (error){
+            console.error('Error approving order:', error)
+        }
+    }
+
+    const handleUnapprove = (id) => {
+        try{
+            patch(route('orders.unapprove', id))
+        } catch (error){
+            console.error('Error approving order:', error)
+        }
+    }
     
-console.log(data)
+//console.log(data)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -237,37 +257,53 @@ console.log(data)
 
                             <form onSubmit={handleSubmit}>
                                 <input type="hidden" name="_token" value={csrfToken} />
+                                
+                                <div>
+                                    { isEditMode === false ? 
+                                        (<div className='mb-4'>
+                                            <Button
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={processing}
+                                            onClick={toggleEdit}
+                                        >
+                                            Editar
+                                            </Button>
+                                        </div>) : 
 
-                                { isEditMode === false ? 
-                                    (<div className='mb-4'>
-                                        <Button
-                                        variant="contained"
-                                        color="primary"
-                                        disabled={processing}
-                                        onClick={toggleEdit}
-                                    >
-                                        Editar
+                                    (<div className='mb-4 space-x-4'>
+                                        <Button 
+                                            variant="outlined"
+                                            color="error"
+                                            disabled={processing}
+                                            onClick={toggleEdit}
+                                        >
+                                            Cancelar Edição
                                         </Button>
-                                    </div>) : 
-
-                                (<div className='mb-4 space-x-4'>
-                                    <Button 
-                                        variant="outlined"
-                                        color="error"
-                                        disabled={processing}
-                                        onClick={toggleEdit}
+                                        <Button
+                                            type="submit"
+                                            variant="outlined"
+                                            color="primary"
+                                            disabled={processing}
+                                        >
+                                            Submeter
+                                        </Button>
+                                    </div>)}
+                                
+                                
+                                    <Button
+                                        color="success"
+                                        onClick={() => handleApprove(order.id)}
                                     >
-                                        Cancelar Edição
+                                        Aprovar
                                     </Button>
                                     <Button
-                                        type="submit"
-                                        variant="outlined"
-                                        color="primary"
-                                        disabled={processing}
+                                        color="error"
+                                        onClick={() => handleUnapprove(order.id)}
                                     >
-                                        Submeter
+                                        Não Aprovar
                                     </Button>
-                                </div>)}
+                                </div>
 
                                 <Grid container spacing={3}>
                                     <Grid item xs={12}>
