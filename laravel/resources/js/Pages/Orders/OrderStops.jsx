@@ -4,9 +4,9 @@ import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
 import Table from '@/Components/Table';
-import { useEffect, useState } from 'react';
+import { parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
-{/**TODO: KID SHOWING IN STOP IF ASSOCIATED WITH IT */}
 export default function OrderOccurences({auth, order}) {
 
     const formatTime = (seconds) => {
@@ -18,6 +18,9 @@ export default function OrderOccurences({auth, order}) {
     };
 
     const orderStopsInfo = order.order_stops.map((stop) => {
+        console.log(stop)
+        const kid = stop.kids.length > 0 ? stop.kids[0] : null;    //Assuming there is only 1 kid per stop
+
         return {
             id: stop.id,
             arrival_date: stop.actual_arrival_date,
@@ -26,7 +29,7 @@ export default function OrderOccurences({auth, order}) {
             time_previous_stop: formatTime(stop.time_from_previous_stop),
             distance_previous_stop: (stop.distance_from_previous_stop/ 1000).toFixed(2) + 'km',
             place_id: stop.place_id,
-            /**falta kid */
+            kid_id: kid,
         };
     });
 
@@ -39,6 +42,99 @@ export default function OrderOccurences({auth, order}) {
         distance_previous_stop: 'Distância desde paragem anterior',
         place_id: 'Morada',
     }
+
+    const orderStopsColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'arrival_date',
+            headerName: 'Data de chegada real',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params){
+                    const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
+                    return parsedDate
+                } else return null
+            },
+            
+        },
+        {
+            field: 'expected_date',
+            headerName: 'Data de chegada prevista',
+            type: 'dateTime',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params){
+                    const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
+                    return parsedDate
+                } else return null
+            },
+        },
+        {
+            field: 'stop_number',
+            headerName: 'Número de paragem',
+            flex: 1,
+            maxWidth: 150,
+        },
+        {
+            field: 'time_previous_stop',
+            headerName: 'Tempo estimado desde paragem anterior',
+            flex: 1,
+        },
+        {
+            field: 'distance_previous_stop',
+            headerName: 'Distância desde paragem anterior',
+            flex: 1,
+        },
+        {
+            field: 'place_id',
+            headerName: 'Morada',
+            flex: 1,
+            maxWidth: 150,
+            renderCell: (params) => (
+                <Link
+                    key={params}
+                    href={route('places.showEdit', params.value)}                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}
+                    </Button>
+                </Link>
+            )
+        },
+        {
+            field: 'kid_id',
+            headerName: 'Criança',
+            flex: 1,
+            renderCell: (params) => {
+                if(params.value != null) {
+                    return (
+                        <Link
+                            key={params.value.id}
+                            href={route('kids.showEdit', params.value.id)}
+                            className='text-blue-500'
+                        >
+                                {params.value.name}
+                        </Link>
+                    )
+                } else return null
+            }
+        }
+    ]
     
     return (
         <AuthenticatedLayout
@@ -51,6 +147,11 @@ export default function OrderOccurences({auth, order}) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <Table data={orderStopsInfo} columnsLabel={orderStopsLabels} dataId={'id'}/>
+
+                    <CustomDataGrid 
+                        rows={orderStopsInfo}
+                        columns={orderStopsColumns}
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>

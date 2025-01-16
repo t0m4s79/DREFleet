@@ -1,9 +1,48 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
+
+const isExpired = (date) => {
+    const parsedDate = typeof date.value === 'string' 
+        ? parse(date.value, 'dd-MM-yyyy HH:mm', new Date()) 
+        : date.value;
+    const now = new Date();
+
+    if(parsedDate != null){
+        if (isBefore(parsedDate, now)){
+            return (
+                <div style={{ color: 'red' }}>
+                    <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else return date.formattedValue
+    } else {
+        return null
+    }
+}
+
+const displayData = (data) => {
+    const textArray = data.value //.length > 0 ? data.value.split('\n') : []
+    return (
+        <div>
+            {textArray.map((elem, index) => (
+                <div key={index}>
+                    <span>{elem}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 
 export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
 console.log(vehicleDocuments);
@@ -31,8 +70,10 @@ console.log(vehicleDocuments);
             issue_date: vehicleDocument.issue_date,
             expiration_date: vehicleDocument.expiration_date,
             expired: vehicleDocument.expired,
-            vehicle_id: vehicleDocument.vehicle_id,
-            data: additionalData, // Store key-value pairs as array
+            vehicle_id: vehicleDocument.vehicle,
+            additionalData: additionalData, // Store key-value pairs as array
+            created_at: vehicleDocument.created_at,
+            updated_at: vehicleDocument.updated_at,
         };
     });
 
@@ -43,8 +84,94 @@ console.log(vehicleDocuments);
         expiration_date: 'Data de validade',
         expired: 'Expirado',
         vehicle_id: 'Id do veículo',
-        data: 'Dados adicionais',
+        additionalData: 'Dados adicionais',
     };
+
+    const vehicleDocsColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            //flex: 1,
+        },
+        {
+            field: 'issue_date',
+            headerName: 'Data de Emissão',
+            type: 'date',
+            //flex: 1,
+            minWidth: 140,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'expiration_date',
+            headerName: 'Data de Validade',
+            type: 'date',
+            //flex: 1,
+            minWidth: 140,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+            renderCell: (params) => (isExpired(params)),
+        },
+        {
+            field: 'expired',
+            headerName: 'Expirado',
+            flex: 1,
+            maxWidth: 100,
+        },
+        {
+            field: 'vehicle_id',
+            headerName: 'Veículo',
+            //flex: 1,
+            disableColumnMenu: true,
+            sortable: false,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link href={route('vehicles.showEdit', params.value.id)}>
+                    <Button >{params.value.license_plate}</Button>
+                </Link>
+            )
+        },
+        {
+            field: 'additionalData',
+            headerName: 'Dados Adicionais',
+            flex: 1,
+            display: 'flex',
+            renderCell: (params) => (<MouseHoverPopover data={displayData(params)} />)
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            //flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            //flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
 
     return (
         <AuthenticatedLayout
@@ -63,12 +190,23 @@ console.log(vehicleDocuments);
                         </a>
                     </Button>
 
-                    <Table
+                    {/* <Table
                         data={vehicleDocumentInfo}
                         columnsLabel={VehicleDocumentColumnLabels}
                         editAction="vehicleDocuments.showEdit"
                         deleteAction="vehicleDocuments.delete"
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                    /> */}
+
+                    <CustomDataGrid
+                        rows={vehicleDocumentInfo}
+                        columns={vehicleDocsColumns}
+                        editAction="vehicleDocuments.showEdit"
+                        deleteAction="vehicleDocuments.delete"
+                        getRowClassName={(params) => {
+                            const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
+                            return expirationDate < new Date() ? 'expired-row' : '';
+                        }}
                     />
                 </div>
             </div>

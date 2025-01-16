@@ -2,8 +2,11 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react'
+import CustomDataGrid from '@/Components/CustomDataGrid';
+import { parse } from 'date-fns';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
 export default function AllOrderOccurences({auth, occurrences, flash}) {
 
@@ -47,6 +50,143 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
         updated_at: 'Data da última atualização'
     }
 
+    const orderOccurrencesColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'date',
+            headerName: 'Data',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+            
+        },
+        {
+            field: 'order_id',
+            headerName: 'Pedido',
+            flex: 1,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('orders.showEdit', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}
+                    </Button>
+                </Link>
+            )
+        },
+        {
+            field: 'driver_id',
+            headerName: 'Condutor',
+            flex: 1,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('drivers.showEdit', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}
+                    </Button>
+                </Link>
+            )
+        },
+        {
+            field: 'vehicle_id',
+            headerName: 'Veículo',
+            flex: 1,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}
+                    </Button>
+                </Link>
+            )
+        },
+        {
+            field: 'type',
+            headerName: 'Tipo',
+            flex: 1,
+        },
+        {
+            field: 'vehicle_towed',
+            headerName: 'Reboque Utilizado',
+            type: 'boolean',
+            flex: 1,
+        },
+        {
+            field: 'description',
+            headerName: 'Descrição',
+            flex: 1,
+            renderCell: (params) => (
+                <MouseHoverPopover data={params.value} />
+            )
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -66,6 +206,13 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
                     </Button>
 
                     <Table data={orderOccurrencesInfo} columnsLabel={orderOccurrencesLabels} editAction={'orderOccurrences.showEdit'} deleteAction={'orderOccurrences.delete'} dataId={'id'}/>
+                
+                    <CustomDataGrid
+                        rows={orderOccurrencesInfo}
+                        columns={orderOccurrencesColumns}
+                        editAction={'orderOccurrences.showEdit'}
+                        deleteAction={'orderOccurrences.delete'}
+                    />
                 </div>
             </div>
 

@@ -5,26 +5,31 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Badge } from '@mui/material';
+import { useNotifications } from '@/Pages/Notifications/NotificationContext';
+import ResponsiveDrawer from '@/Components/ResponsiveDrawer';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
-    const [unreadCount, setUnreadCount] = useState(0);
+    // const [unreadCount, setUnreadCount] = useState(0);
 
-    useEffect(() => {
-        // Fetch the unread notifications count from the back-end
-        const fetchUnreadCount = async () => {
-            try {
-                const response = await axios.get('/notifications/unread-count');
-                setUnreadCount(response.data.unread_count);
+    // useEffect(() => {
+    //     // Fetch the unread notifications count from the back-end
+    //     const fetchUnreadCount = async () => {
+    //         try {
+    //             const response = await axios.get('/notifications/unread-count');
+    //             setUnreadCount(response.data.unread_count);
 
-            } catch (error) {
-                console.error('Error fetching unread notifications count', error);
-            }
-        };
+    //         } catch (error) {
+    //             console.error('Error fetching unread notifications count', error);
+    //         }
+    //     };
 
-        fetchUnreadCount();
-    }, []);
+    //     fetchUnreadCount();
+    // }, []);
+
+    const { unreadCount } = useNotifications();
 
     return (
         <div className="min-h-screen bg-sky-100">
@@ -38,7 +43,7 @@ export default function Authenticated({ user, header, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 md:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 lg:flex">
                                 <NavLink href={route('dashboard.index')} active={route().current('dashboard.index')}>
                                     Painel de Controlo
                                 </NavLink>
@@ -170,7 +175,7 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
-                        <div className="hidden md:flex sm:items-center sm:ms-6">
+                        <div className="hidden lg:flex sm:items-center sm:ms-6">
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <span className="inline-flex rounded-md relative">
@@ -178,15 +183,11 @@ export default function Authenticated({ user, header, children }) {
                                             type="button"
                                             className="relative inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                         >
-                                            {/* Bell Icon */}
-                                            <NotificationsIcon />
-
                                             {/* Badge: Unread Count */}
-                                            {unreadCount > 0 && (
-                                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
-                                                    {unreadCount}
-                                                </span>
-                                            )}
+                                            <Badge badgeContent={unreadCount} color='error'>
+                                                <NotificationsIcon />{/* Bell Icon */}
+                                            </Badge>
+                                            
                                         </button>
                                     </span>
                                 </Dropdown.Trigger>
@@ -233,82 +234,13 @@ export default function Authenticated({ user, header, children }) {
                                 </Dropdown>
                             </div>
                         </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
+                        
+                        <div className="-me-2 flex items-center lg:hidden">
+                            <ResponsiveDrawer user={user}/>
                         </div>
                     </div>
                 </div>
 
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard.index')} active={route().current('dashboard.index')}>
-                            Painel de Controlo
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('vehicles.index')} active={route().current('vehicles.index')}>
-                            Veículos
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('users.index')} active={route().current('users.index')}>
-                            Todos os Utilizadores
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('drivers.index')} active={route().current('drivers.index')}>
-                            Condutores
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('technicians.index')} active={route().current('technicians.index')}>
-                            Técnicos
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('managers.index')} active={route().current('managers.index')}>
-                            Gestores
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('kids.index')} active={route().current('kids.index')}>
-                            Crianças
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route('places.index')} active={route().current('places.index')}>
-                            Moradas
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Meu Perfil</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Terminar Sessão
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
             </nav>
 
             {header && (

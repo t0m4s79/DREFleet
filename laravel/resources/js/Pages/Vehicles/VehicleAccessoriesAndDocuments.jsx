@@ -3,7 +3,45 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
+
+const isExpired = (date) => {
+    const parsedDate = typeof date.value === 'string' 
+        ? parse(date.value, 'dd-MM-yyyy HH:mm', new Date()) 
+        : date.value;
+    const now = new Date();
+
+    if(parsedDate != null){
+        if (isBefore(parsedDate, now)){
+            return (
+                <div style={{ color: 'red' }}>
+                    <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else return date.formattedValue
+    } else {
+        return null
+    }
+}
+
+const displayData = (data) => {
+    const textArray = data.value.length>0 ? data.value.split('\n') : []
+    return (
+        <div>
+            {textArray.map((elem, index) => (
+                <div key={index}>
+                    <span>{elem}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} ) {
     console.log(vehicle)
@@ -48,6 +86,79 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };
+
+    const vehicleDocsColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            //flex: 1,
+        },
+        {
+            field: 'issue_date',
+            headerName: 'Data de Emissão',
+            type: 'date',
+            //flex: 1,
+            minWidth: 140,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'expiration_date',
+            headerName: 'Data de Validade',
+            type: 'date',
+            //flex: 1,
+            minWidth: 140,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+            renderCell: (params) => (isExpired(params)),
+        },
+        {
+            field: 'expired',
+            headerName: 'Expirado',
+            flex: 1,
+            maxWidth: 100,
+        },
+        {
+            field: 'additionalData',
+            headerName: 'Dados Adicionais',
+            flex: 1,
+            display: 'flex',
+            renderCell: (params) => (<MouseHoverPopover data={displayData(params)} />)
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            //flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            //flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
     
     const vehicleAccessories = vehicle.accessories.map((acc) => {
         return {
@@ -60,9 +171,65 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
         }
     });
 
+    const vehicleAccColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'condition',
+            headerName: 'Condição',
+            flex: 1,
+        },
+        {
+            field: 'expiration_date',
+            headerName: 'Data de Validade',
+            type: 'date',
+            flex: 1,
+            //maxWidth: 140,
+            valueGetter: (params) => {
+                if(params != '-') {
+                    const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                    return parsedDate
+                } else return null
+            },
+            renderCell: (params) => (isExpired(params)),
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            //maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
+
     const vehicleAccColumnLabels = {
         id: 'ID',
-        name: 'name',
+        name: 'Nome',
         condition: 'Condição',
         expiration_date: 'Data de Validade',
         created_at: 'Data de Criação',
@@ -94,9 +261,21 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                             <Table
                                 data={vehicleDocs}
                                 columnsLabel={vehicleDocsColumnLabels}
+                                getRowHeight={() => 'auto'}
                                 editAction="vehicleDocuments.showEdit"
                                 deleteAction="vehicleDocuments.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                            />
+
+                            <CustomDataGrid
+                                columns={vehicleDocsColumns}
+                                rows={vehicleDocs}
+                                editAction="vehicleDocuments.showEdit"
+                                deleteAction="vehicleDocuments.delete"
+                                getRowClassName={(params) => {
+                                    const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
+                                    return expirationDate < new Date() ? 'expired-row' : '';
+                                }}
                             />
                         </div>
                     </div>
@@ -117,6 +296,17 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                                 deleteAction="vehicleAccessories.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
                             />
+
+                            <CustomDataGrid
+                                columns={vehicleAccColumns}
+                                rows={vehicleAccessories}
+                                editAction="vehicleAccessories.showEdit"
+                                deleteAction="vehicleAccessories.delete"
+                                getRowClassName={(params) => {
+                                    const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
+                                    return expirationDate < new Date() ? 'expired-row' : '';
+                                }}
+                            />      
                         </div>
                     </div>
 

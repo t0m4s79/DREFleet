@@ -2,8 +2,21 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
-import { Button, Snackbar, Alert  } from '@mui/material';
+import { Button, Snackbar, Alert, Chip  } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+
+function renderStatus(status) {
+    const colors = {
+        'Disponível': 'success',
+        'Em Serviço': 'warning',
+        'Indisponível': 'error',
+        'Escondido': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllTechnicians({ auth, technicians, flash }) {
 
@@ -37,6 +50,37 @@ export default function AllTechnicians({ auth, technicians, flash }) {
         phone: 'Numero de Telefone',
         status: 'Estado',
     };
+
+    const technicianColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+        },
+        {
+            field: 'phone',
+            headerName: 'Número de Telefone',
+            flex: 1,
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => (renderStatus(params.value))
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -56,6 +100,13 @@ export default function AllTechnicians({ auth, technicians, flash }) {
                     </Button>
 
                     <Table data={technicianInfo} columnsLabel={technicianColumnLabels} editAction="technicians.showEdit" deleteAction="technicians.delete" dataId="id"/>
+                
+                    <CustomDataGrid 
+                        rows={technicianInfo}
+                        columns={technicianColumns}
+                        editAction="technicians.showEdit" 
+                        deleteAction="technicians.delete"
+                    />
                 </div>
             </div>
 

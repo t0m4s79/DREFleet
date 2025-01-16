@@ -2,8 +2,21 @@ import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import AddIcon from '@mui/icons-material/Add';
 import { Head, Link } from '@inertiajs/react';
-import { Button, Snackbar, Alert  } from '@mui/material';
+import { Button, Snackbar, Alert, Chip  } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+
+function renderStatus(status) {
+    const colors = {
+        'Disponível': 'success',
+        'Em Serviço': 'warning',
+        'Indisponível': 'error',
+        'Escondido': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllManagers({ auth, managers, flash }) {
 
@@ -20,7 +33,6 @@ export default function AllManagers({ auth, managers, flash }) {
     }, [flash]);
     
     
-    console.log(managers)
     //Deconstruct data to send to table component
     const managerInfo = managers.map((manager) => {         
         return {
@@ -41,6 +53,59 @@ export default function AllManagers({ auth, managers, flash }) {
         status: 'Estado',
         all_approved_orders: 'Pedidos Aprovados'
     };
+
+    const managerColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+        },
+        {
+            field: 'phone',
+            headerName: 'Número de Telefone',
+            flex: 1,
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => (renderStatus(params.value))
+        },
+        {
+            field: 'all_approved_orders',
+            headerName: 'Pedidos Aprovados',
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('managers.approved', params.value)}
+                >
+                    <Button                
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Consultar
+                    </Button>
+                </Link>
+            )
+        }
+    ]
     
     return (
         <AuthenticatedLayout
@@ -60,6 +125,13 @@ export default function AllManagers({ auth, managers, flash }) {
                     </Button>
 
                     <Table data={managerInfo} columnsLabel={managerColumnLabels} editAction="managers.showEdit" deleteAction="managers.delete" dataId="id"/>
+                
+                    <CustomDataGrid 
+                        rows={managerInfo}
+                        columns={managerColumns}
+                        editAction="managers.showEdit"
+                        deleteAction="managers.delete"
+                    />
                 </div>
             </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem } from '@mui/material';
+import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
 //import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';      //Package soon to deprecate
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';          //Changed to this new package
 import ExperimentalMap from '@/Components/ExperimentalMap';
@@ -7,7 +7,7 @@ import { OrderContext } from '../OrderContext';
 import { DragIndicator } from '@mui/icons-material';
 
 export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled }) {
-    console.log('selectedRoute is:',selectedRoute)
+    //console.log('selectedRoute is:',selectedRoute)
     const { 
         waypoints,
         places,
@@ -24,7 +24,6 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
         if (waypoints.length > 0) {
             const newPlaces = waypoints.map((waypoint, index) => {
                 const existingPlace = places.find(p => p.place_id === waypoint.place_id) || {};
-    
                 return {
                     place_id: waypoint.place_id,
                     kid_id: waypoint.kid_id || null, // Ensure kid_id is included even if null
@@ -40,6 +39,11 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
         }
     }, [waypoints, updateTrajectory]);
     
+    const getKidName = (kidID) => {
+        const kid = kids.find((kid) => kid.id === kidID)
+        //console.log(kid.name)
+        return kid.name
+    }
     
     const addWaypoint = (waypoint, placeId) => {
         const newWaypoints = [...waypoints, waypoint];
@@ -69,7 +73,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
             addWaypoint({
                 kid_id: selectedKid.id,
                 place_id: selectedKidPlace.id,
-                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address} ###${selectedKid.id} - ${selectedKid.name}`,
+                label: `#${selectedKidPlace.id} - ${selectedKidPlace.address}`,
                 lat: selectedKidPlace.coordinates.coordinates[1],
                 lng: selectedKidPlace.coordinates.coordinates[0],
             }, selectedKidPlace.id);
@@ -156,9 +160,8 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                                                     }}
                                                 >
                                                     {!disabled && <DragIndicator style={{ marginRight: '8px', color: '#666' }} />}
-                                                    <Typography>
-                                                        {waypoint.kid ? `${waypoint.kid.name} - ${waypoint.label}` : waypoint.label}
-                                                    </Typography>
+                                                    <ListItemText primary={waypoint.label} secondary={waypoint.kid_id ? `#${waypoint.kid_id} - ${getKidName(waypoint.kid_id)}` : null}/>
+
                                                 </ListItem>
                                             )}
                                         </Draggable>

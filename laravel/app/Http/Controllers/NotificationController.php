@@ -50,10 +50,18 @@ class NotificationController extends Controller
                 'manager_id' => $notification->id ?? null,
             ]);
 
-            return response()->json(['message' => 'Notificação marcada como lida com sucesso!'], 200);
+            return response()->json([
+                'message' => 'Notificação marcada como lida com sucesso!',
+                'status' => 'success'
+            ], 200);
+    
 
         } catch (\InvalidArgumentException $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => 'error'
+            ], 400);
+    
         
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error marking notification as read', [
@@ -62,7 +70,10 @@ class NotificationController extends Controller
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('notifications.index')->with('error', 'Houve um problema ao marcar a notificação com id ' . $notification->id . ' como lida. Tente novamente.');
+            return response()->json([
+                'message' => 'Houve um problema ao marcar a notificação com id ' . $notification->id . ' como lida. Tente novamente.',
+                'status' => 'error'
+            ], 500);
         }
     }
     

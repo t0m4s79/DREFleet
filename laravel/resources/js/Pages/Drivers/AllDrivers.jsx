@@ -1,9 +1,46 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { Alert, Button, Snackbar } from '@mui/material';
+import { Alert, Button, Chip, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import ErrorIcon from '@mui/icons-material/Error';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { isBefore, parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
+
+
+const isExpired = (date) => {
+    console.log(date)
+    const parsedDate = typeof date.value === 'string' 
+        ? parse(date.value, 'dd-MM-yyyy', new Date()) 
+        : date.value;
+    const now = new Date();
+
+    if(parsedDate != null){
+        if (isBefore(parsedDate, now)){
+            return (
+                <div style={{ color: 'red' }}>
+                    <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else return date.formattedValue
+    } else {
+        return null
+    }
+}
+
+function renderStatus(status) {
+    const colors = {
+        'Disponível': 'success',
+        'Em Serviço': 'warning',
+        'Indisponível': 'error',
+        'Escondido': 'default',
+    };
+  
+    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
+}
 
 export default function AllDrivers( {auth, drivers, flash} ) {
     console.log(drivers);
@@ -30,7 +67,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
             license_number: driver.license_number, 
             heavy_license_type: driver.heavy_license_type, 
             license_expiration_date: driver.license_expiration_date,
-            tcc: driver.tcc,
+            tcc: driver.tcc ? 'Sim' : 'Não',
             tcc_expiration_date: driver.tcc_expiration_date, 
             status: driver.status 
         }
@@ -49,6 +86,88 @@ export default function AllDrivers( {auth, drivers, flash} ) {
         tcc_expiration_date: 'Data de Validade de TCC',
         status: 'Estado',
     };
+
+    const driverColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'name',
+            headerName: 'Nome',
+            flex: 1,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+        },
+        {
+            field: 'phone',
+            headerName: 'Número de Telefone',
+            flex: 1,
+        },
+        {
+            field: 'license_number',
+            headerName: 'Nº da Carta de Condução',
+            flex: 1,
+        },
+        {
+            field: 'heavy_license',
+            headerName: 'Carta de Pesados',
+            flex: 1,
+            //type: 'boolean',
+            maxWidth: 100,
+        },
+        {
+            field: 'heavy_license_type',
+            headerName: 'Tipo de Carta de Pesados',
+            flex: 1,
+            renderCell: (params)=> (
+                params.value != '-'? <Chip label={params.value} variant="outlined" size="small"/> : '-'
+            ) 
+        },
+        {
+            field: 'license_expiration_date',
+            headerName: 'Data de Validade da Carta',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+            renderCell: (params) => (isExpired(params)),
+        },
+        {
+            field: 'tcc',
+            headerName: 'TCC',
+            flex: 1,
+            //type: 'boolean',
+            maxWidth: 80,
+        },
+        {
+            field: 'tcc_expiration_date',
+            headerName: 'Data de Validade da TCC',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                if(params != '-') {
+                    const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                    return parsedDate
+                } else return null
+            },
+            renderCell: (params) => (isExpired(params)),
+        },
+        {
+            field: 'status',
+            headerName: 'Estado',
+            flex: 1,
+            renderCell: (params) => (renderStatus(params.value))
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -70,6 +189,22 @@ export default function AllDrivers( {auth, drivers, flash} ) {
                     </Button>
 
                     <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/>
+                
+                    <CustomDataGrid 
+                        rows={driverInfo}
+                        columns={driverColumns}
+                        editAction={"drivers.showEdit"}
+                        deleteAction={"drivers.delete"}
+                        getRowClassName={(params) => {
+                            const licenseExpirationDate = parse(params.row.license_expiration_date, 'dd-MM-yyyy', new Date());
+                            const tccExpirationDate = parse(params.row.tcc_expiration_date, 'dd-MM-yyyy', new Date())
+                            // Check if either date is before the current date
+                            const isLicenseExpired = isBefore(licenseExpirationDate, new Date());
+                            const isTccExpired = isBefore(tccExpirationDate, new Date());
+
+                            return isLicenseExpired || isTccExpired ? 'expired-row' : '';
+                        }}
+                    />
                 </div>
             </div>
 

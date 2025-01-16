@@ -1,9 +1,12 @@
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { parse } from 'date-fns';
+import CustomDataGrid from '@/Components/CustomDataGrid';
 
 export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
 
@@ -43,6 +46,95 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
         created_at: 'Data de Criação',
         updated_at: 'Data da Última Atualização',
     };
+
+    const vehicleKilometrageColumns = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            flex: 1,
+            maxWidth: 60,
+            hideable: false
+        },
+        {
+            field: 'date',
+            headerName: 'Data',
+            type: 'date',
+            flex: 1,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
+                return parsedDate
+            },
+            hideable: false
+        },
+        {
+            field: 'begin_kilometrage',
+            headerName: 'Kilometragem Inicial',
+            flex: 1,
+        },
+        {
+            field: 'end_kilometrage',
+            headerName: 'Kilometragem Final',
+            flex: 1,
+        },
+        {
+            field: 'vehicle_id',
+            headerName: 'Veículo',
+            flex: 1,
+            disableColumnMenu: true,
+            sortable: false,
+            maxWidth: 100,
+            renderCell: (params) => (
+                <Link href={route('vehicles.showEdit', params.value)}>
+                    <Button >{vehicle.license_plate}</Button>
+                </Link>
+            )
+        },
+        {
+            field: 'driver_id',
+            headerName: 'Condutor',
+            flex: 1,
+            renderCell: (params) => (
+                <Link
+                    href={route('drivers.showEdit', params.value)}
+                >
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxWidth: '30px',
+                            maxHeight: '30px',
+                            minWidth: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        {params.value}     
+                    </Button>    
+                </Link>
+            ),
+        },
+        {
+            field: 'created_at',
+            headerName: 'Data de Criação',
+            type: 'dateTime',
+            flex: 1,
+            maxWidth: 180,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Data da Última Atualização',
+            type: 'dateTime',
+            flex: 1,
+            maxWidth: 200,
+            valueGetter: (params) => {
+                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
+                return parsedDate
+            },
+        },
+    ]
     
     return (
         <AuthenticatedLayout
@@ -71,6 +163,13 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
                                 editAction="vehicleKilometrageReports.showEdit"
                                 deleteAction="vehicleKilometrageReports.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
+                            />
+
+                            <CustomDataGrid
+                                rows={vehicleReports}
+                                columns={vehicleKilometrageColumns}
+                                editAction="vehicleKilometrageReports.showEdit"
+                                deleteAction="vehicleKilometrageReports.delete"
                             />
                         </div>
                     </div>

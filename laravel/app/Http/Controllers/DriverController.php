@@ -29,7 +29,7 @@ class DriverController extends Controller
             $driver->license_expiration_date = Carbon::parse($driver->license_expiration_date)->format('d-m-Y');
             $driver->heavy_license_type = $driver->heavy_license_type ?? '-';
             $driver->phone = $driver->phone ?? '-';
-            $driver->tcc = $driver->tcc == 1 ? 'Sim' : 'Não';
+            //$driver->tcc = $driver->tcc == 1 ? 'Sim' : 'Não';
             $driver->tcc_expiration_date =  $driver->tcc_expiration_date != null ? Carbon::parse($driver->tcc_expiration_date)->format('d-m-Y') : '-';
         });
 
