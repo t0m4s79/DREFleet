@@ -134,7 +134,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             disableColumnMenu: true,
             headerAlign: 'left',
             flex: 1,
-            minWidth: 60,
+            minWidth: 100,
             type: 'boolean',
             // renderHeader: ()=> (
             //     <Tooltip title='Adaptado a Cadeiras de Rodas'>
@@ -148,7 +148,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Certificado para Cadeira de Rodas',
             disableColumnMenu: true,
             flex: 1,
-            minWidth: 80,
+            minWidth: 100,
             type: 'boolean',
             // renderHeader: ()=> (
             //     <Tooltip title='Certificado para Cadeira de Rodas'>
@@ -160,6 +160,8 @@ export default function AllVehicles( {auth, vehicles, flash}) {
         {
             field: 'tcc',
             headerName: 'TCC',
+            //disableColumnMenu: true,
+            sortable: false,
             //flex: 1,
             type: 'boolean'
         },
@@ -167,7 +169,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             field: 'tow_summary',
             headerName: 'Reboques Anuais (Utilizados/Permitidos)',
             description: 'Número de reboques anuais utilizados versus permitidos',
-            //flex: 1,
+            flex: 1,
             renderCell: (params) => {
                 const utilized = params.row.this_year_tow_counts || 0;
                 const allowed = params.row.yearly_allowed_tows || 0;
@@ -242,7 +244,16 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                     key={params.value}
                     href={route('vehicles.kilometrageReports', params.value)}
                 >
-                    <ReadMoreOutlined color='primary'/>
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Consultar
+                    </Button>
                 </Link>
             ),
         },
