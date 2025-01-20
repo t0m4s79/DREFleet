@@ -27,8 +27,8 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             id: occurrence.id,
             date: occurrence.order.expected_begin_date,
             order_id: occurrence.order_id,
-            driver_id: occurrence.order.driver.user_id,
-            vehicle_id: occurrence.order.vehicle.id,
+            driver_id: occurrence.order.driver,
+            vehicle_id: occurrence.order.vehicle,
             type: occurrence.type,
             vehicle_towed: occurrence.vehicle_towed,
             description: occurrence.description,
@@ -101,21 +101,11 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             maxWidth: 100,
             renderCell: (params) => (
                 <Link
-                    key={params.value}
-                    href={route('drivers.showEdit', params.value)}
+                    key={params.value.user_id}
+                    href={route('drivers.showEdit', params.value.user_id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
-                        {params.value}
-                    </Button>
+                        {params.value.name}
                 </Link>
             )
         },
@@ -126,21 +116,11 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             maxWidth: 100,
             renderCell: (params) => (
                 <Link
-                    key={params.value}
-                    href={route('vehicles.showEdit', params.value)}
+                    key={params.value.id}
+                    href={route('vehicles.showEdit', params.value.id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
-                        {params.value}
-                    </Button>
+                        {params.value.license_plate}
                 </Link>
             )
         },
@@ -205,7 +185,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
                         </a>
                     </Button>
 
-                    <Table data={orderOccurrencesInfo} columnsLabel={orderOccurrencesLabels} editAction={'orderOccurrences.showEdit'} deleteAction={'orderOccurrences.delete'} dataId={'id'}/>
+                    {/* <Table data={orderOccurrencesInfo} columnsLabel={orderOccurrencesLabels} editAction={'orderOccurrences.showEdit'} deleteAction={'orderOccurrences.delete'} dataId={'id'}/> */}
                 
                     <CustomDataGrid
                         rows={orderOccurrencesInfo}
