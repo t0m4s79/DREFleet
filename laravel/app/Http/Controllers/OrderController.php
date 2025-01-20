@@ -421,6 +421,11 @@ class OrderController extends Controller
     //TODO: Add Administrators Role
     public function approveOrder(Order $order, Request $request) 
     {
+
+        if(! Gate::allows('approve-order')){
+            abort(403);
+        };
+
         $incomingFields = $request->validate([
             'manager_id' => [
                 'required', 
@@ -456,6 +461,10 @@ class OrderController extends Controller
 
     public function removeOrderApproval(Order $order, Request $request) 
     {
+        if(! Gate::allows('approve-order')){
+            abort(403);
+        };
+        
         $request->validate([
             'manager_id' => [
                 'required', 
