@@ -105,4 +105,14 @@ class User extends Authenticatable
     {
         return $this->user_type === 'Gestor';
     }
+
+    public function isTechnician()
+    {
+        return $this->user_type === 'Técnico';
+    }
+
+    public function isDriver()
+    {
+        return $this->user_type === 'Condutor';
+    }
 }
