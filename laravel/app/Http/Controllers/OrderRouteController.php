@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\TechnicianUserTypeValidation;
+use Illuminate\Support\Facades\Gate;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
@@ -39,6 +40,11 @@ class OrderRouteController extends Controller
 
     public function showCreateOrderRouteForm()
     {
+
+        if(! Gate::allows('create-order-route')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed order route creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -54,6 +60,10 @@ class OrderRouteController extends Controller
 
     public function createOrderRoute(Request $request)
     {
+        if(! Gate::allows('create-order-route')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
         $incomingFields = $request->validate([
@@ -129,6 +139,10 @@ class OrderRouteController extends Controller
 
     public function showEditOrderRouteForm(OrderRoute $orderRoute): Response
     {
+        if(! Gate::allows('edit-order-route')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed order route edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'route_id' => $orderRoute->id ?? null,
@@ -147,6 +161,11 @@ class OrderRouteController extends Controller
 
     public function editOrderRoute(OrderRoute $orderRoute, Request $request)
     {
+
+        if(! Gate::allows('create-order-route')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         $incomingFields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -218,6 +237,10 @@ class OrderRouteController extends Controller
 
     public function deleteOrderRoute($id)
     {
+        if(! Gate::allows('delete-order-route')){
+            abort(403);
+        };
+
         try {
             $orderRoute = OrderRoute::findOrFail($id);
             $orderRoute->delete();

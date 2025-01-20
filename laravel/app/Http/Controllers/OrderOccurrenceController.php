@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Notifications\OrderOccurrenceNotification;
+use Illuminate\Support\Facades\Gate;
 
 class OrderOccurrenceController extends Controller
 {
@@ -42,6 +43,11 @@ class OrderOccurrenceController extends Controller
 
     public function showCreateOrderOccurrenceForm()
     {
+
+        if(! Gate::allows('create-order-occurrence')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed occurrence creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -55,6 +61,10 @@ class OrderOccurrenceController extends Controller
 
     public function createOrderOccurrence(Request $request)
     {
+        if(! Gate::allows('create-order-occurrence')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -104,6 +114,10 @@ class OrderOccurrenceController extends Controller
 
     public function showEditOrderOccurrenceForm(OrderOccurrence $orderOccurrence)
     {
+        if(! Gate::allows('edit-order-occurrence', $orderOccurrence)){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed occurrence edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'occurrence_id' => $orderOccurrence->id ?? null,
@@ -119,6 +133,11 @@ class OrderOccurrenceController extends Controller
 
     public function editOrderOccurrence(OrderOccurrence $orderOccurrence, Request $request)
     {
+
+        if(! Gate::allows('edit-order-occurrence', $orderOccurrence)){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -159,6 +178,10 @@ class OrderOccurrenceController extends Controller
 
     public function deleteOrderOccurrence($id)
     {
+        if(! Gate::allows('delete-order-occurrence')){
+            abort(403);
+        };
+
         try {
             $orderOccurrence = OrderOccurrence::findOrFail($id);
             $orderId = $orderOccurrence->order->id;
