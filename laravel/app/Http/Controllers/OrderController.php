@@ -27,6 +27,7 @@ use App\Notifications\OrderCreationNotification;
 use App\Rules\EntityOrderAvailabilityValidation;
 use App\Notifications\OrderRequiresApprovalNotification;
 use App\Rules\KidDriverValidation;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -40,6 +41,8 @@ class OrderController extends Controller
 
     public function index()
     {
+        //Gate::authorize('viewAny', Order::class);
+        
         Log::channel('user')->info('User accessed orders page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -67,6 +70,11 @@ class OrderController extends Controller
 
     public function showCreateOrderForm()
     {
+
+        if(! Gate::allows('create-order')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed order creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -96,6 +104,15 @@ class OrderController extends Controller
 
     public function createOrder(Request $request)
     {
+
+        // if ($request->user()->cannot('create')) {
+        //     abort(403);
+        // }
+
+        if(! Gate::allows('create-order')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $kidsCount = count($request->input('places.*.kid_id', []));
@@ -213,6 +230,12 @@ class OrderController extends Controller
 
     public function showEditOrderForm(Order $order)
     {
+
+        if(! Gate::allows('edit-order')){
+            abort(403);
+            //return redirect()->route('orders.index')->with('error', 'Não tem permissões para editar o pedido.');
+        };
+        
         Log::channel('user')->info('User accessed order edit page', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
                 'order_id' => $order->id ?? null,
@@ -248,6 +271,11 @@ class OrderController extends Controller
 
     public function editOrder(Order $order, Request $request)
     {
+
+        if(! Gate::allows('edit-order')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $kidsCount = count($request->input('places.*.kid_id', []));
@@ -364,6 +392,10 @@ class OrderController extends Controller
 
     public function deleteOrder($id)
     {
+        if(! Gate::allows('delete-order')){
+            abort(403);
+        };
+
         try {
             $order = Order::findOrFail($id);
             $order->delete();
