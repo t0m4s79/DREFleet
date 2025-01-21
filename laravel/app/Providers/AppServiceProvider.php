@@ -133,6 +133,31 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
-        
+        // Kid Gates
+        Gate::define('view-kid', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isTechnician()
+            ? Response::allow()
+            : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-kid', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-kid', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-kid', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+       
     }
 }

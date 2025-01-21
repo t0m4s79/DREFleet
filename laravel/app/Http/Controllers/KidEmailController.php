@@ -9,11 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 
 class KidEmailController extends Controller
 {
     public function showCreateKidEmailForm()
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid email creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -27,6 +32,10 @@ class KidEmailController extends Controller
 
     public function createKidEmail(Request $request)
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -64,6 +73,10 @@ class KidEmailController extends Controller
 
     public function showEditKidEmailForm(KidEmail $kidEmail)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid edit email page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'kid_id' => $kidEmail->id ?? null,
@@ -79,6 +92,10 @@ class KidEmailController extends Controller
 
     public function editKidEmail(KidEmail $kidEmail, Request $request)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -112,6 +129,10 @@ class KidEmailController extends Controller
 
     public function deleteKidEmail($id)
     {
+        if(! Gate::allows('delete-kid')) {
+            abort(403);
+        }
+
         try {
             $kidEmail = KidEmail::findOrFail($id);
             $kidId = $kidEmail->kid->id;

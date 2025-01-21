@@ -9,11 +9,16 @@ use App\Models\KidPhoneNumber;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 
 class KidPhoneNumberController extends Controller
 {
     public function showCreateKidPhoneNumberForm()
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid phone creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -27,6 +32,10 @@ class KidPhoneNumberController extends Controller
     
     public function createKidPhoneNumber(Request $request)
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -64,6 +73,10 @@ class KidPhoneNumberController extends Controller
 
     public function showEditKidPhoneNumberForm(KidPhoneNumber $kidPhoneNumber)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid phone edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'phone_id' => $kidPhoneNumber->id ?? null,
@@ -79,6 +92,10 @@ class KidPhoneNumberController extends Controller
 
     public function editKidPhoneNumber(KidPhoneNumber $kidPhoneNumber, Request $request)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -112,6 +129,10 @@ class KidPhoneNumberController extends Controller
 
     public function deleteKidPhoneNumber($id)
     {
+        if(! Gate::allows('delete-kid')) {
+            abort(403);
+        }
+
         try {
             $kidPhoneNumber = KidPhoneNumber::findOrFail($id);
             $kidId = $kidPhoneNumber->kid->id;

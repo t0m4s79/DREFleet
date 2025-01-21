@@ -10,11 +10,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\KidPlaceTypeValidation;
+use Illuminate\Support\Facades\Gate;
 
 class KidController extends Controller
 {
     public function index() //: Response
     {
+        if(! Gate::allows('view-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kids page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -35,6 +40,10 @@ class KidController extends Controller
 
     public function showCreateKidForm()
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -54,6 +63,10 @@ class KidController extends Controller
 
     public function createKid(Request $request)
     {
+        if(! Gate::allows('create-kid')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -98,6 +111,10 @@ class KidController extends Controller
 
     public function showEditKidForm(Kid $kid)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed kid edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'kid_id' => $kid->id ?? null,
@@ -113,6 +130,10 @@ class KidController extends Controller
 
     public function editKid(Kid $kid, Request $request)
     {
+        if(! Gate::allows('edit-kid')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -162,6 +183,10 @@ class KidController extends Controller
 
     public function deleteKid($id)
     {
+        if(! Gate::allows('delete-kid')) {
+            abort(403);
+        }
+
         try {
             $kid = Kid::findOrFail($id);
             $kid->delete();
@@ -186,6 +211,10 @@ class KidController extends Controller
 
     public function showKidContacts(Kid $kid)
     {
+        if(! Gate::allows('view-kid')) {
+            abort(403);
+        }
+        
         Log::channel('user')->info('User accessed kids contact page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'kid_id' => $kid->id  ?? null,
