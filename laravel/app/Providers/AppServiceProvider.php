@@ -134,6 +134,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Kid Gates
+        // Re-used these gates for KidEmails and KidPhoneNumbers since same logic applies
         Gate::define('view-kid', function (User $user) {
             return $user->isAdmin() || $user->isManager() || $user->isTechnician()
             ? Response::allow()
@@ -158,6 +159,81 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
-       
+        // User Gates
+        // Re-used gates for Techinicians since same logic applies
+        Gate::define('view-user', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-user', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-user', function (User $user) {
+            return $user->isAdmin() || $user->isManager() //TODO: should user be able to edit own data?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-user', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        // Manager Gates
+        Gate::define('view-manager', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-manager', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-manager', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-manager', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        // Driver Gates
+        ////TODO: should Drivers use same logic as Users?
+        Gate::define('view-driver', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-driver', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-driver', function (User $user) {
+            return $user->isAdmin() || $user->isManager()  //TODO: should driver be able to edit own data?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-driver', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
     }
 }

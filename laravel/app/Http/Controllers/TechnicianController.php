@@ -8,11 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 
 class TechnicianController extends Controller
 {
     public function index()
     {
+        if(! Gate::allows('view-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed technicians page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -31,6 +36,10 @@ class TechnicianController extends Controller
 
     public function showCreateTechnicianForm()
     {
+        if(! Gate::allows('create-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed technician creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -48,6 +57,10 @@ class TechnicianController extends Controller
 
     public function createTechnician(Request $request)
     {
+        if(! Gate::allows('create-user')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -94,6 +107,10 @@ class TechnicianController extends Controller
 
     public function showEditTechnicianForm(User $user)
     {
+        if(! Gate::allows('edit-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed technician edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'technician_id' => $user->id ?? null,
@@ -110,6 +127,10 @@ class TechnicianController extends Controller
 
     public function editTechnician(User $user, Request $request)
     {
+        if(! Gate::allows('edit-user')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
@@ -151,6 +172,10 @@ class TechnicianController extends Controller
 
     public function deleteTechnician($id)
     {
+        if(! Gate::allows('delete-user')) {
+            abort(403);
+        }
+
         try {
             $user = User::findOrFail($id);
             $user->update([

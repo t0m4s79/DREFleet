@@ -14,11 +14,16 @@ use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\RoleUserTypeValidation;
 use App\Rules\DriverLicenseNumberValidation;
+use Illuminate\Support\Facades\Gate;
 
 class DriverController extends Controller
 {
     public function index() : Response
     {
+        if(! Gate::allows('view-driver')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed drivers page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -44,6 +49,10 @@ class DriverController extends Controller
 
     public function showCreateDriverForm()
     {
+        if(! Gate::allows('create-driver')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed drivers creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -55,6 +64,10 @@ class DriverController extends Controller
 
     public function createDriver(Request $request)
     {
+        if(! Gate::allows('create-driver')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -124,6 +137,10 @@ class DriverController extends Controller
 
     public function showEditDriverForm(Driver $driver): Response
     {
+        if(! Gate::allows('edit-driver')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed drivers edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'driver_id' => $driver->user_id ?? null,
@@ -136,6 +153,10 @@ class DriverController extends Controller
 
     public function editDriver(Driver $driver, Request $request)
     {
+        if(! Gate::allows('edit-driver')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -213,6 +234,10 @@ class DriverController extends Controller
 
     public function deleteDriver($id)
     {
+        if(! Gate::allows('delete-driver')) {
+            abort(403);
+        }
+
         DB::beginTransaction();
         try {
             $driver = Driver::findOrFail($id);
