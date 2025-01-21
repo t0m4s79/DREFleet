@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class PlaceController extends Controller
@@ -32,6 +33,10 @@ class PlaceController extends Controller
 
     public function showCreatePlaceForm()
     {
+        if(! Gate::allows('create-place')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed place creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -41,6 +46,10 @@ class PlaceController extends Controller
 
     public function createPlace(Request $request)
     {
+        if(! Gate::allows('create-place')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -84,6 +93,10 @@ class PlaceController extends Controller
 
     public function showEditPlaceForm(Place $place)
     {
+        if(! Gate::allows('edit-place')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed place edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'place_id' => $place->id ?? null,
@@ -95,6 +108,10 @@ class PlaceController extends Controller
 
     public function editPlace(Place $place, Request $request)
     {
+        if(! Gate::allows('edit-place')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -139,6 +156,10 @@ class PlaceController extends Controller
 
     public function deletePlace($id)
     {
+        if(! Gate::allows('delete-place')){
+            abort(403);
+        };
+
         try {
             $place = Place::findOrFail($id);
             $place->delete();

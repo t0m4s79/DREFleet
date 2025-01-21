@@ -114,5 +114,25 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
+        // Address Gates
+        Gate::define('create-place', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-place', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-place', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        
     }
 }
