@@ -94,5 +94,25 @@ class AppServiceProvider extends ServiceProvider
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });
+
+        //
+        Gate::define('create-order-stop', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-order-stop', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-order-stop', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
     }
 }
