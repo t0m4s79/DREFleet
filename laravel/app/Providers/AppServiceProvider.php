@@ -26,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
     {
         require_once app_path('Helpers/ErrorMessagesHelper.php');
 
+        /*
+            ## DISCLAIMER: 
+                The use of gates was just a quick way to prevent unauthorized access to resources!! NOT OPTIMAL
+                In the future more future proof ways should be considered, such as using Laravel policies combined with gates, or 
+                through the use of a library like Spatie. This may require changes on the database level such as creating a new table for roles.
+        */
+
         //Grants all abilities to Admin users
         Gate::before(function (User $user, string $ability) {
             if($user->isAdmin()) {
@@ -256,6 +263,56 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
-        
+        //Vehicle Documents Gates
+        Gate::define('view-vehicle-doc', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-vehicle-doc', function (User $user) {
+            return $user->isAdmin() || $user->isManager()       //TODO: should Drivers be able to create vehicle documents?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-vehicle-doc', function (User $user) {
+            return $user->isAdmin() || $user->isManager()       //TODO: should Drivers be able to edit vehicle documents?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-vehicle-doc', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        //Vehicle Accessories Gates
+        Gate::define('view-vehicle-accessory', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-vehicle-accessory', function (User $user) {
+            return $user->isAdmin() || $user->isManager()       //TODO: should Drivers be able to create vehicle acessories?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-vehicle-accessory', function (User $user) {
+            return $user->isAdmin() || $user->isManager()       //TODO: should Drivers be able to edit vehicle acessories?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-vehicle-accessory', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+
     }
 }
