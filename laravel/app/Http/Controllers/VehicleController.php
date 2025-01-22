@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class VehicleController extends Controller
@@ -45,6 +46,10 @@ class VehicleController extends Controller
 
     public function showCreateVehicleForm()
     {
+        if(! Gate::allows('create-vehicle')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -54,6 +59,10 @@ class VehicleController extends Controller
 
     public function createVehicle(Request $request)
     {
+        if(! Gate::allows('create-vehicle')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -143,6 +152,10 @@ class VehicleController extends Controller
 
     public function showEditVehicleForm(Vehicle $vehicle)
     {
+        if(! Gate::allows('edit-vehicle', $vehicle)){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
@@ -153,6 +166,10 @@ class VehicleController extends Controller
 
     public function editVehicle(Vehicle $vehicle, Request $request)
     {
+        if(! Gate::allows('edit-vehicle', $vehicle)){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -247,6 +264,10 @@ class VehicleController extends Controller
 
     public function deleteVehicle($id)
     {
+        if(! Gate::allows('delete-vehicle')){
+            abort(403);
+        };
+
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();

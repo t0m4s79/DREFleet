@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\OrderOccurrence;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -65,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-order-occurrence', function (User $user, OrderOccurrence $occurence) {
-            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+            return $user->isAdmin() || $user->isManager() || ($user->isDriver() && $occurence->order()->driver() === $user->id())   //Check if driver is the one in the order 
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });
@@ -235,5 +236,26 @@ class AppServiceProvider extends ServiceProvider
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });
+
+        //Vehicle Gates
+        Gate::define('create-vehicle', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-vehicle', function (User $user, Vehicle $vehicle) {
+            return $user->isAdmin() || $user->isManager()       //TODO: should Drivers be able to edit vehicle?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-vehicle', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        
     }
 }
