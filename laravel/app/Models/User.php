@@ -113,6 +113,6 @@ class User extends Authenticatable
 
     public function isDriver()
     {
-        return $this->user_type === 'Condutor';
+        return ($this->user_type === 'Condutor' && $this->driver()->exists());
     }
 }
