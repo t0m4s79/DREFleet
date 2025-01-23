@@ -324,6 +324,10 @@ class VehicleController extends Controller
 
     public function showVehicleKilometrageReports(Vehicle $vehicle)
     {
+        if(! Gate::allows('view-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed a vehicle kilometrage reports page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
@@ -347,6 +351,10 @@ class VehicleController extends Controller
 
     public function showVehicleRefuelRequests(Vehicle $vehicle)
     {
+        if(! Gate::allows('view-vehicle-refuel-request')){
+            abort(403);
+        };
+        
         Log::channel('user')->info('User accessed a vehicle refuel requests page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,
@@ -370,6 +378,10 @@ class VehicleController extends Controller
 
     public function showVehicleMaintenanceReports(Vehicle $vehicle)
     {
+        if(! Gate::allows('view-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed a vehicle maintenance reports page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'vehicle_id' => $vehicle->id ?? null,

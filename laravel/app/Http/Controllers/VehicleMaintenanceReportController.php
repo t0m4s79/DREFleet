@@ -10,11 +10,16 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Models\VehicleMaintenanceReport;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleMaintenanceReportController extends Controller
 {
     public function index()
     {
+        if(! Gate::allows('view-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed maintenance reports page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -37,6 +42,10 @@ class VehicleMaintenanceReportController extends Controller
 
     public function showCreateVehicleMaintenanceReportForm()
     {
+        if(! Gate::allows('create-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle maintenance report creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -50,6 +59,10 @@ class VehicleMaintenanceReportController extends Controller
 
     public function createVehicleMaintenanceReport(Request $request)
     {
+        if(! Gate::allows('create-vehicle-report')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -121,6 +134,10 @@ class VehicleMaintenanceReportController extends Controller
 
     public function showEditVehicleMaintenanceReportForm(VehicleMaintenanceReport $vehicleMaintenanceReport)
     {
+        if(! Gate::allows('edit-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle maintenance report edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'maintenance_report_id' => $vehicleMaintenanceReport->id,
@@ -141,6 +158,10 @@ class VehicleMaintenanceReportController extends Controller
 
     public function editVehicleMaintenanceReport(VehicleMaintenanceReport $vehicleMaintenanceReport, Request $request)
     {
+        if(! Gate::allows('edit-vehicle-report')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -209,6 +230,10 @@ class VehicleMaintenanceReportController extends Controller
 
     public function deleteVehicleMaintenanceReport($id)
     {
+        if(! Gate::allows('edit-vehicle-report')){
+            abort(403);
+        };
+
         try {
             $report = VehicleMaintenanceReport::findOrFail($id);
             $vehicleId = $report->vehicle->id;

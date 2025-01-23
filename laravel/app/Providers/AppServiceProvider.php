@@ -313,6 +313,55 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
+        // Vehicle Reports Gates
+        // Reports can be Kilometrage or maintenance
+        Gate::define('view-vehicle-report', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
 
+        Gate::define('create-vehicle-report', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-vehicle-report', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()       //TODO: should Drivers be able to edit vehicle reports?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-vehicle-report', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        // Vehicle Refuel Requests
+        Gate::define('view-vehicle-refuel-request', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-vehicle-refuel-request', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-vehicle-refuel-request', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isDriver()       //TODO: should Drivers be able to edit vehicle refuel requests?
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-vehicle-refuel-request', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
     }
 }

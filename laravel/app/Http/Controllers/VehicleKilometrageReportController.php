@@ -9,11 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Models\VehicleKilometrageReport;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleKilometrageReportController extends Controller
 {
     public function showCreateVehicleKilometrageReportForm()
     {
+        if(! Gate::allows('create-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle kilometrage report entry creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -29,6 +34,10 @@ class VehicleKilometrageReportController extends Controller
 
     public function createVehicleKilometrageReport(Request $request)
     {
+        if(! Gate::allows('create-vehicle-report')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -64,6 +73,10 @@ class VehicleKilometrageReportController extends Controller
 
     public function showEditVehicleKilometrageReportForm(VehicleKilometrageReport $vehicleKilometrageReport)
     {
+        if(! Gate::allows('edit-vehicle-report')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle kilometrage report entry edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'kilometrage_report_id' => $vehicleKilometrageReport->id,
@@ -81,6 +94,10 @@ class VehicleKilometrageReportController extends Controller
 
     public function editVehicleKilometrageReport(VehicleKilometrageReport $vehicleKilometrageReport, Request $request)
     {
+        if(! Gate::allows('edit-vehicle-report')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -116,6 +133,10 @@ class VehicleKilometrageReportController extends Controller
 
     public function deleteVehicleKilometrageReport($id)
     {
+        if(! Gate::allows('delete-vehicle-report')){
+            abort(403);
+        };
+
         try {
             $report = VehicleKilometrageReport::findOrFail($id);
             $vehicleId = $report->vehicle->id;
