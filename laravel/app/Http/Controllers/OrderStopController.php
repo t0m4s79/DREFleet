@@ -6,6 +6,7 @@ use App\Models\OrderStop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 
 // This class doesn't need to implement transactions because it is only
 // called by the order controller which already implements its own
@@ -13,6 +14,10 @@ class OrderStopController extends Controller
 {
     public function createOrderStop(Request $request)
     {
+        if(! Gate::allows('create-order-stop')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -65,6 +70,10 @@ class OrderStopController extends Controller
     // TODO: WHAT ELSE SHOULD THIS EDIT INCLUDE?
     public function editOrderStop(OrderStop $orderStop, Request $request)
     {
+        if(! Gate::allows('edit-order-stop')){
+            abort(403);
+        };
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -96,6 +105,10 @@ class OrderStopController extends Controller
 
     public function deleteOrderStop($id)
     {
+        if(! Gate::allows('delete-order-stop')){
+            abort(403);
+        };
+
         try {
             $orderStop = OrderStop::findOrFail($id);
             $order = $orderStop->order;

@@ -10,11 +10,16 @@ use Illuminate\Validation\Rule;
 use App\Models\VehicleAccessory;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleAccessoryController extends Controller
 {
     public function index()
     {
+        if(! Gate::allows('view-vehicle-accessory')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicles accessories page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -36,6 +41,10 @@ class VehicleAccessoryController extends Controller
 
     public function showCreateVehicleAccessoryForm()
     {
+        if(! Gate::allows('create-vehicle-accessory')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle accessory creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -49,6 +58,10 @@ class VehicleAccessoryController extends Controller
 
     public function createVehicleAccessory(Request $request)
     {
+        if(! Gate::allows('create-vehicle-accessory')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -92,6 +105,10 @@ class VehicleAccessoryController extends Controller
 
     public function showEditVehicleAccessoryForm(VehicleAccessory $vehicleAccessory)
     {
+        if(! Gate::allows('edit-vehicle-accessory')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle accessory edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'accessory_id' => $vehicleAccessory->id ?? null,
@@ -107,6 +124,10 @@ class VehicleAccessoryController extends Controller
 
     public function editVehicleAccessory(VehicleAccessory $vehicleAccessory, Request $request)
     {
+        if(! Gate::allows('edit-vehicle-accessory')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -150,6 +171,10 @@ class VehicleAccessoryController extends Controller
 
     public function deleteVehicleAccessory($id)
     {
+        if(! Gate::allows('delete-vehicle-accessory')){
+            abort(403);
+        };
+
         try {
             $vehicleAccessory = VehicleAccessory::findOrFail($id);
             $vehicleId = $vehicleAccessory->vehicle->id;

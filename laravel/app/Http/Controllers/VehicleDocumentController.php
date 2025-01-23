@@ -10,11 +10,16 @@ use App\Models\VehicleDocument;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\VehicleDocumentDataValidation;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleDocumentController extends Controller
 {
     public function index()
     {
+        if(! Gate::allows('view-vehicle-doc')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle documents page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -38,6 +43,10 @@ class VehicleDocumentController extends Controller
 
     public function showCreateVehicleDocumentForm()
     {
+        if(! Gate::allows('create-vehicle-doc')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle document creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -51,6 +60,10 @@ class VehicleDocumentController extends Controller
 
     public function createVehicleDocument(Request $request)
     {
+        if(! Gate::allows('create-vehicle-doc')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -109,6 +122,10 @@ class VehicleDocumentController extends Controller
 
     public function showEditVehicleDocumentForm(VehicleDocument $vehicleDocument)
     {
+        if(! Gate::allows('edit-vehicle-doc')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle document edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'document_id' => $vehicleDocument->id ?? null,
@@ -124,6 +141,10 @@ class VehicleDocumentController extends Controller
 
     public function editVehicleDocument(VehicleDocument $vehicleDocument, Request $request)
     {
+        if(! Gate::allows('edit-vehicle-doc')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -182,6 +203,10 @@ class VehicleDocumentController extends Controller
 
     public function deleteVehicleDocument($id)
     {
+        if(! Gate::allows('delete-vehicle-doc')){
+            abort(403);
+        };
+
         try {
             $vehicleDocument = VehicleDocument::findOrFail($id);
             $vehicleId = $vehicleDocument->vehicle->id;

@@ -11,12 +11,17 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
+        if(! Gate::allows('view-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed users page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -38,6 +43,10 @@ class UserController extends Controller
 
     public function showCreateUserForm()
     {
+        if(! Gate::allows('create-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed user creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -52,6 +61,10 @@ class UserController extends Controller
 
     public function createUser(Request $request)
     {
+        if(! Gate::allows('create-user')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -98,6 +111,10 @@ class UserController extends Controller
 
     public function showEditUserForm(User $user)
     {
+        if(! Gate::allows('edit-user')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed user edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'user_id' => $user->id ?? null,
@@ -114,6 +131,10 @@ class UserController extends Controller
 
     public function editUser(User $user, Request $request)
     {
+        if(! Gate::allows('edit-user')) {
+            abort(403);
+        }
+
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
         $incomingFields = $request->validate([
@@ -151,6 +172,10 @@ class UserController extends Controller
 
     public function deleteUser($id)
     {
+        if(! Gate::allows('delete-user')) {
+            abort(403);
+        }
+
         try {
             $user = User::findOrFail($id);
             $user->delete();

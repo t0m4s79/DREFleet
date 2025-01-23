@@ -95,4 +95,24 @@ class User extends Authenticatable
     {
         return $this->morphMany(Notification::class, 'related_entity');
     }
+
+    public function isAdmin()
+    {
+        return $this->user_type === 'Administrador';
+    }
+
+    public function isManager()
+    {
+        return $this->user_type === 'Gestor';
+    }
+
+    public function isTechnician()
+    {
+        return $this->user_type === 'Técnico';
+    }
+
+    public function isDriver()
+    {
+        return ($this->user_type === 'Condutor' && $this->driver()->exists());
+    }
 }

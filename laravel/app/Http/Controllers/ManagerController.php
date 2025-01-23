@@ -10,11 +10,16 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Rules\RoleUserTypeValidation;
+use Illuminate\Support\Facades\Gate;
 
 class ManagerController extends Controller
 {
     public function index() 
     {    
+        if(! Gate::allows('view-manager')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed managers page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -32,6 +37,10 @@ class ManagerController extends Controller
 
     public function showCreateManagerForm()
     {
+        if(! Gate::allows('create-manager')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed manager creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -49,6 +58,10 @@ class ManagerController extends Controller
 
     public function createManager(Request $request)
     {
+        if(! Gate::allows('create-manager')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
         
@@ -87,6 +100,10 @@ class ManagerController extends Controller
 
     public function showEditManagerForm(User $user)
     {    
+        if(! Gate::allows('edit-manager')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed manager edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'manager_id' => $user->id ?? null,
@@ -103,6 +120,10 @@ class ManagerController extends Controller
 
     public function editManager(User $user, Request $request)
     {
+        if(! Gate::allows('edit-manager')) {
+            abort(403);
+        }
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -144,6 +165,10 @@ class ManagerController extends Controller
 
     public function deleteManager($id)
     {
+        if(! Gate::allows('delete-manager')) {
+            abort(403);
+        }
+
         try {
             $user = User::findOrFail($id);
             $user->update([
@@ -170,6 +195,10 @@ class ManagerController extends Controller
 
     public function showManagerApprovedOrders(User $user)
     {
+        if(! Gate::allows('view-manager')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed manager approved orders page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'manager_id' => $user->id ?? null,

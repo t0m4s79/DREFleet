@@ -11,11 +11,16 @@ use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
 use App\Models\VehicleRefuelRequest;
 use App\Notifications\VehicleRefuelRequestNotification;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleRefuelRequestController extends Controller
 {
     public function showCreateVehicleRefuelRequestForm()
     {
+        if(! Gate::allows('create-vehicle-refuel-request')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle refuel request creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -29,6 +34,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function createVehicleRefuelRequest(Request $request)
     {
+        if(! Gate::allows('create-vehicle-refuel-request')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -90,6 +99,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function showEditVehicleRefuelRequestForm(VehicleRefuelRequest $vehicleRefuelRequest)
     {
+        if(! Gate::allows('edit-vehicle-refuel-request')){
+            abort(403);
+        };
+
         Log::channel('user')->info('User accessed vehicle refuel request edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'refuel_request_id' => $vehicleRefuelRequest->id,
@@ -105,6 +118,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function editVehicleRefuelRequest(VehicleRefuelRequest $vehicleRefuelRequest, Request $request)
     {
+        if(! Gate::allows('edit-vehicle-refuel-request')){
+            abort(403);
+        };
+
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -144,6 +161,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function deleteVehicleRefuelRequest($id)
     {
+        if(! Gate::allows('delete-vehicle-refuel-request')){
+            abort(403);
+        };
+
         try {
             $request = VehicleRefuelRequest::findOrFail($id);
             $vehicleId = $request->vehicle->id;
