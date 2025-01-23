@@ -37,6 +37,34 @@ export default function CustomDataGrid({ rows, columns, columnVisibility, getRow
         });
     }
 
+    // Method to handle delete
+    const handleDelete = async (id) => {
+
+        if (window.confirm('Tem a certeza que pretende eliminar o elemento com id ' + id + '?')) {
+
+            const form = document.createElement('form');
+            form.action = route(deleteAction, id);
+            form.method = 'POST';
+    
+            // Add hidden inputs for the method and CSRF token
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+    
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+            form.appendChild(methodInput);
+            form.appendChild(csrfInput);
+    
+            document.body.appendChild(form);
+            form.submit();
+        }
+    };
+
     return (
         <div style={{ display: 'flex'}}>
             <DataGrid

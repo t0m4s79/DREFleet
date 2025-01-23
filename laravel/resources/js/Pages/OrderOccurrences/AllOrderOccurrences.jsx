@@ -99,9 +99,10 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             headerName: 'Condutor',
             flex: 1,
             maxWidth: 100,
+            valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
-                    key={params.value.user_id}
+                    key={params.value.id}
                     href={route('drivers.showEdit', params.value.user_id)}
                     className='text-blue-500'
                 >
@@ -114,6 +115,7 @@ export default function AllOrderOccurences({auth, occurrences, flash}) {
             headerName: 'Veículo',
             flex: 1,
             maxWidth: 100,
+            valueFormatter: (value) => value.license_plate,
             renderCell: (params) => (
                 <Link
                     key={params.value.id}
