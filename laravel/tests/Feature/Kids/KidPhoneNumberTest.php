@@ -19,7 +19,7 @@ class KidPhoneNumberTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['user_type' => 'Administrador']);
     }
     
     public function test_phone_number_belongs_to_kid(): void

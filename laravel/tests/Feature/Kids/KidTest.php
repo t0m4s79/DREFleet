@@ -23,7 +23,7 @@ class KidTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['user_type' => 'Administrador']);
     }
 
     public function test_kid_has_many_places(): void

@@ -34,7 +34,7 @@ class OrderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['user_type' => 'Administrador']);
 
         
         $this->driver = Driver::factory()->create(['tcc' => 1, 'tcc_expiration_date' => fake()->dateTimeBetween(now(), now()->addYear())]);

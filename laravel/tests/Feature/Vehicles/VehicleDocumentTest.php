@@ -20,7 +20,7 @@ class VehicleDocumentTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['user_type' => 'Administrador']);
     }
 
     public function test_document_belongs_to_vehicle(): void
