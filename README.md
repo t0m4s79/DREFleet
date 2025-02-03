@@ -99,6 +99,11 @@ Windows Task Scheduler Guide
 
 [Windows Task Scheduler](https://gist.github.com/Splode/94bfa9071625e38f7fd76ae210520d94)
 
+### :globe_with_meridians: Setting Up Your Own OSRM Server
+Our project uses an instance of the Open Source Routing Machine (OSRM) to calculate optimal routes for vehicles. If you want to set up your own OSRM server, follow the official OSRM backend guide:
+
+GitHub Repository: [OSRM-backend](https://github.com/Project-OSRM/osrm-backend)
+
 ---
 
 ## 🗂️ Entity Relationship Diagram
