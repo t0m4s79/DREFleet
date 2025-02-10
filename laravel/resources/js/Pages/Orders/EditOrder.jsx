@@ -87,7 +87,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 places_changed: isPlacesModified,
             });
     
-            console.log('Form state initialized:', data);
+            //console.log('Form state initialized:', data);
         }
         setSelectedRouteID(order.order_route_id)
         setSelectedRouteType(order.order_type)
@@ -205,7 +205,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 trajectory: JSON.stringify(trajectory),
             }));
     
-            console.log('Updated form data with places and trajectory:', places, trajectory);
+            //console.log('Updated form data with places and trajectory:', places, trajectory);
         }
     }, [places, trajectory]);
     
@@ -214,7 +214,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         e.preventDefault();
     
         // Debugging: Ensure data is ready before submitting
-        console.log('Form data on submit:', data);
+        //console.log('Form data on submit:', data);
     
         // Ensure the state is fully updated before submitting
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -241,7 +241,6 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         }
     }
     
-//console.log(data)
     return (
         <AuthenticatedLayout
             user={auth.user}

@@ -42,16 +42,16 @@ function Routing({ waypoints, onTrajectoryChange, updateSummary, updateWaypointD
             draggableWaypoints: false, // Disable marker dragging
         }).addTo(map);
 
-        console.log(routingControl)
+        //console.log(routingControl)
 
         routingControl.on('routesfound', function (e) {
-            console.log('routes found ', e.routes)                      // TODO: CHECK THIS CONSOLE.LOG
+            //console.log('routes found ', e.routes)                      // TODO: CHECK THIS CONSOLE.LOG
             const trajectory = e.routes[0].coordinates;
             const summary = e.routes[0].summary;
             const instructions = e.routes[0].instructions;
 
             const metrics = calculateTravelMetrics(instructions, waypoints);
-            console.log('metrics', metrics)
+            //console.log('metrics', metrics)
             // Pass the trajectory waypoints back to the form through the callback
             onTrajectoryChange(trajectory);
             updateWaypointData(metrics);
@@ -74,7 +74,7 @@ export default function ExperimentalMap({ waypoints, onTrajectoryChange, updateS
                 lng: coords[0]
             })
         })
-        console.log(polyCoords)
+        //console.log(polyCoords)
     }
 
     return (

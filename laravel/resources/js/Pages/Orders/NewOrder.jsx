@@ -140,7 +140,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                 trajectory: JSON.stringify(trajectory),
             }));
     
-            console.log('Updated form data with places and trajectory:', places, trajectory);
+            //console.log('Updated form data with places and trajectory:', places, trajectory);
         }
     }, [places, trajectory]);
     
@@ -149,7 +149,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         e.preventDefault();
     
         // Debugging: Ensure data is ready before submitting
-        console.log('Form data on submit:', data);
+        //console.log('Form data on submit:', data);
     
         // Ensure the state is fully updated before submitting
         await new Promise(resolve => setTimeout(resolve, 1000));       
