@@ -188,13 +188,13 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
                                 </a>
                             </Button>
 
-                            <Table
+                            {/* <Table
                                 data={vehicleReports}
                                 columnsLabel={vehicleReportsColumnLabels}
                                 editAction="vehicleMaintenanceReports.showEdit"
                                 deleteAction="vehicleMaintenanceReports.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
+                            /> */}
 
                             <CustomDataGrid
                                 rows={vehicleReports}

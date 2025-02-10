@@ -11,7 +11,6 @@ import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
 const isExpired = (date) => {
-    console.log(date)
     const parsedDate = typeof date.value === 'string' 
         ? parse(date.value, 'dd-MM-yyyy', new Date()) 
         : date.value;
@@ -43,7 +42,6 @@ function renderStatus(status) {
 }
 
 export default function AllDrivers( {auth, drivers, flash} ) {
-    console.log(drivers);
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -188,7 +186,7 @@ export default function AllDrivers( {auth, drivers, flash} ) {
                         </a>
                     </Button>
 
-                    <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/>
+                    {/* <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> */}
                 
                     <CustomDataGrid 
                         rows={driverInfo}

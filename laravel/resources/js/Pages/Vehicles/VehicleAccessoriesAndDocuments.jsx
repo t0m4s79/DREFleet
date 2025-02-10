@@ -44,7 +44,6 @@ const displayData = (data) => {
 }
 
 export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} ) {
-    console.log(vehicle)
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -75,17 +74,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             updated_at: doc.updated_at,
         };
     });
-
-    const vehicleDocsColumnLabels = {
-        id: 'ID',
-        name: 'Nome',
-        issue_date: 'Data de Emissão',
-        expiration_date: 'Data de Validade',
-        expired: 'Expirado',
-        additionalData: 'Dados adicionais',
-        created_at: 'Data de Criação',
-        updated_at: 'Data da Última Atualização',
-    };
 
     const vehicleDocsColumns = [
         {
@@ -226,16 +214,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
             },
         },
     ]
-
-    const vehicleAccColumnLabels = {
-        id: 'ID',
-        name: 'Nome',
-        condition: 'Condição',
-        expiration_date: 'Data de Validade',
-        created_at: 'Data de Criação',
-        updated_at: 'Data da Última Atualização',
-
-    };
     
     return (
         <AuthenticatedLayout
@@ -258,15 +236,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                                 </a>
                             </Button>
 
-                            <Table
-                                data={vehicleDocs}
-                                columnsLabel={vehicleDocsColumnLabels}
-                                getRowHeight={() => 'auto'}
-                                editAction="vehicleDocuments.showEdit"
-                                deleteAction="vehicleDocuments.delete"
-                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
-
                             <CustomDataGrid
                                 columns={vehicleDocsColumns}
                                 rows={vehicleDocs}
@@ -288,14 +257,6 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash} )
                                     Novo Acessório
                                 </a>
                             </Button>
-
-                            <Table
-                                data={vehicleAccessories}
-                                columnsLabel={vehicleAccColumnLabels}
-                                editAction="vehicleAccessories.showEdit"
-                                deleteAction="vehicleAccessories.delete"
-                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
 
                             <CustomDataGrid
                                 columns={vehicleAccColumns}

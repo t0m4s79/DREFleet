@@ -56,7 +56,7 @@ export default function AllPlaces( {auth, places, flash} ) {
             field: 'id',
             headerName: 'ID',
             flex: 1,
-            maxWidth: 60,
+            maxWidth: 100,
             hideable: false
         },
         {
@@ -86,6 +86,7 @@ export default function AllPlaces( {auth, places, flash} ) {
             headerName: 'Número de crianças',
             flex: 1,
             maxWidth: 150,
+            align: 'center',
         },
         {
             field: 'kids_ids',
@@ -136,7 +137,7 @@ export default function AllPlaces( {auth, places, flash} ) {
                         </a>
                     </Button>
 
-                    <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/>
+                    {/* <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/> */}
                 
                     <CustomDataGrid 
                         rows={placeInfo}

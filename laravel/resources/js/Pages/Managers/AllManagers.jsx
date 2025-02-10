@@ -124,7 +124,7 @@ export default function AllManagers({ auth, managers, flash }) {
                         </a>
                     </Button>
 
-                    <Table data={managerInfo} columnsLabel={managerColumnLabels} editAction="managers.showEdit" deleteAction="managers.delete" dataId="id"/>
+                    {/* <Table data={managerInfo} columnsLabel={managerColumnLabels} editAction="managers.showEdit" deleteAction="managers.delete" dataId="id"/> */}
                 
                     <CustomDataGrid 
                         rows={managerInfo}

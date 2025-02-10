@@ -45,7 +45,6 @@ const displayData = (data) => {
 
 
 export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
-console.log(vehicleDocuments);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'

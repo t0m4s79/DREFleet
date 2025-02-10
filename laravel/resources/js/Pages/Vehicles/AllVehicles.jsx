@@ -194,6 +194,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             field: 'status',
             headerName: 'Estado',
             //flex: 1,
+            minWidth: 100,
             renderCell: (params) => renderStatus(params.value)
         },
         {
@@ -207,6 +208,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             headerName: 'Pedidos Mensais de Reabastecimento',
             description: 'Pedidos Mensais de Reabastecimento',
             disableColumnMenu: true,
+            minWidth: 150,
             //flex: 1,
             renderCell: (params) => (
                 <Link
@@ -238,6 +240,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Registo de Kilometragem',
             sortable: false,
             disableColumnMenu: true,
+            minWidth: 150,
             //flex: 1,
             renderCell: (params) => (
                 <Link
@@ -263,6 +266,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Registo de Manutenção',
             sortable: false,
             disableColumnMenu: true,
+            minWidth: 150,
             //flex: 1,
             renderHeader: () => (
                 <Tooltip title='Registo de Manutenção'>
@@ -293,6 +297,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
             description: 'Documentos e Acessórios',
             sortable: false,
             disableColumnMenu: true,
+            minWidth: 150,
             //flex: 1,
             renderCell: (params) => (
                 <Link
@@ -330,14 +335,14 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                             Novo Veículo
                         </a>
                     </Button>
-
+{/* 
                     <Table
                         data={vehicleInfo}
                         columnsLabel={VehicleColumnLabels}
                         editAction="vehicles.showEdit"
                         deleteAction="vehicles.delete"
                         dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                    />
+                    /> */}
                     
                     <CustomDataGrid 
                         rows={vehicleInfo}

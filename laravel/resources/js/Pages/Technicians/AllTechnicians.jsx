@@ -99,7 +99,7 @@ export default function AllTechnicians({ auth, technicians, flash }) {
                         </a>
                     </Button>
 
-                    <Table data={technicianInfo} columnsLabel={technicianColumnLabels} editAction="technicians.showEdit" deleteAction="technicians.delete" dataId="id"/>
+                    {/* <Table data={technicianInfo} columnsLabel={technicianColumnLabels} editAction="technicians.showEdit" deleteAction="technicians.delete" dataId="id"/> */}
                 
                     <CustomDataGrid 
                         rows={technicianInfo}

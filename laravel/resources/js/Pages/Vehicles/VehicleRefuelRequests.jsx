@@ -23,7 +23,6 @@ const isRequestExceptional = (n) => {
 }
 
 export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
-    console.log(vehicle);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -192,13 +191,13 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
                                 </a>
                             </Button>
 
-                            <Table
+                            {/* <Table
                                 data={vehicleRequests}
                                 columnsLabel={vehicleRequestsColumnLabels}
                                 editAction="vehicleRefuelRequests.showEdit"
                                 deleteAction="vehicleRefuelRequests.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
+                            /> */}
 
                             <CustomDataGrid
                                 rows={vehicleRequests}

@@ -50,7 +50,7 @@ export default function AllKids( {auth, kids, flash} ) {
             field: 'id',
             headerName: 'ID',
             flex: 1,
-            maxWidth: 100,
+            //maxWidth: 150,
             hideable: false
         },
         {
@@ -88,6 +88,7 @@ export default function AllKids( {auth, kids, flash} ) {
             headerName: 'Cadeira de Rodas',
             headerAlign: 'left',
             type: 'boolean',
+            maxWidth: 150,
             flex: 1,
         },
         {
@@ -96,6 +97,7 @@ export default function AllKids( {auth, kids, flash} ) {
             type: 'number',
             headerAlign: 'left',
             align: 'center',
+            //maxWidth: 150,
             flex: 1,
         },
         {
@@ -149,7 +151,7 @@ export default function AllKids( {auth, kids, flash} ) {
                         </a>
                     </Button>
 
-                    <Table data={kidInfo} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/>
+                    {/* <Table data={kidInfo} columnsLabel={kidColumnLabels} editAction="kids.showEdit" deleteAction="kids.delete" dataId="id"/> */}
                 
                     <CustomDataGrid 
                         rows={kidInfo}

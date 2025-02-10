@@ -99,7 +99,7 @@ export default function AllDrivers( {auth, users, flash} ) {
                         </a>
                     </Button>
 
-                    <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/>
+                    {/* <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/> */}
                 
                     <CustomDataGrid
                         rows={userInfo}
