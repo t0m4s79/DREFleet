@@ -30,7 +30,7 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
             begin_kilometrage: report.begin_kilometrage,
             end_kilometrage: report.end_kilometrage,
             vehicle_id: report.vehicle_id,
-            driver_id: report.driver_id,
+            driver_id: report.driver,
             created_at: report.created_at,
             updated_at: report.updated_at,
         }
@@ -93,22 +93,13 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
             field: 'driver_id',
             headerName: 'Condutor',
             flex: 1,
+            valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
-                    href={route('drivers.showEdit', params.value)}
+                    href={route('drivers.showEdit', params.value.user_id)}
+                    className='text-blue-500'
                 >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            maxWidth: '30px',
-                            maxHeight: '30px',
-                            minWidth: '30px',
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
-                        {params.value}     
-                    </Button>    
+                    {params.value.name}        
                 </Link>
             ),
         },
@@ -157,13 +148,13 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash} ) {
                                 </a>
                             </Button>
 
-                            <Table
+                            {/* <Table
                                 data={vehicleReports}
                                 columnsLabel={vehicleReportsColumnLabels}
                                 editAction="vehicleKilometrageReports.showEdit"
                                 deleteAction="vehicleKilometrageReports.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
+                            /> */}
 
                             <CustomDataGrid
                                 rows={vehicleReports}

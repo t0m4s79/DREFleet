@@ -333,7 +333,7 @@ class VehicleController extends Controller
             'vehicle_id' => $vehicle->id ?? null,
         ]);
 
-        $vehicle->load('kilometrageReports');
+        $vehicle->load('kilometrageReports.driver');
 
         // Format the fields for each report entry
         $vehicle->kilometrageReports->each(function ($report) {
