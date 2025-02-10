@@ -4,7 +4,7 @@ import { Autocomplete, TextField, Button, Grid, Typography, List, ListItem, List
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';          //Changed to this new package
 import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
-import { DragIndicator } from '@mui/icons-material';
+import { Add, DragIndicator, Remove } from '@mui/icons-material';
 
 export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled }) {
     //console.log('selectedRoute is:',selectedRoute)
@@ -204,13 +204,13 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
 
                 <Grid item xs={12}>
                     <Button onClick={addKid} disabled={!selectedKid || !selectedKidPlace}>
-                        Add Kid
+                        <Add/>Criança
                     </Button>
                     <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
-                        Add Other Place
+                        <Add/>Outro Local
                     </Button>
                     <Button onClick={removeLastWaypoint} disabled={!waypoints.length || disabled}>
-                        Remove Last Waypoint
+                        <Remove/>Útlima Morada
                     </Button>
                 </Grid>
             </Grid>
