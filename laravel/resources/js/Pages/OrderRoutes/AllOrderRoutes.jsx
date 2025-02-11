@@ -169,7 +169,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
                         </a>
                     </Button>
 
-                    <Table data={orderRoutesInfo} columnsLabel={orderRoutesLabels} editAction={'orderRoutes.showEdit'} deleteAction={'orderRoutes.delete'} dataId={'id'}/>
+                    {/* <Table data={orderRoutesInfo} columnsLabel={orderRoutesLabels} editAction={'orderRoutes.showEdit'} deleteAction={'orderRoutes.delete'} dataId={'id'}/> */}
 
                     <CustomDataGrid
                         rows={orderRoutesInfo}
