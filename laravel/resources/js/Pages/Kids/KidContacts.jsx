@@ -191,13 +191,13 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 </a>
                             </Button>
 
-                            <Table
+                            {/* <Table
                                 data={kidPhones}
                                 columnsLabel={kidPhonesColLabels}
                                 editAction="kidPhoneNumbers.showEdit"
                                 deleteAction="kidPhoneNumbers.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
+                            /> */}
 
                             <CustomDataGrid 
                                 rows={kidPhones}
@@ -218,13 +218,13 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 </a>
                             </Button>
 
-                            <Table
+                            {/* <Table
                                 data={kidEmails}
                                 columnsLabel={kidEmailsColLabels}
                                 editAction="kidEmails.showEdit"
                                 deleteAction="kidEmails.delete"
                                 dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            />
+                            /> */}
                             
                             <CustomDataGrid
                                 rows={kidEmails}

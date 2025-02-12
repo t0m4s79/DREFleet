@@ -146,7 +146,7 @@ export default function OrderOccurences({auth, order}) {
         
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <Table data={orderStopsInfo} columnsLabel={orderStopsLabels} dataId={'id'}/>
+                    {/* <Table data={orderStopsInfo} columnsLabel={orderStopsLabels} dataId={'id'}/> */}
 
                     <CustomDataGrid 
                         rows={orderStopsInfo}
