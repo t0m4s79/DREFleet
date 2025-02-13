@@ -127,8 +127,11 @@ function ResponsiveDrawer({ user }) {
                         <ListItemButton component="a" href={route('profile.edit')} onClick={toggleDrawer}>
                             <ListItemText primary="Meu Perfil" />
                         </ListItemButton>
-                        <ListItemButton component="a" href={route('logout')} onClick={toggleDrawer}>
-                            <ListItemText primary="Terminar Sessão" />
+                        <ListItemButton >
+                            <Link href={route('logout')} method="post" >
+                                <ListItemText primary="Terminar Sessão" />
+                            </Link>
+                            
                         </ListItemButton>
                     </List>
                 </div>
