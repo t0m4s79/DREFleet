@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-order-occurrence', function (User $user, OrderOccurrence $occurence) {
-            return $user->isAdmin() || $user->isManager() || ($user->isDriver() && $occurence->order()->driver() === $user->id())   //Check if driver is the one in the order 
+            return $user->isAdmin() || $user->isManager()  //Check if driver is the one in the order 
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });

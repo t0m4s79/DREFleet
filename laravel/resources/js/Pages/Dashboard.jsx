@@ -1,19 +1,22 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import StatCard from '@/Components/StatCard';
+import { PieChart } from '@mui/x-charts/PieChart';
 
-export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[], orders=[] }) {
-    
-    // const availableDrivers = drivers.map((driver)=> {   
-    //     if(driver.status == "Disponível") {
-    //         return driver
-    //     } else {
-    //         return 0;
-    //     }
-    // })
+export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[], orders=[], stats, order_status_chart }) {
 
-    console.log(orders.filter(order => new Date(order.expected_begin_date) > new Date()))
+    //console.log(orders.filter(order => new Date(order.expected_begin_date) > new Date()))
+
+    const orderChartData = order_status_chart.map((elem) => {
+        return {
+            label: elem.status,
+            value: elem.count,
+        }
+    })
+
+    console.log(orderChartData)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -23,10 +26,33 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">Bem vindo</div>
+                    <div className="overflow-hidden shadow-sm sm:rounded-lg">
 
-                        
+                        <div className="grid grid-cols-3 gap-2">
+                            <StatCard title="Total Vehicles" value={stats.total_vehicles} />
+                            <StatCard title="Total Drivers" value={stats.total_drivers} />
+                            <StatCard title="Total Orders" value={stats.total_orders} />
+                            <StatCard title="Pending Orders" value={stats.pending_orders} />
+                            <StatCard title="Ongoing Orders" value={stats.ongoing_orders} />
+                            <StatCard title="Pending Maintenance" value={stats.pending_maintenance} />
+                            
+                        </div>
+
+                        <Box>
+                            <PieChart 
+                                margin={{ right: 200 }}
+                                series={[
+                                    {
+                                        data: orderChartData,
+                                        innerRadius: 50,
+                                        outerRadius: 91,
+                                        paddingAngle: 5,
+                                    }
+                                ]}
+                                width={500}
+                                height={200}
+                            />
+                        </Box>
                     </div>
                 </div>
                 

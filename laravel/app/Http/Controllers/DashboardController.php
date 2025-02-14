@@ -6,6 +6,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Vehicle;
+use App\Models\VehicleMaintenanceReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -38,6 +39,17 @@ class DashboardController extends Controller
             'technicians' => $technicians,
             'vehicles' => $vehicles,
             'orders' => $orders,
+            'stats' => [
+                'total_vehicles' => Vehicle::count(),
+                'total_drivers' => User::where('user_type', 'Condutor')->count(),
+                'total_orders' => Order::count(),
+                'pending_orders' => Order::where('status', 'Por Aprovar')->count(),
+                'ongoing_orders' => Order::where('status', 'Em Curso')->count(),
+                'pending_maintenance' => VehicleMaintenanceReport::where('status', 'A decorrer')->count(),
+            ],
+            'latest_orders' => Order::latest()->take(5)->with(['vehicle', 'driver'])->get(),
+            'latest_maintenance_reports' => VehicleMaintenanceReport::latest()->take(5)->with('vehicle')->get(),
+            'order_status_chart' => Order::selectRaw('status, COUNT(*) as count')->groupBy('status')->get(),
         ]);
     }
 }
