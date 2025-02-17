@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import VehicleWarnings from '@/Components/VehicleWarnings';
 import { vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
 
-export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [] }) {
+export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], permissions }) {
 
     // const availableDrivers = drivers.map((driver)=> {   
     //     if(driver.status == "Disponível") {
@@ -155,7 +155,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                 >
                                     Veículos em Serviço
                                     <div className='ml-2'>
-                                        <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} />
+                                        <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} permissions={permissions} />
                                     </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -169,7 +169,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
                                                 </div>
                                             );
                                         })
@@ -186,7 +186,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                 >
                                     Veículos Disponíveis
                                     <div className="ml-2">
-                                        <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} />
+                                        <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} permissions={permissions} />
                                     </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -200,7 +200,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
                                                 </div>
                                             )
                                         })
@@ -218,7 +218,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                 >
                                     Veículos em Manutenção
                                     <div className='ml-2'>
-                                        <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} />
+                                        <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} permissions={permissions} />
                                     </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -232,7 +232,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
                                                 </div>
                                             )
                                         })

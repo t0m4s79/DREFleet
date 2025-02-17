@@ -1,7 +1,11 @@
 import { Link } from "@inertiajs/react";
 import { Badge } from "@mui/material";
 
-export default function VehicleWarnings({ expired, expiring, vehicle = null }) {
+export default function VehicleWarnings({ expired, expiring, vehicle = null, permissions }) {
+    if (!permissions.isAdmin && !permissions.isManager) {
+        return null;
+    }
+
     const badges = (
         <div className="flex gap-2">
             {expired > 0 && <Badge badgeContent={expired} color="error">❌</Badge>}
