@@ -4,9 +4,10 @@ import { Head, Link } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { isBefore, parse } from 'date-fns';
+import { differenceInDays, isBefore, parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
@@ -21,6 +22,13 @@ const isExpired = (date) => {
             return (
                 <div style={{ color: 'red' }}>
                     <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else if (differenceInDays(parsedDate, now) < 30){
+            return (
+                <div style={{ color: '#FFC700' }}>
+                    <WarningIcon style={{ marginRight: '4px', color: '#FFC700', fontWeight: 'bolder' }} />
                     {date.formattedValue}
                 </div>
             );
@@ -204,7 +212,13 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
                         deleteAction="vehicleDocuments.delete"
                         getRowClassName={(params) => {
                             const expirationDate = parse(params.row.expiration_date, 'dd-MM-yyyy', new Date());
-                            return expirationDate < new Date() ? 'expired-row' : '';
+                            const today = new Date();
+                            const daysLeft = differenceInDays(expirationDate, today);
+                        
+                            if (daysLeft < 0) return 'expired-row';
+                            if (daysLeft < 30) return 'warning-row';
+                        
+                            return '';
                         }}
                     />
                 </div>

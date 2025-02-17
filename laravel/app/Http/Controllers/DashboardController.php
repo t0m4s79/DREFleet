@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
         $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Indisponível')->with('driver')->get();
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
-        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
+        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->with(['documents', 'accessories'])->get();
         $orders = Order::where('expected_end_date', '>', now())->get();
 
         $orders->each(function ($order) {
