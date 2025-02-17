@@ -13,7 +13,7 @@ function renderStatus(status) {
         'Disponível': 'success',
         'Em Serviço': 'info',
         'Em manutenção': 'warning',
-        'Indisponível': 'error',
+        'Inoperável': 'error',
         'Escondido': 'default',
     };
   

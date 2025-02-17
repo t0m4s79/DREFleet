@@ -342,7 +342,7 @@ export default function EditVehicle({ auth, vehicle}) {
                                     onChange={handleChange}
                                 >
                                     <FormControlLabel value="Disponível" control={<Radio />} label="Disponível" />
-                                    <FormControlLabel value="Indisponível" control={<Radio />} label="Indisponível" />
+                                    <FormControlLabel value="Inoperável" control={<Radio />} label="Inoperável" />
                                     <FormControlLabel value="Em manutenção" control={<Radio />} label="Em manutenção" />
                                     <FormControlLabel value="Escondido" control={<Radio />} label="Escondido" />
                                 </RadioGroup>

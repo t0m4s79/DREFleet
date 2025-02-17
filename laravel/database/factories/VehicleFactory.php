@@ -41,7 +41,7 @@ class VehicleFactory extends Factory
             'yearly_allowed_tows' => rand(0,10),
             'capacity' => rand(5,15),
             'fuel_consumption' => rand(2,10),
-            'status' => Arr::random(['Disponível','Indisponível', 'Em manutenção', 'Escondido']),
+            'status' => Arr::random(['Disponível','Inoperável', 'Em manutenção', 'Escondido']),
             'current_month_fuel_requests' => rand(0,6),
             'fuel_type' => Arr::random(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico']),
             'current_kilometrage' => rand(1,200000),
