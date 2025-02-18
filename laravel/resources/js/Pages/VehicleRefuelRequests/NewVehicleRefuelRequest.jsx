@@ -29,10 +29,10 @@ export default function NewVehicleRefuelRequest( {auth, vehicles} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Nova Pedido de Reabastecimento de Veículo</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Registo de Abastecimento de Veículo</h2>}
         >
 
-            {<Head title='Pedido de Reabastecimento do Veículo' />}
+            {<Head title='Registo de Abastecimento do Veículo' />}
 
             <div className='py-12'>
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">

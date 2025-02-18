@@ -34,7 +34,7 @@ class VehicleRefuelRequestNotificationTest extends TestCase
             'user_id' => $user->id,
             'related_entity_id' => $vehicle->id,
             'related_entity_type' => Vehicle::class,
-            'type' => 'Pedido de Reabastecimento',
+            'type' => 'Registo de Abastecimento',
         ]);
     }
 
@@ -58,7 +58,7 @@ class VehicleRefuelRequestNotificationTest extends TestCase
         $this->assertInstanceOf(MailMessage::class, $mailMessage); // Ensure the message is of type MailMessage
         
         $this->assertEquals(
-            'Novo pedido de reabastecimento do tipo ' . $request->request_type . '.',
+            'Novo registo de abastecimento do tipo ' . $request->request_type . '.',
             $mailMessage->introLines[0]
         );
         
@@ -70,7 +70,7 @@ class VehicleRefuelRequestNotificationTest extends TestCase
         
         // Verify the outro line matches exactly
         $this->assertEquals(
-            'Foi criado um novo pedido de reabastecimento (' . $vehicle->current_month_fuel_requests . 'º este mês) com id ' . $request->id . ' do tipo ' . $request->request_type . ' para o veículo ' . $vehicle->id . '.',
+            'Foi criado um novo registo de abastecimento (' . $vehicle->current_month_fuel_requests . 'º este mês) com id ' . $request->id . ' do tipo ' . $request->request_type . ' para o veículo ' . $vehicle->id . '.',
             $mailMessage->outroLines[0]
         );
     }

@@ -84,7 +84,7 @@ class VehicleRefuelRequestController extends Controller
                 $user->notify(new VehicleRefuelRequestNotification($request, Vehicle::find($incomingFields['vehicle_id'])));
             }
 
-            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Pedido de reabastecimento com id ' . $request->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
+            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Registo de abastecimento com id ' . $request->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' criado com sucesso!');
 
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error creating vehicle refuel request', [
@@ -93,7 +93,7 @@ class VehicleRefuelRequestController extends Controller
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar o pedido de reabastecimento para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao criar o registo de abastecimento para o veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -146,7 +146,7 @@ class VehicleRefuelRequestController extends Controller
                 'vehicle_id' => $incomingFields['vehicle_id'],
             ]);
 
-            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Dados do pedido de reabastecimento com id ' . $vehicleRefuelRequest->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
+            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Dados do registo de abastecimento com id ' . $vehicleRefuelRequest->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
         
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error editing vehicle refuel reques', [
@@ -155,7 +155,7 @@ class VehicleRefuelRequestController extends Controller
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o pedido de reabastecimento com id ' . $vehicleRefuelRequest->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
+            return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('error', 'Houve um problema ao atualizar o registo de abastecimento com id ' . $vehicleRefuelRequest->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . '. Tente novamente.');
         }
     }
 
@@ -176,7 +176,7 @@ class VehicleRefuelRequestController extends Controller
                 'vehicle_id' => $vehicleId,
             ]);
     
-            return redirect()->route('vehicles.refuelRequests', $vehicleId)->with('message', 'Pedido de reabastecimento com id ' . $id . ' eliminado com sucesso!');
+            return redirect()->route('vehicles.refuelRequests', $vehicleId)->with('message', 'Registo de abastecimento com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error deleting vehicle refuel request', [
@@ -185,7 +185,7 @@ class VehicleRefuelRequestController extends Controller
                 'stack_trace' => $e->getTraceAsString(),
             ]);
             
-            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o pedido de reabastecimento com id ' . $id . '. Tente novamente.');
+            return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o registo de abastecimento com id ' . $id . '. Tente novamente.');
         }
     }
 }
