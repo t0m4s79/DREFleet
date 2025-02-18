@@ -1,10 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import VehicleWarnings from '@/Components/VehicleWarnings';
+import { vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
 
-export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[], orders=[] }) {
-    
+export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], permissions }) {
+
     // const availableDrivers = drivers.map((driver)=> {   
     //     if(driver.status == "Disponível") {
     //         return driver
@@ -12,6 +14,8 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
     //         return 0;
     //     }
     // })
+
+    const { inService, available, maintenance } = vehiclesExpirations(vehicles);
 
     console.log(orders.filter(order => new Date(order.expected_begin_date) > new Date()))
     return (
@@ -26,16 +30,16 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">Bem vindo</div>
 
-                        
+
                     </div>
                 </div>
-                
+
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                         <div className="p-6 text-gray-900">
                             <h2 className='pb-3 text-lg font-bold'>Condutores</h2>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
@@ -55,16 +59,16 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                     ) : (
                                         <div>Nenhum condutor em serviço.</div>
                                     )}
-                                </AccordionDetails>   
+                                </AccordionDetails>
 
                             </Accordion>
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Condutores Disponíveis
+                                    Condutores Disponíveis
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {drivers.filter(driver => driver.status === 'Disponível').length > 0 ? (
@@ -78,7 +82,7 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                     ) : (
                                         <div>Nenhum condutor disponível.</div>
                                     )}
-                                </AccordionDetails>   
+                                </AccordionDetails>
                             </Accordion>
                         </div>
                     </div>
@@ -89,13 +93,13 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                         <div className="p-6 text-gray-900">
                             <h2 className='pb-3 text-lg font-bold'>Técnicos</h2>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Técnicos em Serviço
+                                    Técnicos em Serviço
                                 </AccordionSummary>
 
                                 <AccordionDetails>
@@ -110,15 +114,15 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                     ) : (
                                         <div>Nenhum técnico em serviço.</div>
                                     )}
-                                </AccordionDetails>   
+                                </AccordionDetails>
                             </Accordion>
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Técnicos Disponíveis
+                                    Técnicos Disponíveis
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {technicians.filter(technician => technician.status === 'Disponível').length > 0 ? (
@@ -143,68 +147,95 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                         <div className="p-6 text-gray-900">
                             <h2 className='pb-3 text-lg font-bold'>Veículos</h2>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Veículos em Serviço
+                                    Veículos em Serviço
+                                    <div className='ml-2'>
+                                        <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} permissions={permissions} />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {vehicles.filter(vehicle => vehicle.status === 'Em Serviço').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => (
-                                            <div>
-                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                </a>
-                                            </div>
-                                        ))
+                                        vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => {
+                                            const [expired, expiring] = vehicleExpirations(vehicle);
+
+                                            return (
+                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                    <a href={route('vehicles.edit', vehicle)}>
+                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                    </a>
+
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                </div>
+                                            );
+                                        })
                                     ) : (
                                         <div>Nenhum veículo em serviço.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Veículos Disponíveis
+                                    Veículos Disponíveis
+                                    <div className="ml-2">
+                                        <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} permissions={permissions} />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {vehicles.filter(vehicle => vehicle.status === 'Disponível').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => (
-                                            <div>
-                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                </a>
-                                            </div>
-                                        ))
+                                        vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => {
+                                            const [expired, expiring] = vehicleExpirations(vehicle);
+
+                                            return (
+                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                    <a href={route('vehicles.edit', vehicle)}>
+                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                    </a>
+
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                </div>
+                                            )
+                                        })
                                     ) : (
                                         <div>Nenhum veículo disponível.</div>
                                     )}
                                 </AccordionDetails>
                             </Accordion>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Veículos em Manutenção
+                                    Veículos em Manutenção
+                                    <div className='ml-2'>
+                                        <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} permissions={permissions} />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {vehicles.filter(vehicle => vehicle.status === 'Em manutenção').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => (
-                                            <div>
-                                                <a key={`vehicle-${vehicle.id}`} href={route('vehicles.edit', vehicle)}>
-                                                    #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                </a>
-                                            </div>
-                                        ))
+                                        vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => {
+                                            const [expired, expiring] = vehicleExpirations(vehicle);
+
+                                            return (
+                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                    <a href={route('vehicles.edit', vehicle)}>
+                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                    </a>
+
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                </div>
+                                            )
+                                        })
                                     ) : (
                                         <div>Nenhum veículo em manutenção.</div>
                                     )}
@@ -219,13 +250,13 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                         <div className="p-6 text-gray-900">
                             <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Pedidos em Curso
+                                    Pedidos em Curso
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date()).length > 0 ? (
@@ -242,13 +273,13 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 </AccordionDetails>
                             </Accordion>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Pedidos Agendados
+                                    Pedidos Agendados
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').length > 0 ? (
@@ -265,13 +296,13 @@ export default function Dashboard({ auth, drivers=[], technicians=[], vehicles=[
                                 </AccordionDetails>
                             </Accordion>
 
-                            <Accordion style={{boxShadow: 'none'}}>
+                            <Accordion style={{ boxShadow: 'none' }}>
                                 <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel2-content"
-                                id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
-                                Pedidos por Aprovar
+                                    Pedidos por Aprovar
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {orders.filter(order => order.status === 'Por aprovar').length > 0 ? (

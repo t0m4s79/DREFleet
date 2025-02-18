@@ -1,0 +1,25 @@
+import { Link } from "@inertiajs/react";
+import { Badge } from "@mui/material";
+
+export default function VehicleWarnings({ expired, expiring, vehicle = null, permissions }) {
+    if (!permissions.isAdmin && !permissions.isManager) {
+        return null;
+    }
+
+    const badges = (
+        <div className="flex gap-2">
+            {expired > 0 && <Badge badgeContent={expired} color="error">❌</Badge>}
+            {expiring > 0 && (
+                <Badge badgeContent={expiring} sx={{ "& .MuiBadge-badge": { backgroundColor: "#FFC700", color: "black" } }}>
+                    ⚠️
+                </Badge>
+            )}
+        </div>
+    );
+
+    return vehicle ? (
+        <Link key={vehicle} href={route('vehicles.documentsAndAccessories', vehicle)}>
+            {badges}
+        </Link>
+    ) : badges;
+}

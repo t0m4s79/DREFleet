@@ -84,7 +84,7 @@ class VehicleController extends Controller
             'yearly_allowed_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
-            'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
+            'status' => ['required', Rule::in(['Disponível','Inoperável', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
             'current_kilometrage' => ['required', 'integer', 'min:0'],
@@ -191,7 +191,7 @@ class VehicleController extends Controller
             'yearly_allowed_tows' => ['required', 'integer', 'min:0'],
             'capacity' => ['required', 'integer', 'min:1'], // Minimum capacity of 1, integer value
             'fuel_consumption' => ['required', 'numeric', 'min:0'], // Numeric value, can't be negative
-            'status' => ['required', Rule::in(['Disponível','Indisponível', 'Em manutenção', 'Escondido'])],
+            'status' => ['required', Rule::in(['Disponível','Inoperável', 'Em manutenção', 'Escondido'])],
             'current_month_fuel_requests' => ['required', 'integer', 'min:0'], // Integer, can’t be negative
             'fuel_type' => ['required', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Híbrido','Elétrico'])],
             'current_kilometrage' => ['required', 'integer', 'min:0'],

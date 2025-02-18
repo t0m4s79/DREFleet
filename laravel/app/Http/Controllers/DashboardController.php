@@ -18,9 +18,9 @@ class DashboardController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Indisponível')->with('driver')->get();
-        $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
-        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Indisponível')->get();
+        $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Inoperável')->with('driver')->get();
+        $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Inoperável')->get();
+        $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Inoperável')->with(['documents', 'accessories'])->get();
         $orders = Order::where('expected_end_date', '>', now())->get();
 
         $orders->each(function ($order) {
