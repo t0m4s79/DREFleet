@@ -93,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'showCreateOrderForm'])->name('orders.showCreate');
     Route::post('/orders/create', [OrderController::class, 'createOrder'])->name('orders.create');
+    Route::post('/orders/duplicate/{order}', [OrderController::class, 'duplicateOrder'])->name('orders.duplicate');
     Route::get('/orders/edit/{order}', [OrderController::class, 'showEditOrderForm'])->name('orders.showEdit');
     Route::put('/orders/edit/{order}', [OrderController::class, 'editOrder'])->name('orders.edit');
     Route::delete('/orders/delete/{order}', [OrderController::class, 'deleteOrder'])->name('orders.delete');

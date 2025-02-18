@@ -42,7 +42,7 @@ class OrderController extends Controller
     public function index()
     {
         //Gate::authorize('viewAny', Order::class);
-        
+
         Log::channel('user')->info('User accessed orders page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
@@ -78,7 +78,7 @@ class OrderController extends Controller
         Log::channel('user')->info('User accessed order creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
-        
+
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
         $technicians = User::where('user_type', 'Técnico')->get();
@@ -158,7 +158,7 @@ class OrderController extends Controller
                 'exists:kids,id',
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
-            
+
         ] ,$customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
@@ -218,7 +218,7 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             Log::channel('usererror')->error('Error creating order', [
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
@@ -228,6 +228,49 @@ class OrderController extends Controller
         }
     }
 
+    public function duplicateOrder(Order $order)
+    {
+        if (!Gate::allows('create-order')) {
+            abort(403);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $newOrder = $order->replicate();
+            $newOrder->status = 'Por aprovar';
+            $newOrder->save();
+
+            foreach ($order->orderStops as $stop) {
+                $newStop = $stop->replicate();
+                $newStop->order_id = $newOrder->id;
+                $newStop->save();
+            }
+
+            DB::commit();
+
+            Log::channel('user')->info('User duplicated an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'original_order_id' => $order->id,
+                'new_order_id' => $newOrder->id,
+            ]);
+
+            return redirect()->route('orders.edit', $newOrder->id)
+                ->with('message', 'Pedido duplicado com sucesso!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::channel('usererror')->error('Error duplicating order', [
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao duplicar o pedido. Tente novamente.');
+        }
+    }
+
+
     public function showEditOrderForm(Order $order)
     {
 
@@ -235,11 +278,11 @@ class OrderController extends Controller
             abort(403);
             //return redirect()->route('orders.index')->with('error', 'Não tem permissões para editar o pedido.');
         };
-        
+
         Log::channel('user')->info('User accessed order edit page', [
-                'auth_user_id' => $this->loggedInUserId ?? null,
-                'order_id' => $order->id ?? null,
-            ]);
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
 
         $order->load(['orderStops.place', 'orderStops.kids'])->get();
 
@@ -308,7 +351,7 @@ class OrderController extends Controller
                 'exists:users,id',
                 new TechnicianUserTypeValidation(),                
                 new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
-            ],            
+            ],  
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
             'places' => ['required_if:places_changed,true', 'array'], // Ensure 'places' is an array
@@ -324,7 +367,7 @@ class OrderController extends Controller
             ],
 
         ], $customErrorMessages);
-        
+
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
         DB::beginTransaction();
@@ -350,7 +393,7 @@ class OrderController extends Controller
 
                 // Calculate the expected arrival of each stop
                 $expectedArrivalDate = Carbon::parse($incomingFields['expected_begin_date']);
-                
+
                 // Create the order stops
                 foreach ($incomingFields['places'] as $place) {
                     $expectedArrivalDate = $expectedArrivalDate->addSeconds((float) $place['time']);
@@ -419,7 +462,7 @@ class OrderController extends Controller
     }
 
     //TODO: Add Administrators Role
-    public function approveOrder(Order $order, Request $request) 
+    public function approveOrder(Order $order, Request $request)
     {
 
         if(! Gate::allows('approve-order')){
@@ -428,8 +471,8 @@ class OrderController extends Controller
 
         $incomingFields = $request->validate([
             'manager_id' => [
-                'required', 
-                'exists:users,id', 
+                'required',
+                'exists:users,id',
                 new ManagerUserTypeValidation(),
             ]
         ]);
@@ -459,16 +502,16 @@ class OrderController extends Controller
         }
     }
 
-    public function removeOrderApproval(Order $order, Request $request) 
+    public function removeOrderApproval(Order $order, Request $request)
     {
         if(! Gate::allows('approve-order')){
             abort(403);
         };
-        
+
         $request->validate([
             'manager_id' => [
-                'required', 
-                'exists:users,id', 
+                'required',
+                'exists:users,id',
                 new ManagerUserTypeValidation(),
             ]
         ]);
@@ -574,7 +617,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function showOrderStops(Order $order) 
+    public function showOrderStops(Order $order)
     {
         Log::channel('user')->info('User accessed order stops page', [
             'auth_user_id' => $this->loggedInUserId ?? null,

@@ -352,6 +352,7 @@ export default function AllOrders({auth, orders, flash}) {
                         columns={orderColumns}
                         editAction={'orders.edit'}
                         deleteAction={'orders.delete'}
+                        duplicateAction={'orders.duplicate'}
                     />
                 </div>
             </div>
