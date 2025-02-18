@@ -85,7 +85,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 order_route_id: order.order_route_id,
                 places: [],
                 places_changed: isPlacesModified,
-                observations: order.observations,
+                observations: order.observations ?? '',
             });
     
             //console.log('Form state initialized:', data);
@@ -150,7 +150,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         order_route_id: order.order_route_id,
         places: [],
         places_changed: isPlacesModified,
-        observations: order.observations
+        observations: order.observations || ''
     }
 
     const { data, setData, put, patch, errors, processing} = useForm({...initialData})

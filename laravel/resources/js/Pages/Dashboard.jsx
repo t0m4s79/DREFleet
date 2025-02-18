@@ -169,7 +169,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
                                                 </div>
                                             );
                                         })
@@ -200,7 +200,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
                                                 </div>
                                             )
                                         })
@@ -232,7 +232,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                                         #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
                                                     </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions}/>
+                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
                                                 </div>
                                             )
                                         })
@@ -245,83 +245,84 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                        <div className="p-6 text-gray-900">
-                            <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
+                {permissions.isAdmin | permissions.isManager &&
+                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                            <div className="p-6 text-gray-900">
+                                <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos em Curso
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date()).length > 0 ? (
-                                        orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date() || order.status === 'Em curso').map(order => (
-                                            <div key={`order-${order.id}`}>
-                                                <a href={route('orders.edit', order)}>
-                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum pedido em curso.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos em Curso
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date()).length > 0 ? (
+                                            orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date() || order.status === 'Em curso').map(order => (
+                                                <div key={`order-${order.id}`}>
+                                                    <a href={route('orders.edit', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum pedido em curso.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos Agendados
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').length > 0 ? (
-                                        orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').map(order => (
-                                            <div key={`order-${order.id}`}>
-                                                <a href={route('orders.edit', order)}>
-                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum pedido agendado.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos Agendados
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').length > 0 ? (
+                                            orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').map(order => (
+                                                <div key={`order-${order.id}`}>
+                                                    <a href={route('orders.edit', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum pedido agendado.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos por Aprovar
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {orders.filter(order => order.status === 'Por aprovar').length > 0 ? (
-                                        orders.filter(order => order.status === 'Por aprovar').map(order => (
-                                            <div>
-                                                <a key={`order-${order.id}`} href={route('orders.edit', order)}>
-                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum pedido por aprovar.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos por Aprovar
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {orders.filter(order => order.status === 'Por aprovar').length > 0 ? (
+                                            orders.filter(order => order.status === 'Por aprovar').map(order => (
+                                                <div>
+                                                    <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum pedido por aprovar.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                }
 
             </div>
         </AuthenticatedLayout>
