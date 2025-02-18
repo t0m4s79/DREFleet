@@ -95,6 +95,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         trajectory: trajectory,
         order_route_id: '',
         places: places,         //waypoints
+        observations: ''
     })
 
     const handleRouteChange =(route) => {
@@ -152,7 +153,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         //console.log('Form data on submit:', data);
     
         // Ensure the state is fully updated before submitting
-        await new Promise(resolve => setTimeout(resolve, 1000));       
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
         post(route('orders.create'));
     };
 
@@ -332,13 +333,39 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                 />
                                             </Grid>
 
+                                            <Grid item xs={12}>
+                                                <InputLabel htmlFor="observations" sx={{ mb: 1 }}>
+                                                    Observações
+                                                </InputLabel>
+                                                <TextField
+                                                    id="observations"
+                                                    name="observations"
+                                                    multiline
+                                                    rows={4}
+                                                    fullWidth
+                                                    value={data.observations || ''}
+                                                    onChange={(e) => {
+                                                        const newValue = e.target.value;
+                                                        if (newValue.length <= 500) {
+                                                            setData('observations', e.target.value)
+                                                        }
+                                                    }}
+                                                    error={Boolean(errors.observations)}
+                                                    helperText={errors.observations}
+                                                    sx={{ mb: 2 }}
+                                                />
+                                            </Grid>
+
+                                            <div style={{ textAlign: 'right', color: data.observations.length >= 500 ? 'red' : 'black' }}>
+                                                {500 - data.observations.length} caracteres restantes
+                                            </div>
                                         
                                             <Grid item xs={12}>
                                                 <Button type="submit" variant="outlined" color="primary" disabled={processing}>
                                                     Submeter
                                                 </Button>
                                             </Grid>
-                                    
+
                                         </form> 
                                 </div>
                             </div>

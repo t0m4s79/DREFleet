@@ -10,6 +10,7 @@ import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 import OccurrenceModal from '@/Components/OccurrenceModal';
 import MapModal from '@/Components/MapModal';
+import ObservationModal from '@/Components/ObservationModal';
 
 const renderOrderStatus = (status) => {
     const colors = {
@@ -57,6 +58,7 @@ export default function AllOrders({auth, orders, flash}) {
             technician_id: order.technician,
             route: order.order_route_id,
             order_type: order.order_type,
+            observations: order.observations,
             stops: order.order_stops.length,
             trajectory: order.trajectory,
             expected_time: formatTime(order.expected_time), // Convert expected time to hh:mm
@@ -199,6 +201,23 @@ export default function AllOrders({auth, orders, flash}) {
             field: 'order_type',
             headerName: 'Tipo',
             //flex: 1,
+        },
+        {
+            field: 'observations',
+            headerName: 'Observações',
+            //flex: 1,
+            renderCell: (params) => {
+                // Only render the button if there are observations
+                if(params.value){
+                    return (
+                        <div>
+                            <ObservationModal observations={params.value} />
+                        </div>
+                    );
+                } else {
+                    return null; // Don't render anything if there are no occurrences
+                }
+            }
         },
         {
             field: 'stops',

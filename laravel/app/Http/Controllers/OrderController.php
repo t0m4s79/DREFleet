@@ -104,7 +104,6 @@ class OrderController extends Controller
 
     public function createOrder(Request $request)
     {
-
         // if ($request->user()->cannot('create')) {
         //     abort(403);
         // }
@@ -158,6 +157,7 @@ class OrderController extends Controller
                 'exists:kids,id',
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
+            'observations' => ['nullable', 'string', 'max:500']
 
         ] ,$customErrorMessages);
 
@@ -177,6 +177,7 @@ class OrderController extends Controller
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
                 'status' => 'Por aprovar',
+                'observations' => $incomingFields['observations'] ?? null
             ]);
 
             // Calculate the expected arrival of each stop
@@ -365,6 +366,7 @@ class OrderController extends Controller
                 'exists:kids,id',
                 new KidVehicleValidation($request->input('order_type'), $request->input('vehicle_id')),
             ],
+            'observations' => ['nullable', 'string', 'max:500']
 
         ], $customErrorMessages);
 
@@ -383,6 +385,7 @@ class OrderController extends Controller
                 'driver_id' => $incomingFields['driver_id'],
                 'technician_id' => $incomingFields['technician_id'],
                 'order_route_id' => $incomingFields['order_route_id'],
+                'observations' => $incomingFields['observations'] ?? null
                 //TODO: IF AN ORDER IS EDITED, SHOULD IT NEED REAPPROVAL
             ]);
 

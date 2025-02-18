@@ -85,6 +85,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 order_route_id: order.order_route_id,
                 places: [],
                 places_changed: isPlacesModified,
+                observations: order.observations,
             });
     
             //console.log('Form state initialized:', data);
@@ -149,6 +150,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         order_route_id: order.order_route_id,
         places: [],
         places_changed: isPlacesModified,
+        observations: order.observations
     }
 
     const { data, setData, put, patch, errors, processing} = useForm({...initialData})
@@ -469,6 +471,34 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                         sx={{ mb: 2 }}
                                     />
                                 </Grid>
+
+                                <Grid item xs={12}>
+                                    <InputLabel htmlFor="observations" sx={{ mb: 1 }}>
+                                        Observações
+                                    </InputLabel>
+                                    <TextField
+                                        id="observations"
+                                        name="observations"
+                                        disabled={!isEditMode}
+                                        multiline
+                                        rows={4}
+                                        fullWidth
+                                        value={data.observations || ''}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            if (newValue.length <= 500) {
+                                                setData('observations', e.target.value)
+                                            }
+                                        }}
+                                        error={Boolean(errors.observations)}
+                                        helperText={errors.observations}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </Grid>
+
+                                <div style={{ textAlign: 'right', color: data.observations.length >= 500 ? 'red' : 'black' }}>
+                                    {500 - data.observations.length} caracteres restantes
+                                </div>
 
                             </form>
                         </div>

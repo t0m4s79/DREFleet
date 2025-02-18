@@ -21,6 +21,7 @@ class Order extends Model
         'trajectory',
         'order_type',
         'status',
+        'observations',
 
         'vehicle_id',
         'driver_id',
