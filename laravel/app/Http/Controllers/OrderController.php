@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use Exception;
 use App\Models\Kid;
 use App\Models\User;
@@ -464,7 +465,6 @@ class OrderController extends Controller
         }
     }
 
-    //TODO: Add Administrators Role
     public function approveOrder(Order $order, Request $request)
     {
 
@@ -472,19 +472,15 @@ class OrderController extends Controller
             abort(403);
         };
 
-        $incomingFields = $request->validate([
-            'manager_id' => [
-                'required',
-                'exists:users,id',
-                new ManagerUserTypeValidation(),
-            ]
-        ]);
+        if (!$this->loggedInUserId) {
+            return redirect()->route('orders.showEdit', $order->id)->with('error', 'Erro: Utilizador não autenticado. Ação não permitida.');
+        }
 
         try {
             $order->update([
-                'manager_id' => $incomingFields['manager_id'],
+                'manager_id' => $this->loggedInUserId,
                 'approved_date' => now(),
-                'status' => 'Aprovado'
+                'status' => OrderStatus::APPROVED->value
             ]);
 
             Log::channel('user')->info('User approved an order', [
@@ -511,19 +507,15 @@ class OrderController extends Controller
             abort(403);
         };
 
-        $request->validate([
-            'manager_id' => [
-                'required',
-                'exists:users,id',
-                new ManagerUserTypeValidation(),
-            ]
-        ]);
+        if (!$this->loggedInUserId) {
+            return redirect()->route('orders.showEdit', $order->id)->with('error', 'Erro: Utilizador não autenticado. Ação não permitida.');
+        }
 
         try {
             $order->update([
-                'manager_id' => null,
+                'manager_id' => $this->loggedInUserId,
                 'approved_date' => null,
-                'status' => 'Por aprovar'
+                'status' => OrderStatus::CANCELED->value
             ]);
 
             Log::channel('user')->info('User unapproved an order', [

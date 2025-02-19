@@ -4,6 +4,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import VehicleWarnings from '@/Components/VehicleWarnings';
 import { vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
+import { parseOrders } from '@/utils/Dashboard/orders';
 
 export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], permissions }) {
 
@@ -16,8 +17,8 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
     // })
 
     const { inService, available, maintenance } = vehiclesExpirations(vehicles);
+    const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
 
-    console.log(orders.filter(order => new Date(order.expected_begin_date) > new Date()))
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -260,8 +261,8 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         Pedidos em Curso
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date()).length > 0 ? (
-                                            orders.filter(order => new Date(order.expected_begin_date) <= new Date() && new Date(order.expected_end_date) >= new Date() || order.status === 'Em curso').map(order => (
+                                        {ongoingOrders.length > 0 ? (
+                                            ongoingOrders.map(order => (
                                                 <div key={`order-${order.id}`}>
                                                     <a href={route('orders.edit', order)}>
                                                         #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
@@ -283,8 +284,8 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         Pedidos Agendados
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').length > 0 ? (
-                                            orders.filter(order => new Date(order.expected_begin_date) > new Date() && order.status === 'Aprovado').map(order => (
+                                        {approvedOrders.length > 0 ? (
+                                            approvedOrders.map(order => (
                                                 <div key={`order-${order.id}`}>
                                                     <a href={route('orders.edit', order)}>
                                                         #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
@@ -306,8 +307,8 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         Pedidos por Aprovar
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {orders.filter(order => order.status === 'Por aprovar').length > 0 ? (
-                                            orders.filter(order => order.status === 'Por aprovar').map(order => (
+                                        {ordersToAprove.length > 0 ? (
+                                            ordersToAprove.map(order => (
                                                 <div>
                                                     <a key={`order-${order.id}`} href={route('orders.edit', order)}>
                                                         #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
