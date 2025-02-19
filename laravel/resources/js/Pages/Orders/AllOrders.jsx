@@ -54,11 +54,11 @@ export default function AllOrders({ auth, orders, flash }) {
             id: order.id,
             expected_begin_date: order.expected_begin_date,
             expected_end_date: order.expected_end_date,
-            vehicle_id: order.vehicle,
+            vehicle_id: order.vehicle.id,
             vehicle_license_plate: order.vehicle.license_plate,
-            driver_id: order.driver,
+            driver_id: order.driver.user_id,
             driver_name: order.driver.name,
-            technician_id: order.technician,
+            technician_id: order.technician.id,
             technician_name: order.technician.name,
             route: order.order_route_id,
             order_type: order.order_type,
@@ -127,53 +127,47 @@ export default function AllOrders({ auth, orders, flash }) {
             },
         },
         {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
             //flex: 1,
             maxWidth: 100,
-            valueFormatter: (value) => value.license_plate,
-            sortComparator: (a, b) => a.license_plate.localeCompare(b.license_plate),
-            renderCell: (params) => (
-                <Link
-                    key={params.value.id}
-                    href={route('vehicles.showEdit', params.value.id)}
-                    className='text-blue-500'
-                >
-                    {params.value.license_plate}
-                </Link>
-            )
-        },
-        {
-            field: 'driver_id',
-            headerName: 'Condutor',
-            //flex: 1,
-            minWidth: 100,
-            valueFormatter: (value) => value.name,
-            sortComparator: (a, b) => a.name.localeCompare(b.name),
-            renderCell: (params) => (
-                <Link
-                    key={params.value.id}
-                    href={route('drivers.showEdit', params.value.user_id)}
-                    className='text-blue-500'
-                >
-                    {params.value.name}
-                </Link>
-            )
-        },
-        {
-            field: 'technician_id',
-            headerName: 'Técnico',
-            //flex: 1,
-            minWidth: 100,
-            valueFormatter: (value) => value.name,
-            sortComparator: (a, b) => a.name.localeCompare(b.name),
             renderCell: (params) => (
                 <Link
                     key={params.value}
-                    href={route('technicians.showEdit', params.value.id)}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
                     className='text-blue-500'
                 >
-                    {params.value.name}
+                    {params.row.vehicle_license_plate}
+                </Link>
+            )
+        },
+        {
+            field: 'driver_name',
+            headerName: 'Condutor',
+            //flex: 1,
+            minWidth: 100,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('drivers.showEdit', params.row.driver_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.driver_name}
+                </Link>
+            )
+        },
+        {
+            field: 'technician_name',
+            headerName: 'Técnico',
+            //flex: 1,
+            minWidth: 100,
+            renderCell: (params) => (
+                <Link
+                    key={params.value}
+                    href={route('technicians.showEdit', params.row.technician_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.technician_name}
                 </Link>
             )
         },
