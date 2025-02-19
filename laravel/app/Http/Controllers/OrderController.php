@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Enums\Roles;
 use Exception;
 use App\Models\Kid;
 use App\Models\User;
@@ -472,13 +473,15 @@ class OrderController extends Controller
             abort(403);
         };
 
-        if (!$this->loggedInUserId) {
+        $user = auth()->user();
+
+        if (!$user || !in_array($user->user_type, [Roles::ADMIN->value, Roles::MANAGER->value])) {
             return redirect()->route('orders.showEdit', $order->id)->with('error', 'Erro: Utilizador não autenticado. Ação não permitida.');
         }
 
         try {
             $order->update([
-                'manager_id' => $this->loggedInUserId,
+                'manager_id' => $user->id,
                 'approved_date' => now(),
                 'status' => OrderStatus::APPROVED->value
             ]);
@@ -507,13 +510,15 @@ class OrderController extends Controller
             abort(403);
         };
 
-        if (!$this->loggedInUserId) {
+        $user = auth()->user();
+
+        if (!$user || !in_array($user->user_type, [Roles::ADMIN->value, Roles::MANAGER->value])) {
             return redirect()->route('orders.showEdit', $order->id)->with('error', 'Erro: Utilizador não autenticado. Ação não permitida.');
         }
 
         try {
             $order->update([
-                'manager_id' => $this->loggedInUserId,
+                'manager_id' => $user->id,
                 'approved_date' => null,
                 'status' => OrderStatus::CANCELED->value
             ]);
