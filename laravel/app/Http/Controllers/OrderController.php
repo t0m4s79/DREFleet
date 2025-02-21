@@ -616,16 +616,30 @@ class OrderController extends Controller
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::with(['drivers', 'technicians'])->get();
 
-        return Inertia::render('Orders/OrderStart', [
-            'flash' => [
-                'message' => session('message'),
-                'error' => session('error'),
-            ],
-            'order' => $order,
-            'kids' => $kids,
-            'otherPlaces' => $otherPlaces,
-            'orderRoutes' => $routes,
-        ]);
+        if ($order->status === OrderStatus::APPROVED->value) {
+            return Inertia::render('Orders/OrderStart', [
+                'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+                'order' => $order,
+                'kids' => $kids,
+                'otherPlaces' => $otherPlaces,
+                'orderRoutes' => $routes,
+            ]);
+        } else {
+            return Inertia::render('Orders/OrderStart', [
+                'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+                'order' => $order,
+                'kids' => $kids,
+                'otherPlaces' => $otherPlaces,
+                'orderRoutes' => $routes,
+                'onlyView' => true
+            ]);
+        }
     }
 
     public function startOrder(Order $order)

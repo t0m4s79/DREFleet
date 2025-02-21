@@ -152,108 +152,110 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                        <div className="p-6 text-gray-900">
-                            <h2 className='pb-3 text-lg font-bold'>Veículos</h2>
+                {inService.length > 0 || available.length > 0 || maintenance.length > 0 &&
+                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                            <div className="p-6 text-gray-900">
+                                <h2 className='pb-3 text-lg font-bold'>Veículos</h2>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Veículos em Serviço
-                                    <div className='ml-2'>
-                                        <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} permissions={permissions} />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {vehicles.filter(vehicle => vehicle.status === 'Em Serviço').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => {
-                                            const [expired, expiring] = vehicleExpirations(vehicle);
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Veículos em Serviço
+                                        <div className='ml-2'>
+                                            <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} permissions={permissions} />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {vehicles.filter(vehicle => vehicle.status === 'Em Serviço').length > 0 ? (
+                                            vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => {
+                                                const [expired, expiring] = vehicleExpirations(vehicle);
 
-                                            return (
-                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                    <a href={route('vehicles.edit', vehicle)}>
-                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                    </a>
+                                                return (
+                                                    <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                        <a href={route('vehicles.edit', vehicle)}>
+                                                            #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                        </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
-                                                </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div>Nenhum veículo em serviço.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Veículos Disponíveis
-                                    <div className="ml-2">
-                                        <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} permissions={permissions} />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {vehicles.filter(vehicle => vehicle.status === 'Disponível').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => {
-                                            const [expired, expiring] = vehicleExpirations(vehicle);
+                                                        <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div>Nenhum veículo em serviço.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Veículos Disponíveis
+                                        <div className="ml-2">
+                                            <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} permissions={permissions} />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {vehicles.filter(vehicle => vehicle.status === 'Disponível').length > 0 ? (
+                                            vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => {
+                                                const [expired, expiring] = vehicleExpirations(vehicle);
 
-                                            return (
-                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                    <a href={route('vehicles.edit', vehicle)}>
-                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                    </a>
+                                                return (
+                                                    <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                        <a href={route('vehicles.edit', vehicle)}>
+                                                            #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                        </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div>Nenhum veículo disponível.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                                        <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div>Nenhum veículo disponível.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Veículos em Manutenção
-                                    <div className='ml-2'>
-                                        <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} permissions={permissions} />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {vehicles.filter(vehicle => vehicle.status === 'Em manutenção').length > 0 ? (
-                                        vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => {
-                                            const [expired, expiring] = vehicleExpirations(vehicle);
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Veículos em Manutenção
+                                        <div className='ml-2'>
+                                            <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} permissions={permissions} />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {vehicles.filter(vehicle => vehicle.status === 'Em manutenção').length > 0 ? (
+                                            vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => {
+                                                const [expired, expiring] = vehicleExpirations(vehicle);
 
-                                            return (
-                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                    <a href={route('vehicles.edit', vehicle)}>
-                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                    </a>
+                                                return (
+                                                    <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
+                                                        <a href={route('vehicles.edit', vehicle)}>
+                                                            #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
+                                                        </a>
 
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div>Nenhum veículo em manutenção.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                                        <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} permissions={permissions} />
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div>Nenhum veículo em manutenção.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
@@ -333,9 +335,15 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     {ordersToAprove.length > 0 ? (
                                         ordersToAprove.map(order => (
                                             <div>
-                                                <a key={`order-${order.id}`} href={route('orders.edit', order)}>
-                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                </a>
+                                                {permissions.isTechnician ? (
+                                                    <a href={route('orders.showStartOrder', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                ) : (
+                                                    <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                )}
                                             </div>
                                         ))
                                     ) : (

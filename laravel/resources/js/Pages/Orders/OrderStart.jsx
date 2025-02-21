@@ -6,7 +6,7 @@ import { useState, useEffect, useContext } from "react";
 import WaypointManager from "./Partials/WaypointManager";
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, flash }) {
+export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
     return (
         <OrderProvider>
             <InnerOrderStart
@@ -15,13 +15,14 @@ export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes
                 kids={kids}
                 otherPlaces={otherPlaces}
                 orderRoutes={orderRoutes}
+                onlyView={onlyView}
             />
         </OrderProvider>
     );
 }
 
 
-function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, flash }) {
+function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
 
     const { updateWaypoints, updatePlaces, } = useContext(OrderContext);
 
@@ -111,7 +112,7 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, flash })
         });
     }
 
-    const startService = async() => {
+    const startService = async () => {
         put(route('orders.startOrder', order.id));
     }
 
@@ -127,8 +128,10 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, flash })
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        {onlyView &&
+                            <h1 className="flex justify-center items-center text-3xl p-3">Estado do Pedido: {order.status}</h1>
+                        }
                         <div className='p-6'>
-
                             <form>
                                 <input type="hidden" name="_token" value={csrfToken} />
                                 <Grid item xs={12}>
@@ -238,16 +241,18 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, flash })
 
                                 </Grid>
 
-                                <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="large"
-                                        onClick={startService} // Função que inicia o serviço
-                                    >
-                                        Iniciar Serviço
-                                    </Button>
-                                </Grid>
+                                {!onlyView &&
+                                    <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            onClick={startService}
+                                        >
+                                            Iniciar Serviço
+                                        </Button>
+                                    </Grid>
+                                }
 
                             </form>
                         </div>
