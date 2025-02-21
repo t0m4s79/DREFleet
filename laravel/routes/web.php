@@ -103,8 +103,12 @@ Route::middleware('auth')->group(function () {
     //Route::patch('/orders/ended/{order}',  [OrderController::class, 'orderEnded'])->name('orders.end');                           //TODO: MOVE TO SEPARATE CONTROLLER (ORDER REPORTS)
     Route::get('/orders/orderOccurrences/{order}', [OrderController::class, 'showOrderOccurrences'])->name('orders.occurrences');
     Route::get('/orders/orderStops/{order}', [OrderController::class, 'showOrderStops'])->name('orders.stops');
+
+
     Route::get('/orders/startOrder/{order}', [OrderController::class, 'showStartOrder'])->name('orders.showStartOrder');
     Route::put('/orders/startOrder/{order}', [OrderController::class, 'startOrder'])->name('orders.startOrder');
+    Route::get('/orders/stopOrder/{order}', [OrderController::class, 'showStopOrder'])->name('orders.showStopOrder');
+    Route::put('/orders/stopOrder/{order}', [OrderController::class, 'stopOrder'])->name('orders.stopOrder');
 
     //ORDER OCCURRENCES
     Route::get('/orders/occurrences', [OrderOccurrenceController::class, 'index'])->name('orderOccurrences.index');

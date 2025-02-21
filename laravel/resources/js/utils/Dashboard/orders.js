@@ -7,7 +7,7 @@ const filterOngoingOrders = (orders) => {
     return orders.filter(order => {
         const startDate = parseDate(order.expected_begin_date);
         const endDate = parseDate(order.expected_end_date);
-        return endDate >= now && order.status === "Em curso";
+        return endDate >= now && (order.status === "Em curso" || order.status === "Interrompido");
     });
 };
 

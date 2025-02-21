@@ -152,7 +152,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
 
-                {inService.length > 0 || available.length > 0 || maintenance.length > 0 &&
+                {vehicles.length > 0 &&
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
@@ -269,19 +269,33 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Pedidos em Curso
-                                    <div className='ml-2'>
+                                    <div className='ml-4'>
                                         <Badge badgeContent={ongoingOrders.length} color="error" />
                                     </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {ongoingOrders.length > 0 ? (
-                                        ongoingOrders.map(order => (
-                                            <div key={`order-${order.id}`}>
-                                                <a href={route('orders.edit', order)}>
-                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                </a>
-                                            </div>
-                                        ))
+                                        ongoingOrders.map(order => {
+                                            const orderLink = permissions.isTechnician
+                                                ? order.status === "Em curso"
+                                                    ? route('orders.showStopOrder', order)
+                                                    : route('orders.showStartOrder', order)
+                                                : route('orders.edit', order);
+
+                                            return (
+                                                <div key={`order-${order.id}`}>
+                                                    <a href={orderLink}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                        <span
+                                                            className={`ml-2 px-2 py-1 rounded text-white ${order.status === "Em curso" ? "bg-blue-500" : "bg-yellow-500"
+                                                                }`}
+                                                        >
+                                                            {order.status}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            );
+                                        })
                                     ) : (
                                         <div>Nenhum pedido em curso.</div>
                                     )}
@@ -301,19 +315,17 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {approvedOrders.length > 0 ? (
-                                        approvedOrders.map(order => (
-                                            <div key={`order-${order.id}`}>
-                                                {permissions.isTechnician ? (
-                                                    <a href={route('orders.showStartOrder', order)}>
+                                        approvedOrders.map(order => {
+                                            const orderLink = permissions.isTechnician ? route('orders.showStartOrder', order) : route('orders.edit', order);
+
+                                            return (
+                                                <div key={`order-${order.id}`}>
+                                                    <a href={orderLink}>
                                                         #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
                                                     </a>
-                                                ) : (
-                                                    <a href={route('orders.edit', order)}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                )}
-                                            </div>
-                                        ))
+                                                </div>
+                                            )
+                                        })
                                     ) : (
                                         <div>Nenhum pedido agendado.</div>
                                     )}

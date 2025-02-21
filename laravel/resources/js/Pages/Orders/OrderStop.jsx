@@ -6,10 +6,10 @@ import { useState, useEffect, useContext } from "react";
 import WaypointManager from "./Partials/WaypointManager";
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
+export default function OrderStop({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
     return (
         <OrderProvider>
-            <InnerOrderStart
+            <InnerOrderStop
                 auth={auth}
                 order={order}
                 kids={kids}
@@ -22,7 +22,7 @@ export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes
 }
 
 
-function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
+function InnerOrderStop({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
 
     const { updateWaypoints, updatePlaces, } = useContext(OrderContext);
 
@@ -114,8 +114,9 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
         });
     }
 
-    const startService = async () => {
-        put(route('orders.startOrder', order.id));
+    const stopService = async () => {
+        data.action = 'stop';
+        put(route('orders.stopOrder', order.id));
     }
 
     const finishService = async () => {
@@ -128,7 +129,7 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Iniciar Serviço</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Parar Serviço</h2>}
         >
 
             <Head title="Iniciar Serviço" />
@@ -249,21 +250,19 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
                                 </Grid>
 
                                 {!onlyView &&
-                                    <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2} gap="10px">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="large"
-                                            onClick={startService}
-                                        >
-                                            {order.status === "Aprovado" ? (
-                                                'Iniciar Serviço'
-                                            ) : (
-                                                'Retomar Serviço'
-                                            )}
-                                        </Button>
+                                    <Grid display="flex" flexDirection="row" justifyContent="end" gap="10px">
+                                        <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                size="large"
+                                                onClick={stopService}
+                                            >
+                                                Interromper Serviço
+                                            </Button>
+                                        </Grid>
 
-                                        {order.status === "Interrompido" &&
+                                        <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2}>
                                             <Button
                                                 variant="contained"
                                                 color="primary"
@@ -272,7 +271,7 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
                                             >
                                                 Finalizar Serviço
                                             </Button>
-                                        }
+                                        </Grid>
                                     </Grid>
                                 }
 

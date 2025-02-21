@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderAction;
 use App\Enums\OrderStatus;
 use App\Enums\Roles;
 use App\Enums\UserStatus;
@@ -237,6 +238,7 @@ class OrderController extends Controller
 
     public function duplicateOrder(Order $order)
     {
+
         if (!Gate::allows('create-order')) {
             abort(403);
         }
@@ -616,7 +618,7 @@ class OrderController extends Controller
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::with(['drivers', 'technicians'])->get();
 
-        if ($order->status === OrderStatus::APPROVED->value) {
+        if (in_array($order->status, [OrderStatus::APPROVED->value, OrderStatus::INTERRUPTED->value])) {
             return Inertia::render('Orders/OrderStart', [
                 'flash' => [
                     'message' => session('message'),
@@ -655,11 +657,14 @@ class OrderController extends Controller
         $technician = User::where('id', $order->technician->id)->first();
         $vehicle = Vehicle::where('id', $order->vehicle->id)->first();
 
-        if (!$driver || !$technician || !$vehicle) {
-            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor, Técnico ou Veículo não encontrados.');
-        }
+        if (!$driver)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Condutor não encontrado.');
+        if (!$technician)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Técnico não encontrado.');
+        if (!$vehicle)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Veículo não encontrado.');
 
-        if ($vehicle->status !== VehicleStatus::AVAILABLE->value || $driver->status !== UserStatus::AVAILABLE->value || $technician->status !== UserStatus::AVAILABLE->value) {
+        if ($order->status === OrderStatus::APPROVED->value && ($vehicle->status !== VehicleStatus::AVAILABLE->value || $driver->status !== UserStatus::AVAILABLE->value || $technician->status !== UserStatus::AVAILABLE->value)) {
             return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor, Técnico ou Veículo não disponível.');
         }
 
@@ -689,6 +694,115 @@ class OrderController extends Controller
             ]);
 
             return redirect()->route('orders.showStartOrder')->with('error', 'Houve um problema ao iniciar o serviço com id ' . $order->id . '. Tente novamente.');
+        }
+    }
+
+    public function showStopOrder(Order $order)
+    {
+        Log::channel('user')->info('User accessed start order page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
+        $order->load(['orderStops.place', 'orderStops.kids', 'vehicle', 'driver', 'technician'])->get();
+
+        $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+        $order->expected_end_date = Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+        $kids = Kid::with('places')->get();
+        $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
+        $routes = OrderRoute::with(['drivers', 'technicians'])->get();
+
+        if ($order->status === OrderStatus::IN_PROGRESS->value) {
+            return Inertia::render('Orders/OrderStop', [
+                'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+                'order' => $order,
+                'kids' => $kids,
+                'otherPlaces' => $otherPlaces,
+                'orderRoutes' => $routes,
+            ]);
+        } else {
+            return Inertia::render('Orders/OrderStop', [
+                'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+                'order' => $order,
+                'kids' => $kids,
+                'otherPlaces' => $otherPlaces,
+                'orderRoutes' => $routes,
+                'onlyView' => true
+            ]);
+        }
+    }
+
+    public function stopOrder(Request $request, Order $order)
+    {
+        $action = $request->action;
+
+        if (!in_array($action, [OrderAction::INTERRUPT->value, OrderAction::FINISH->value])) {
+            return redirect()->route('orders.showStopOrder', $order)
+                ->with('error', 'Erro: Impossível prosseguir, tipo de ação não permitido.');
+        }
+
+        $order->load(['vehicle', 'driver', 'technician']);
+
+        if (!in_array($order->status, [OrderStatus::IN_PROGRESS->value, OrderStatus::INTERRUPTED->value])) {
+            return redirect()->route('orders.showStopOrder', $order)
+                ->with('error', 'Erro: Apenas pedidos Em curso e Interrompidos podem ser alterados.');
+        }
+
+        $driver = User::where('id', $order->driver->user_id)->first();
+        $technician = User::where('id', $order->technician->id)->first();
+        $vehicle = Vehicle::where('id', $order->vehicle->id)->first();
+
+        if (!$driver)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Condutor não encontrado.');
+        if (!$technician)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Técnico não encontrado.');
+        if (!$vehicle)
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Veículo não encontrado.');
+
+
+        if ($vehicle->status !== VehicleStatus::IN_SERVICE->value) {
+            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Veículo não está em uso para este serviço.');
+        }
+
+        DB::beginTransaction();
+        try {
+
+            $message = match ($action) {
+                OrderAction::INTERRUPT->value => 'O serviço foi interrompido com sucesso!',
+                OrderAction::FINISH->value => 'O serviço foi finalizado com sucesso!',
+            };
+
+            $order->update([
+                'status' => $action === OrderAction::INTERRUPT->value
+                    ? OrderStatus::INTERRUPTED->value
+                    : OrderStatus::COMPLETED->value
+            ]);
+
+            if ($action === OrderAction::FINISH->value) {
+                $driver->update(['status' => UserStatus::AVAILABLE->value]);
+                $technician->update(['status' => UserStatus::AVAILABLE->value]);
+                $vehicle->update(['status' => VehicleStatus::AVAILABLE->value]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('orders.index')->with('message', $message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::channel('usererror')->error('Error stopping order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.index')->with('error', 'Houve um problema ao atualizar o pedido.');
         }
     }
 

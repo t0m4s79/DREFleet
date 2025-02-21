@@ -47,7 +47,7 @@ export default function AllOrders({ auth, orders, flash }) {
         return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}m`;
     };
 
-    console.log(orders)
+    //console.log(orders)
     const OrderInfo = orders.map((order) => {
         //console.log(order)
         return {
