@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Enums\Roles;
+use App\Enums\UserStatus;
+use App\Enums\VehicleStatus;
 use Exception;
 use App\Models\Kid;
 use App\Models\User;
@@ -73,9 +75,10 @@ class OrderController extends Controller
     public function showCreateOrderForm()
     {
 
-        if(! Gate::allows('create-order')){
+        if (!Gate::allows('create-order')) {
             abort(403);
-        };
+        }
+        ;
 
         Log::channel('user')->info('User accessed order creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
@@ -110,9 +113,10 @@ class OrderController extends Controller
         //     abort(403);
         // }
 
-        if(! Gate::allows('create-order')){
+        if (!Gate::allows('create-order')) {
             abort(403);
-        };
+        }
+        ;
 
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -126,18 +130,18 @@ class OrderController extends Controller
             'expected_end_date' => ['required', 'date', 'after:expected_begin_date'],
             'expected_time' => ['required', 'min:0'], //in seconds
             'distance' => ['required', 'min:0'],      //in meters
-            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal', 'Transporte de Mercadorias', 'Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
             ],
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
                 new KidDriverValidation($request->input('order_type')),
             ],
             'technician_id' => [
@@ -145,7 +149,7 @@ class OrderController extends Controller
                 'exists:users,id',
                 'nullable',
                 new TechnicianUserTypeValidation(),
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date')),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date')),
             ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places' => ['required', 'array'], // Ensure 'places' is an array
@@ -161,7 +165,7 @@ class OrderController extends Controller
             ],
             'observations' => ['nullable', 'string', 'max:500']
 
-        ] ,$customErrorMessages);
+        ], $customErrorMessages);
 
         $incomingFields['order_route_id'] = $incomingFields['order_route_id'] ?? null;
 
@@ -277,10 +281,11 @@ class OrderController extends Controller
     public function showEditOrderForm(Order $order)
     {
 
-        if(! Gate::allows('edit-order')){
+        if (!Gate::allows('edit-order')) {
             abort(403);
             //return redirect()->route('orders.index')->with('error', 'Não tem permissões para editar o pedido.');
-        };
+        }
+        ;
 
         Log::channel('user')->info('User accessed order edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
@@ -318,9 +323,10 @@ class OrderController extends Controller
     public function editOrder(Order $order, Request $request)
     {
 
-        if(! Gate::allows('edit-order')){
+        if (!Gate::allows('edit-order')) {
             abort(403);
-        };
+        }
+        ;
 
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
@@ -334,27 +340,27 @@ class OrderController extends Controller
             'expected_time' => ['required', 'min:0'],
             'distance' => ['required', 'min:0'],
             'trajectory' => ['required', 'json'],
-            'order_type' => ['required', Rule::in(['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros'])],
+            'order_type' => ['required', Rule::in(['Transporte de Pessoal', 'Transporte de Mercadorias', 'Transporte de Crianças', 'Outros'])],
             'vehicle_id' => [
                 'required',
                 'exists:vehicles,id',
                 new OrderVehicleCapacityValidation($totalPassengers, $request->input('order_type')),
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
-            ],            
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
+            ],
             'driver_id' => [
                 'required',
                 'exists:drivers,user_id',
                 new OrderDriverLicenseValidation($request->input('vehicle_id')),
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
                 new KidDriverValidation($request->input('order_type')),
             ],
             'technician_id' => [
                 'required_if:order_type,Transporte de Crianças',
                 'nullable',
                 'exists:users,id',
-                new TechnicianUserTypeValidation(),                
-                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'),$request->input('expected_end_date'), $order->id),
-            ],  
+                new TechnicianUserTypeValidation(),
+                new EntityOrderAvailabilityValidation($request->input('expected_begin_date'), $request->input('expected_end_date'), $order->id),
+            ],
             'order_route_id' => ['nullable', 'exists:order_routes,id'],
             'places_changed' => ['required', 'boolean'],
             'places' => ['required_if:places_changed,true', 'array'], // Ensure 'places' is an array
@@ -393,7 +399,7 @@ class OrderController extends Controller
 
             //TODO: OPTIMIZE THIS -> SOME WAY OF DELETING ONLY THE NEEDED WHILE UPDATING THE EXISTING AND CREATING NEW ONES
             //TODO:               -> RIGHT NOW IT DELETES EVERY STOP IN THE ORDER AND THEN CREATES EVERY STOP AGAIN(INCLUDING ONES THAT ALREADY EXISTED)
-            if($incomingFields['places_changed']) {
+            if ($incomingFields['places_changed']) {
                 OrderStop::where('order_id', $order->id)->delete();
 
                 // Calculate the expected arrival of each stop
@@ -440,9 +446,10 @@ class OrderController extends Controller
 
     public function deleteOrder($id)
     {
-        if(! Gate::allows('delete-order')){
+        if (!Gate::allows('delete-order')) {
             abort(403);
-        };
+        }
+        ;
 
         try {
             $order = Order::findOrFail($id);
@@ -469,9 +476,10 @@ class OrderController extends Controller
     public function approveOrder(Order $order, Request $request)
     {
 
-        if(! Gate::allows('approve-order')){
+        if (!Gate::allows('approve-order')) {
             abort(403);
-        };
+        }
+        ;
 
         $user = auth()->user();
 
@@ -506,9 +514,10 @@ class OrderController extends Controller
 
     public function removeOrderApproval(Order $order, Request $request)
     {
-        if(! Gate::allows('approve-order')){
+        if (!Gate::allows('approve-order')) {
             abort(403);
-        };
+        }
+        ;
 
         $user = auth()->user();
 
@@ -591,6 +600,83 @@ class OrderController extends Controller
     //         return redirect()->route('orders.index')->with('error', 'Houve um problema ao acabar o pedido com id ' . $order->id . '. Tente novamente.');
     //     }
     // }
+
+    public function showStartOrder(Order $order)
+    {
+        Log::channel('user')->info('User accessed start order page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+            'order_id' => $order->id ?? null,
+        ]);
+
+        $order->load(['orderStops.place', 'orderStops.kids', 'vehicle', 'driver', 'technician'])->get();
+
+        $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
+        $order->expected_end_date = Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+        $kids = Kid::with('places')->get();
+        $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
+        $routes = OrderRoute::with(['drivers', 'technicians'])->get();
+
+        return Inertia::render('Orders/OrderStart', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'order' => $order,
+            'kids' => $kids,
+            'otherPlaces' => $otherPlaces,
+            'orderRoutes' => $routes,
+        ]);
+    }
+
+    public function startOrder(Order $order)
+    {
+
+        $order->load(['vehicle', 'driver', 'technician']);
+
+        if (!in_array($order->status, [OrderStatus::APPROVED->value, OrderStatus::INTERRUPTED->value])) {
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Pedido não se encontra Aprovado ou Iterrompido, não pode ser iniciado');
+        }
+
+        $driver = User::where('id', $order->driver->user_id)->first();
+        $technician = User::where('id', $order->technician->id)->first();
+        $vehicle = Vehicle::where('id', $order->vehicle->id)->first();
+
+        if (!$driver || !$technician || !$vehicle) {
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor, Técnico ou Veículo não encontrados.');
+        }
+
+        if ($vehicle->status !== VehicleStatus::AVAILABLE->value || $driver->status !== UserStatus::AVAILABLE->value || $technician->status !== UserStatus::AVAILABLE->value) {
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor, Técnico ou Veículo não disponível.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $order->update(['status' => OrderStatus::IN_PROGRESS->value]);
+            $driver->update(['status' => UserStatus::IN_SERVICE->value]);
+            $technician->update(['status' => UserStatus::IN_SERVICE->value]);
+            $vehicle->update(['status' => VehicleStatus::IN_SERVICE->value]);
+
+            DB::commit();
+
+            Log::channel('user')->info('User started an order', [
+                'auth_user_id' => $this->loggedInUserId ?? null,
+                'order_id' => $order->id ?? null,
+            ]);
+
+            return redirect()->route('orders.index')->with('message', 'Pedido com ' . $order->id . ' iniciado com sucesso!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::channel('usererror')->error('Error starting order', [
+                'order_id' => $order->id ?? null,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('orders.showStartOrder')->with('error', 'Houve um problema ao iniciar o serviço com id ' . $order->id . '. Tente novamente.');
+        }
+    }
 
     public function showOrderOccurrences(Order $order)
     {

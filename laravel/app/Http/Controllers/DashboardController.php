@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Order;
@@ -18,15 +19,31 @@ class DashboardController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
+        $user = auth()->user();
+
+        $ordersQuery = Order::where('expected_end_date', '>', now());
+
+        if ($user->user_type === Roles::TECHNICIAN->value) {
+            $ordersQuery->where('technician_id', $user->id);
+        } elseif ($user->user_type === Roles::DRIVER->value) {
+            $ordersQuery->where('driver_id', $user->id);
+        } elseif (!in_array($user->user_type, [Roles::ADMIN->value, Roles::MANAGER->value])) {
+            $ordersQuery = null;
+        }
+
+        $orders = $ordersQuery ? $ordersQuery->get() : collect();
+        
+
         $drivers = User::where('user_type', 'Condutor')->whereNot('status','Escondido')->whereNot('status','Inoperável')->with('driver')->get();
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Inoperável')->get();
         $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Inoperável')->with(['documents', 'accessories'])->get();
-        $orders = Order::where('expected_end_date', '>', now())->get();
 
-        $orders->each(function ($order) {
-            // Format the dates as dd-mm-yyyy
-            $order->expected_begin_date = Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i');
-            $order->expected_end_date = Carbon::parse($order->expected_end_date)->format('d-m-Y H:i');
+        $orders = $orders->map(function ($order) {
+            return [
+                ...$order->toArray(),
+                'expected_begin_date' => Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i'),
+                'expected_end_date' => Carbon::parse($order->expected_end_date)->format('d-m-Y H:i'),
+            ];
         });
 
         return Inertia::render('Dashboard', [

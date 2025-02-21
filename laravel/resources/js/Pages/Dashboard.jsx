@@ -18,7 +18,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
 
     const { inService, available, maintenance } = vehiclesExpirations(vehicles);
     const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
-
+    
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -246,84 +246,88 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
 
-                {permissions.isAdmin | permissions.isManager &&
-                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                            <div className="p-6 text-gray-900">
-                                <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
+                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                        <div className="p-6 text-gray-900">
+                            <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
 
-                                <Accordion style={{ boxShadow: 'none' }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel1-content"
-                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                    >
-                                        Pedidos em Curso
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {ongoingOrders.length > 0 ? (
-                                            ongoingOrders.map(order => (
-                                                <div key={`order-${order.id}`}>
+                            <Accordion style={{ boxShadow: 'none' }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                >
+                                    Pedidos em Curso
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {ongoingOrders.length > 0 ? (
+                                        ongoingOrders.map(order => (
+                                            <div key={`order-${order.id}`}>
+                                                <a href={route('orders.edit', order)}>
+                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum pedido em curso.</div>
+                                    )}
+                                </AccordionDetails>
+                            </Accordion>
+
+                            <Accordion style={{ boxShadow: 'none' }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                >
+                                    Pedidos Agendados
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {approvedOrders.length > 0 ? (
+                                        approvedOrders.map(order => (
+                                            <div key={`order-${order.id}`}>
+                                                {permissions.isTechnician ? (
+                                                    <a href={route('orders.showStartOrder', order)}>
+                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                    </a>
+                                                ) : (
                                                     <a href={route('orders.edit', order)}>
                                                         #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
                                                     </a>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div>Nenhum pedido em curso.</div>
-                                        )}
-                                    </AccordionDetails>
-                                </Accordion>
+                                                )}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum pedido agendado.</div>
+                                    )}
+                                </AccordionDetails>
+                            </Accordion>
 
-                                <Accordion style={{ boxShadow: 'none' }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2-content"
-                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                    >
-                                        Pedidos Agendados
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {approvedOrders.length > 0 ? (
-                                            approvedOrders.map(order => (
-                                                <div key={`order-${order.id}`}>
-                                                    <a href={route('orders.edit', order)}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div>Nenhum pedido agendado.</div>
-                                        )}
-                                    </AccordionDetails>
-                                </Accordion>
-
-                                <Accordion style={{ boxShadow: 'none' }}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2-content"
-                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                    >
-                                        Pedidos por Aprovar
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {ordersToAprove.length > 0 ? (
-                                            ordersToAprove.map(order => (
-                                                <div>
-                                                    <a key={`order-${order.id}`} href={route('orders.edit', order)}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div>Nenhum pedido por aprovar.</div>
-                                        )}
-                                    </AccordionDetails>
-                                </Accordion>
-                            </div>
+                            <Accordion style={{ boxShadow: 'none' }}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel2-content"
+                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                >
+                                    Pedidos por Aprovar
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {ordersToAprove.length > 0 ? (
+                                        ordersToAprove.map(order => (
+                                            <div>
+                                                <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                                                    #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>Nenhum pedido por aprovar.</div>
+                                    )}
+                                </AccordionDetails>
+                            </Accordion>
                         </div>
                     </div>
-                }
+                </div>
 
             </div>
         </AuthenticatedLayout>
