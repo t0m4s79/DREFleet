@@ -5,20 +5,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import VehicleWarnings from '@/Components/VehicleWarnings';
 import { vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
 import { parseOrders } from '@/utils/Dashboard/orders';
+import { Badge } from "@mui/material";
+import { parseDrivers } from '@/utils/Dashboard/drivers';
+import { parseTechnicians } from '@/utils/Dashboard/technicians';
 
 export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], permissions }) {
 
-    // const availableDrivers = drivers.map((driver)=> {   
-    //     if(driver.status == "Disponível") {
-    //         return driver
-    //     } else {
-    //         return 0;
-    //     }
-    // })
-
     const { inService, available, maintenance } = vehiclesExpirations(vehicles);
     const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
-    
+    const { inServiceDrivers, availableDrivers } = parseDrivers(drivers);
+    const { inServiceTechnicians, availableTechnicians } = parseTechnicians(technicians);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -47,10 +44,13 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Condutores em Serviço
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={inServiceDrivers.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {drivers.filter(driver => driver.status === 'Em Serviço').length > 0 ? (
-                                        drivers.filter(driver => driver.status === 'Em Serviço').map(driver => (
+                                    {inServiceDrivers.length > 0 ? (
+                                        inServiceDrivers.map(driver => (
                                             <div>
                                                 <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
                                                     #{driver.id} - {driver.name} - {driver.driver.license_number}
@@ -70,10 +70,13 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Condutores Disponíveis
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={availableDrivers.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {drivers.filter(driver => driver.status === 'Disponível').length > 0 ? (
-                                        drivers.filter(driver => driver.status === 'Disponível').map(driver => (
+                                    {availableDrivers.length > 0 ? (
+                                        availableDrivers.map(driver => (
                                             <div>
                                                 <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
                                                     #{driver.id} - {driver.name} - {driver.driver.license_number}
@@ -101,11 +104,14 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Técnicos em Serviço
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={inServiceTechnicians.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
 
                                 <AccordionDetails>
-                                    {technicians.filter(technician => technician.status === 'Em Serviço').length > 0 ? (
-                                        technicians.filter(technician => technician.status === 'Em Serviço').map(technician => (
+                                    {inServiceTechnicians.length > 0 ? (
+                                        inServiceTechnicians.map(technician => (
                                             <div>
                                                 <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
                                                     #{technician.id} - {technician.name}
@@ -124,10 +130,13 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Técnicos Disponíveis
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={availableTechnicians.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    {technicians.filter(technician => technician.status === 'Disponível').length > 0 ? (
-                                        technicians.filter(technician => technician.status === 'Disponível').map(technician => (
+                                    {availableTechnicians.length > 0 ? (
+                                        availableTechnicians.map(technician => (
                                             <div>
                                                 <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
                                                     #{technician.id} - {technician.name}
@@ -258,6 +267,9 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Pedidos em Curso
+                                    <div className='ml-2'>
+                                        <Badge badgeContent={ongoingOrders.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {ongoingOrders.length > 0 ? (
@@ -281,6 +293,9 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Pedidos Agendados
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={approvedOrders.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {approvedOrders.length > 0 ? (
@@ -310,6 +325,9 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                 >
                                     Pedidos por Aprovar
+                                    <div className='ml-4'>
+                                        <Badge badgeContent={ordersToAprove.length} color="error" />
+                                    </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {ordersToAprove.length > 0 ? (
