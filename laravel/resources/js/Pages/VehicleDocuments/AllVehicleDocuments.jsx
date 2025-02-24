@@ -52,7 +52,7 @@ const displayData = (data) => {
 }
 
 
-export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}, permissions) {
+export default function AllVehicleDocuments( {auth, vehicleDocuments, flash, permissions}) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -77,8 +77,9 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}, pe
             issue_date: vehicleDocument.issue_date,
             expiration_date: vehicleDocument.expiration_date,
             expired: vehicleDocument.expired,
-            vehicle_id: vehicleDocument.vehicle,
             additionalData: additionalData, // Store key-value pairs as array
+            vehicle_id: vehicleDocument.vehicle.id,
+            vehicle_license_plate: vehicleDocument.vehicle.license_plate,
             created_at: vehicleDocument.created_at,
             updated_at: vehicleDocument.updated_at,
         };
@@ -137,15 +138,17 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}, pe
             maxWidth: 100,
         },
         {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
             //flex: 1,
-            disableColumnMenu: true,
-            sortable: false,
             maxWidth: 100,
             renderCell: (params) => (
-                <Link href={route('vehicles.showEdit', params.value.id)}>
-                    <Button >{params.value.license_plate}</Button>
+                <Link
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.vehicle_license_plate}
                 </Link>
             )
         },

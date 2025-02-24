@@ -26,11 +26,14 @@ export default function AllOrderRoutes({auth, orderRoutes, flash, permissions}) 
     const orderRoutesInfo = orderRoutes.map((orderRoute)=> {
         const orderArea = { area: JSON.stringify(orderRoute.area), color: orderRoute.area_color}
 
+        const techniciansIds = orderRoute.technicians.map((technician) => technician.id).join(', ');
+        const driversIds = orderRoute.drivers.map((driver) => driver.user_id).join(', ');
+
         return {
             id: orderRoute.id,
             name: orderRoute.name,
-            drivers: orderRoute.drivers,
-            technicians: orderRoute.technicians,
+            drivers_ids: driversIds,
+            technicians_ids: techniciansIds,
             orderArea,
             created_at: orderRoute.created_at,
             updated_at: orderRoute.updated_at
@@ -61,10 +64,10 @@ export default function AllOrderRoutes({auth, orderRoutes, flash, permissions}) 
             flex: 1,
         },
         {
-            field: 'drivers',
+            field: 'drivers_ids',
             headerName: 'Condutor',
             flex: 1,
-            renderCell: (params) => (
+            /*renderCell: (params) => (
                 <div>
                     {params.value.map((driver) => (
                         <Link
@@ -86,37 +89,78 @@ export default function AllOrderRoutes({auth, orderRoutes, flash, permissions}) 
                         </Link>
                     ))}
                 </div>
-            )
+            )*/
+            sortComparator: (a, b) => {
+                const countA = a ? a.split(', ').length : 0;
+                const countB = b ? b.split(', ').length : 0;
+                return countA - countB;
+            },
+            renderCell: (params) => {
+                const ids = params.value;
+
+                if (ids.length > 0) {
+                    return (
+                        <div>
+                            {ids.split(', ').map((id) => (
+                                <Link key={id} href={route('drivers.showEdit', { id })}>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{
+                                            maxWidth: '30px',
+                                            maxHeight: '30px',
+                                            minWidth: '30px',
+                                            minHeight: '30px',
+                                            margin: '0px 4px'
+                                        }}
+                                    >
+                                        {id}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </div>
+                    )
+                } else {
+                    return null;
+                }
+            }
         },
         {
-            field: 'technicians',
+            field: 'technicians_ids',
             headerName: 'Técnico',
             flex: 1,
-            renderCell: (params) => (
-                <div>
-                    {params.value.map((tech) => (
-                        <Link
-                            key={tech.id}
-                            href={route('technicians.showEdit', tech)}
-                        >
-                            <Button
-                                //key={tech.id}
-                                variant="outlined"
-                                //href={route('technicians.showEdit', tech)}
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
-                            >
-                                {tech.id}
-                            </Button>
-                        </Link>
-                    ))}
-                </div>
-            )
+            sortComparator: (a, b) => {
+                const countA = a ? a.split(', ').length : 0;
+                const countB = b ? b.split(', ').length : 0;
+                return countA - countB;
+            },
+            renderCell: (params) => {
+                const ids = params.value;
+
+                if (ids.length > 0) {
+                    return (
+                        <div>
+                            {ids.split(', ').map((id) => (
+                                <Link key={id} href={route('technicians.showEdit', { id })}>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{
+                                            maxWidth: '30px',
+                                            maxHeight: '30px',
+                                            minWidth: '30px',
+                                            minHeight: '30px',
+                                            margin: '0px 4px'
+                                        }}
+                                    >
+                                        {id}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </div>
+                    )
+                } else {
+                    return null;
+                }
+            }
         },
         {
             field: 'orderArea',

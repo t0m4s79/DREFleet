@@ -24,9 +24,7 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
     
     // Deconstruct data to send to table component
     const placeInfo = places.map((place) => {
-        const kidPlacesIds = place.kids.length
-            ? place.kids.map((kid) => ({ id: kid.id })) // Store kid id in a more structured way
-            : [];
+        const kidIds = place.kids.map((kid) => kid.id).join(', ');
 
         const coordinates = `lat: ${place.coordinates.coordinates[1]}, lng: ${place.coordinates.coordinates[0]}`
       
@@ -37,7 +35,7 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
             place_type: place.place_type,
             coordinates: coordinates,
             kids_count: place.kids.length,
-            kids_ids: kidPlacesIds
+            kids_ids: kidIds
         }
     })
 
@@ -92,29 +90,39 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
             field: 'kids_ids',
             headerName: 'Crianças',
             flex: 1,
-            renderCell: (params) => (
-                <div>
-                    {params.value.map((kid) => (
-                        <Link
-                            key={kid.id}
-                            href={route('kids.showEdit', kid)}
-                        >
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
-                            >
-                                {kid.id}
-                            </Button>
-                        </Link>
-                    ))}
-                </div>
-            )
+            sortComparator: (a, b) => {
+                const countA = a ? a.split(', ').length : 0;
+                const countB = b ? b.split(', ').length : 0;
+                return countA - countB;
+            },
+            renderCell: (params) => {
+                const ids = params.value;
+
+                if (ids.length > 0) {
+                    return (
+                        <div>
+                            {ids.split(', ').map((id) => (
+                                <Link key={id} href={route('kids.showEdit', { id })}>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{
+                                            maxWidth: '30px',
+                                            maxHeight: '30px',
+                                            minWidth: '30px',
+                                            minHeight: '30px',
+                                            margin: '0px 4px'
+                                        }}
+                                    >
+                                        {id}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </div>
+                    )
+                } else {
+                    return null;
+                }
+            }
         },
     ]
     

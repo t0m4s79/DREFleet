@@ -22,13 +22,15 @@ export default function AllOrderOccurences({auth, occurrences, flash, permission
         }
     }, [flash]);
 
-    const orderOccurrencesInfo = occurrences.map((occurrence)=> {          
+    const orderOccurrencesInfo = occurrences.map((occurrence)=> {       
         return {
             id: occurrence.id,
             date: occurrence.order.expected_begin_date,
             order_id: occurrence.order_id,
-            driver_id: occurrence.order.driver,
-            vehicle_id: occurrence.order.vehicle,
+            driver_id: occurrence.order.driver.user_id,
+            driver_name: occurrence.order.driver.name,
+            vehicle_id: occurrence.order.vehicle.id,
+            vehicle_license_plate: occurrence.order.vehicle.license_plate,
             type: occurrence.type,
             vehicle_towed: occurrence.vehicle_towed,
             description: occurrence.description,
@@ -95,34 +97,32 @@ export default function AllOrderOccurences({auth, occurrences, flash, permission
             )
         },
         {
-            field: 'driver_id',
+            field: 'driver_name',
             headerName: 'Condutor',
             flex: 1,
             maxWidth: 100,
-            valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
-                    key={params.value.id}
-                    href={route('drivers.showEdit', params.value.user_id)}
+                    key={params.value}
+                    href={route('drivers.showEdit', params.row.driver_id)}
                     className='text-blue-500'
                 >
-                        {params.value.name}
+                    {params.row.driver_name}
                 </Link>
             )
         },
         {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            flex: 1,
+            //flex: 1,
             maxWidth: 100,
-            valueFormatter: (value) => value.license_plate,
             renderCell: (params) => (
                 <Link
-                    key={params.value.id}
-                    href={route('vehicles.showEdit', params.value.id)}
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
                     className='text-blue-500'
                 >
-                        {params.value.license_plate}
+                    {params.row.vehicle_license_plate}
                 </Link>
             )
         },
