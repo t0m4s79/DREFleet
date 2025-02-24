@@ -37,7 +37,7 @@ const isExpired = (date) => {
     }
 }
 
-export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}) {
+export default function AllVehicleAccessories( {auth, vehicleAccessories, flash, permissions}) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -57,8 +57,8 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
             name: vehicleAccessory.name,
             condition: vehicleAccessory.condition,
             expiration_date: vehicleAccessory.expiration_date,
-            //vehicle_id: vehicleAccessory.vehicle_id,
-            vehicle_id: vehicleAccessory.vehicle,
+            vehicle_id: vehicleAccessory.vehicle.id,
+            vehicle_license_plate: vehicleAccessory.vehicle.license_plate,
             created_at: vehicleAccessory.created_at,
             updated_at: vehicleAccessory.updated_at,
         }
@@ -106,15 +106,17 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
             renderCell: (params) => (isExpired(params)),
         },
         {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            flex: 1,
-            disableColumnMenu: true,
-            sortable: false,
+            //flex: 1,
             maxWidth: 100,
             renderCell: (params) => (
-                <Link href={route('vehicles.showEdit', params.value.id)}>
-                    <Button >{params.value.license_plate}</Button>
+                <Link
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.vehicle_license_plate}
                 </Link>
             )
         },
@@ -182,6 +184,7 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
                         
                             return '';
                         }}
+                        permissions={permissions}
                     />
                 </div>
             </div>

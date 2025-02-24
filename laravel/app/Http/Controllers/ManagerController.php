@@ -205,7 +205,7 @@ class ManagerController extends Controller
         ]);
 
         $orders = Order::where('manager_id', $user->id)->get();
-        
+
         return Inertia::render('Managers/ShowApprovedOrders', [
             'flash' => [
                 'message' => session('message'),
@@ -213,6 +213,7 @@ class ManagerController extends Controller
             ],
             'orders' => $orders,
             'userId' => $user->id,
+            'userName' => $user->name,
         ]);
     }
 

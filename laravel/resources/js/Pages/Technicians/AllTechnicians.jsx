@@ -18,7 +18,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllTechnicians({ auth, technicians, flash }) {
+export default function AllTechnicians({ auth, technicians, flash, permissions }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -106,6 +106,7 @@ export default function AllTechnicians({ auth, technicians, flash }) {
                         columns={technicianColumns}
                         editAction="technicians.showEdit" 
                         deleteAction="technicians.delete"
+                        permissions={permissions}
                     />
                 </div>
             </div>

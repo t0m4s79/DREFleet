@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-export default function KidContacts( {auth, kid, flash} ) {
+export default function KidContacts( {auth, kid, flash, permissions} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -204,6 +204,7 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 columns={kidPhonesColumns}
                                 editAction="kidPhoneNumbers.showEdit"
                                 deleteAction="kidPhoneNumbers.delete"
+                                permissions={permissions}
                             />
                         </div>
                     </div>
@@ -231,6 +232,7 @@ export default function KidContacts( {auth, kid, flash} ) {
                                 columns={kidEmailColumns}
                                 editAction="kidEmails.showEdit"
                                 deleteAction="kidEmails.delete"
+                                permissions={permissions}
                             />
                         </div>
                     </div>

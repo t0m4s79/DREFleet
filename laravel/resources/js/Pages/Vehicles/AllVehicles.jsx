@@ -20,7 +20,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllVehicles( {auth, vehicles, flash}) {
+export default function AllVehicles( {auth, vehicles, flash, permissions}) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -353,6 +353,7 @@ export default function AllVehicles( {auth, vehicles, flash}) {
                             capacity: false,
                             fuel_consumption: false,
                         }}
+                        permissions={permissions}
                     />
                 </div>
             </div>

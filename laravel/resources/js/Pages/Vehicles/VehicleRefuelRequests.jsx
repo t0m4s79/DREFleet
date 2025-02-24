@@ -22,7 +22,7 @@ const isRequestExceptional = (n) => {
     }
 }
 
-export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
+export default function VehicleRefuelReports( {auth, vehicle, flash, permissions} ) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -207,6 +207,7 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
                                 getRowClassName={(params) => {
                                     return params.row.monthly_request_number > 6 ? 'warning-row' : '';
                                 }}
+                                permissions={permissions}
                             />
                         </div>
                     </div>
