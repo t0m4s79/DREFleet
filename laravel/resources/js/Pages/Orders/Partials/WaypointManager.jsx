@@ -6,7 +6,7 @@ import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
 import { Add, DragIndicator, Remove } from '@mui/icons-material';
 
-export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled, startForm = false }) {
+export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, selectedRouteType, disabled, startForm = false }) {
     //console.log('selectedRoute is:',selectedRoute)
     const {
         waypoints,
@@ -185,7 +185,7 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                                     getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
                                     onChange={(event, kid) => setSelectedKid(kid)}
                                     renderInput={(params) => <TextField {...params} label="Criança" />}
-                                    disabled={disabled}
+                                    disabled={disabled || selectedRouteType !== "Transporte de Crianças"}
                                 />
                                 {selectedKid && (
                                     <Autocomplete

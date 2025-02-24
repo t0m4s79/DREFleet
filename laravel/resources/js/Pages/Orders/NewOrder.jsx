@@ -6,6 +6,8 @@ import InputLabel from '@/Components/InputLabel';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
 import { OrderContext, OrderProvider } from './OrderContext';
+import ErrorModal from '@/Components/ErrorModal';
+import { fieldErrorMessages } from '@/utils/Errors/Orders/createOrder';
 
 export default function NewOrder({auth, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
     return (
@@ -40,6 +42,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     const [selectedRouteID, setSelectedRouteID] =useState('');
     const [preferredDrivers, setPreferredDrivers] = useState([]);
     const [preferredTechnicians, setPreferredTechnicians] = useState([]);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -83,7 +86,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    const { data, setData, post, errors, processing} = useForm({
+    const { data, setData, post, errors, setError, clearErrors, processing} = useForm({
         expected_begin_date: '',
         expected_end_date: '',
         expected_time: '',
@@ -154,7 +157,23 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     
         // Ensure the state is fully updated before submitting
         await new Promise(resolve => setTimeout(resolve, 1000)); 
-        post(route('orders.create'));
+        post(route('orders.create'), {
+            onError: (errors) => {
+
+                // Maps erros with personalized errors to show in Error Modal
+                const mapErrors = (errors) => {
+                    return Object.entries(errors).reduce((acc, [field, messages]) => {
+                        const fieldName = fieldErrorMessages[field] || field;
+                        acc[fieldName] = messages;
+                        return acc;
+                    }, {});
+                };
+    
+                clearErrors();
+                setError(mapErrors(errors));
+                setIsErrorModalOpen(true);
+            },
+        });
     };
 
     return (
@@ -168,6 +187,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                 <div className='py-12'>
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <ErrorModal isOpen={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)} errors={errors} />
                             <div className='p-6'>
                                 <div className='my-6'>
                                     
@@ -215,6 +235,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         updateTrajectory={updateTrajectory}
                                                         updateSummary={updateSummary} 
                                                         selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
+                                                        selectedRouteType={selectedRouteType}
                                                     />
                                                 </Grid>
                                             </Grid>
@@ -227,6 +248,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         id='expected_begin_date'
                                                         name='expected_begin_date'
                                                         type="datetime-local"
+                                                        required
                                                         fullWidth
                                                         value={data.expected_begin_date}
                                                         onChange={(e) => setData('expected_begin_date', e.target.value)}
@@ -243,6 +265,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         id='expected_end_date'
                                                         name='expected_end_date'
                                                         type="datetime-local"
+                                                        required
                                                         fullWidth
                                                         value={data.expected_end_date}
                                                         onChange={(e) => setData('expected_end_date', e.target.value)}
@@ -271,6 +294,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         <TextField
                                                             {...params}
                                                             label="Veículo"
+                                                            required
                                                             fullWidth
                                                             value={data.vehicle_id}
                                                             error={errors.vehicle_id}
@@ -301,6 +325,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         <TextField
                                                             {...params}
                                                             label="Condutor"
+                                                            required
                                                             fullWidth
                                                             value={data.driver_id}
                                                             error={errors.driver_id}
@@ -323,6 +348,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                         <TextField
                                                             {...params}
                                                             label="Técnico"
+                                                            required
                                                             fullWidth
                                                             value={data.technician_id}
                                                             error={errors.technician_id}
@@ -365,7 +391,6 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                                                     Submeter
                                                 </Button>
                                             </Grid>
-
                                         </form> 
                                 </div>
                             </div>

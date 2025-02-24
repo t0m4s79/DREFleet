@@ -85,10 +85,17 @@ class OrderController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $drivers = Driver::all();
-        $vehicles = Vehicle::all();
-        $technicians = User::where('user_type', 'Técnico')->get();
-        $managers = User::where('user_type', 'Gestor')->get();
+        $drivers = Driver::whereHas('user', function ($query) {
+            $query->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value]);
+        })->get();
+
+        $vehicles = Vehicle::whereNotIn('status', [VehicleStatus::HIDDEN->value, VehicleStatus::UNAVAILABLE->value])->get();
+
+        $technicians = User::where('user_type', Roles::TECHNICIAN->value)
+            ->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value])
+            ->get();
+
+        $managers = User::where('user_type', Roles::MANAGER->value)->get();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
         $routes = OrderRoute::with(['drivers', 'technicians'])->get();
