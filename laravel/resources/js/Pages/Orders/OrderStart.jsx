@@ -6,7 +6,7 @@ import { useState, useEffect, useContext } from "react";
 import WaypointManager from "./Partials/WaypointManager";
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
+export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash, permissions }) {
     return (
         <OrderProvider>
             <InnerOrderStart
@@ -16,13 +16,14 @@ export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes
                 otherPlaces={otherPlaces}
                 orderRoutes={orderRoutes}
                 onlyView={onlyView}
+                permissions={permissions}
             />
         </OrderProvider>
     );
 }
 
 
-function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
+function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash, permissions }) {
 
     const { updateWaypoints, updatePlaces, } = useContext(OrderContext);
 
@@ -248,7 +249,7 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
 
                                 </Grid>
 
-                                {!onlyView &&
+                                {!onlyView && !permissions.isDriver &&
                                     <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2} gap="10px">
                                         <Button
                                             variant="contained"

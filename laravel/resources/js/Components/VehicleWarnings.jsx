@@ -7,8 +7,8 @@ export default function VehicleWarnings({ expired, expiring, vehicle = null, per
     }
 
     const badges = (
-        <div className="flex gap-2">
-            {expired > 0 && <Badge badgeContent={expired} color="error">❌</Badge>}
+        <div>
+            {expired > 0 && <Badge badgeContent={expired} color="error" className="mr-3">❌</Badge>}
             {expiring > 0 && (
                 <Badge badgeContent={expiring} sx={{ "& .MuiBadge-badge": { backgroundColor: "#FFC700", color: "black" } }}>
                     ⚠️

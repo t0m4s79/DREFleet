@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import VehicleWarnings from '@/Components/VehicleWarnings';
-import { vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
+import { parseVehicles, vehicleExpirations, vehiclesExpirations } from '@/utils/Dashboard/vehicles';
 import { parseOrders } from '@/utils/Dashboard/orders';
 import { Badge } from "@mui/material";
 import { parseDrivers } from '@/utils/Dashboard/drivers';
@@ -12,6 +12,7 @@ import { parseTechnicians } from '@/utils/Dashboard/technicians';
 export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], permissions }) {
 
     const { inService, available, maintenance } = vehiclesExpirations(vehicles);
+    const { inServiceVehicles, availableVehicles, inMaintenanceVehicles } = parseVehicles(vehicles);
     const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
     const { inServiceDrivers, availableDrivers } = parseDrivers(drivers);
     const { inServiceTechnicians, availableTechnicians } = parseTechnicians(technicians);
@@ -32,127 +33,131 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                        <div className="p-6 text-gray-900">
-                            <h2 className='pb-3 text-lg font-bold'>Condutores</h2>
+                {(permissions.isAdmin || permissions.isManager) &&
+                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                            <div className="p-6 text-gray-900">
+                                <h2 className='pb-3 text-lg font-bold'>Condutores</h2>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Condutores em Serviço
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={inServiceDrivers.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {inServiceDrivers.length > 0 ? (
-                                        inServiceDrivers.map(driver => (
-                                            <div>
-                                                <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
-                                                    #{driver.id} - {driver.name} - {driver.driver.license_number}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum condutor em serviço.</div>
-                                    )}
-                                </AccordionDetails>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Condutores em Serviço
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={inServiceDrivers.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {inServiceDrivers.length > 0 ? (
+                                            inServiceDrivers.map(driver => (
+                                                <div>
+                                                    <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
+                                                        #{driver.id} - {driver.name} - {driver.driver.license_number}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum condutor em serviço.</div>
+                                        )}
+                                    </AccordionDetails>
 
-                            </Accordion>
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Condutores Disponíveis
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={availableDrivers.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {availableDrivers.length > 0 ? (
-                                        availableDrivers.map(driver => (
-                                            <div>
-                                                <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
-                                                    #{driver.id} - {driver.name} - {driver.driver.license_number}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum condutor disponível.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Condutores Disponíveis
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={availableDrivers.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {availableDrivers.length > 0 ? (
+                                            availableDrivers.map(driver => (
+                                                <div>
+                                                    <a key={`driver-${driver.id}`} href={route('drivers.edit', driver)}>
+                                                        #{driver.id} - {driver.name} - {driver.driver.license_number}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum condutor disponível.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                        <div className="p-6 text-gray-900">
-                            <h2 className='pb-3 text-lg font-bold'>Técnicos</h2>
+                {(permissions.isAdmin || permissions.isManager) &&
+                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                            <div className="p-6 text-gray-900">
+                                <h2 className='pb-3 text-lg font-bold'>Técnicos</h2>
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Técnicos em Serviço
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={inServiceTechnicians.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Técnicos em Serviço
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={inServiceTechnicians.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
 
-                                <AccordionDetails>
-                                    {inServiceTechnicians.length > 0 ? (
-                                        inServiceTechnicians.map(technician => (
-                                            <div>
-                                                <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
-                                                    #{technician.id} - {technician.name}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum técnico em serviço.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Técnicos Disponíveis
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={availableTechnicians.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {availableTechnicians.length > 0 ? (
-                                        availableTechnicians.map(technician => (
-                                            <div>
-                                                <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
-                                                    #{technician.id} - {technician.name}
-                                                </a>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum técnico disponível.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                    <AccordionDetails>
+                                        {inServiceTechnicians.length > 0 ? (
+                                            inServiceTechnicians.map(technician => (
+                                                <div>
+                                                    <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
+                                                        #{technician.id} - {technician.name}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum técnico em serviço.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Técnicos Disponíveis
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={availableTechnicians.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {availableTechnicians.length > 0 ? (
+                                            availableTechnicians.map(technician => (
+                                                <div>
+                                                    <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
+                                                        #{technician.id} - {technician.name}
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum técnico disponível.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
-                {vehicles.length > 0 &&
+                {(permissions.isAdmin || permissions.isManager || permissions.isDriver) && vehicles.length > 0 &&
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
@@ -165,7 +170,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                     >
                                         Veículos em Serviço
-                                        <div className='ml-2'>
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={inServiceVehicles.length} color="error" />
+                                        </div>
+                                        <div className='ml-4'>
                                             <VehicleWarnings expired={inService.totalExpired} expiring={inService.totalExpiring} permissions={permissions} />
                                         </div>
                                     </AccordionSummary>
@@ -196,7 +204,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                     >
                                         Veículos Disponíveis
-                                        <div className="ml-2">
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={availableVehicles.length} color="error" />
+                                        </div>
+                                        <div className="ml-4">
                                             <VehicleWarnings expired={available.totalExpired} expiring={available.totalExpiring} permissions={permissions} />
                                         </div>
                                     </AccordionSummary>
@@ -228,7 +239,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                         id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
                                     >
                                         Veículos em Manutenção
-                                        <div className='ml-2'>
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={inMaintenanceVehicles.length} color="error" />
+                                        </div>
+                                        <div className='ml-4'>
                                             <VehicleWarnings expired={maintenance.totalExpired} expiring={maintenance.totalExpiring} permissions={permissions} />
                                         </div>
                                     </AccordionSummary>
@@ -257,116 +271,118 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 }
 
-                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                        <div className="p-6 text-gray-900">
-                            <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
+                {(permissions.isAdmin || permissions.isManager || permissions.isTechnician || permissions.isDriver) && orders.length > 0 &&
 
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos em Curso
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={ongoingOrders.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {ongoingOrders.length > 0 ? (
-                                        ongoingOrders.map(order => {
-                                            const orderLink = permissions.isTechnician
-                                                ? order.status === "Em curso"
-                                                    ? route('orders.showStopOrder', order)
-                                                    : route('orders.showStartOrder', order)
-                                                : route('orders.edit', order);
+                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
+                            <div className="p-6 text-gray-900">
+                                <h2 className='pb-3 text-lg font-bold'>Pedidos</h2>
 
-                                            return (
-                                                <div key={`order-${order.id}`}>
-                                                    <a href={orderLink}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                        <span
-                                                            className={`ml-2 px-2 py-1 rounded text-white ${order.status === "Em curso" ? "bg-blue-500" : "bg-yellow-500"
-                                                                }`}
-                                                        >
-                                                            {order.status}
-                                                        </span>
-                                                    </a>
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos em Curso
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={ongoingOrders.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {ongoingOrders.length > 0 ? (
+                                            ongoingOrders.map(order => {
+                                                const orderLink = (permissions.isTechnician || permissions.isDriver)
+                                                    ? order.status === "Em curso"
+                                                        ? route('orders.showStopOrder', order)
+                                                        : route('orders.showStartOrder', order)
+                                                    : route('orders.edit', order);
+
+                                                return (
+                                                    <div key={`order-${order.id}`}>
+                                                        <a href={orderLink}>
+                                                            #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                            <span
+                                                                className={`ml-2 px-2 py-1 rounded text-white ${order.status === "Em curso" ? "bg-blue-500" : "bg-yellow-500"
+                                                                    }`}
+                                                            >
+                                                                {order.status}
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div>Nenhum pedido em curso.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos Agendados
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={approvedOrders.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {approvedOrders.length > 0 ? (
+                                            approvedOrders.map(order => {
+                                                const orderLink = (permissions.isTechnician || permissions.isDriver) ? route('orders.showStartOrder', order) : route('orders.edit', order);
+
+                                                return (
+                                                    <div key={`order-${order.id}`}>
+                                                        <a href={orderLink}>
+                                                            #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                        </a>
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div>Nenhum pedido agendado.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion style={{ boxShadow: 'none' }}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
+                                    >
+                                        Pedidos por Aprovar
+                                        <div className='ml-4'>
+                                            <Badge badgeContent={ordersToAprove.length} color="error" />
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {ordersToAprove.length > 0 ? (
+                                            ordersToAprove.map(order => (
+                                                <div>
+                                                    {(permissions.isTechnician || permissions.isDriver) ? (
+                                                        <a href={route('orders.showStartOrder', order)}>
+                                                            #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                        </a>
+                                                    ) : (
+                                                        <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                                                            #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
+                                                        </a>
+                                                    )}
                                                 </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div>Nenhum pedido em curso.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
-
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos Agendados
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={approvedOrders.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {approvedOrders.length > 0 ? (
-                                        approvedOrders.map(order => {
-                                            const orderLink = permissions.isTechnician ? route('orders.showStartOrder', order) : route('orders.edit', order);
-
-                                            return (
-                                                <div key={`order-${order.id}`}>
-                                                    <a href={orderLink}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div>Nenhum pedido agendado.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
-
-                            <Accordion style={{ boxShadow: 'none' }}>
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel2-content"
-                                    id="panel2-header" className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                >
-                                    Pedidos por Aprovar
-                                    <div className='ml-4'>
-                                        <Badge badgeContent={ordersToAprove.length} color="error" />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {ordersToAprove.length > 0 ? (
-                                        ordersToAprove.map(order => (
-                                            <div>
-                                                {permissions.isTechnician ? (
-                                                    <a href={route('orders.showStartOrder', order)}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                ) : (
-                                                    <a key={`order-${order.id}`} href={route('orders.edit', order)}>
-                                                        #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                    </a>
-                                                )}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div>Nenhum pedido por aprovar.</div>
-                                    )}
-                                </AccordionDetails>
-                            </Accordion>
+                                            ))
+                                        ) : (
+                                            <div>Nenhum pedido por aprovar.</div>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                }
             </div>
         </AuthenticatedLayout>
     );

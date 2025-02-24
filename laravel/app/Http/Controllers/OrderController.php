@@ -605,6 +605,10 @@ class OrderController extends Controller
 
     public function showStartOrder(Order $order)
     {
+        if (!Gate::allows('show-start-order')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed start order page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'order_id' => $order->id ?? null,
@@ -646,6 +650,9 @@ class OrderController extends Controller
 
     public function startOrder(Order $order)
     {
+        if (!Gate::allows('start-order')) {
+            abort(403);
+        }
 
         $order->load(['vehicle', 'driver', 'technician']);
 
@@ -699,6 +706,10 @@ class OrderController extends Controller
 
     public function showStopOrder(Order $order)
     {
+        if (!Gate::allows('stop-order')) {
+            abort(403);
+        }
+
         Log::channel('user')->info('User accessed start order page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
             'order_id' => $order->id ?? null,
@@ -740,6 +751,10 @@ class OrderController extends Controller
 
     public function stopOrder(Request $request, Order $order)
     {
+        if (!Gate::allows('stop-order')) {
+            abort(403);
+        }
+
         $action = $request->action;
 
         if (!in_array($action, [OrderAction::INTERRUPT->value, OrderAction::FINISH->value])) {
