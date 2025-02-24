@@ -10,7 +10,7 @@ import MouseHoverPopover from '@/Components/MouseHoverPopover';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
-export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
+export default function VehicleMaintenanceReports( {auth, vehicle, flash, permissions} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -201,6 +201,7 @@ export default function VehicleMaintenanceReports( {auth, vehicle, flash} ) {
                                 columns={vehicleMaintenanceColumns}
                                 editAction="vehicleMaintenanceReports.showEdit"
                                 deleteAction="vehicleMaintenanceReports.delete"
+                                permissions={permissions}
                             />
                         </div>
                     </div>

@@ -8,7 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
-export default function AllPlaces( {auth, places, flash} ) {
+export default function AllPlaces( {auth, places, flash, permissions} ) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -144,6 +144,7 @@ export default function AllPlaces( {auth, places, flash} ) {
                         columns={placeColumns}
                         editAction="places.showEdit"
                         deleteAction="places.delete"
+                        permissions={permissions}
                     />
                 </div>
             </div>

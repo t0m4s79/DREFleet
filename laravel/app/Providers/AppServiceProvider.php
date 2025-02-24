@@ -239,7 +239,7 @@ class AppServiceProvider extends ServiceProvider
         // Driver Gates
         ////TODO: should Drivers use same logic as Users?
         Gate::define('view-driver', function (User $user) {
-            return $user->isAdmin() || $user->isManager() || $user->isDriver()
+            return $user->isAdmin() || $user->isManager()
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });

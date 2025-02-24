@@ -25,7 +25,7 @@ const renderOrderStatus = (status) => {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllOrders({ auth, orders, flash }) {
+export default function AllOrders({ auth, orders, flash, permissions }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -370,6 +370,7 @@ export default function AllOrders({ auth, orders, flash }) {
                         editAction={'orders.edit'}
                         deleteAction={'orders.delete'}
                         duplicateAction={'orders.duplicate'}
+                        permissions={permissions}
                     />
                 </div>
             </div>

@@ -9,7 +9,7 @@ import { parse } from 'date-fns';
 import MapModal from '@/Components/MapModal';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-export default function AllOrderRoutes({auth, orderRoutes, flash}) {
+export default function AllOrderRoutes({auth, orderRoutes, flash, permissions}) {
     //console.log(orderRoutes)
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -176,6 +176,7 @@ export default function AllOrderRoutes({auth, orderRoutes, flash}) {
                         columns={orderRoutesColumns}
                         editAction={'orderRoutes.showEdit'}
                         deleteAction={'orderRoutes.delete'}
+                        permissions={permissions}
                     />
                 </div>
             </div>

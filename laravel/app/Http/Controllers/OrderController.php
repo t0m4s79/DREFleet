@@ -52,7 +52,26 @@ class OrderController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $orders = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician'])->get();
+        //$orders = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician'])->get();
+
+        $user = auth()->user();
+
+        $ordersQuery = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician']);
+
+        // If the user is a technician or a driver, only display the orders assigned to them.
+        // If the user is neither an admin nor a manager, they will not have access to any orders.
+
+        if ($user->user_type === Roles::TECHNICIAN->value) {
+            $ordersQuery->where('technician_id', $user->id);
+
+        } elseif ($user->user_type === Roles::DRIVER->value) {
+            $ordersQuery->where('driver_id', $user->id);
+            
+        } elseif (!in_array($user->user_type, [Roles::ADMIN->value, Roles::MANAGER->value])) {
+            $ordersQuery = null; // Prevents access for unauthorized users
+        }
+
+        $orders = $ordersQuery ? $ordersQuery->get() : collect();
 
         $orders->each(function ($order) {
             // Format the dates as dd-mm-yyyy

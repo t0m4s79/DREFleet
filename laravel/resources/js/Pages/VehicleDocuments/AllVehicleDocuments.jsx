@@ -52,7 +52,7 @@ const displayData = (data) => {
 }
 
 
-export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
+export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}, permissions) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -220,6 +220,7 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash}) {
                         
                             return '';
                         }}
+                        permissions={permissions}
                     />
                 </div>
             </div>

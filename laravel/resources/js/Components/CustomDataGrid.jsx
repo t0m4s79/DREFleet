@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-export default function CustomDataGrid({ rows, columns, columnVisibility, getRowClassName, editAction, deleteAction, duplicateAction }) {
+export default function CustomDataGrid({ rows, columns, columnVisibility, getRowClassName, editAction, deleteAction, duplicateAction, permissions }) {
 
     const [columnVisibilityModel, setColumnVisibilityModel] = useState(columnVisibility)
     const [modalOpen, setModalOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function CustomDataGrid({ rows, columns, columnVisibility, getRow
     };
 
     // Add static column with Edit and Delete buttons
-    if (editAction || deleteAction || duplicateAction) {
+    if ((editAction || deleteAction || duplicateAction) && (permissions.isAdmin || permissions.isManager)) {
         columns.push({
             field: 'actions',
             headerName: 'Ações',

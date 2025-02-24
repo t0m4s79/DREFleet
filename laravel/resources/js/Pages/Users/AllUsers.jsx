@@ -18,7 +18,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllDrivers( {auth, users, flash} ) {
+export default function AllDrivers( {auth, users, flash, permissions} ) {
     
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -106,6 +106,7 @@ export default function AllDrivers( {auth, users, flash} ) {
                         columns={userColumns}
                         editAction="users.showEdit"
                         deleteAction="users.delete"
+                        permissions={permissions}
                     />
                 </div>
             </div>

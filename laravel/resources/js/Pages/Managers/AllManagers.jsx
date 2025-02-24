@@ -18,7 +18,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllManagers({ auth, managers, flash }) {
+export default function AllManagers({ auth, managers, flash, permissions }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -131,6 +131,7 @@ export default function AllManagers({ auth, managers, flash }) {
                         columns={managerColumns}
                         editAction="managers.showEdit"
                         deleteAction="managers.delete"
+                        permissions={permissions}
                     />
                 </div>
             </div>

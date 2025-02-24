@@ -37,7 +37,7 @@ const isExpired = (date) => {
     }
 }
 
-export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}) {
+export default function AllVehicleAccessories( {auth, vehicleAccessories, flash, permissions}) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -182,6 +182,7 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash}
                         
                             return '';
                         }}
+                        permissions={permissions}
                     />
                 </div>
             </div>
