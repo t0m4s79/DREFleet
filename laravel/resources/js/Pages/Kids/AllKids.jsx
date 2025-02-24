@@ -22,9 +22,7 @@ export default function AllKids( {auth, kids, flash, permissions} ) {
     
     // Deconstruct data to send to table component
     const kidInfo = kids.map((kid) => {
-        const kidPlacesIds = kid.places.length
-            ? kid.places.map((place) => ({ id: place.id })) // Accessing the `id` property of each place
-            : [];
+        const placesIds = kid.places.map((place) => place.id).join(', ');
     
         return {
             id: kid.id,
@@ -32,7 +30,7 @@ export default function AllKids( {auth, kids, flash, permissions} ) {
             kid_contacts: kid.id, // It seems like you want to reference `kid.id` here; adjust if necessary
             wheelchair: kid.wheelchair, //? 'Sim' : 'Não',
             places_count: kid.places.length,
-            place_ids: kidPlacesIds,
+            place_ids: placesIds,
         };
     });
 
@@ -105,30 +103,39 @@ export default function AllKids( {auth, kids, flash, permissions} ) {
             headerName: 'Moradas',
             flex: 1,
             disableColumnMenu: true,
-            sortable: false,
-            renderCell: (params) => (
-                <div>
-                    {params.value.map((kid) => (
-                        <Link
-                            key={kid.id}
-                            href={route('places.showEdit', kid)}
-                        >
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
-                            >
-                                {kid.id}
-                            </Button>
-                        </Link>
-                    ))}
-                </div>
-            )
+            sortComparator: (a, b) => {
+                const countA = a ? a.split(', ').length : 0;
+                const countB = b ? b.split(', ').length : 0;
+                return countA - countB;
+            },
+            renderCell: (params) => {
+                const ids = params.value;
+
+                if (ids.length > 0) {
+                    return (
+                        <div>
+                            {ids.split(', ').map((id) => (
+                                <Link key={id} href={route('places.showEdit', { id })}>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{
+                                            maxWidth: '30px',
+                                            maxHeight: '30px',
+                                            minWidth: '30px',
+                                            minHeight: '30px',
+                                            margin: '0px 4px'
+                                        }}
+                                    >
+                                        {id}
+                                    </Button>
+                                </Link>
+                            ))}
+                        </div>
+                    )
+                } else {
+                    return null;
+                }
+            }
         },
     ]
     
