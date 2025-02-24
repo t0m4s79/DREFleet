@@ -41,9 +41,9 @@ class VehicleRefuelRequestNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Novo pedido de reabastecimento do tipo ' . $this->request->request_type . '.')
+                    ->line('Novo registo de abastecimento do tipo ' . $this->request->request_type . '.')
                     ->action('Ver detalhes do veículo em ', route('vehicles.refuelRequests', ['vehicle' => $this->vehicle->id]))
-                    ->line('Foi criado um novo pedido de reabastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.');
+                    ->line('Foi criado um novo registo de abastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.');
     }
 
     /**
@@ -57,9 +57,9 @@ class VehicleRefuelRequestNotification extends Notification
             'user_id' => $notifiable->id,
             'related_entity_type' => Vehicle::class,
             'related_entity_id' => $this->vehicle->id,
-            'type' => 'Pedido de Reabastecimento',
-            'title' => 'Novo pedido de reabastecimento do tipo ' . $this->request->request_type,
-            'message' => 'Foi criado um novo pedido de reabastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.',
+            'type' => 'Registo de Abastecimento',
+            'title' => 'Novo registo de abastecimento do tipo ' . $this->request->request_type,
+            'message' => 'Foi criado um novo registo de abastecimento (' . $this->vehicle->current_month_fuel_requests . 'º este mês) com id ' . $this->request->id . ' do tipo ' . $this->request->request_type . ' para o veículo ' . $this->vehicle->id . '.',
             'is_read' => false,
         ];
     }

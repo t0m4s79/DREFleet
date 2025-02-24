@@ -173,10 +173,10 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Pedidos de Reabastecimento do Veículo #{vehicle.id} - {vehicle.license_plate}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Abastecimento do Veículo #{vehicle.id} - {vehicle.license_plate}</h2>}
         >
 
-            {<Head title='Pedidos de Reabastecimento do Veículo' />}
+            {<Head title='Registos de Abastecimento do Veículo' />}
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -187,7 +187,7 @@ export default function VehicleRefuelReports( {auth, vehicle, flash} ) {
                             <Button href={route('vehicleRefuelRequests.showCreate')}>
                                 <AddIcon />
                                 <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Pedido de Reabastecimento
+                                    Novo Registo de Abastecimento
                                 </a>
                             </Button>
 

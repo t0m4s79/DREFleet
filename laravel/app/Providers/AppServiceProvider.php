@@ -65,6 +65,24 @@ class AppServiceProvider extends ServiceProvider
                 : Response::denyWithStatus(403);
         });
 
+        Gate::define('show-start-order', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isTechnician() || $user->isDriver()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('start-order', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isTechnician()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('stop-order', function (User $user) {
+            return $user->isAdmin() || $user->isManager() || $user->isTechnician()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
         // Order Occurrence Gates
         Gate::define('create-order-occurrence', function (User $user) {
             return $user->isAdmin() || $user->isManager() || $user->isDriver()

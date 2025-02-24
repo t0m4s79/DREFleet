@@ -1,14 +1,14 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
-import { TextField, Button, Grid, Autocomplete } from '@mui/material';
+import { TextField, Button, Grid, Autocomplete, Snackbar, Alert } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
 import { OrderContext, OrderProvider } from './OrderContext';
 import axios from 'axios';
 
-export default function EditOrder({auth, order, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
+export default function EditOrder({ auth, order, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes, flash }) {
     return (
         <OrderProvider>
             <InnerEditOrder
@@ -20,14 +20,15 @@ export default function EditOrder({auth, order, drivers, vehicles, technicians, 
                 kids={kids}
                 otherPlaces={otherPlaces}
                 orderRoutes={orderRoutes}
+                flash={flash}
             />
         </OrderProvider>
     );
 }
 
-function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, otherPlaces, orderRoutes}) {
+function InnerEditOrder({ auth, order, drivers, vehicles, technicians, kids, otherPlaces, orderRoutes, flash }) {
     //console.log('editOrder', order);
-    const { 
+    const {
         waypoints,
         places,
         trajectory,
@@ -39,18 +40,30 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
     const [selectedTechnician, setSelectedTechnician] = useState(null)
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
-    const [selectedRouteType, setSelectedRouteType]= useState('');
-    const [selectedRouteID, setSelectedRouteID] =useState('');
+    const [selectedRouteType, setSelectedRouteType] = useState('');
+    const [selectedRouteID, setSelectedRouteID] = useState('');
     const [isPlacesModified, setIsPlacesModified] = useState(true); // TODO: create method to check if places were changed
     const [preferredDrivers, setPreferredDrivers] = useState([]);
     const [preferredTechnicians, setPreferredTechnicians] = useState([]);
     const [isEditMode, setisEditMode] = useState(false)
 
-    const orderStops = order.order_stops.map((stop)=> {
+    const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
+    const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
+
+    useEffect(() => {
+        if (flash.message || flash.error) {                                 // if there is a flash message/error
+            setSnackbarMessage(flash.message || flash.error);               // set the message
+            setSnackbarSeverity(flash.error ? 'error' : 'success');         // defines background color of snackbar
+            setOpenSnackbar(true);                                          // show snackbar
+        }
+    }, [flash]);
+
+    const orderStops = order.order_stops.map((stop) => {
 
         const kidId = stop.kids.length > 0 ? stop.kids[0].id : null;    //Assuming there is only 1 kid per stop
 
-        return { 
+        return {
             place_id: stop.place_id,
             kid_id: kidId,
             label: `#${stop.place.id} - ${stop.place.address}`,
@@ -62,15 +75,15 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         }
     })
     //console.log('orderStops', orderStops)
-    
+
     useEffect(() => {
         if (orderStops.length > 0) {
             //console.log('Initializing order stops:', orderStops);
-    
+
             // Batch context updates together
             updateWaypoints(orderStops);
             updatePlaces(orderStops);
-    
+
             // Update the form state after the context has been updated
             setData({
                 expected_begin_date: order.expected_begin_date,
@@ -85,13 +98,14 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 order_route_id: order.order_route_id,
                 places: [],
                 places_changed: isPlacesModified,
+                observations: order.observations ?? '',
             });
-    
+
             //console.log('Form state initialized:', data);
         }
         setSelectedRouteID(order.order_route_id)
         setSelectedRouteType(order.order_type)
-    }, []);    
+    }, []);
 
     // Deconstruct places to change label display
     const otherPlacesList = otherPlaces.map((place) => ({
@@ -108,13 +122,13 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
             label: `#${driver.user_id} - ${driver.name}`,
             heavy_license: driver.heavy_license,
         })),
-            ...drivers.map((driver) => ({
+        ...drivers.map((driver) => ({
             group: 'Todos os Condutores',
             value: driver.user_id,
             label: `#${driver.user_id} - ${driver.name}`,
             heavy_license: driver.heavy_license,
         })),
-      ];
+    ];
 
     const vehicleList = vehicles.map((vehicle) => {
         return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
@@ -149,6 +163,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
         order_route_id: order.order_route_id,
         places: [],
         places_changed: isPlacesModified,
+        observations: order.observations || ''
     }
 
     const { data, setData, put, patch, errors, processing} = useForm({...initialData})
@@ -196,7 +211,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
             distance: Number(summary.totalDistance),
         });
     }
-    
+
     useEffect(() => {
         if (places && trajectory) {
             setData(prevData => ({
@@ -204,21 +219,21 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                 places: places,
                 trajectory: JSON.stringify(trajectory),
             }));
-    
+
             //console.log('Updated form data with places and trajectory:', places, trajectory);
         }
     }, [places, trajectory]);
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Debugging: Ensure data is ready before submitting
         //console.log('Form data on submit:', data);
-    
+
         // Ensure the state is fully updated before submitting
         await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
         // Submit the form
         put(route('orders.edit', order.id));
     };
@@ -240,7 +255,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
             console.error('Error approving order:', error)
         }
     }
-    
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -256,40 +271,40 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
 
                             <form onSubmit={handleSubmit}>
                                 <input type="hidden" name="_token" value={csrfToken} />
-                                
+
                                 <div>
-                                    { isEditMode === false ? 
+                                    { isEditMode === false ?
                                         (<div className='mb-4'>
                                             <Button
-                                            variant="contained"
-                                            color="primary"
-                                            disabled={processing}
-                                            onClick={toggleEdit}
-                                        >
-                                            Editar
+                                                variant="contained"
+                                                color="primary"
+                                                disabled={processing}
+                                                onClick={toggleEdit}
+                                            >
+                                                Editar
                                             </Button>
-                                        </div>) : 
+                                        </div>) :
 
-                                    (<div className='mb-4 space-x-4'>
-                                        <Button 
-                                            variant="outlined"
-                                            color="error"
-                                            disabled={processing}
-                                            onClick={toggleEdit}
-                                        >
-                                            Cancelar Edição
-                                        </Button>
-                                        <Button
-                                            type="submit"
-                                            variant="outlined"
-                                            color="primary"
-                                            disabled={processing}
-                                        >
-                                            Submeter
-                                        </Button>
-                                    </div>)}
-                                
-                                
+                                        (<div className='mb-4 space-x-4'>
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                disabled={processing}
+                                                onClick={toggleEdit}
+                                            >
+                                                Cancelar Edição
+                                            </Button>
+                                            <Button
+                                                type="submit"
+                                                variant="outlined"
+                                                color="primary"
+                                                disabled={processing}
+                                            >
+                                                Submeter
+                                            </Button>
+                                        </div>)}
+
+
                                     <Button
                                         color="success"
                                         onClick={() => handleApprove(order.id)}
@@ -334,21 +349,21 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <WaypointManager 
-                                            kids={kids} 
+                                        <WaypointManager
+                                            kids={kids}
                                             otherPlacesList={otherPlaces.map(place => ({
                                                 place_id: place.id,
                                                 label: `#${place.id} - ${place.address}`,
                                                 lat: place.coordinates.coordinates[1],
                                                 lng: place.coordinates.coordinates[0],
-                                            }))}      
+                                            }))}
                                             updateSummary={updateSummary}
                                             selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
                                             disabled={!isEditMode}
                                         />
                                     </Grid>
                                 </Grid>
-            
+
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <InputLabel htmlFor="expected_begin_date" value="Data e Hora de Início" />
@@ -384,7 +399,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                         />
                                     </Grid>
                                 </Grid>
-                            
+
                                 <Grid item xs={12}>
                                     <Autocomplete
                                         id="vehicle"
@@ -414,21 +429,21 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                     />
                                 </Grid>
 
-                                
+
                                 <Grid item xs={12} margin={'normal'}>
                                     <Autocomplete
                                         id="driver"
                                         options={driversList}
                                         groupBy={(option) => option.group}
                                         getOptionLabel={(option) => option.label}
-                                            getOptionDisabled={(option) => {
-                                                // Disable drivers who don't have a heavy license if the selected vehicle requires one
-                                                return (
-                                                    selectedVehicle &&
-                                                    selectedVehicle.heavy_vehicle &&
-                                                    !option.heavy_license
-                                                );
-                                            }}
+                                        getOptionDisabled={(option) => {
+                                            // Disable drivers who don't have a heavy license if the selected vehicle requires one
+                                            return (
+                                                selectedVehicle &&
+                                                selectedVehicle.heavy_vehicle &&
+                                                !option.heavy_license
+                                            );
+                                        }}
                                         value={driversList.find(driver => driver.value === data.driver_id) || null}
                                         onChange={handleDriverChange}
                                         renderInput={(params) => (
@@ -446,7 +461,7 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                     />
                                 </Grid>
 
-                                
+
                                 <Grid item xs={12} margin={'normal'}>
                                     <Autocomplete
                                         id="techician"
@@ -470,12 +485,50 @@ function InnerEditOrder({auth, order, drivers, vehicles, technicians, kids, othe
                                     />
                                 </Grid>
 
+                                <Grid item xs={12}>
+                                    <InputLabel htmlFor="observations" sx={{ mb: 1 }}>
+                                        Observações
+                                    </InputLabel>
+                                    <TextField
+                                        id="observations"
+                                        name="observations"
+                                        disabled={!isEditMode}
+                                        multiline
+                                        rows={4}
+                                        fullWidth
+                                        value={data.observations || ''}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            if (newValue.length <= 500) {
+                                                setData('observations', e.target.value)
+                                            }
+                                        }}
+                                        error={Boolean(errors.observations)}
+                                        helperText={errors.observations}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </Grid>
+
+                                <div style={{ textAlign: 'right', color: data.observations.length >= 500 ? 'red' : 'black' }}>
+                                    {500 - data.observations.length} caracteres restantes
+                                </div>
+
                             </form>
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert variant='filled' onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </AuthenticatedLayout>
     );
 }

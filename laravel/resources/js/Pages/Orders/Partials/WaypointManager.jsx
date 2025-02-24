@@ -6,9 +6,9 @@ import ExperimentalMap from '@/Components/ExperimentalMap';
 import { OrderContext } from '../OrderContext';
 import { Add, DragIndicator, Remove } from '@mui/icons-material';
 
-export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, disabled }) {
+export default function WaypointManager({ kids, otherPlacesList, updateSummary, selectedRoute, selectedRouteType, disabled, startForm = false }) {
     //console.log('selectedRoute is:',selectedRoute)
-    const { 
+    const {
         waypoints,
         places,
         updateWaypoints,
@@ -32,28 +32,28 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
                     time: existingPlace.time || 0,         // Keep existing metric data if available
                 };
             });
-    
+
             // Update the places array in context with the new structure
             updatePlaces(newPlaces);
             updateTrajectory(); // Update trajectory after places are set
         }
     }, [waypoints, updateTrajectory]);
-    
+
     const getKidName = (kidID) => {
         const kid = kids.find((kid) => kid.id === kidID)
         //console.log(kid.name)
         return kid.name
     }
-    
+
     const addWaypoint = (waypoint, placeId) => {
         const newWaypoints = [...waypoints, waypoint];
         updateWaypoints(newWaypoints);
-        updatePlaces([...places, { 
-            place_id: placeId, 
+        updatePlaces([...places, {
+            place_id: placeId,
             kid_id: waypoint.kid_id,
-            stop_number: places.length + 1, 
-            label: waypoint.label, 
-            lat: waypoint.lat, 
+            stop_number: places.length + 1,
+            label: waypoint.label,
+            lat: waypoint.lat,
             lng: waypoint.lng,
             distance: 0, time: 0 }]);
     };
@@ -124,105 +124,113 @@ export default function WaypointManager({ kids, otherPlacesList, updateSummary, 
 
     return (
         <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-                <Grid item xs={12}>
-                    <Typography>Pontos de Paragem:</Typography>
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="waypoints-list">
-                            {(provided) => (
-                                <List
-                                    style={{ 
-                                        minHeight: '200px', 
-                                        maxHeight: '500px', 
-                                        overflowY: 'scroll', 
+                <Grid item xs={12} md={6} style={{ display: 'flex', flexDirection: 'column', height: startForm ? '100%' : 'auto' }}>
+                    <Grid item xs={12}>
+                        <Typography>Pontos de Paragem:</Typography>
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="waypoints-list">
+                                {(provided) => (
+                                    <List
+                                    style={{
+                                        height: startForm ? '100%' : 'auto',
+                                        minHeight: '120px',
+                                        maxHeight: startForm ? 'calc(100vh - 250px)' : '300px',
+                                        overflowY: 'auto',
                                         padding: '8px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
                                     }}
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                >
-                                    {waypoints.map((waypoint, index) => (
-                                        <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index} isDragDisabled={disabled}>
-                                            {(provided, snapshot) => (
-                                                <ListItem
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={{
-                                                        ...provided.draggableProps.style,
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        backgroundColor: snapshot.isDragging ? '#f0f0f0' : 'white',
-                                                        borderRadius: '4px',
-                                                        boxShadow: snapshot.isDragging ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
-                                                        marginBottom: '8px',
-                                                        padding: '8px 12px',
-                                                        cursor: !disabled ? 'grab' : 'default',
-                                                    }}
-                                                >
-                                                    {!disabled && <DragIndicator style={{ marginRight: '8px', color: '#666' }} />}
-                                                    <ListItemText primary={waypoint.label} secondary={waypoint.kid_id ? `#${waypoint.kid_id} - ${getKidName(waypoint.kid_id)}` : null}/>
+                                    
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                    >
+                                        {waypoints.map((waypoint, index) => (
+                                            <Draggable key={waypoint.place_id} draggableId={waypoint.place_id.toString()} index={index} isDragDisabled={disabled}>
+                                                {(provided, snapshot) => (
+                                                    <ListItem
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        style={{
+                                                            ...provided.draggableProps.style,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            backgroundColor: snapshot.isDragging ? '#f0f0f0' : 'white',
+                                                            borderRadius: '4px',
+                                                            boxShadow: snapshot.isDragging ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
+                                                            marginBottom: '8px',
+                                                            padding: '8px 12px',
+                                                            cursor: !disabled ? 'grab' : 'default',
+                                                        }}
+                                                    >
+                                                        {!disabled && <DragIndicator style={{ marginRight: '8px', color: '#666' }} />}
+                                                        <ListItemText primary={waypoint.label} secondary={waypoint.kid_id ? `#${waypoint.kid_id} - ${getKidName(waypoint.kid_id)}` : null}/>
 
-                                                </ListItem>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </List>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
-                </Grid>
+                                                    </ListItem>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </List>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </Grid>
 
-                <Grid item xs={12}>
-                    <Autocomplete
-                        options={kids}
-                        getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
-                        onChange={(event, kid) => setSelectedKid(kid)}
-                        renderInput={(params) => <TextField {...params} label="Criança" />}
-                        disabled={disabled}
-                    />
-                    {selectedKid && (
-                        <Autocomplete
-                            options={selectedKid.places || []}
-                            getOptionLabel={(place) => place.address}
-                            onChange={(event, place) => setSelectedKidPlace(place)}
-                            renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
-                            disabled={disabled}
-                        />
-                    )}
-                </Grid>
+                    {!startForm &&
+                        <>
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    options={kids}
+                                    getOptionLabel={(kid) => `#${kid.id} - ${kid.name}`}
+                                    onChange={(event, kid) => setSelectedKid(kid)}
+                                    renderInput={(params) => <TextField {...params} label="Criança" />}
+                                    disabled={disabled || selectedRouteType !== "Transporte de Crianças"}
+                                />
+                                {selectedKid && (
+                                    <Autocomplete
+                                        options={selectedKid.places || []}
+                                        getOptionLabel={(place) => place.address}
+                                        onChange={(event, place) => setSelectedKidPlace(place)}
+                                        renderInput={(params) => <TextField {...params} label="Morada da Criança" />}
+                                        disabled={disabled}
+                                    />
+                                )}
+                            </Grid>
+                        
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    options={otherPlacesList}
+                                    getOptionLabel={(place) => place.label}
+                                    onChange={(event, place) => setSelectedOtherPlace(place)}
+                                    renderInput={(params) => <TextField {...params} label="Outro Local" />}
+                                    disabled={disabled}
+                                />
+                            </Grid>                    
 
-                <Grid item xs={12}>
-                    <Autocomplete
-                        options={otherPlacesList}
-                        getOptionLabel={(place) => place.label}
-                        onChange={(event, place) => setSelectedOtherPlace(place)}
-                        renderInput={(params) => <TextField {...params} label="Outro Local" />}
-                        disabled={disabled}
-                    />
+                            <Grid item xs={12}>
+                                <Button onClick={addKid} disabled={!selectedKid || !selectedKidPlace}>
+                                    <Add/>Criança
+                                </Button>
+                                <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
+                                    <Add/>Outro Local
+                                </Button>
+                                <Button onClick={removeLastWaypoint} disabled={!waypoints.length || disabled}>
+                                    <Remove/>Útlima Morada
+                                </Button>
+                            </Grid>
+                        </>
+                    }
                 </Grid>
-
-                <Grid item xs={12}>
-                    <Button onClick={addKid} disabled={!selectedKid || !selectedKidPlace}>
-                        <Add/>Criança
-                    </Button>
-                    <Button onClick={addOtherPlace} disabled={!selectedOtherPlace}>
-                        <Add/>Outro Local
-                    </Button>
-                    <Button onClick={removeLastWaypoint} disabled={!waypoints.length || disabled}>
-                        <Remove/>Útlima Morada
-                    </Button>
-                </Grid>
-            </Grid>
 
             <Grid item xs={12} md={6}>
-                <ExperimentalMap 
-                    waypoints={waypoints} 
-                    onTrajectoryChange={updateTrajectory}
-                    updateSummary={updateSummary} 
-                    updateWaypointData={updateMetricData}
-                    route={selectedRoute}
-                />
+                    <ExperimentalMap
+                        waypoints={waypoints}
+                        onTrajectoryChange={updateTrajectory}
+                        updateSummary={updateSummary}
+                        updateWaypointData={updateMetricData}
+                        route={selectedRoute}
+                    />
             </Grid>
         </Grid>
     );

@@ -1,4 +1,4 @@
-import { differenceInDays, isBefore, parse } from 'date-fns';
+import { differenceInDays, parse } from 'date-fns';
 
 const documentsExpirations = (vehicle) => {
     const today = new Date();
@@ -65,3 +65,25 @@ export const vehiclesExpirations = vehicles => {
         maintenance: calculateTotals(vehicles.filter(vehicle => vehicle.status === 'Em manutenção'))
     };
 };
+
+const filterInServiceVehicles = (vehicles) => {
+    return vehicles.filter(vehicles => vehicles.status === 'Em Serviço');
+};
+
+
+const filterAvailableVehicles = (vehicles) => {
+    return vehicles.filter(driver => driver.status === 'Disponível');
+};
+
+const filterInMaintenanceVehicles = (vehicles) => {
+    return vehicles.filter(driver => driver.status === 'Em manutenção');
+};
+
+export const parseVehicles = (vehicles) => {
+
+    return {
+        'inServiceVehicles': filterInServiceVehicles(vehicles),
+        'availableVehicles': filterAvailableVehicles(vehicles),
+        'inMaintenanceVehicles': filterInMaintenanceVehicles(vehicles)
+    }
+}
