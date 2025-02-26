@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackupController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -42,6 +43,12 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     //DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    // BACKUP AND RESTORE
+    Route::get('/backups', [BackupController::class, 'index'])->name('backups.index'); 
+    Route::post('/backups', [BackupController::class, 'createBackup'])->name('backups.create');
+    Route::get('/backups/download/{filename}', [BackupController::class, 'downloadBackup'])->name('backups.show');
+    Route::delete('/backups/delete/{filename}', [BackupController::class, 'deleteBackup'])->name('backups.delete');
 
     //DRIVERS
     Route::get('/users/drivers', [DriverController::class, 'index'])->name('drivers.index');                                  //GET all page
