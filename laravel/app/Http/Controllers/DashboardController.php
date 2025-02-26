@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Models\User;
+use App\Models\VehicleMaintenanceReport;
+use App\Models\VehicleRefuelRequest;
 use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Vehicle;
@@ -43,6 +45,9 @@ class DashboardController extends Controller
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Inoperável')->get();
         $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Inoperável')->with(['documents', 'accessories'])->get();
 
+        $refuelRequests = VehicleRefuelRequest::all();
+        $maintenanceRequests = VehicleMaintenanceReport::all();
+
         $orders = $orders->map(function ($order) {
             return [
                 ...$order->toArray(),
@@ -60,6 +65,8 @@ class DashboardController extends Controller
             'technicians' => $technicians,
             'vehicles' => $vehicles,
             'orders' => $orders,
+            'refuelRequests' => $refuelRequests,
+            'maintenanceRequests' => $maintenanceRequests
         ]);
     }
 }
