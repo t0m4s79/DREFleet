@@ -1,21 +1,30 @@
 import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import 'leaflet/dist/leaflet.css';
-import { TextField, Button, Grid, Autocomplete } from '@mui/material';
+import { TextField, Button, Grid, Autocomplete, Box } from '@mui/material';
 import InputLabel from '@/Components/InputLabel';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import WaypointManager from './Partials/WaypointManager';
 import { OrderContext, OrderProvider } from './OrderContext';
 import ErrorModal from '@/Components/ErrorModal';
 import { fieldErrorMessages } from '@/utils/Errors/Orders/createOrder';
+import { ErrorOutline, WarningAmber } from '@mui/icons-material';
+import AccessibleIcon from '@mui/icons-material/Accessible';
+import DriveEtaIcon from '@mui/icons-material/DriveEta';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import { parseVehicleExpirations } from '@/utils/Orders/vehicle';
+import { parseDriverExpirations } from '@/utils/Orders/driver';
 
-export default function NewOrder({auth, drivers, vehicles, technicians, managers, kids, otherPlaces, orderRoutes}) {
+export default function NewOrder({ auth, drivers, vehicles, vehicleDocuments, vehicleAccessories, technicians, managers, kids, otherPlaces, orderRoutes }) {
     return (
         <OrderProvider>
             <InnerNewOrder
                 auth={auth}
                 drivers={drivers}
                 vehicles={vehicles}
+                vehicleDocuments={vehicleDocuments}
+                vehicleAccessories={vehicleAccessories}
                 technicians={technicians}
                 kids={kids}
                 otherPlaces={otherPlaces}
@@ -25,8 +34,8 @@ export default function NewOrder({auth, drivers, vehicles, technicians, managers
     );
 }
 
-function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces, orderRoutes }) {
-    const { 
+function InnerNewOrder({ auth, drivers, vehicles, vehicleDocuments, vehicleAccessories, technicians, kids, otherPlaces, orderRoutes }) {
+    const {
         waypoints,
         places,
         trajectory,
@@ -38,8 +47,8 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     const [selectedTechnician, setSelectedTechnician] = useState(null)
     const [selectedDriver, setSelectedDriver] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
-    const [selectedRouteType, setSelectedRouteType]= useState('');
-    const [selectedRouteID, setSelectedRouteID] =useState('');
+    const [selectedRouteType, setSelectedRouteType] = useState('');
+    const [selectedRouteID, setSelectedRouteID] = useState('');
     const [preferredDrivers, setPreferredDrivers] = useState([]);
     const [preferredTechnicians, setPreferredTechnicians] = useState([]);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -53,22 +62,53 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     }));
 
     const driversList = [
-        ...preferredDrivers.map((driver) => ({
-            group: 'Condutores Habituais',
-            value: driver.user_id,
-            label: `#${driver.user_id} - ${driver.name}`,
-            heavy_license: driver.heavy_license,
-        })),
-            ...drivers.map((driver) => ({
-            group: 'Todos os Condutores',
-            value: driver.user_id,
-            label: `#${driver.user_id} - ${driver.name}`,
-            heavy_license: driver.heavy_license,
-        })),
-      ];
+        ...preferredDrivers.map((driver) => {
+            const { expired, expiring } = parseDriverExpirations(driver);
+
+            return {
+                group: 'Condutores Habituais',
+                value: driver.user_id,
+                label: `#${driver.user_id} - ${driver.name}`,
+                heavy_license: driver.heavy_license,
+                heavy_license_type: driver.heavy_license_type,
+                expiredCount: expired,
+                expiringCount: expiring,
+                tcc: driver.tcc
+            };
+        }),
+        ...drivers.map((driver) => {
+            const { expired, expiring } = parseDriverExpirations(driver);
+
+            return {
+                group: 'Todos os Condutores',
+                value: driver.user_id,
+                label: `#${driver.user_id} - ${driver.name}`,
+                heavy_license: driver.heavy_license,
+                heavy_license_type: driver.heavy_license_type,
+                expiredCount: expired,
+                expiringCount: expiring,
+                tcc: driver.tcc
+            };
+        }),
+    ];
 
     const vehicleList = vehicles.map((vehicle) => {
-        return {value: vehicle.id, label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`, heavy_vehicle: vehicle.heavy_vehicle}
+        const documents = vehicleDocuments.filter((document) => document.vehicle.id === vehicle.id);
+        const accessories = vehicleAccessories.filter((accessory) => accessory.vehicle.id === vehicle.id);
+
+        const { expired, expiring } = parseVehicleExpirations(documents, accessories);
+
+        const wheelchair = vehicle.wheelchair_adapted === 1 && vehicle.wheelchair_certified === 1;
+
+        return {
+            value: vehicle.id,
+            label: `#${vehicle.id} - ${vehicle.make} ${vehicle.model}, ${vehicle.license_plate}`,
+            heavy_vehicle: vehicle.heavy_vehicle,
+            heavy_type: vehicle.heavy_type,
+            expiredCount: expired,
+            expiringCount: expiring,
+            wheelchair: wheelchair
+        };
     })
 
     const techniciansList = [
@@ -86,7 +126,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    const { data, setData, post, errors, setError, clearErrors, processing} = useForm({
+    const { data, setData, post, errors, setError, clearErrors, processing } = useForm({
         expected_begin_date: '',
         expected_end_date: '',
         expected_time: '',
@@ -101,11 +141,11 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         observations: ''
     })
 
-    const handleRouteChange =(route) => {
+    const handleRouteChange = (route) => {
         setSelectedRouteID(route.id)
         setPreferredDrivers(route.drivers)
         setPreferredTechnicians(route.technicians)
-        setData('order_route_id',route.id)
+        setData('order_route_id', route.id)
     }
 
     const handleRouteType = (type) => {
@@ -128,7 +168,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
         setData('vehicle_id', value?.value || '');
     };
 
-    const updateSummary = ( summary ) => {
+    const updateSummary = (summary) => {
         //console.log('summary',summary);
         setData({
             ...data,  // Spread the existing form data
@@ -143,20 +183,20 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                 places: places,
                 trajectory: JSON.stringify(trajectory),
             }));
-    
+
             //console.log('Updated form data with places and trajectory:', places, trajectory);
         }
     }, [places, trajectory]);
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Debugging: Ensure data is ready before submitting
         //console.log('Form data on submit:', data);
-    
+
         // Ensure the state is fully updated before submitting
-        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        await new Promise(resolve => setTimeout(resolve, 1000));
         post(route('orders.create'), {
             onError: (errors) => {
 
@@ -168,7 +208,7 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
                         return acc;
                     }, {});
                 };
-    
+
                 clearErrors();
                 setError(mapErrors(errors));
                 setIsErrorModalOpen(true);
@@ -177,226 +217,286 @@ function InnerNewOrder({ auth, drivers, vehicles, technicians, kids, otherPlaces
     };
 
     return (
-            <AuthenticatedLayout
-                user={auth.user}
-                header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Pedido</h2>}
-            >
+        <AuthenticatedLayout
+            user={auth.user}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Novo Pedido</h2>}
+        >
 
-                <Head title="Novo Pedido" />
-            
-                <div className='py-12'>
-                    <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <Head title="Novo Pedido" />
+
+            <div className='py-12'>
+                <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <ErrorModal isOpen={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)} errors={errors} />
-                            <div className='p-6'>
-                                <div className='my-6'>
-                                    
-                                        <form onSubmit={handleSubmit}>
-                                            <input type="hidden" name="_token" value={csrfToken} />
-                                            
-                                            <Grid container spacing={3}>
-                                                <Grid item xs={12}>
+                        <div className='p-6'>
+                            <div className='my-6'>
 
-                                                    <InputLabel sx={{ mb: 2 }}>Rota</InputLabel>
-                                                    <Autocomplete
-                                                        options={orderRoutes}
-                                                        getOptionLabel={(option) => option.name}
-                                                        value={orderRoutes.find(route => route.id === data.order_route_id) || null}
-                                                        onChange={(event, route) => handleRouteChange(route)}
-                                                        renderInput={(params) => <TextField {...params} label="Rota" />}
-                                                        error={errors.order_route_id}
-                                                        helperText={errors.order_route_id}
-                                                        sx={{ mb: 2 }}
-                                                    />
+                                <form onSubmit={handleSubmit}>
+                                    <input type="hidden" name="_token" value={csrfToken} />
 
-                                                    <InputLabel sx={{ mb: 2 }}>Tipo de Transporte</InputLabel>
-                                                    <Autocomplete
-                                                        options={['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']}
-                                                        value={data.order_type} // Bind the selected string
-                                                        onChange={(event, value) => handleRouteType(value)}
-                                                        //onChange={(event, value) => setData('order_type', value || '')} // Set the selected value (string)
-                                                        renderInput={(params) => <TextField {...params} label="Tipo de Transporte" />}
-                                                        error={errors.order_type}
-                                                        helperText={errors.order_type}
-                                                        sx={{ mb: 2 }}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <WaypointManager 
-                                                        kids={kids} 
-                                                        otherPlacesList={otherPlaces.map(place => ({
-                                                            place_id: place.id,
-                                                            label: `#${place.id} - ${place.address}`,
-                                                            lat: place.coordinates.coordinates[1],
-                                                            lng: place.coordinates.coordinates[0],
-                                                        }))} 
-                                                        onUpdateWaypoints={updateWaypoints} 
-                                                        waypointsList={waypoints}
-                                                        updateTrajectory={updateTrajectory}
-                                                        updateSummary={updateSummary} 
-                                                        selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
-                                                        selectedRouteType={selectedRouteType}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                        
-                                            <Grid container spacing={3}>
-                                                <Grid item xs={6}>
-                                                    <InputLabel htmlFor="expected_begin_date" value="Data e Hora de Início" />
-                                                    <TextField
-                                                        //label="Data e Hora de Início"
-                                                        id='expected_begin_date'
-                                                        name='expected_begin_date'
-                                                        type="datetime-local"
-                                                        required
-                                                        fullWidth
-                                                        value={data.expected_begin_date}
-                                                        onChange={(e) => setData('expected_begin_date', e.target.value)}
-                                                        error={errors.expected_begin_date}
-                                                        helperText={errors.expected_begin_date}
-                                                        sx={{ mb: 2 }}
-                                                    />
-                                                </Grid>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12}>
 
-                                                <Grid item xs={6}>
-                                                    <InputLabel htmlFor="expected_end_date" value="Data e Hora de Fim" />
-                                                    <TextField
-                                                        // label="Data e Hora de Fim"
-                                                        id='expected_end_date'
-                                                        name='expected_end_date'
-                                                        type="datetime-local"
-                                                        required
-                                                        fullWidth
-                                                        value={data.expected_end_date}
-                                                        onChange={(e) => setData('expected_end_date', e.target.value)}
-                                                        error={errors.expected_end_date}
-                                                        helperText={errors.expected_end_date}
-                                                        sx={{ mb: 2 }}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                    
-                                            <Grid item xs={12}>
-                                                <Autocomplete
-                                                    id="vehicle"
-                                                    options={vehicleList}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionDisabled={(option) => {
-                                                        // Disable vehicles that require a heavy license if the selected driver does not have one
-                                                        return (
-                                                            selectedDriver &&
-                                                            selectedDriver.heavy_license==0 &&
-                                                            option.heavy_vehicle==1
-                                                        );
-                                                    }}
-                                                    onChange={handleVehicleChange}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Veículo"
-                                                            required
-                                                            fullWidth
-                                                            value={data.vehicle_id}
-                                                            error={errors.vehicle_id}
-                                                            helperText={errors.vehicle_id}
-                                                        />
-                                                    )}
-                                                    sx={{ mb: 2 }}
-                                                />
-                                            </Grid>
+                                            <InputLabel sx={{ mb: 2 }}>Rota</InputLabel>
+                                            <Autocomplete
+                                                options={orderRoutes}
+                                                getOptionLabel={(option) => option.name}
+                                                value={orderRoutes.find(route => route.id === data.order_route_id) || null}
+                                                onChange={(event, route) => handleRouteChange(route)}
+                                                renderInput={(params) => <TextField {...params} label="Rota" />}
+                                                error={errors.order_route_id}
+                                                helperText={errors.order_route_id}
+                                                sx={{ mb: 2 }}
+                                            />
 
-                                            
-                                            <Grid item xs={12} margin={'normal'}>
-                                                <Autocomplete
-                                                    id="driver"
-                                                    options={driversList}
-                                                    groupBy={(option) => option.group}
-                                                    getOptionLabel={(option) => option.label}
-                                                    getOptionDisabled={(option) => {
-                                                        // Disable drivers who don't have a heavy license if the selected vehicle requires one
-                                                        return (
-                                                            selectedVehicle &&
-                                                            selectedVehicle.heavy_vehicle &&
-                                                            !option.heavy_license
-                                                        );
-                                                    }}
-                                                    onChange={handleDriverChange}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Condutor"
-                                                            required
-                                                            fullWidth
-                                                            value={data.driver_id}
-                                                            error={errors.driver_id}
-                                                            helperText={errors.driver_id}
-                                                        />
-                                                    )}
-                                                    sx={{ mb: 2 }}
-                                                />
-                                            </Grid>
+                                            <InputLabel sx={{ mb: 2 }}>Tipo de Transporte</InputLabel>
+                                            <Autocomplete
+                                                options={['Transporte de Pessoal', 'Transporte de Mercadorias', 'Transporte de Crianças', 'Outros']}
+                                                value={data.order_type} // Bind the selected string
+                                                onChange={(event, value) => handleRouteType(value)}
+                                                //onChange={(event, value) => setData('order_type', value || '')} // Set the selected value (string)
+                                                renderInput={(params) => <TextField {...params} label="Tipo de Transporte" />}
+                                                error={errors.order_type}
+                                                helperText={errors.order_type}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <WaypointManager
+                                                kids={kids}
+                                                otherPlacesList={otherPlaces.map(place => ({
+                                                    place_id: place.id,
+                                                    label: `#${place.id} - ${place.address}`,
+                                                    lat: place.coordinates.coordinates[1],
+                                                    lng: place.coordinates.coordinates[0],
+                                                }))}
+                                                onUpdateWaypoints={updateWaypoints}
+                                                waypointsList={waypoints}
+                                                updateTrajectory={updateTrajectory}
+                                                updateSummary={updateSummary}
+                                                selectedRoute={orderRoutes.find(route => route.id === selectedRouteID)}
+                                                selectedRouteType={selectedRouteType}
+                                            />
+                                        </Grid>
+                                    </Grid>
 
-                                            
-                                            <Grid item xs={12} margin={'normal'}>
-                                                <Autocomplete
-                                                    id="techician"
-                                                    options={techniciansList}
-                                                    groupBy={(option) => option.group}
-                                                    getOptionLabel={(option) => option.label}
-                                                    onChange={handleTechnicianChange}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Técnico"
-                                                            required
-                                                            fullWidth
-                                                            value={data.technician_id}
-                                                            error={errors.technician_id}
-                                                            helperText={errors.technician_id}
-                                                        />
-                                                    )}
-                                                    sx={{ mb: 2 }}
-                                                />
-                                            </Grid>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={6}>
+                                            <InputLabel htmlFor="expected_begin_date" value="Data e Hora de Início" />
+                                            <TextField
+                                                //label="Data e Hora de Início"
+                                                id='expected_begin_date'
+                                                name='expected_begin_date'
+                                                type="datetime-local"
+                                                required
+                                                fullWidth
+                                                value={data.expected_begin_date}
+                                                onChange={(e) => setData('expected_begin_date', e.target.value)}
+                                                error={errors.expected_begin_date}
+                                                helperText={errors.expected_begin_date}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
 
-                                            <Grid item xs={12}>
-                                                <InputLabel htmlFor="observations" sx={{ mb: 1 }}>
-                                                    Observações
-                                                </InputLabel>
+                                        <Grid item xs={6}>
+                                            <InputLabel htmlFor="expected_end_date" value="Data e Hora de Fim" />
+                                            <TextField
+                                                // label="Data e Hora de Fim"
+                                                id='expected_end_date'
+                                                name='expected_end_date'
+                                                type="datetime-local"
+                                                required
+                                                fullWidth
+                                                value={data.expected_end_date}
+                                                onChange={(e) => setData('expected_end_date', e.target.value)}
+                                                error={errors.expected_end_date}
+                                                helperText={errors.expected_end_date}
+                                                sx={{ mb: 2 }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Autocomplete
+                                            id="vehicle"
+                                            options={vehicleList}
+                                            getOptionLabel={(option) => option.label}
+                                            getOptionDisabled={(option) => {
+                                                // Disable vehicles that require a heavy license if the selected driver does not have one
+                                                return (
+                                                    selectedDriver &&
+                                                    selectedDriver.heavy_license == 0 &&
+                                                    option.heavy_vehicle == 1
+                                                );
+                                            }}
+                                            onChange={handleVehicleChange}
+                                            renderOption={(props, option) => {
+                                                return (
+                                                    <li key={option.value} {...props} style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                                                        <span>{option.label}</span>
+                                                        <Box sx={{ display: "flex" }} className="ml-2">
+                                                            {option.wheelchair && (
+                                                                <AccessibleIcon />
+                                                            )}
+                                                            {option.heavy_vehicle === 1 ? (
+                                                                option.heavy_type === "Mercadorias" ? (
+                                                                    <LocalShippingIcon />
+                                                                ) : (
+                                                                    <DirectionsBusIcon />
+                                                                )
+                                                            ) : (
+                                                                <DriveEtaIcon />
+                                                            )}
+                                                            {option.expiredCount > 0 && (
+                                                                <ErrorOutline sx={{ color: "red" }} />
+                                                            )}
+                                                            {option.expiringCount > 0 && (
+                                                                <WarningAmber sx={{ color: "orange" }} />
+                                                            )}
+                                                        </Box>
+                                                    </li>
+                                                );
+                                            }}
+                                            renderInput={(params) => (
                                                 <TextField
-                                                    id="observations"
-                                                    name="observations"
-                                                    multiline
-                                                    rows={4}
+                                                    {...params}
+                                                    label="Veículo"
+                                                    required
                                                     fullWidth
-                                                    value={data.observations || ''}
-                                                    onChange={(e) => {
-                                                        const newValue = e.target.value;
-                                                        if (newValue.length <= 500) {
-                                                            setData('observations', e.target.value)
-                                                        }
-                                                    }}
-                                                    error={Boolean(errors.observations)}
-                                                    helperText={errors.observations}
-                                                    sx={{ mb: 2 }}
+                                                    value={data.vehicle_id}
+                                                    error={errors.vehicle_id}
+                                                    helperText={errors.vehicle_id}
                                                 />
-                                            </Grid>
+                                            )}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    </Grid>
 
-                                            <div style={{ textAlign: 'right', color: data.observations.length >= 500 ? 'red' : 'black' }}>
-                                                {500 - data.observations.length} caracteres restantes
-                                            </div>
-                                        
-                                            <Grid item xs={12}>
-                                                <Button type="submit" variant="outlined" color="primary" disabled={processing}>
-                                                    Submeter
-                                                </Button>
-                                            </Grid>
-                                        </form> 
-                                </div>
+
+                                    <Grid item xs={12} margin={'normal'}>
+                                        <Autocomplete
+                                            id="driver"
+                                            options={driversList}
+                                            groupBy={(option) => option.group}
+                                            getOptionLabel={(option) => option.label}
+                                            getOptionDisabled={(option) => {
+                                                // Disable drivers who don't have a heavy license if the selected vehicle requires one
+                                                return (
+                                                    selectedVehicle &&
+                                                    selectedVehicle.heavy_vehicle &&
+                                                    !option.heavy_license
+                                                );
+                                            }}
+                                            onChange={handleDriverChange}
+                                            renderOption={(props, option) => {
+
+                                                return (
+                                                    <li key={option.value} {...props} style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                                                        <span>{option.label}</span>
+                                                        <Box sx={{ display: "flex" }} className="ml-2">
+                                                            {option.heavy_license === 1 ? (
+                                                                option.heavy_license_type === "Mercadorias" ? (
+                                                                    <LocalShippingIcon />
+                                                                ) : (
+                                                                    <DirectionsBusIcon />
+                                                                )
+                                                            ) : (
+                                                                <DriveEtaIcon />
+                                                            )}
+                                                            {option.expiredCount > 0 && (
+                                                                <ErrorOutline sx={{ color: "red" }} />
+                                                            )}
+                                                            {option.expiringCount > 0 && (
+                                                                <WarningAmber sx={{ color: "orange" }} />
+                                                            )}
+                                                            {option.tcc === 0 && (
+                                                                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: "4px" }}>
+                                                                    <circle cx="12" cy="12" r="10" stroke="red" strokeWidth="2"/>
+                                                                    <line x1="4" y1="4" x2="20" y2="20" stroke="red" strokeWidth="2"/>
+                                                                    <path d="M12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7Z" fill="black"/>
+                                                                    <path d="M9 9H15C16.1 9 17 9.9 17 11V15H14V12H10V15H7V11C7 9.9 7.9 9 9 9Z" fill="black"/>
+                                                                </svg>
+                                                            )}
+                                                        </Box>
+                                                    </li>
+                                                );
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Condutor"
+                                                    required
+                                                    fullWidth
+                                                    value={data.driver_id}
+                                                    error={errors.driver_id}
+                                                    helperText={errors.driver_id}
+                                                />
+                                            )}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    </Grid>
+
+
+                                    <Grid item xs={12} margin={'normal'}>
+                                        <Autocomplete
+                                            id="techician"
+                                            options={techniciansList}
+                                            groupBy={(option) => option.group}
+                                            getOptionLabel={(option) => option.label}
+                                            onChange={handleTechnicianChange}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Técnico"
+                                                    required
+                                                    fullWidth
+                                                    value={data.technician_id}
+                                                    error={errors.technician_id}
+                                                    helperText={errors.technician_id}
+                                                />
+                                            )}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <InputLabel htmlFor="observations" sx={{ mb: 1 }}>
+                                            Observações
+                                        </InputLabel>
+                                        <TextField
+                                            id="observations"
+                                            name="observations"
+                                            multiline
+                                            rows={4}
+                                            fullWidth
+                                            value={data.observations || ''}
+                                            onChange={(e) => {
+                                                const newValue = e.target.value;
+                                                if (newValue.length <= 500) {
+                                                    setData('observations', e.target.value)
+                                                }
+                                            }}
+                                            error={Boolean(errors.observations)}
+                                            helperText={errors.observations}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    </Grid>
+
+                                    <div style={{ textAlign: 'right', color: data.observations.length >= 500 ? 'red' : 'black' }}>
+                                        {500 - data.observations.length} caracteres restantes
+                                    </div>
+
+                                    <Grid item xs={12}>
+                                        <Button type="submit" variant="outlined" color="primary" disabled={processing}>
+                                            Submeter
+                                        </Button>
+                                    </Grid>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </AuthenticatedLayout>
+            </div>
+        </AuthenticatedLayout>
     );
 }
