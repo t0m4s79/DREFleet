@@ -28,6 +28,7 @@
         "@mui/material": "^5.16.14",
         "@mui/x-charts": "^7.27.0",
         "@mui/x-data-grid": "^7.22.2",
+        "@mui/x-date-pickers": "^7.27.1",
         "date-fns": "^4.1.0",
         "dayjs": "^1.11.13",
         "leaflet": "^1.9.4",

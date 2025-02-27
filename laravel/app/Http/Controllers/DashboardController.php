@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Roles;
 use App\Models\User;
+use App\Models\VehicleKilometrageReport;
 use App\Models\VehicleMaintenanceReport;
 use App\Models\VehicleRefuelRequest;
 use Inertia\Inertia;
@@ -45,8 +46,9 @@ class DashboardController extends Controller
         $technicians = User::where('user_type', 'Técnico')->whereNot('status','Escondido')->whereNot('status','Inoperável')->get();
         $vehicles = Vehicle::whereNot('status','Escondido')->whereNot('status','Inoperável')->with(['documents', 'accessories'])->get();
 
-        $refuelRequests = VehicleRefuelRequest::all();
-        $maintenanceRequests = VehicleMaintenanceReport::all();
+        $refuelRequests = VehicleRefuelRequest::with('vehicle')->get();
+        $maintenanceRequests = VehicleMaintenanceReport::with('vehicle')->get();
+        $kilometersReports = VehicleKilometrageReport::with('vehicle')->get();
 
         $orders = $orders->map(function ($order) {
             return [
@@ -54,6 +56,11 @@ class DashboardController extends Controller
                 'expected_begin_date' => Carbon::parse($order->expected_begin_date)->format('d-m-Y H:i'),
                 'expected_end_date' => Carbon::parse($order->expected_end_date)->format('d-m-Y H:i'),
             ];
+        });
+
+        $drivers->each(function ($driver) {
+            $driver->driver->license_expiration_date ? $driver->driver->license_expiration_date = Carbon::parse($driver->driver->license_expiration_date)->format('d-m-Y') : null;
+            $driver->driver->tcc_expiration_date ? $driver->driver->tcc_expiration_date = Carbon::parse($driver->driver->tcc_expiration_date)->format('d-m-Y') : null;
         });
 
         return Inertia::render('Dashboard', [
@@ -66,7 +73,8 @@ class DashboardController extends Controller
             'vehicles' => $vehicles,
             'orders' => $orders,
             'refuelRequests' => $refuelRequests,
-            'maintenanceRequests' => $maintenanceRequests
+            'maintenanceRequests' => $maintenanceRequests,
+            'kilometersReports' => $kilometersReports
         ]);
     }
 }
