@@ -23,7 +23,7 @@ const KilometerBarChart = ({ kilometersReports }) => {
     return (
         <Box>
             <Typography variant="h6" align="center" gutterBottom>
-                Veículos com Mais Quilômetros Percorridos
+                Veículos com Mais Quilómetros Percorridos
             </Typography>
 
             <BarChart
