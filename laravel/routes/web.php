@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/backups', [BackupController::class, 'index'])->name('backups.index'); 
     Route::post('/backups', [BackupController::class, 'createBackup'])->name('backups.create');
     Route::get('/backups/download/{filename}', [BackupController::class, 'downloadBackup'])->name('backups.show');
-    Route::delete('/backups/delete/{filename}', [BackupController::class, 'deleteBackup'])->name('backups.delete');
+    Route::delete('/backups/delete/{backup}', [BackupController::class, 'deleteBackup'])->name('backups.delete');
 
     //DRIVERS
     Route::get('/users/drivers', [DriverController::class, 'index'])->name('drivers.index');                                  //GET all page

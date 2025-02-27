@@ -41,6 +41,11 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
             headerName: 'Data',
             flex: 1
         },
+        { 
+            field: 'size', 
+            headerName: 'Tamanho', 
+            flex: 1 
+        },
         {
             field: 'user',
             headerName: 'Criado Por',

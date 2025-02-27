@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\Backup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -19,15 +21,25 @@ class BackupController extends Controller
             abort(403);
         }
 
+        $user = Auth::user();
+
+        if ($user->user_type !== Roles::ADMIN->value) {
+            return redirect()->route('dashboard.index')->with('error', 'Erro: Não tem permissões para aceder a esta página');
+        }
+
         $backups = Backup::with('user')
             ->get()
             ->map(function ($backup) {
+                $path = storage_path("app/backups/{$backup->filename}");
+                $size = file_exists($path) ? filesize($path) : 0;
+
                 return [
                     'id' => $backup->id,
                     'user' => $backup->user->name,
                     'filename' => $backup->filename,
                     'created_at' => $backup->created_at->format('d-m-Y H:i:s'),
-                    'url' => route('backups.show', ['filename' => $backup->filename]), // <-- Ajustado aqui
+                    'size' => $size ? $this->formatSize($size) : 'N/A',
+                    'url' => route('backups.show', ['filename' => $backup->filename]),
                 ];
             });
 
@@ -49,6 +61,12 @@ class BackupController extends Controller
         Log::channel('user')->info('User accessed create backup page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
+
+        $user = Auth::user();
+
+        if ($user->user_type !== Roles::ADMIN->value) {
+            return redirect()->route('dashboard.index')->with('error', 'Erro: Não tem permissões para aceder a esta página');
+        }
 
         try {
             DB::beginTransaction();
@@ -88,6 +106,12 @@ class BackupController extends Controller
             abort(403);
         }
 
+        $user = Auth::user();
+
+        if ($user->user_type !== Roles::ADMIN->value) {
+            return redirect()->route('dashboard.index')->with('error', 'Erro: Não tem permissões para aceder a esta página');
+        }
+
         $path = storage_path("app/backups/$filename");
 
         if (!file_exists($path)) {
@@ -101,6 +125,12 @@ class BackupController extends Controller
     {
         if (!Gate::allows('delete-backups')) {
             abort(403);
+        }
+
+        $user = Auth::user();
+
+        if ($user->user_type !== Roles::ADMIN->value) {
+            return redirect()->route('dashboard.index')->with('error', 'Erro: Não tem permissões para aceder a esta página');
         }
 
         $backup = Backup::find($id);
@@ -127,6 +157,13 @@ class BackupController extends Controller
 
             return redirect()->route('backups.index')->with('error', 'Erro ao excluir o backup.');
         }
+    }
+
+    private function formatSize($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$precision}f", $bytes / pow(1024, $factor)) . ' ' . $units[$factor];
     }
 
 }
