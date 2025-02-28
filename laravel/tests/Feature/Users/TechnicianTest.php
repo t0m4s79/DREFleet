@@ -21,7 +21,7 @@ class TechnicianTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 'Administrador']);
+        $this->user = User::factory()->create(['user_type' => Roles::ADMIN->value]);
     }
 
     public function test_technicians_page_is_displayed(): void
@@ -136,7 +136,7 @@ class TechnicianTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
-            'user_type' => 'Técnico',
+            'user_type' => Roles::TECHNICIAN->value,
         ]);
     }
 
@@ -195,7 +195,7 @@ class TechnicianTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $technician->id,
-            'user_type' => 'Técnico'
+            'user_type' => Roles::TECHNICIAN->value
         ]);
 
         $response = $this

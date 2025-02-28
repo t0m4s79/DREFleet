@@ -115,7 +115,7 @@ class AdminTest extends TestCase
             $response->assertForbidden();
 
             $this->assertDatabaseMissing('users', [
-                'id' => $user->id,
+                'id' => $newAdmin->id,
                 'user_type' => Roles::ADMIN->value,
             ]);
         }
