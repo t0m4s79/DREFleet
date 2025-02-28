@@ -4,9 +4,6 @@ namespace Tests\Feature;
 
 use App\Enums\Roles;
 use Database\Factories\AdminFactory;
-use Database\Factories\DriverFactory;
-use Database\Factories\ManagerFactory;
-use Database\Factories\TechnicianFactory;
 use Database\Factories\UserFactory;
 use Tests\TestCase;
 use App\Models\User;
@@ -99,11 +96,17 @@ class AdminTest extends TestCase
         $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
         $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$technician, $manager, $driver];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
-            $adminData = ['id' => $user->id, 'user_type' => Roles::NONE->value];
+            $newAdmin = User::factory()->create();
+
+            $adminData = [
+                'id' => $newAdmin->id,
+                'user_type' => Roles::NONE->value
+            ];
 
             $response = $this
                 ->actingAs($user)
@@ -159,7 +162,7 @@ class AdminTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('admins.index'));
 
-            $this->assertDatabaseHas('users', array_merge(['id' => $admin->id], $updatedData));
+        $this->assertDatabaseHas('users', array_merge(['id' => $admin->id], $updatedData));
     }
 
     public function test_user_cannot_edit_an_admin_due_permissions(): void
@@ -176,8 +179,9 @@ class AdminTest extends TestCase
         $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
         $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$technician, $manager, $driver];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
@@ -225,8 +229,9 @@ class AdminTest extends TestCase
         $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
         $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$technician, $manager, $driver];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
@@ -276,8 +281,9 @@ class AdminTest extends TestCase
         $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
         $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$technician, $manager, $driver];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this

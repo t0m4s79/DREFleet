@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class TechnicianController extends Controller
         ]);
 
         // Retrieve all technicians with their related kids, including the pivot priority
-        $technicians = User::where('user_type', 'Técnico')->get();
+        $technicians = User::where('user_type', Roles::TECHNICIAN->value)->get();
 
         return Inertia::render('Technicians/AllTechnicians', [
             'flash' => [
@@ -44,7 +45,7 @@ class TechnicianController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $users = User::where('user_type', 'Nenhum')->get();
+        $users = User::where('user_type', Roles::NONE->value)->get();
 
         return Inertia::render('Technicians/NewTechnician', [
             'flash' => [
@@ -72,7 +73,7 @@ class TechnicianController extends Controller
                 function ($attribute, $value, $fail) use ($request) {
                     $user = User::find($value);
         
-                    if ($user && $user->user_type != 'Nenhum') {
+                    if ($user && $user->user_type != Roles::NONE->value) {
                         $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos');
                     }
                 },
@@ -84,7 +85,7 @@ class TechnicianController extends Controller
 
         try {
             $user->update([
-                'user_type' => "Técnico",
+                'user_type' => Roles::TECHNICIAN->value,
             ]);
 
             Log::channel('user')->info('User created a technician', [
@@ -179,7 +180,7 @@ class TechnicianController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->update([
-                'user_type' => "Nenhum",
+                'user_type' => Roles::NONE->value,
             ]);
 
             Log::channel('user')->info('User deleted a technician', [
