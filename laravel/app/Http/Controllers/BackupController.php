@@ -40,6 +40,7 @@ class BackupController extends Controller
                     'created_at' => $backup->created_at->format('d-m-Y H:i:s'),
                     'size' => $size ? $this->formatSize($size) : 'N/A',
                     'url' => route('backups.show', ['filename' => $backup->filename]),
+                    'restore' => $backup->id
                 ];
             });
 
@@ -156,6 +157,57 @@ class BackupController extends Controller
             ]);
 
             return redirect()->route('backups.index')->with('error', 'Erro ao excluir o backup.');
+        }
+    }
+
+    public function restoreBackup($id)
+    {
+        if (!Gate::allows('restore-backups')) {
+            abort(403);
+        }
+
+        $user = Auth::user();
+        if ($user->user_type !== Roles::ADMIN->value) {
+            return redirect()->route('dashboard.index')->with('error', 'Erro: Não tem permissões para aceder a esta página');
+        }
+
+        Log::channel('user')->info('User accessed restore backup page', [
+            'auth_user_id' => $user->id,
+        ]);
+
+        try {
+            $backup = Backup::find($id);
+            if (!$backup) {
+                return redirect()->route('backups.index')->with('error', 'Erro: Backup não encontrado.');
+            }
+
+            $exitCode = Artisan::call('app:database-restore', [
+                'filename' => $backup->filename,
+            ]);
+
+            if ($exitCode === 0) {
+                Log::channel('user')->info('User made a backup restore successfully', [
+                    'auth_user_id' => $user->id,
+                ]);
+
+                return redirect()->route('backups.index')->with('message', 'Backup restaurado com sucesso!');
+            } else {
+                Log::channel('usererror')->error('Error restoring backup', [
+                    'auth_user_id' => $user->id,
+                    'backup_id' => $id,
+                ]);
+
+                return redirect()->route('backups.index')->with('error', 'Erro ao restaurar o backup.');
+            }
+        } catch (\Exception $e) {
+            Log::channel('usererror')->error('Error restoring backup', [
+                'auth_user_id' => $user->id,
+                'backup_id' => $id,
+                'exception' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->route('backups.index')->with('error', 'Erro ao restaurar o backup. Verifique o ficheiro e tente novamente.');
         }
     }
 

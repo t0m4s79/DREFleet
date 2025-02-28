@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Button, Snackbar, Alert } from '@mui/material';
+import { Button, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
@@ -9,6 +9,8 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedBackupId, setSelectedBackupId] = useState(null);
 
     useEffect(() => {
         if (flash.message || flash.error) {
@@ -22,6 +24,23 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
 
     const handleBackup = () => {
         post(route('backups.create'));
+    };
+
+    const handleOpenModal = (backupId) => {
+        setSelectedBackupId(backupId);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedBackupId(null);
+    };
+
+    const handleRestore = () => {
+        if (selectedBackupId) {
+            post(route('backups.restore', selectedBackupId));
+        }
+        handleCloseModal();
     };
 
     const backupsColumns = [
@@ -41,10 +60,10 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
             headerName: 'Data',
             flex: 1
         },
-        { 
-            field: 'size', 
-            headerName: 'Tamanho', 
-            flex: 1 
+        {
+            field: 'size',
+            headerName: 'Tamanho',
+            flex: 1
         },
         {
             field: 'user',
@@ -57,9 +76,38 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
             flex: 1,
             renderCell: (params) => {
                 return (
-                    <a href={params.value} className="text-blue-500 underline">
-                        Baixar
-                    </a>
+                    <Link href={params.value} className="text-blue-500 underline">
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                maxHeight: '30px',
+                                minHeight: '30px',
+                                margin: '0px 4px'
+                            }}
+                        >
+                            Download
+                        </Button>
+                    </Link>
+                );
+            }
+        },
+        {
+            field: 'restore',
+            headerName: 'Restore',
+            flex: 1,
+            renderCell: (params) => {
+                return (
+                    <Button
+                        onClick={() => handleOpenModal(params.value)}
+                        variant="outlined"
+                        sx={{
+                            maxHeight: '30px',
+                            minHeight: '30px',
+                            margin: '0px 4px'
+                        }}
+                    >
+                        Restore
+                    </Button>
                 );
             }
         },
@@ -91,6 +139,28 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            <Dialog open={modalOpen} onClose={handleCloseModal}>
+                <DialogTitle sx={{ fontWeight: 'bold' }}>
+                    Atenção: Esta ação é irreversível!
+                </DialogTitle>
+                <DialogContent>
+                    <p style={{ color: 'red', fontWeight: 'bold' }}>
+                        Todos os dados inseridos após a data deste backup serão <u>permanentemente perdidos</u>.
+                    </p>
+                    <p>
+                        Esta ação <b>não pode ser desfeita</b>. Tem certeza que deseja restaurar o backup <b>{selectedBackupId}</b>?
+                    </p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal} color="error">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleRestore} color="primary" variant="contained">
+                        Confirmar e Restaurar
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </AuthenticatedLayout>
     );
 }

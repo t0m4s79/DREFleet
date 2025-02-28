@@ -406,5 +406,11 @@ class AppServiceProvider extends ServiceProvider
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });
+
+        Gate::define('restore-backups', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
     }
 }
