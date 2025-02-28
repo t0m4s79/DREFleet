@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Roles;
+use Database\Factories\UserFactory;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
@@ -23,7 +25,7 @@ class UserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 'Administrador']);
+        $this->user = User::factory()->create(['user_type' => Roles::ADMIN->value]);
     }
 
     public function test_user_has_one_driver(): void
@@ -38,7 +40,7 @@ class UserTest extends TestCase
     public function test_user_has_many_orders_as_technician(): void
     {
         $technician = User::factory()->create([
-            'user_type' => 'Técnico',
+            'user_type' => Roles::TECHNICIAN->value,
         ]);
 
         $orders = Order::factory()->count(3)->create([
@@ -55,7 +57,7 @@ class UserTest extends TestCase
     public function test_user_has_many_orders_as_manager(): void
     {
         $manager = User::factory()->create([
-            'user_type' => 'Gestor',
+            'user_type' => Roles::MANAGER->value,
         ]);
 
         $orders = Order::factory()->count(3)->create([
@@ -128,6 +130,11 @@ class UserTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_users_page_is_not_displayed_due_permissions(): void
+    {
+        $this->assertForbiddenForUnauthorizedUsers('users.index');
+    }
+
     public function test_user_creation_page_is_displayed(): void
     {
         $response = $this
@@ -135,6 +142,11 @@ class UserTest extends TestCase
             ->get(route('users.showCreate'));
 
         $response->assertOk();
+    }
+
+    public function test_user_creation_page_is_not_displayed_due_permissions(): void
+    {
+        $this->assertForbiddenForUnauthorizedUsers('users.showCreate');
     }
 
     public function test_user_edit_page_is_displayed(): void
@@ -148,13 +160,20 @@ class UserTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_user_edit_page_is_not_displayed_due_permissions(): void
+    {
+        $user = User::factory()->create();
+
+        $this->assertForbiddenForUnauthorizedUsers('users.showEdit', $user->id);
+    }
+
     public function test_user_can_create_another_user(): void
     {
 
         $userData = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' =>  'Teste1234*',
+            'password' => 'Teste1234*',
             'password_confirmation' => 'Teste1234*',
             'phone' => '' . rand(910000000, 999999999),
         ];
@@ -172,6 +191,37 @@ class UserTest extends TestCase
             'email' => $userData['email'],
             'phone' => $userData['phone'],
         ]);
+    }
+
+    public function test_user_cannnot_create_another_user_due_permissions(): void
+    {
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
+
+        $users = [$technician, $driver, $none];
+
+        foreach ($users as $user) {
+            $userData = [
+                'name' => fake()->name(),
+                'email' => fake()->unique()->safeEmail(),
+                'password' => 'Teste1234*',
+                'password_confirmation' => 'Teste1234*',
+                'phone' => '' . rand(910000000, 999999999),
+            ];
+
+            $response = $this
+                ->actingAs($user)
+                ->post(route('users.create'), $userData);
+
+            $response->assertForbidden();
+
+            $this->assertDatabaseMissing('users', [
+                'name' => $userData['name'],
+                'email' => $userData['email'],
+                'phone' => $userData['phone'],
+            ]);
+        }
     }
 
     public function test_user_can_edit_another_user(): void
@@ -196,6 +246,34 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', $updatedData);
     }
 
+    public function test_user_cannot_edit_another_user_due_permissions(): void
+    {
+        $user = User::factory()->create();
+
+        $updatedData = [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => rand(910000000, 999999999),
+            'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
+        ];
+
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
+
+        $users = [$technician, $driver, $none];
+
+        foreach ($users as $user) {
+            $response = $this
+                ->actingAs($user)
+                ->put(route('users.edit', $user->id), $updatedData);
+
+            $response->assertForbidden();
+
+            $this->assertDatabaseMissing('users', $updatedData);
+        }
+    }
+
     public function test_user_can_delete_another_user(): void
     {
         $user = User::factory()->create();
@@ -213,12 +291,39 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function test_user_cannot_delete_another_user_due_permissions(): void
+    {
+        $user = User::factory()->create();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+        ]);
+
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
+
+        $users = [$technician, $driver, $none];
+
+        foreach ($users as $user) {
+            $response = $this
+                ->actingAs($user)
+                ->delete(route('users.delete', $user->id));
+
+            $response->assertForbidden();
+
+            $this->assertDatabaseHas('users', [
+                'id' => $user->id,
+            ]);
+        }
+    }
+
     public function test_user_creation_handles_exception()
     {
         $data = [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' =>  'Teste1234*',
+            'password' => 'Teste1234*',
             'password_confirmation' => 'Teste1234*',
             'phone' => '' . rand(910000000, 999999999),
         ];
@@ -236,5 +341,28 @@ class UserTest extends TestCase
 
         // Assert: Check if the catch block was executed
         $response->assertRedirect(route('users.index')); // Ensure it redirects back to the form
+    }
+
+    /**
+     * Auxiliar method to verify if driver and none users cannot access some pages
+     * @param string $route
+     * @param mixed $id
+     * @return void
+     */
+    private function assertForbiddenForUnauthorizedUsers(string $route, ?int $id = null): void
+    {
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
+        $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
+
+        $users = [$technician, $driver, $none];
+
+        foreach ($users as $user) {
+            $response = $this
+                ->actingAs($user)
+                ->get(route($route, $id ? [$id] : []));
+
+            $response->assertForbidden();
+        }
     }
 }

@@ -3,51 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
-use App\Models\User;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Log;
 use App\Helpers\ErrorMessagesHelper;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
-class TechnicianController extends Controller
+class AdminController extends Controller
 {
     public function index()
     {
-        if(! Gate::allows('view-user')) {
+        if(!Gate::allows('view-admin')) {
             abort(403);
         }
 
-        Log::channel('user')->info('User accessed technicians page', [
+        Log::channel('user')->info('User accessed admins page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        // Retrieve all technicians with their related kids, including the pivot priority
-        $technicians = User::where('user_type', Roles::TECHNICIAN->value)->get();
+        $admins = User::where('user_type', Roles::ADMIN->value)->get();
 
-        return Inertia::render('Technicians/AllTechnicians', [
+        return Inertia::render('Admins/AllAdmins', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
             ],
-            'technicians' => $technicians,
+            'admins' => $admins,
         ]);
     }
 
-    public function showCreateTechnicianForm()
+    public function showCreateAdminForm()
     {
-        if(! Gate::allows('create-user')) {
+        if(!Gate::allows('create-admin')) {
             abort(403);
         }
 
-        Log::channel('user')->info('User accessed technician creation page', [
+        Log::channel('user')->info('User accessed admin creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
         $users = User::where('user_type', Roles::NONE->value)->get();
 
-        return Inertia::render('Technicians/NewTechnician', [
+        return Inertia::render('Admins/NewAdmin', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
@@ -56,9 +55,9 @@ class TechnicianController extends Controller
         ]);
     }
 
-    public function createTechnician(Request $request)
+    public function createAdmin(Request $request)
     {
-        if(! Gate::allows('create-user')) {
+        if(!Gate::allows('create-admin')) {
             abort(403);
         }
 
@@ -73,8 +72,8 @@ class TechnicianController extends Controller
                 function ($attribute, $value, $fail) use ($request) {
                     $user = User::find($value);
         
-                    if ($user && $user->user_type != Roles::NONE->value) {
-                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em técnicos');
+                    if ($user && $user->user_type != 'Nenhum') {
+                        $fail('Somente utilizadores de tipo "Nenhum" podem ser convertidos em Administradores');
                     }
                 },
 
@@ -85,50 +84,50 @@ class TechnicianController extends Controller
 
         try {
             $user->update([
-                'user_type' => Roles::TECHNICIAN->value,
+                'user_type' => Roles::ADMIN->value,
             ]);
 
-            Log::channel('user')->info('User created a technician', [
+            Log::channel('user')->info('User created a admin', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'technician_id' => $user->id ?? null,
+                'admin_id' => $user->id ?? null,
             ]);
 
-            return redirect()->route('technicians.index')->with('message', 'Técnico/a com id ' . $user->id . ' criado/a com sucesso!');
+            return redirect()->route('admins.index')->with('message', 'Administrador/a com id ' . $user->id . ' criado/a com sucesso!');
         
         } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error creating technician', [
+            Log::channel('usererror')->error('Error creating admin', [
                 'user_id' => $incomingFields['user_id'] ?? null,
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de técnicos. Tente novamente.');
+            return redirect()->route('admins.index')->with('error', 'Houve um problema ao adicionar o utilizador com id ' . $user->id . ' à lista de administradores. Tente novamente.');
         }
     }
 
-    public function showEditTechnicianForm(User $user)
+    public function showEditAdminForm(User $user)
     {
-        if(! Gate::allows('edit-user')) {
+        if(!Gate::allows('edit-admin')) {
             abort(403);
         }
 
-        Log::channel('user')->info('User accessed technician edit page', [
+        Log::channel('user')->info('User accessed admin edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
-            'technician_id' => $user->id ?? null,
+            'admin_id' => $user->id ?? null,
         ]);
 
-        return Inertia::render('Technicians/EditTechnician', [
+        return Inertia::render('Admins/EditAdmin', [
             'flash' => [
                 'message' => session('message'),
                 'error' => session('error'),
             ],
-            'technician' => $user,
+            'admin' => $user,
         ]);
     }
 
-    public function editTechnician(User $user, Request $request)
+    public function editAdmin(User $user, Request $request)
     {
-        if(! Gate::allows('edit-user')) {
+        if(!Gate::allows('edit-admin')) {
             abort(403);
         }
 
@@ -153,27 +152,27 @@ class TechnicianController extends Controller
                 'status' => $incomingFields['status'],
             ]);
 
-            Log::channel('user')->info('User edited a technician', [
+            Log::channel('user')->info('User edited an admin', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'technician_id' => $user->id ?? null,
+                'admin_id' => $user->id ?? null,
             ]);
 
-            return redirect()->route('technicians.index')->with('message', 'Dados do/a técnico/a com id ' . $user->id . ' atualizados com sucesso!');
+            return redirect()->route('admins.index')->with('message', 'Dados do/a administrador/a com id ' . $user->id . ' atualizados com sucesso!');
             
         } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error editing technician', [
+            Log::channel('usererror')->error('Error editing admin', context: [
                 'route_id' => $user->id ?? null,
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao atualizar os dados do técnico com id ' . $user->id . '. Tente novamente.');
+            return redirect()->route('admins.index')->with('error', 'Houve um problema ao atualizar os dados do administrador com id ' . $user->id . '. Tente novamente.');
         }
     }
 
-    public function deleteTechnician($id)
+    public function deleteAdmin($id)
     {
-        if(! Gate::allows('delete-user')) {
+        if(!Gate::allows('delete-admin')) {
             abort(403);
         }
 
@@ -183,21 +182,21 @@ class TechnicianController extends Controller
                 'user_type' => Roles::NONE->value,
             ]);
 
-            Log::channel('user')->info('User deleted a technician', [
+            Log::channel('user')->info('User deleted an admin', [
                 'auth_user_id' => $this->loggedInUserId ?? null,
-                'technician_id' => $id ?? null,
+                'admin_id' => $id ?? null,
             ]);
 
-            return redirect()->route('technicians.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de técnicos com sucesso!');
+            return redirect()->route('admins.index')->with('message', 'Utilizador com id ' . $id . ' retirado da lista de administradores com sucesso!');
 
         } catch (\Exception $e) {
-            Log::channel('usererror')->error('Error deleting technician', [
+            Log::channel('usererror')->error('Error deleting admin', [
                 'route_id' => $id ?? null,
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->route('technicians.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de técnicos. Tente novamente.');
+            return redirect()->route('admins.index')->with('error', 'Houve um problema ao retirar o utilizador com id ' . $id . ' da lista de administradores. Tente novamente.');
         }
     }
 }

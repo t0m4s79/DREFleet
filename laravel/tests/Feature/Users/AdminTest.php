@@ -3,16 +3,14 @@
 namespace Tests\Feature;
 
 use App\Enums\Roles;
-use App\Models\Kid;
+use Database\Factories\AdminFactory;
 use Database\Factories\UserFactory;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Arr;
-use Database\Factories\TechnicianFactory;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TechnicianTest extends TestCase
+class AdminTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,125 +22,130 @@ class TechnicianTest extends TestCase
         $this->user = User::factory()->create(['user_type' => Roles::ADMIN->value]);
     }
 
-    public function test_technicians_page_is_displayed(): void
+    public function test_admins_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)
-            ->get(route('technicians.index'));
+            ->get(route('admins.index'));
 
         $response->assertOk();
     }
 
-    public function test_technicians_page_is_not_displayed_due_permissions(): void
+    public function test_admins_page_is_not_displayed_due_permissions(): void
     {
-        $this->assertForbiddenForUnauthorizedUsers('technicians.index');
+        $this->assertForbiddenForNonAdmins('admins.index');
     }
 
-    public function test_technician_creation_page_is_displayed(): void
+    public function test_admin_creation_page_is_displayed(): void
     {
         $response = $this
             ->actingAs($this->user)
-            ->get(route('technicians.showCreate'));
+            ->get(route('admins.showCreate'));
 
         $response->assertOk();
     }
 
-    public function test_technician_creation_page_is_not_displayed_due_permissions(): void
+    public function test_admin_creation_page_is_not_displayed_due_permissions(): void
     {
-        $this->assertForbiddenForUnauthorizedUsers('technicians.showCreate');
+        $this->assertForbiddenForNonAdmins('admins.showCreate');
     }
 
-    public function test_technician_edit_page_is_displayed(): void
+    public function test_admin_edit_page_is_displayed(): void
     {
-        $technician = TechnicianFactory::new()->create();
+        $admin = AdminFactory::new()->create();
 
         $response = $this
             ->actingAs($this->user)
-            ->get(route('technicians.showEdit', $technician->id));
+            ->get(route('admins.showEdit', $admin->id));
 
         $response->assertOk();
     }
 
-    public function test_technician_edit_page_is_not_displayed_due_permissions(): void
+    public function test_admin_edit_page_is_not_displayed_due_permissions(): void
     {
-        $technician = TechnicianFactory::new()->create();
-
-        $this->assertForbiddenForUnauthorizedUsers('technicians.showEdit', $technician->id);
+        $admin = AdminFactory::new()->create();
+        $this->assertForbiddenForNonAdmins('admins.showEdit', $admin->id);
     }
 
-    public function test_user_can_create_a_technician(): void
+    public function test_user_can_create_an_admin(): void
     {
         $user = User::factory()->create();
 
-        $technicianData = [
+        $adminData = [
             'id' => $user->id,
+            'user_type' => Roles::NONE->value
         ];
 
         $response = $this
             ->actingAs($this->user)
-            ->post(route('technicians.create'), $technicianData);
+            ->post(route('admins.create'), $adminData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('technicians.index'));
+            ->assertRedirect(route('admins.index'));
 
 
-        $this->assertDatabaseHas('users', $technicianData);
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'user_type' => Roles::ADMIN->value,
+        ]);
     }
 
-    public function test_user_cannot_create_a_technician_due_permissions(): void
+    public function test_user_cannot_create_an_admin_due_permissions(): void
     {
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
         $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$driver, $none];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
-            $newTechnician = User::factory()->create();
+            $newAdmin = User::factory()->create();
 
-            $technicianData = [
-                'id' => $newTechnician->id,
+            $adminData = [
+                'id' => $newAdmin->id,
                 'user_type' => Roles::NONE->value
             ];
 
             $response = $this
                 ->actingAs($user)
-                ->post(route('technicians.create'), $technicianData);
+                ->post(route('admins.create'), $adminData);
 
             $response->assertForbidden();
 
             $this->assertDatabaseMissing('users', [
-                'id' => $user->id,
-                'user_type' => Roles::TECHNICIAN->value,
+                'id' => $newAdmin->id,
+                'user_type' => Roles::ADMIN->value,
             ]);
         }
     }
 
-    public function test_create_technician_fails_on_user_type_is_not_none(): void
+    public function test_create_admins_fails_on_user_type_is_not_none(): void
     {
         $user = User::factory()->create([
             'user_type' => Roles::MANAGER->value,
         ]);
 
-        $technicianData = [
+        $adminData = [
             'id' => $user->id,
         ];
 
         $response = $this
             ->actingAs($this->user)
-            ->post(route('technicians.create'), $technicianData);
+            ->post(route('admins.create'), $adminData);
 
         $response->assertSessionHasErrors(['id']);
 
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
-            'user_type' => Roles::TECHNICIAN->value,
+            'user_type' => Roles::ADMIN->value,
         ]);
     }
 
-    public function test_user_can_edit_a_technician(): void
+    public function test_user_can_edit_an_admin(): void
     {
-        $technician = TechnicianFactory::new()->create();
+        $admin = AdminFactory::new()->create();
 
         $updatedData = [
             'name' => fake()->name(),
@@ -153,18 +156,18 @@ class TechnicianTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->put(route('technicians.edit', $technician->id), $updatedData);
+            ->put(route('admins.edit', $admin->id), $updatedData);
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('technicians.index'));
+            ->assertRedirect(route('admins.index'));
 
-        $this->assertDatabaseHas('users', $updatedData);
+        $this->assertDatabaseHas('users', array_merge(['id' => $admin->id], $updatedData));
     }
 
-    public function test_user_cannot_edit_a_technician_due_permissions(): void
+    public function test_user_cannot_edit_an_admin_due_permissions(): void
     {
-        $technician = TechnicianFactory::new()->create();
+        $admin = AdminFactory::new()->create();
 
         $updatedData = [
             'name' => fake()->name(),
@@ -173,15 +176,17 @@ class TechnicianTest extends TestCase
             'status' => Arr::random(['Disponível', 'Indisponível', 'Em Serviço', 'Escondido']),
         ];
 
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
         $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$driver, $none];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
                 ->actingAs($user)
-                ->put(route('technicians.edit', $technician->id), $updatedData);
+                ->put(route('admins.edit', $admin->id), $updatedData);
 
             $response->assertForbidden();
 
@@ -189,53 +194,60 @@ class TechnicianTest extends TestCase
         }
     }
 
-    public function test_user_can_delete_a_technician(): void
+    public function test_user_can_delete_an_admin(): void
     {
-        $technician = TechnicianFactory::new()->create();
+        $admin = AdminFactory::new()->create();
 
         $this->assertDatabaseHas('users', [
-            'id' => $technician->id,
-            'user_type' => Roles::TECHNICIAN->value
+            'id' => $admin->id,
+            'user_type' => Roles::ADMIN->value
         ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->delete(route('technicians.delete', $technician->id));
+            ->delete(route('admins.delete', $admin->id));
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('technicians.index'));
+            ->assertRedirect(route('admins.index'));
 
         $this->assertDatabaseHas('users', [
-            'id' => $technician->id,
+            'id' => $admin->id,
             'user_type' => Roles::NONE->value
         ]);
     }
 
-    public function test_user_cannot_delete_a_technician_due_permissions(): void
+    public function test_user_cannot_delete_an_admin_due_permissions(): void
     {
-        $technician = TechnicianFactory::new()->create();
+        $admin = AdminFactory::new()->create();
 
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->id,
+            'user_type' => Roles::ADMIN->value
+        ]);
+
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
         $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$driver, $none];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
                 ->actingAs($user)
-                ->delete(route('technicians.delete', $technician->id));
+                ->delete(route('admins.delete', $admin->id));
 
             $response->assertForbidden();
 
             $this->assertDatabaseMissing('users', [
-                'id' => $technician->id,
+                'id' => $admin->id,
                 'user_type' => Roles::NONE->value
             ]);
         }
     }
 
-    public function test_technician_creation_handles_exception()
+    public function test_admin_creation_handles_exception()
     {
         $user = User::factory()->create();
 
@@ -249,28 +261,29 @@ class TechnicianTest extends TestCase
                 ->andThrow(new \Exception('Database error'));
         });
 
-        // Act: Send a POST request to the create technician route
+        // Act: Send a POST request to the create admin route
         $response = $this
             ->actingAs($this->user)
-            ->post(route('technicians.create'), $data);
+            ->post(route('admins.create'), $data);
 
         // Assert: Check if the catch block was executed
-        $response->assertRedirect(route('technicians.index')); // Ensure it redirects back to the form
+        $response->assertRedirect(route('admins.index')); // Ensure it redirects back to the form
     }
 
     /**
-     * Auxiliar method to verify if driver and none users cannot access some pages
+     * Auxiliar method to verify if non-admin users cannot access some pages
      * @param string $route
      * @param mixed $id
      * @return void
      */
-    private function assertForbiddenForUnauthorizedUsers(string $route, ?int $id = null): void
+    private function assertForbiddenForNonAdmins(string $route, ?int $id = null): void
     {
         $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
+        $manager = UserFactory::new()->create(['user_type' => Roles::MANAGER->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
         $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$technician, $driver, $none];
+        $users = [$technician, $manager, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
@@ -280,5 +293,4 @@ class TechnicianTest extends TestCase
             $response->assertForbidden();
         }
     }
-
 }

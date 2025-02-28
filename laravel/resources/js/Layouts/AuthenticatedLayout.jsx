@@ -117,9 +117,9 @@ export default function Authenticated({ user, header, children }) {
                                                 <Dropdown.Link  href={route('drivers.index')} active={route().current('drivers.index')}>Condutores</Dropdown.Link>
                                                 <Dropdown.Link  href={route('technicians.index')} active={route().current('technicians.index')}>Técnicos</Dropdown.Link>
                                                 <Dropdown.Link  href={route('managers.index')} active={route().current('managers.index')}>Gestores</Dropdown.Link>
+                                                <Dropdown.Link  href={route('admins.index')} active={route().current('admins.index')}>Administradores</Dropdown.Link>
 
                                                 {/* TODO: Links para: */}
-                                                {/* 2º) ADMINISTRADORES */}
                                                 {/* 5º) POR ATRIBUIR */}
                                             </Dropdown.Content>
                                         </Dropdown>

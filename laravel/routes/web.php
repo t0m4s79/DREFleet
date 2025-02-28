@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BackupController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -219,6 +220,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'showEditVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showEdit');
     Route::put('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'editVehicleRefuelRequest'])->name('vehicleRefuelRequests.edit');
     Route::delete('/vehicle/refuelRequests/delete/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'deleteVehicleRefuelRequest'])->name('vehicleRefuelRequests.delete');
+
+    //ADMINS (USER MODEL WITH Administrador USER_TYPE)
+    Route::get('/users/admins', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('/users/admins/create', [AdminController::class, 'showCreateAdminForm'])->name('admins.showCreate');
+    Route::post('/users/admins/create', [AdminController::class, 'createAdmin'])->name('admins.create');
+    Route::get('/users/admins/edit/{user}', [AdminController::class, 'showEditAdminForm'])->name('admins.showEdit');
+    Route::put('/users/admins/edit/{user}', [AdminController::class, 'editAdmin'])->name('admins.edit');
+    Route::delete('/users/admins/delete/{user}', [AdminController::class, 'deleteAdmin'])->name('admins.delete');
 });
 
 require __DIR__.'/auth.php';
