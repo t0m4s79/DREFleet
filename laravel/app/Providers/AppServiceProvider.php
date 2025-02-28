@@ -412,5 +412,30 @@ class AppServiceProvider extends ServiceProvider
                 ? Response::allow()
                 : Response::denyWithStatus(403);
         });
+
+        // Admins
+        Gate::define('view-admin', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('create-admin', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('edit-admin', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+
+        Gate::define('delete-admin', function (User $user) {
+            return $user->isAdmin()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
     }
 }
