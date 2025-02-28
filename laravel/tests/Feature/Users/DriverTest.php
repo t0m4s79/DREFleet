@@ -26,7 +26,7 @@ class DriverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create(['user_type' => 'Administrador']);
+        $this->user = User::factory()->create(['user_type' => Roles::ADMIN->value]);
     }
 
     protected function getRandomRegionIdentifier(): string

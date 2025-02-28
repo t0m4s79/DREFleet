@@ -266,10 +266,11 @@ class TechnicianTest extends TestCase
      */
     private function assertForbiddenForUnauthorizedUsers(string $route, ?int $id = null): void
     {
+        $technician = UserFactory::new()->create(['user_type' => Roles::TECHNICIAN->value]);
         $driver = UserFactory::new()->create(['user_type' => Roles::DRIVER->value]);
         $none = UserFactory::new()->create(['user_type' => Roles::NONE->value]);
 
-        $users = [$driver, $none];
+        $users = [$technician, $driver, $none];
 
         foreach ($users as $user) {
             $response = $this
