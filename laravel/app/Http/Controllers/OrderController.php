@@ -7,6 +7,8 @@ use App\Enums\OrderStatus;
 use App\Enums\Roles;
 use App\Enums\UserStatus;
 use App\Enums\VehicleStatus;
+use App\Models\VehicleAccessory;
+use App\Models\VehicleDocument;
 use Exception;
 use App\Models\Kid;
 use App\Models\User;
@@ -66,7 +68,7 @@ class OrderController extends Controller
 
         } elseif ($user->user_type === Roles::DRIVER->value) {
             $ordersQuery->where('driver_id', $user->id);
-            
+
         } elseif (!in_array($user->user_type, [Roles::ADMIN->value, Roles::MANAGER->value])) {
             $ordersQuery = null; // Prevents access for unauthorized users
         }
@@ -110,6 +112,24 @@ class OrderController extends Controller
 
         $vehicles = Vehicle::whereNotIn('status', [VehicleStatus::HIDDEN->value, VehicleStatus::UNAVAILABLE->value])->get();
 
+        $vehicleDocuments = VehicleDocument::with('vehicle')
+            ->whereIn('vehicle_id', $vehicles->pluck('id'))
+            ->get();
+
+        $vehicleDocuments->each(function ($document) {
+            $document->issue_date = Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->expired = $document->expired ? 'Sim' : 'Não';
+        });
+
+        $vehicleAccessories = VehicleAccessory::with('vehicle')
+            ->whereIn('vehicle_id', $vehicles->pluck('id'))
+            ->get();
+
+        $vehicleAccessories->each(function ($accessory) {
+            $accessory->expiration_date = $accessory->expiration_date ? Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
+        });
+
         $technicians = User::where('user_type', Roles::TECHNICIAN->value)
             ->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value])
             ->get();
@@ -126,6 +146,8 @@ class OrderController extends Controller
             ],
             'drivers' => $drivers,
             'vehicles' => $vehicles,
+            'vehicleDocuments' => $vehicleDocuments,
+            'vehicleAccessories' => $vehicleAccessories,
             'technicians' => $technicians,
             'managers' => $managers,
             'kids' => $kids,
@@ -322,10 +344,35 @@ class OrderController extends Controller
 
         $order->load(['orderStops.place', 'orderStops.kids'])->get();
 
-        $drivers = Driver::all();
-        $vehicles = Vehicle::all();
-        $technicians = User::where('user_type', 'Técnico')->get();
-        $managers = User::where('user_type', 'Gestor')->get();
+        $drivers = Driver::whereHas('user', function ($query) {
+            $query->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value]);
+        })->get();
+
+        $vehicles = Vehicle::whereNotIn('status', [VehicleStatus::HIDDEN->value, VehicleStatus::UNAVAILABLE->value])->get();
+
+        $vehicleDocuments = VehicleDocument::with('vehicle')
+            ->whereIn('vehicle_id', $vehicles->pluck('id'))
+            ->get();
+
+        $vehicleDocuments->each(function ($document) {
+            $document->issue_date = Carbon::parse($document->issue_date)->format('d-m-Y');
+            $document->expiration_date = Carbon::parse($document->expiration_date)->format('d-m-Y');
+            $document->expired = $document->expired ? 'Sim' : 'Não';
+        });
+
+        $vehicleAccessories = VehicleAccessory::with('vehicle')
+            ->whereIn('vehicle_id', $vehicles->pluck('id'))
+            ->get();
+
+        $vehicleAccessories->each(function ($accessory) {
+            $accessory->expiration_date = $accessory->expiration_date ? Carbon::parse($accessory->expiration_date)->format('d-m-Y') : '-';
+        });
+
+        $technicians = User::where('user_type', Roles::TECHNICIAN->value)
+            ->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value])
+            ->get();
+
+        $managers = User::where('user_type', Roles::MANAGER->value)->get();
         $places = Place::all();
         $kids = Kid::with('places')->get();
         $otherPlaces = Place::whereNot('place_type', 'Residência')->get();
@@ -339,6 +386,8 @@ class OrderController extends Controller
             'order' => $order,
             'drivers' => $drivers,
             'vehicles' => $vehicles,
+            'vehicleDocuments' => $vehicleDocuments,
+            'vehicleAccessories' => $vehicleAccessories,
             'technicians' => $technicians,
             'managers' => $managers,
             'places' => $places,

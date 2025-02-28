@@ -4,7 +4,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const ErrorModal = ({ isOpen, onClose, errors }) => {
 
-    console.log(errors)
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-[1000]" onClose={onClose}>

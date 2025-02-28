@@ -1,19 +1,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Chip } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import VehicleWarnings from '@/Components/VehicleWarnings';
 import { parseVehicles, vehicleExpirations } from '@/utils/Dashboard/vehicles';
 import { parseOrders } from '@/utils/Dashboard/orders';
 import { Badge } from "@mui/material";
-import { parseDrivers } from '@/utils/Dashboard/drivers';
+import { driversExpirations, parseDrivers } from '@/utils/Dashboard/drivers';
 import { parseTechnicians } from '@/utils/Dashboard/technicians';
-import { LineChart } from '@mui/x-charts';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { parseRequests } from '@/utils/Dashboard/requests';
+import RefuelRequestsByMonthChart from '@/Components/Charts/RefuelRequestsByMonthChart';
+import RefuelRequestsChart from '@/Components/Charts/RefuelRequestsChart';
+import MaintenanceRequestsChart from '@/Components/Charts/MaintenanceRequestsChart';
+import MaintenanceRequestsByMonthChart from '@/Components/Charts/MaintenanceRequestsByMonth';
+import KilometersChart from '@/Components/Charts/KilometersChart';
+import DriversExpirationsList from '@/Components/Dashboard/DriversExpirationsList';
+import VehicleExpirationsList from '@/Components/Dashboard/VehicleExpirationsList';
 
 const renderOrderStatus = (status) => {
     const colors = {
@@ -28,7 +33,7 @@ const renderOrderStatus = (status) => {
     return <Chip label={status} color={colors[status]} variant="outlined" size="medium" className='ml-2' />;
 }
 
-export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], refuelRequests = [], maintenanceRequests = [], permissions }) {
+export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], refuelRequests = [], maintenanceRequests = [], kilometersReports = [], permissions }) {
     const [expandedAccordion, setExpandedAccordion] = useState(null);
     const [expandedAccordionType, setExpandedAccordionType] = useState(null);
 
@@ -75,6 +80,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
     const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
     const { inServiceDrivers, availableDrivers } = parseDrivers(drivers);
     const { inServiceTechnicians, availableTechnicians } = parseTechnicians(technicians);
+    const driversExpirationsMap = driversExpirations(drivers);
 
     const driversPieChartData = [
         { label: `Em Serviço (${inServiceDrivers.length})`, value: inServiceDrivers.length },
@@ -97,9 +103,6 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
         { label: `Agendados (${approvedOrders.length})`, value: approvedOrders.length },
         { label: `Por Aprovar (${ordersToAprove.length})`, value: ordersToAprove.length }
     ]
-
-    const refuelRequestsData = parseRequests(refuelRequests);
-    const maintenanceRequestsData = parseRequests(maintenanceRequests);
 
     const StyledText = styled('text')(({ theme }) => ({
         fill: theme.palette.text.primary,
@@ -125,63 +128,12 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
             <Head title="Painel de Controlo" />
 
             {(userType === "Administrador" || userType === "Gestor") &&
-                <div className="w-full pt-10 flex flex-col items-center">
-                    {vehicles.some(vehicle => {
-                        const [expired, expiring] = vehicleExpirations(vehicle);
-                        return expired > 0 || expiring > 0;
-                    }) && (
-                            <div className="w-full max-w-7xl bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md mb-6">
-                                <div className="flex items-center mb-2">
-                                    <span className="text-2xl mr-3">🚨</span>
-                                    <span className="text-lg font-semibold">
-                                        Existem
-                                        <Badge
-                                            badgeContent={vehicles.filter(v => {
-                                                const [expired, expiring] = vehicleExpirations(v);
-                                                return expired > 0 || expiring > 0;
-                                            }).length}
-                                            color="error"
-                                            sx={{ mx: 1.5 }}
-                                        />
-                                        veículos com problemas de documentos/acessórios.
-                                    </span>
-                                </div>
-
-                                <Accordion className="w-full shadow-md rounded-lg overflow-hidden">
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel-warning-content"
-                                        id="panel-warning-header"
-                                        className="hover:transition hover:text-gray-500 aria-expanded:text-red-600 aria-expanded:font-bold"
-                                    >
-                                        <span className="flex items-center text-red-700">
-                                            <span className="text-lg font-semibold">📋 Ver detalhes dos veículos afetados</span>
-                                        </span>
-                                    </AccordionSummary>
-
-                                    <AccordionDetails className="bg-white p-4 rounded-b-lg">
-                                        {vehicles.filter(vehicle => {
-                                            const [expired, expiring] = vehicleExpirations(vehicle);
-                                            return expired > 0 || expiring > 0;
-                                        }).map(vehicle => {
-                                            const [expired, expiring] = vehicleExpirations(vehicle);
-
-                                            return (
-                                                <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3 border-b border-gray-200 last:border-none py-2">
-                                                    <a href={route('vehicles.documentsAndAccessories', vehicle)} className="font-semibold">
-                                                        #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                    </a>
-
-                                                    <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} userType={userType} />
-                                                </div>
-                                            );
-                                        })}
-                                    </AccordionDetails>
-                                </Accordion>
-                            </div>
-                        )}
-                </div>
+                <VehicleExpirationsList vehicles={vehicles} userType={userType} />
             }
+
+            {(userType === "Administrador" || userType === "Gestor") && (
+                <DriversExpirationsList driversExpirationsMap={driversExpirationsMap} />
+            )}
 
             <div className="pt-8">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
@@ -593,29 +545,19 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                 <div className="pt-8">
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div className="text-2xl p-6 text-gray-900 font-bold">Relatórios</div>
+                            <div className="text-2xl p-6 text-gray-900 font-bold">Registos dos Veículos</div>
                         </div>
 
                         <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <RefuelRequestsChart refuelRequests={refuelRequests} />
 
-                            <Box>
-                                <LineChart
-                                    xAxis={[{ scaleType: 'point', data: refuelRequestsData.map(d => d.month) }]}
-                                    series={[{ data: refuelRequestsData.map(d => d.requests), label: "Registos de Abastecimento" }]}
-                                    width={600}
-                                    height={300}
-                                />
-                            </Box>
+                            <MaintenanceRequestsChart maintenanceRequests={maintenanceRequests} />
 
+                            <RefuelRequestsByMonthChart refuelRequests={refuelRequests} />
 
-                            <Box>
-                                <LineChart
-                                    xAxis={[{ scaleType: 'point', data: maintenanceRequestsData.map(d => d.month) }]}
-                                    series={[{ data: maintenanceRequestsData.map(d => d.requests), label: "Registos de Manutenção" }]}
-                                    width={600}
-                                    height={300}
-                                />
-                            </Box>
+                            <MaintenanceRequestsByMonthChart maintenanceRequests={maintenanceRequests} />
+
+                            <KilometersChart kilometersReports={kilometersReports} />
                         </div>
                     </div>
                 </div>

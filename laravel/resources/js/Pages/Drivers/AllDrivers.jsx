@@ -4,9 +4,10 @@ import { Head, Link } from '@inertiajs/react';
 import { Alert, Button, Chip, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { isBefore, parse } from 'date-fns';
+import { differenceInDays, isBefore, isValid, parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
 
@@ -21,6 +22,13 @@ const isExpired = (date) => {
             return (
                 <div style={{ color: 'red' }}>
                     <ErrorIcon style={{ marginRight: '4px', color: 'red', fontWeight: 'bolder' }} />
+                    {date.formattedValue}
+                </div>
+            );
+        } else if (differenceInDays(parsedDate, now) < 30){
+            return (
+                <div style={{ color: '#FFC700' }}>
+                    <WarningIcon style={{ marginRight: '4px', color: '#FFC700', fontWeight: 'bolder' }} />
                     {date.formattedValue}
                 </div>
             );
@@ -194,14 +202,30 @@ export default function AllDrivers( {auth, drivers, flash, permissions} ) {
                         editAction={"drivers.showEdit"}
                         deleteAction={"drivers.delete"}
                         getRowClassName={(params) => {
-                            const licenseExpirationDate = parse(params.row.license_expiration_date, 'dd-MM-yyyy', new Date());
-                            const tccExpirationDate = parse(params.row.tcc_expiration_date, 'dd-MM-yyyy', new Date())
-                            // Check if either date is before the current date
-                            const isLicenseExpired = isBefore(licenseExpirationDate, new Date());
-                            const isTccExpired = isBefore(tccExpirationDate, new Date());
-
-                            return isLicenseExpired || isTccExpired ? 'expired-row' : '';
+                            const today = new Date();
+                        
+                            const licenseExpirationDate = params.row.license_expiration_date 
+                                ? parse(params.row.license_expiration_date, 'dd-MM-yyyy', new Date()) 
+                                : null;
+                        
+                            const tccExpirationDate = params.row.tcc_expiration_date 
+                                ? parse(params.row.tcc_expiration_date, 'dd-MM-yyyy', new Date()) 
+                                : null;
+                        
+                            const daysToLicenseExpire = licenseExpirationDate && isValid(licenseExpirationDate)
+                                ? differenceInDays(licenseExpirationDate, today) 
+                                : Infinity;
+                        
+                            const daysToTccExpire = tccExpirationDate && isValid(tccExpirationDate)
+                                ? differenceInDays(tccExpirationDate, today) 
+                                : Infinity;
+                        
+                            if (daysToLicenseExpire < 0 || daysToTccExpire < 0) return 'expired-row';
+                            if (daysToLicenseExpire < 30 || daysToTccExpire < 30) return 'warning-row';
+                        
+                            return '';
                         }}
+                        
                         permissions={permissions}
                     />
                 </div>

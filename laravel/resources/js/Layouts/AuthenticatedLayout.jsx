@@ -49,7 +49,7 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
 
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
-                                    <div className="relative">                                
+                                    <div className="relative">
                                         <Dropdown>
                                             <Dropdown.Trigger>
                                                 <span className="inline-flex rounded-md">
@@ -86,7 +86,7 @@ export default function Authenticated({ user, header, children }) {
 
 
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
-                                    <div className="relative">                                
+                                    <div className="relative">
                                         <Dropdown>
                                             <Dropdown.Trigger>
                                                 <span className="inline-flex rounded-md">
@@ -135,7 +135,7 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
 
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
-                                    <div className="relative">                                
+                                    <div className="relative">
                                         <Dropdown>
                                             <Dropdown.Trigger>
                                                 <span className="inline-flex rounded-md">
@@ -172,6 +172,12 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('orderRoutes.index')} active={route().current('orderRoutes.index')}>
                                     Rotas
                                 </NavLink>
+
+                                {user.user_type === "Administrador" &&
+                                    <NavLink href={route('backups.index')} active={route().current('backups.index')}>
+                                        Backups
+                                    </NavLink>
+                                }
                             </div>
                         </div>
 
@@ -187,7 +193,7 @@ export default function Authenticated({ user, header, children }) {
                                             <Badge badgeContent={unreadCount} color='error'>
                                                 <NotificationsIcon />{/* Bell Icon */}
                                             </Badge>
-                                            
+
                                         </button>
                                     </span>
                                 </Dropdown.Trigger>
@@ -234,7 +240,7 @@ export default function Authenticated({ user, header, children }) {
                                 </Dropdown>
                             </div>
                         </div>
-                        
+
                         <div className="-me-2 flex items-center lg:hidden">
                             <ResponsiveDrawer user={user}/>
                         </div>
