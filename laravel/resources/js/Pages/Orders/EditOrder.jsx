@@ -206,7 +206,7 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
         observations: order.observations || ''
     }
 
-    const { data, setData, put, patch, errors, processing} = useForm({...initialData})
+    const { data, setData, put, patch, errors, processing } = useForm({ ...initialData })
 
     const toggleEdit = () => {
         if (isEditMode) {
@@ -215,12 +215,12 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
         setisEditMode(!isEditMode);
     }
 
-    const handleRouteChange =(route) => {
+    const handleRouteChange = (route) => {
         //console.log(route)
         setSelectedRouteID(route.id)
         setPreferredDrivers(route.drivers)
         setPreferredTechnicians(route.technicians)
-        setData('order_route_id',route.id)
+        setData('order_route_id', route.id)
     }
 
     const handleRouteType = (type) => {
@@ -243,7 +243,7 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
         setData('vehicle_id', value?.value || '');
     };
 
-    const updateSummary = ( summary ) => {
+    const updateSummary = (summary) => {
         //console.log('summary',summary);
         setData({
             ...data,  // Spread the existing form data
@@ -281,17 +281,17 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
     const handleApprove = (id) => {
         // manager_id is missing from the data
         // TODO: TO BE DISCUSSED WHERE THESE BUTTONS SHOULD APPEAR  
-        try{
+        try {
             patch(route('orders.approve', id))
-        } catch (error){
+        } catch (error) {
             console.error('Error approving order:', error)
         }
     }
 
     const handleUnapprove = (id) => {
-        try{
+        try {
             patch(route('orders.unapprove', id))
-        } catch (error){
+        } catch (error) {
             console.error('Error approving order:', error)
         }
     }
@@ -313,7 +313,7 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
                                 <input type="hidden" name="_token" value={csrfToken} />
 
                                 <div>
-                                    { isEditMode === false ?
+                                    {isEditMode === false ?
                                         (<div className='mb-4'>
                                             <Button
                                                 variant="contained"
@@ -345,18 +345,22 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
                                         </div>)}
 
 
-                                    <Button
-                                        color="success"
-                                        onClick={() => handleApprove(order.id)}
-                                    >
-                                        Aprovar
-                                    </Button>
-                                    <Button
-                                        color="error"
-                                        onClick={() => handleUnapprove(order.id)}
-                                    >
-                                        Não Aprovar
-                                    </Button>
+                                    {order.status === "Por aprovar" &&
+                                        <>
+                                            <Button
+                                                color="success"
+                                                onClick={() => handleApprove(order.id)}
+                                            >
+                                                Aprovar
+                                            </Button>
+                                            <Button
+                                                color="error"
+                                                onClick={() => handleUnapprove(order.id)}
+                                            >
+                                                Não Aprovar
+                                            </Button>
+                                        </>
+                                    }
                                 </div>
 
                                 <Grid container spacing={3}>
@@ -377,7 +381,7 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
 
                                         <InputLabel sx={{ mb: 2 }}>Tipo de Transporte</InputLabel>
                                         <Autocomplete
-                                            options={['Transporte de Pessoal','Transporte de Mercadorias','Transporte de Crianças', 'Outros']}
+                                            options={['Transporte de Pessoal', 'Transporte de Mercadorias', 'Transporte de Crianças', 'Outros']}
                                             value={data.order_type} // Bind the selected string
                                             onChange={(event, value) => handleRouteType(value)}
                                             //onChange={(event, value) => setData('order_type', value || '')} // Set the selected value (string)
@@ -448,8 +452,8 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
                                             // Disable vehicles that require a heavy license if the selected driver does not have one
                                             return (
                                                 selectedDriver &&
-                                                selectedDriver.heavy_license==0 &&
-                                                option.heavy_vehicle==1
+                                                selectedDriver.heavy_license == 0 &&
+                                                option.heavy_vehicle == 1
                                             );
                                         }}
                                         value={vehicleList.find(vehicle => vehicle.value === data.vehicle_id) || null}
@@ -536,10 +540,10 @@ function InnerEditOrder({ auth, order, drivers, vehicles, vehicleDocuments, vehi
                                                         )}
                                                         {option.tcc === 0 && (
                                                             <svg width="23" height="23" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: "4px" }}>
-                                                                <circle cx="12" cy="12" r="10" stroke="red" strokeWidth="2"/>
-                                                                <line x1="4" y1="4" x2="20" y2="20" stroke="red" strokeWidth="2"/>
-                                                                <path d="M12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7Z" fill="black"/>
-                                                                <path d="M9 9H15C16.1 9 17 9.9 17 11V15H14V12H10V15H7V11C7 9.9 7.9 9 9 9Z" fill="black"/>
+                                                                <circle cx="12" cy="12" r="10" stroke="red" strokeWidth="2" />
+                                                                <line x1="4" y1="4" x2="20" y2="20" stroke="red" strokeWidth="2" />
+                                                                <path d="M12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7Z" fill="black" />
+                                                                <path d="M9 9H15C16.1 9 17 9.9 17 11V15H14V12H10V15H7V11C7 9.9 7.9 9 9 9Z" fill="black" />
                                                             </svg>
                                                         )}
                                                     </Box>
