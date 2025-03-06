@@ -1,9 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Chip, Modal, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import VehicleWarnings from '@/Components/VehicleWarnings';
-import { parseVehicles, vehicleExpirations } from '@/utils/Dashboard/vehicles';
+import { Head } from '@inertiajs/react';
+import { Box } from '@mui/material';
+import { parseVehicles } from '@/utils/Dashboard/vehicles';
 import { parseOrders } from '@/utils/Dashboard/orders';
 import { Badge } from "@mui/material";
 import { driversExpirations, parseDrivers } from '@/utils/Dashboard/drivers';

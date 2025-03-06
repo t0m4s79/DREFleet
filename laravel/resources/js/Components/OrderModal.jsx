@@ -1,4 +1,5 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Link } from '@inertiajs/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { Chip } from '@mui/material';
 
@@ -32,10 +33,10 @@ export default function OrderModal({ isOpen, onClose, orderModal, maxWidth = '2x
 
                 return (
                     <div key={`order-${order.id}`} className="mb-4">
-                        <a href={orderLink}>
+                        <Link href={orderLink} className="hover:font-bold">
                             #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
                             <span>{renderOrderStatus(order.status)}</span>
-                        </a>
+                        </Link>
                     </div>
                 );
             });
@@ -47,9 +48,9 @@ export default function OrderModal({ isOpen, onClose, orderModal, maxWidth = '2x
 
                 return (
                     <div key={`order-${order.id}`}>
-                        <a href={orderLink}>
+                        <Link href={orderLink} className="hover:font-bold">
                             #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                        </a>
+                        </Link>
                     </div>
                 );
             });
@@ -59,13 +60,13 @@ export default function OrderModal({ isOpen, onClose, orderModal, maxWidth = '2x
                 return (
                     <div>
                         {(auth.user.userType === "Técnico" || auth.user.userType === "Condutor") ? (
-                            <a href={route('orders.showStartOrder', order)}>
+                            <Link href={route('orders.showStartOrder', order)} className="hover:font-bold">
                                 #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                            </a>
+                            </Link>
                         ) : (
-                            <a key={`order-${order.id}`} href={route('orders.edit', order)}>
+                            <Link key={`order-${order.id}`} href={route('orders.edit', order)} className="hover:font-bold">
                                 #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                            </a>
+                            </Link>
                         )}
                     </div>
                 );

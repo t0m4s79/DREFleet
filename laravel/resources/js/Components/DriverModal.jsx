@@ -1,4 +1,5 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Link } from '@inertiajs/react';
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function DriverModal({ isOpen, onClose, driverModal, maxWidth = '2xl' }) {
@@ -56,9 +57,9 @@ export default function DriverModal({ isOpen, onClose, driverModal, maxWidth = '
                                 driverModal.length > 0 ? (
                                     driverModal.map((driver) => (
                                         <div key={`driver-${driver.id}`}>
-                                            <a href={route('drivers.edit', driver.id)}>
+                                            <Link href={route('drivers.edit', driver.id)} className="hover:font-bold">
                                                 #{driver.id} - {driver.name} - {driver.driver.license_number}
-                                            </a>
+                                            </Link>
                                         </div>
                                     ))
                                 ) : (

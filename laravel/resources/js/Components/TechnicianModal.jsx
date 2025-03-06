@@ -1,4 +1,5 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Link } from '@inertiajs/react';
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function TechnicianModal({ isOpen, onClose, technicianModal, maxWidth = '2xl' }) {
@@ -56,9 +57,9 @@ export default function TechnicianModal({ isOpen, onClose, technicianModal, maxW
                                 technicianModal.length > 0 ? (
                                     technicianModal.map((technician) => (
                                         <div>
-                                            <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
+                                            <Link key={`technician-${technician.id}`} href={route('technicians.edit', technician)} className="hover:font-bold">
                                                 #{technician.id} - {technician.name}
-                                            </a>
+                                            </Link>
                                         </div>
                                     ))
                                 ) : (

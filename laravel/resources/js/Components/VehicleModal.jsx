@@ -2,6 +2,7 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/re
 import CloseIcon from '@mui/icons-material/Close';
 import VehicleWarnings from './VehicleWarnings';
 import { vehicleExpirations } from '@/utils/Dashboard/vehicles';
+import { Link } from '@inertiajs/react';
 
 export default function VehicleModal({ isOpen, onClose, vehicleModal, userType, maxWidth = '2xl' }) {
     const close = () => {
@@ -61,9 +62,9 @@ export default function VehicleModal({ isOpen, onClose, vehicleModal, userType, 
 
                                         return (
                                             <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                <a href={route('vehicles.edit', vehicle)}>
+                                                <Link href={route('vehicles.edit', vehicle)} className="hover:font-bold">
                                                     #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                </a>
+                                                </Link>
 
                                                 <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} userType={userType} />
                                             </div>
