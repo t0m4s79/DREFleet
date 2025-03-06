@@ -8,7 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-export default function VehicleKilometrageReports( {auth, vehicle, flash, permissions} ) {
+export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -148,20 +148,12 @@ export default function VehicleKilometrageReports( {auth, vehicle, flash, permis
                                 </a>
                             </Button>
 
-                            {/* <Table
-                                data={vehicleReports}
-                                columnsLabel={vehicleReportsColumnLabels}
-                                editAction="vehicleKilometrageReports.showEdit"
-                                deleteAction="vehicleKilometrageReports.delete"
-                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            /> */}
-
                             <CustomDataGrid
                                 rows={vehicleReports}
                                 columns={vehicleKilometrageColumns}
                                 editAction="vehicleKilometrageReports.showEdit"
                                 deleteAction="vehicleKilometrageReports.delete"
-                                permissions={permissions}
+                                user={auth.user}
                             />
                         </div>
                     </div>

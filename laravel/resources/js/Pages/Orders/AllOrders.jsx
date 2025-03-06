@@ -1,31 +1,14 @@
-import { Head, Link } from '@inertiajs/react';
-import LeafletMap from '@/Components/LeafletMap';
+import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Button, Snackbar, Alert, Chip } from '@mui/material';
+import { Button, Snackbar, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import 'leaflet/dist/leaflet.css';
-import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
-import { parse } from 'date-fns';
 import CustomDataGrid from '@/Components/CustomDataGrid';
-import OccurrenceModal from '@/Components/OccurrenceModal';
-import MapModal from '@/Components/MapModal';
-import ObservationModal from '@/Components/ObservationModal';
+import { parseOrderColumns } from '@/utils/Orders/columns';
 
-const renderOrderStatus = (status) => {
-    const colors = {
-        'Finalizado': 'success',
-        'Aprovado': 'success',
-        'Em curso': 'info',
-        'Interrompido': 'warning',
-        'Cancelado/Não aprovado': 'error',
-        'Por aprovar': 'default',
-    };
 
-    return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
-}
-
-export default function AllOrders({ auth, orders, flash, permissions }) {
+export default function AllOrders({ auth, orders, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -47,9 +30,7 @@ export default function AllOrders({ auth, orders, flash, permissions }) {
         return `${String(hours).padStart(2, '0')}h${String(minutes).padStart(2, '0')}m`;
     };
 
-    //console.log(orders)
     const OrderInfo = orders.map((order) => {
-        //console.log(order)
         return {
             id: order.id,
             expected_begin_date: order.expected_begin_date,
@@ -77,272 +58,7 @@ export default function AllOrders({ auth, orders, flash, permissions }) {
         };
     });
 
-    const orderColumnLabels = {
-        id: 'ID',
-        expected_begin_date: 'Data de início',
-        expected_end_date: 'Data de fim',
-        vehicle_id: 'Veículo',
-        driver_id: 'Condutor',
-        technician_id: 'Técnico',
-        route: 'Rota',
-        order_type: 'Tipo',
-        stops: 'Paragens',
-        trajectory: 'Trajeto',
-        expected_time: 'Tempo de Viagem Esperado',
-        distance: 'Distância',
-        occurrences: 'Ocorrências',
-        approved_date: 'Data de aprovação',
-        approved_by: 'Aprovado por',
-        status: 'Estado',
-        created_at: 'Data de criação',
-        updated_at: 'Data da última atualização',
-    }
-
-    const orderColumns = [
-        {
-            field: 'id',
-            headerName: 'ID',
-            flex: 1,
-            maxWidth: 60,
-            hideable: false
-        },
-        {
-            field: 'expected_begin_date',
-            headerName: 'Data de início',
-            type: 'dateTime',
-            //flex: 1,
-            valueGetter: (params) => {
-                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
-                return parsedDate
-            },
-        },
-        {
-            field: 'expected_end_date',
-            headerName: 'Data de fim',
-            type: 'dateTime',
-            //flex: 1,
-            valueGetter: (params) => {
-                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
-                return parsedDate
-            },
-        },
-        {
-            field: 'vehicle_license_plate',
-            headerName: 'Veículo',
-            //flex: 1,
-            maxWidth: 100,
-            renderCell: (params) => (
-                <Link
-                    key={params.value}
-                    href={route('vehicles.showEdit', params.row.vehicle_id)}
-                    className='text-blue-500'
-                >
-                    {params.row.vehicle_license_plate}
-                </Link>
-            )
-        },
-        {
-            field: 'driver_name',
-            headerName: 'Condutor',
-            //flex: 1,
-            minWidth: 100,
-            renderCell: (params) => (
-                <Link
-                    key={params.value}
-                    href={route('drivers.showEdit', params.row.driver_id)}
-                    className='text-blue-500'
-                >
-                    {params.row.driver_name}
-                </Link>
-            )
-        },
-        {
-            field: 'technician_name',
-            headerName: 'Técnico',
-            //flex: 1,
-            minWidth: 100,
-            renderCell: (params) => (
-                <Link
-                    key={params.value}
-                    href={route('technicians.showEdit', params.row.technician_id)}
-                    className='text-blue-500'
-                >
-                    {params.row.technician_name}
-                </Link>
-            )
-        },
-        {
-            field: 'route',
-            headerName: 'Rota',
-            //flex: 1,
-            renderCell: (params) => {
-                if (params.value != '-') {
-                    return (
-                        <Link
-                            key={params.value}
-                            href={route('orderRoutes.showEdit', params.value)}
-                        >
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    maxWidth: '30px',
-                                    maxHeight: '30px',
-                                    minWidth: '30px',
-                                    minHeight: '30px',
-                                    margin: '0px 4px'
-                                }}
-                            >
-                                {params.value}
-                            </Button>
-                        </Link>
-                    )
-                } else return null
-            }
-        },
-        {
-            field: 'order_type',
-            headerName: 'Tipo',
-            //flex: 1,
-        },
-        {
-            field: 'observations',
-            headerName: 'Observações',
-            //flex: 1,
-            renderCell: (params) => {
-                // Only render the button if there are observations
-                if (params.value) {
-                    return (
-                        <div>
-                            <ObservationModal observations={params.value} />
-                        </div>
-                    );
-                } else {
-                    return null; // Don't render anything if there are no occurrences
-                }
-            }
-        },
-        {
-            field: 'stops',
-            headerName: 'Paragens',
-            //flex: 1,
-            renderCell: (params) => (
-                <Link
-                    key={params.value}
-                    href={route('orders.stops', params.row.id)}
-                >
-                    <Button
-                        variant="outlined"
-                        sx={{
-                            maxHeight: '30px',
-                            minHeight: '30px',
-                            margin: '0px 4px'
-                        }}
-                    >
-                        {params.value} Paragem(ns) {/* Display the number of occurrences */}
-                    </Button>
-                </Link>
-            )
-        },
-        {
-            field: 'trajectory',
-            headerName: 'Trajeto',
-            disableExport: true,
-            //flex: 1,
-            renderCell: (params) => (
-                <MapModal trajectory={params.value} />
-            )
-        },
-        {
-            field: 'expected_time',
-            headerName: 'Tempo de Viagem Esperado',
-            //flex: 1,
-        },
-        {
-            field: 'distance',
-            headerName: 'Distância',
-            type: 'number',
-            renderCell: (params) => `${(params.value / 1000).toFixed(3)} km`
-        },
-        {
-            field: 'occurrences_count',
-            headerName: 'Ocorrências',
-            sortComparator: (a, b) => a - b,
-            renderCell: (params) => {
-                const occurrences = params.row?.occurrences || [];
-        
-                if (occurrences.length > 0) {
-                    return <OccurrenceModal occurrences={occurrences} link={params.row.id} />;
-                }
-        
-                return null;
-            }
-        },        
-        {
-            field: 'approved_date',
-            headerName: 'Data de aprovação',
-            type: 'dateTime',
-            //flex: 1,
-            valueGetter: (params) => {
-                if (params != '-') {
-                    const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
-                    return parsedDate
-                } else return null
-            },
-        },
-        {
-            field: 'approved_by',
-            headerName: 'Aprovado por',
-            //flex: 1,
-            renderCell: (params) => {
-                if (params.value == null) return params.value
-                return (
-                    <Link
-                        key={params.value}
-                        href={route('managers.showEdit', params.value)}
-                    >
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                maxHeight: '30px',
-                                minWidth: '30px',
-                                margin: '0px 4px'
-                            }}
-                        >
-                            {params.value}
-                        </Button>
-                    </Link>
-                )
-            },
-        },
-        {
-            field: 'status',
-            headerName: 'Estado',
-            renderCell: (params) => (renderOrderStatus(params.value))
-            //flex: 1,
-        },
-        {
-            field: 'created_at',
-            headerName: 'Data de Criação',
-            type: 'dateTime',
-            //flex: 1,
-            //maxWidth: 180,
-            valueGetter: (params) => {
-                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
-                return parsedDate
-            },
-        },
-        {
-            field: 'updated_at',
-            headerName: 'Data da Última Atualização',
-            type: 'dateTime',
-            //flex: 1,
-            //maxWidth: 200,
-            valueGetter: (params) => {
-                const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
-                return parsedDate
-            },
-        },
-    ]
+    const orderColumns = parseOrderColumns(auth.user);
 
     return (
         <AuthenticatedLayout
@@ -355,14 +71,14 @@ export default function AllOrders({ auth, orders, flash, permissions }) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('orders.showCreate')}>
-                        <AddIcon />
-                        <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Novo Pedido
-                        </a>
-                    </Button>
-
-                    {/* <Table data={OrderInfo} columnsLabel={orderColumnLabels} editAction={'orders.edit'} deleteAction={'orders.delete'} dataId={'id'}/> */}
+                    {(auth.user.user_type === "Administrador" || auth.user.user_type === "Gestor") &&
+                        <Button href={route('orders.showCreate')}>
+                            <AddIcon />
+                            <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
+                                Novo Pedido
+                            </a>
+                        </Button>
+                    }
 
                     <CustomDataGrid
                         rows={OrderInfo}
@@ -370,7 +86,7 @@ export default function AllOrders({ auth, orders, flash, permissions }) {
                         editAction={'orders.edit'}
                         deleteAction={'orders.delete'}
                         duplicateAction={'orders.duplicate'}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

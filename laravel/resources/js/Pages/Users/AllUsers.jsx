@@ -18,7 +18,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllDrivers( {auth, users, flash, permissions} ) {
+export default function AllDrivers({ auth, users, flash }) {
     
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -98,15 +98,13 @@ export default function AllDrivers( {auth, users, flash, permissions} ) {
                             Novo Utilizador
                         </a>
                     </Button>
-
-                    {/* <Table data={userInfo} columnsLabel={userColumnLabels} editAction="users.showEdit" deleteAction="users.delete" dataId="id"/> */}
                 
                     <CustomDataGrid
                         rows={userInfo}
                         columns={userColumns}
                         editAction="users.showEdit"
                         deleteAction="users.delete"
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

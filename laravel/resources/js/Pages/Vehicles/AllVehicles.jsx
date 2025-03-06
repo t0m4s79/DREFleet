@@ -20,7 +20,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllVehicles( {auth, vehicles, flash, permissions}) {
+export default function AllVehicles({ auth, vehicles, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -335,15 +335,7 @@ export default function AllVehicles( {auth, vehicles, flash, permissions}) {
                             Novo Veículo
                         </a>
                     </Button>
-{/* 
-                    <Table
-                        data={vehicleInfo}
-                        columnsLabel={VehicleColumnLabels}
-                        editAction="vehicles.showEdit"
-                        deleteAction="vehicles.delete"
-                        dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                    /> */}
-                    
+
                     <CustomDataGrid 
                         rows={vehicleInfo}
                         columns={VehicleColumns}
@@ -353,7 +345,7 @@ export default function AllVehicles( {auth, vehicles, flash, permissions}) {
                             capacity: false,
                             fuel_consumption: false,
                         }}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

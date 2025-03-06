@@ -8,7 +8,7 @@ import CustomDataGrid from '@/Components/CustomDataGrid';
 import { parse } from 'date-fns';
 import MouseHoverPopover from '@/Components/MouseHoverPopover';
 
-export default function AllOrderOccurences({auth, occurrences, flash, permissions}) {
+export default function AllOrderOccurences({ auth, occurrences, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -186,15 +186,13 @@ export default function AllOrderOccurences({auth, occurrences, flash, permission
                             Nova Ocorrência
                         </a>
                     </Button>
-
-                    {/* <Table data={orderOccurrencesInfo} columnsLabel={orderOccurrencesLabels} editAction={'orderOccurrences.showEdit'} deleteAction={'orderOccurrences.delete'} dataId={'id'}/> */}
                 
                     <CustomDataGrid
                         rows={orderOccurrencesInfo}
                         columns={orderOccurrencesColumns}
                         editAction={'orderOccurrences.showEdit'}
                         deleteAction={'orderOccurrences.delete'}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

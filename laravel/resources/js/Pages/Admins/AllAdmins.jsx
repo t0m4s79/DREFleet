@@ -16,7 +16,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllAdmins({ auth, admins, flash, permissions }) {
+export default function AllAdmins({ auth, admins, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -93,7 +93,7 @@ export default function AllAdmins({ auth, admins, flash, permissions }) {
                         columns={adminsColumns}
                         editAction="admins.showEdit" 
                         deleteAction="admins.delete"
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

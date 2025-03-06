@@ -22,7 +22,7 @@ const isRequestExceptional = (n) => {
     }
 }
 
-export default function VehicleRefuelReports( {auth, vehicle, flash, permissions} ) {
+export default function VehicleRefuelReports({ auth, vehicle, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -191,14 +191,6 @@ export default function VehicleRefuelReports( {auth, vehicle, flash, permissions
                                 </a>
                             </Button>
 
-                            {/* <Table
-                                data={vehicleRequests}
-                                columnsLabel={vehicleRequestsColumnLabels}
-                                editAction="vehicleRefuelRequests.showEdit"
-                                deleteAction="vehicleRefuelRequests.delete"
-                                dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                            /> */}
-
                             <CustomDataGrid
                                 rows={vehicleRequests}
                                 columns={vehicleRefuelColumns}
@@ -207,7 +199,7 @@ export default function VehicleRefuelReports( {auth, vehicle, flash, permissions
                                 getRowClassName={(params) => {
                                     return params.row.monthly_request_number > 6 ? 'warning-row' : '';
                                 }}
-                                permissions={permissions}
+                                user={auth.user}
                             />
                         </div>
                     </div>

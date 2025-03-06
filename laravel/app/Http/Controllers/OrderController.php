@@ -54,8 +54,6 @@ class OrderController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        //$orders = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician'])->get();
-
         $user = auth()->user();
 
         $ordersQuery = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician']);

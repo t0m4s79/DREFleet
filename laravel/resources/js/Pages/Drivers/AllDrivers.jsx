@@ -49,7 +49,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllDrivers( {auth, drivers, flash, permissions} ) {
+export default function AllDrivers({ auth, drivers, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
@@ -226,7 +226,7 @@ export default function AllDrivers( {auth, drivers, flash, permissions} ) {
                             return '';
                         }}
                         
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

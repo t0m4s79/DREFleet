@@ -18,7 +18,7 @@ function renderStatus(status) {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function AllTechnicians({ auth, technicians, flash, permissions }) {
+export default function AllTechnicians({ auth, technicians, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -98,15 +98,13 @@ export default function AllTechnicians({ auth, technicians, flash, permissions }
                             Novo Técnico
                         </a>
                     </Button>
-
-                    {/* <Table data={technicianInfo} columnsLabel={technicianColumnLabels} editAction="technicians.showEdit" deleteAction="technicians.delete" dataId="id"/> */}
                 
                     <CustomDataGrid 
                         rows={technicianInfo}
                         columns={technicianColumns}
                         editAction="technicians.showEdit" 
                         deleteAction="technicians.delete"
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>
