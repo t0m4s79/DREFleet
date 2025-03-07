@@ -17,6 +17,7 @@ function ResponsiveDrawer({ user }) {
                 { label: 'Todos os Veículos', href: route('vehicles.index'), active: route().current('vehicles.index') },
                 { label: 'Documentos', href: route('vehicleDocuments.index'), active: route().current('vehicleDocuments.index') },
                 { label: 'Acessórios', href: route('vehicleAccessories.index'), active: route().current('vehicleAccessories.index') },
+                { label: 'Abastecimentos', href: route('vehicleRefuelRequests.index'), active: route().current('vehicleRefuelRequests.index') },                
             ],
         },
         {
@@ -26,6 +27,7 @@ function ResponsiveDrawer({ user }) {
                 { label: 'Condutores', href: route('drivers.index'), active: route().current('drivers.index') },
                 { label: 'Técnicos', href: route('technicians.index'), active: route().current('technicians.index') },
                 { label: 'Gestores', href: route('managers.index'), active: route().current('managers.index') },
+                { label: 'Administradores', href: route('admins.index'), active: route().current('admins.index') },
             ],
         },
         { label: 'Crianças', href: route('kids.index'), active: route().current('kids.index') },

@@ -79,6 +79,7 @@ export default function Authenticated({ user, header, children }) {
                                                 <Dropdown.Link  href={route('vehicles.index')} active={route().current('vehicles.index')}>Todos os Veículos</Dropdown.Link>
                                                 <Dropdown.Link  href={route('vehicleDocuments.index')} active={route().current('vehicleDocuments.index')}>Documentos</Dropdown.Link>
                                                 <Dropdown.Link  href={route('vehicleAccessories.index')} active={route().current('vehicleAccessories.index')}>Acessórios</Dropdown.Link>
+                                                <Dropdown.Link  href={route('vehicleRefuelRequests.index')} active={route().current('vehicleAccessories.index')}>Abastecimentos</Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>

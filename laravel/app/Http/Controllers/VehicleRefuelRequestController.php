@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -15,11 +16,38 @@ use Illuminate\Support\Facades\Gate;
 
 class VehicleRefuelRequestController extends Controller
 {
+    public function index()
+    {
+        if (!Gate::allows('view-refuel-request')) {
+            abort(403);
+        }
+        ;
+
+        Log::channel('user')->info('User accessed refuel requests page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
+        $requests = VehicleRefuelRequest::with('vehicle')->get();
+
+        $requests->each(function ($request) {
+            $request->date = Carbon::parse($request->date)->format('d-m-Y');
+        });
+
+        return Inertia::render('VehicleRefuelRequests/AllVehicleRefuelRequest', [
+            'flash' => [
+                'message' => session('message'),
+                'error' => session('error'),
+            ],
+            'requests' => $requests
+        ]);
+    }
+
     public function showCreateVehicleRefuelRequestForm()
     {
-        if(! Gate::allows('create-vehicle-refuel-request')){
+        if (!Gate::allows('create-vehicle-refuel-request')) {
             abort(403);
-        };
+        }
+        ;
 
         Log::channel('user')->info('User accessed vehicle refuel request creation page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
@@ -34,23 +62,24 @@ class VehicleRefuelRequestController extends Controller
 
     public function createVehicleRefuelRequest(Request $request)
     {
-        if(! Gate::allows('create-vehicle-refuel-request')){
+        if (!Gate::allows('create-vehicle-refuel-request')) {
             abort(403);
-        };
+        }
+        ;
 
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
 
-        $incomingFields = $request->validate([  
+        $incomingFields = $request->validate([
             'date' => ['required', 'date'],
             'quantity' => ['required', 'decimal:0,3', 'min:0'],
             'cost_per_unit' => ['required', 'decimal:0,3', 'min:0'],
             'total_cost' => ['required', 'decimal:0,2', 'min:0'],
             'kilometrage' => ['required', 'integer', 'min:0'],
-            'fuel_type' => ['required', 'string', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Elétrico'])],
+            'fuel_type' => ['required', 'string', Rule::in(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Elétrico'])],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
         ], $customErrorMessages);
-        
+
         try {
             $requestNumber = Vehicle::findOrFail($incomingFields['vehicle_id'])->refuelRequests()->count() + 1;
 
@@ -99,9 +128,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function showEditVehicleRefuelRequestForm(VehicleRefuelRequest $vehicleRefuelRequest)
     {
-        if(! Gate::allows('edit-vehicle-refuel-request')){
+        if (!Gate::allows('edit-vehicle-refuel-request')) {
             abort(403);
-        };
+        }
+        ;
 
         Log::channel('user')->info('User accessed vehicle refuel request edit page', [
             'auth_user_id' => $this->loggedInUserId ?? null,
@@ -118,9 +148,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function editVehicleRefuelRequest(VehicleRefuelRequest $vehicleRefuelRequest, Request $request)
     {
-        if(! Gate::allows('edit-vehicle-refuel-request')){
+        if (!Gate::allows('edit-vehicle-refuel-request')) {
             abort(403);
-        };
+        }
+        ;
 
         // Load custom error messages from helper
         $customErrorMessages = ErrorMessagesHelper::getErrorMessages();
@@ -131,8 +162,8 @@ class VehicleRefuelRequestController extends Controller
             'cost_per_unit' => ['required', 'decimal:0,3', 'min:0'],
             'total_cost' => ['required', 'decimal:0,2', 'min:0'],
             'kilometrage' => ['required', 'integer', 'min:0'],
-            'fuel_type' => ['required', 'string', Rule::in(['Gasóleo','Gasolina 95','Gasolina 98','Elétrico'])],
-            'request_type' => ['required', 'string' , Rule::in(['Normal', 'Especial', 'Excepcional'])],
+            'fuel_type' => ['required', 'string', Rule::in(['Gasóleo', 'Gasolina 95', 'Gasolina 98', 'Elétrico'])],
+            'request_type' => ['required', 'string', Rule::in(['Normal', 'Especial', 'Excepcional'])],
             'monthly_request_number' => ['required', 'integer', 'min:1'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
         ], $customErrorMessages);
@@ -147,7 +178,7 @@ class VehicleRefuelRequestController extends Controller
             ]);
 
             return redirect()->route('vehicles.refuelRequests', $incomingFields['vehicle_id'])->with('message', 'Dados do registo de abastecimento com id ' . $vehicleRefuelRequest->id . ' pertencente ao veículo com id ' . $incomingFields['vehicle_id'] . ' atualizados com sucesso!');
-        
+
         } catch (\Exception $e) {
             Log::channel('usererror')->error('Error editing vehicle refuel reques', [
                 'entry_id' => $vehicleRefuelRequest->id ?? null,
@@ -161,9 +192,10 @@ class VehicleRefuelRequestController extends Controller
 
     public function deleteVehicleRefuelRequest($id)
     {
-        if(! Gate::allows('delete-vehicle-refuel-request')){
+        if (!Gate::allows('delete-vehicle-refuel-request')) {
             abort(403);
-        };
+        }
+        ;
 
         try {
             $request = VehicleRefuelRequest::findOrFail($id);
@@ -175,7 +207,7 @@ class VehicleRefuelRequestController extends Controller
                 'refuel_request_id' => $id,
                 'vehicle_id' => $vehicleId,
             ]);
-    
+
             return redirect()->route('vehicles.refuelRequests', $vehicleId)->with('message', 'Registo de abastecimento com id ' . $id . ' eliminado com sucesso!');
 
         } catch (\Exception $e) {
@@ -184,7 +216,7 @@ class VehicleRefuelRequestController extends Controller
                 'exception' => $e->getMessage(),
                 'stack_trace' => $e->getTraceAsString(),
             ]);
-            
+
             return redirect()->route('vehicles.index')->with('error', 'Houve um problema ao apagar o registo de abastecimento com id ' . $id . '. Tente novamente.');
         }
     }
