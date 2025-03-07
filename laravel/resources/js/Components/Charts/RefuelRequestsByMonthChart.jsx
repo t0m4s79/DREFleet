@@ -13,9 +13,12 @@ const RefuelRequestsByMonthChart = ({ refuelRequests }) => {
             return yearA !== yearB ? yearA - yearB : monthA - monthB;
         });
 
-    const [selectedMonth, setSelectedMonth] = useState(dayjs(months[months.length - 1] || "10/24", "MM/YY"));
+    const lastMonth = months.length > 0 ? months.length - 1 : 0;
+    const [selectedMonth, setSelectedMonth] = useState(dayjs(months[lastMonth] || "10/24", "MM/YY"));
 
     const refuelRequestsByMonthData = parseRequestsByMonth(refuelRequests, selectedMonth.format("MM/YY"));
+
+    const colors = ["#4CAF50", "#FF9800", "#2196F3", "#F44336", "#9C27B0", "#00BCD4", "#FFEB3B"];
 
     return (
         <Box>
@@ -23,14 +26,15 @@ const RefuelRequestsByMonthChart = ({ refuelRequests }) => {
                 Registos de Abastecimento por Veículo ({selectedMonth.format("MM/YY")})
             </Typography>
 
-            <DatePicker
-                views={["year", "month"]}
-                label="Escolha o mês"
-                value={selectedMonth}
-                onChange={(date) => setSelectedMonth(date)}
-                format="MM/YY"
-                slotProps={{ textField: { variant: "outlined", sx: { mb: 2, width: 200 } } }}
-            />
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+                <DatePicker
+                    views={["year", "month"]}
+                    label="Escolha o mês"
+                    value={selectedMonth}
+                    onChange={(date) => setSelectedMonth(date)}
+                    format="MM/YY"
+                />
+            </Box>
 
             <BarChart
                 xAxis={[
@@ -40,7 +44,9 @@ const RefuelRequestsByMonthChart = ({ refuelRequests }) => {
                         tickLabelStyle: { fontSize: 12, angle: -45, textAnchor: "end" },
                     }
                 ]}
-                series={[{ data: refuelRequestsByMonthData.map(d => d.requests) }]}
+                series={[{
+                    data: refuelRequestsByMonthData.map(d => d.requests),
+                }]}
                 width={600}
                 height={300}
             />

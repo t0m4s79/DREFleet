@@ -239,16 +239,18 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                             <div className="text-2xl p-6 text-gray-900 font-bold">Registos dos Veículos</div>
                         </div>
 
-                        <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div className="max-w-7xl my-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <RefuelRequestsChart refuelRequests={refuelRequests} />
 
                             <MaintenanceRequestsChart maintenanceRequests={maintenanceRequests} />
 
+                            {/*
                             <RefuelRequestsByMonthChart refuelRequests={refuelRequests} />
 
                             <MaintenanceRequestsByMonthChart maintenanceRequests={maintenanceRequests} />
 
                             <KilometersChart kilometersReports={kilometersReports} />
+                            */}
                         </div>
                     </div>
                 </div>

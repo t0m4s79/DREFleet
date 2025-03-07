@@ -1,64 +1,75 @@
 import dayjs from "dayjs";
 
 export const parseRequests = (requests) => {
-    const requestsCount = requests.map((request) => ({
-        month: dayjs(request.date).format("MM/YY"),
-        requests: 1,
-    }));
+    const groupedData = {};
 
-    const groupedData = requestsCount.reduce((acc, { month, requests }) => {
-        acc[month] = (acc[month] || 0) + requests;
-        return acc;
-    }, {});
+    requests.forEach((request) => {
+        const month = dayjs(request.date).format("MM/YY");
+        const vehicleName = `${request.vehicle.license_plate}`;
 
-    let chartData = Object.keys(groupedData)
-        .map(month => ({
-            month,
-            requests: groupedData[month]
-        }))
-        .sort((a, b) => {
-            const [monthA, yearA] = a.month.split("/").map(Number);
-            const [monthB, yearB] = b.month.split("/").map(Number);
-            return yearA !== yearB ? yearA - yearB : monthA - monthB;
-        });
+        if (!groupedData[month]) {
+            groupedData[month] = {};
+        }
 
-    // Return last 12 months
+        if (!groupedData[month][vehicleName]) {
+            groupedData[month][vehicleName] = 0;
+        }
+
+        groupedData[month][vehicleName] += 1;
+    });
+
+    let chartData = Object.keys(groupedData).map(month => ({
+        month,
+        vehicles: groupedData[month],
+        totalRequests: Object.values(groupedData[month]).reduce((sum, count) => sum + count, 0),
+    })).sort((a, b) => {
+        const [monthA, yearA] = a.month.split("/").map(Number);
+        const [monthB, yearB] = b.month.split("/").map(Number);
+        return yearA !== yearB ? yearA - yearB : monthA - monthB;
+    });
+
     if (chartData.length > 12) {
-        chartData = chartData.slice(chartData.length - 12, chartData.length);
+        chartData = chartData.slice(chartData.length - 12);
     }
 
     return chartData;
 };
 
 export const parseMaintenanceRequests = (requests) => {
-    const requestsCount = requests.map((request) => ({
-        month: dayjs(request.begin_date).format("MM/YY"),
-        requests: 1,
-    }));
+    const groupedData = {};
 
-    const groupedData = requestsCount.reduce((acc, { month, requests }) => {
-        acc[month] = (acc[month] || 0) + requests;
-        return acc;
-    }, {});
+    requests.forEach((request) => {
+        const month = dayjs(request.begin_date).format("MM/YY");
+        const vehicleName = `${request.vehicle.license_plate}`;
 
-    let chartData = Object.keys(groupedData)
-        .map(month => ({
-            month,
-            requests: groupedData[month]
-        }))
-        .sort((a, b) => {
-            const [monthA, yearA] = a.month.split("/").map(Number);
-            const [monthB, yearB] = b.month.split("/").map(Number);
-            return yearA !== yearB ? yearA - yearB : monthA - monthB;
-        });
+        if (!groupedData[month]) {
+            groupedData[month] = {};
+        }
 
-    // Return last 12 months
+        if (!groupedData[month][vehicleName]) {
+            groupedData[month][vehicleName] = 0;
+        }
+
+        groupedData[month][vehicleName] += 1;
+    });
+
+    let chartData = Object.keys(groupedData).map(month => ({
+        month,
+        vehicles: groupedData[month],
+        totalRequests: Object.values(groupedData[month]).reduce((sum, count) => sum + count, 0),
+    })).sort((a, b) => {
+        const [monthA, yearA] = a.month.split("/").map(Number);
+        const [monthB, yearB] = b.month.split("/").map(Number);
+        return yearA !== yearB ? yearA - yearB : monthA - monthB;
+    });
+
     if (chartData.length > 12) {
-        chartData = chartData.slice(chartData.length - 12, chartData.length);
+        chartData = chartData.slice(chartData.length - 12);
     }
 
     return chartData;
-}
+};
+
 
 export const parseRequestsByMonth = (requests, month) => {
     const filteredRequests = requests.filter((request) =>
