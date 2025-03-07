@@ -104,3 +104,28 @@ export const parseMaintenanceRequestsByMonth = (requests, month) => {
         requests,
     }));
 };
+
+export const parseTopRequestVehicles = (requests) => {
+    const vehicleData = requests.reduce((acc, request) => {
+        const { vehicle_id, total_cost } = request;
+        if (!acc[vehicle_id]) {
+            acc[vehicle_id] = { license_plate: request.vehicle.license_plate, total_requests: 0, total_value: 0 };
+        }
+        acc[vehicle_id].total_requests += 1;
+        acc[vehicle_id].total_value += parseFloat(total_cost);
+        return acc;
+    }, {});
+
+    const sortedByRequests = Object.values(vehicleData)
+        .sort((a, b) => b.total_requests - a.total_requests)
+        .slice(0, 3);
+
+    const sortedByValue = Object.values(vehicleData)
+        .sort((a, b) => b.total_value - a.total_value)
+        .slice(0, 3);
+
+    const uniqueVehicles = Array.from(new Set([...sortedByRequests, ...sortedByValue].map(v => v.license_plate)))
+        .map(plate => vehicleData[Object.keys(vehicleData).find(id => vehicleData[id].license_plate === plate)]);
+
+    return uniqueVehicles;
+}

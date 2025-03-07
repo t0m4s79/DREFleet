@@ -21,6 +21,8 @@ import DriverModal from '@/Components/DriverModal';
 import TechnicianModal from '@/Components/TechnicianModal';
 import VehicleModal from '@/Components/VehicleModal';
 import OrderModal from '@/Components/OrderModal';
+import TopVehiclesRefuelRequests from '@/Components/Charts/TopVehiclesRefuelRequests';
+import TopVehiclesMaintenanceRequests from '@/Components/Charts/TopVehiclesMaintenanceRequest';
 
 export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], refuelRequests = [], maintenanceRequests = [], kilometersReports = [] }) {
     const [driverModal, setDriverModal] = useState(null);
@@ -243,6 +245,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                             <RefuelRequestsChart refuelRequests={refuelRequests} />
 
                             <MaintenanceRequestsChart maintenanceRequests={maintenanceRequests} />
+
+                            <TopVehiclesRefuelRequests refuelRequests={refuelRequests} />
+
+                            <TopVehiclesMaintenanceRequests maintenanceRequests={maintenanceRequests} />
 
                             {/*
                             <RefuelRequestsByMonthChart refuelRequests={refuelRequests} />

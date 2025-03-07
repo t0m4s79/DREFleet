@@ -1,6 +1,6 @@
 import { Box, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 
-export default function CustomLineChartTooltip ({ x, y, data }) {
+export default function CustomLineChartTooltip ({ x, y, data }) {    
     const totalRequests = data.reduce((total, [vehicle, count]) => total + count, 0);
 
     return (
