@@ -4,8 +4,9 @@ import { Button, Alert, Snackbar, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { parse } from 'date-fns';
-import MouseHoverPopover from '@/Components/MouseHoverPopover';
+import { WarningAmber } from '@mui/icons-material';
 import CustomDataGrid from '@/Components/CustomDataGrid';
+import MouseHoverPopover from '@/Components/MouseHoverPopover';
 import MaintenanceMaterialsModal from '@/Components/MaintenanceMaterialsModal';
 
 const renderMaintenanceStatus = (status) => {
@@ -18,11 +19,10 @@ const renderMaintenanceStatus = (status) => {
     return <Chip label={status} color={colors[status]} variant="outlined" size="small" />;
 }
 
-export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
-
+export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     useEffect(() => {
         if (flash.message || flash.error) {
@@ -32,13 +32,13 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
         }
     }, [flash]);
 
-    //Deconstruct props to send to Table
-    const vehicleReports = vehicle.maintenance_reports.map((report) => {
-
+    const dataReports = reports.map((report) => {
         return {
             id: report.id,
             begin_date: report.begin_date,
             end_date: report.end_date,
+            vehicle_id: report.vehicle.id,
+            vehicle_license_plate: report.vehicle.license_plate,
             type: report.type,
             description: report.description,
             kilometrage: report.kilometrage,
@@ -46,13 +46,12 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
             items_cost: report.items_cost,
             service_provider: report.service_provider,
             status: report.status,
-            vehicle_id: report.vehicle_id,
             created_at: report.created_at,
             updated_at: report.updated_at,
         }
-    });
+    })
 
-    const vehicleMaintenanceColumns = [
+    const maintenanceColumns = [
         {
             field: 'id',
             headerName: 'ID',
@@ -131,15 +130,16 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
             renderCell: (params) => (renderMaintenanceStatus(params.value))
         },
         {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            flex: 1,
-            disableColumnMenu: true,
-            sortable: false,
             maxWidth: 100,
             renderCell: (params) => (
-                <Link href={route('vehicles.showEdit', params.value)}>
-                    <Button >{vehicle.license_plate}</Button>
+                <Link
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.vehicle_license_plate}
                 </Link>
             )
         },
@@ -170,10 +170,10 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registo de Manutenção do Veículo #{vehicle.id}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Manutenção</h2>}
         >
 
-            {<Head title='Registo de Manutenção do Veículo' />}
+            {<Head title='Registos de Manutenção do Veículo' />}
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -184,13 +184,13 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
                             <Button href={route('vehicleMaintenanceReports.showCreate')}>
                                 <AddIcon />
                                 <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Registo
+                                    Novo Registo de Manutenção
                                 </a>
                             </Button>
 
                             <CustomDataGrid
-                                rows={vehicleReports}
-                                columns={vehicleMaintenanceColumns}
+                                rows={dataReports}
+                                columns={maintenanceColumns}
                                 editAction="vehicleMaintenanceReports.showEdit"
                                 deleteAction="vehicleMaintenanceReports.delete"
                                 user={auth.user}
@@ -212,6 +212,5 @@ export default function VehicleMaintenanceReports({ auth, vehicle, flash }) {
             </Snackbar>
 
         </AuthenticatedLayout>
-
-    )
+    );
 }

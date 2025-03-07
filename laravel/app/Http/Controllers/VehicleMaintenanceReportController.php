@@ -24,7 +24,7 @@ class VehicleMaintenanceReportController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $reports = VehicleMaintenanceReport::All();
+        $reports = VehicleMaintenanceReport::with('vehicle')->get();
 
         $reports->each(function ($report) {
             $report->begin_date = Carbon::parse($report->begin_date)->format('d-m-Y');
