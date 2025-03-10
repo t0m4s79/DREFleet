@@ -391,8 +391,8 @@ class VehicleController extends Controller
 
         // Format the fields for each report entry
         $vehicle->maintenanceReports->each(function ($request) {
-            $request->begin_date = Carbon::parse($request->issue_date)->format('d-m-Y');
-            $request->end_date = Carbon::parse($request->expiration_date)->format('d-m-Y');
+            $request->begin_date = Carbon::parse($request->begin_date)->format('d-m-Y');
+            $request->end_date = Carbon::parse($request->end_date)->format('d-m-Y');
         });
         
         return Inertia::render('Vehicles/VehicleMaintenanceReports', [

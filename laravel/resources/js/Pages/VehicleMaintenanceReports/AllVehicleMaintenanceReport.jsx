@@ -33,6 +33,21 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
     }, [flash]);
 
     const dataReports = reports.map((report) => {
+
+        let status;
+
+        const beginDate = parse(report.begin_date, 'dd-MM-yyyy', new Date());
+        const endDate = report.end_date ? parse(report.end_date, 'dd-MM-yyyy', new Date()) : null;
+        const now = new Date();
+
+        if (beginDate > now) {
+            status = "Agendado";
+        } else if (endDate && endDate < now) {
+            status = "Finalizado";
+        } else {
+            status = "A decorrer";
+        }
+
         return {
             id: report.id,
             begin_date: report.begin_date,
@@ -45,7 +60,7 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             total_cost: report.total_cost,
             items_cost: report.items_cost,
             service_provider: report.service_provider,
-            status: report.status,
+            status,
             created_at: report.created_at,
             updated_at: report.updated_at,
         }
