@@ -25,7 +25,7 @@ export default function TopVehiclesMaintenanceRequests({ maintenanceRequests }) 
         const { x, y } = tooltipProps;
 
         const { dataIndex } = tooltipProps;
-        const data = Object.entries(uniqueVehicles[dataIndex]);
+        const data = uniqueVehicles[dataIndex] ? Object.entries(uniqueVehicles[dataIndex]) : {};
 
         return <CustomBarChartTooltip x={x} y={y} data={data} />;
     };

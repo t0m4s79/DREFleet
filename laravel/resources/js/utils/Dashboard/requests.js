@@ -107,12 +107,31 @@ export const parseMaintenanceRequestsByMonth = (requests, month) => {
 
 export const parseTopRequestVehicles = (requests) => {
     const vehicleData = requests.reduce((acc, request) => {
-        const { vehicle_id, total_cost } = request;
+        const { vehicle_id, total_cost, items_cost } = request;
         if (!acc[vehicle_id]) {
-            acc[vehicle_id] = { license_plate: request.vehicle.license_plate, total_requests: 0, total_value: 0 };
+            acc[vehicle_id] = { license_plate: request.vehicle.license_plate, total_requests: 0, total_value: 0, items_cost: request.items_cost };
         }
         acc[vehicle_id].total_requests += 1;
-        acc[vehicle_id].total_value += parseFloat(total_cost);
+
+        let total = 0;
+
+        // If report has items cost (Maintenance Report)
+        if (items_cost) {
+            total = Object.values(items_cost)
+                .map(value => {
+                    if (typeof value === "string") {
+                        return parseFloat(value.replace(',', '.')) || 0;
+                    }
+                    return typeof value === "number" ? value : 0;
+                })
+                .reduce((acc, curr) => acc + curr, 0);
+
+        // If report doesn't have items cost but have a total cost
+        } else if (total_cost) {
+            total = parseFloat(total_cost) || 0;
+        }
+
+        acc[vehicle_id].total_value += total;
         return acc;
     }, {});
 

@@ -101,6 +101,25 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'total_cost',
             headerName: 'Custo Total',
             flex: 1,
+            renderCell: (params) => {
+                // If maintenance report have a list of items with cost, total cost is calculated based on that
+                if (params.row.items_cost) {
+                    const items = params.row.items_cost;
+
+                    const total = Object.values(items)
+                        .map(value => {
+                            if (typeof value === "string") {
+                                return parseFloat(value.replace(',', '.')) || 0;
+                            }
+                            return typeof value === "number" ? value : 0;
+                        })
+                        .reduce((acc, curr) => acc + curr, 0);
+
+                    return total.toFixed(2);
+                }
+
+                return params.value
+            }
         },
         {
             field: 'items_cost',

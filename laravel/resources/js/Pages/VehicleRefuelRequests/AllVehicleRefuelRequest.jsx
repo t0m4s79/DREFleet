@@ -38,7 +38,6 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
         return {
             id: request.id,
             date: request.date,
-            vehicle_id: request.vehicle.id,
             vehicle_license_plate: request.vehicle.license_plate,
             kilometrage: request.kilometrage,
             quantity: request.quantity,
