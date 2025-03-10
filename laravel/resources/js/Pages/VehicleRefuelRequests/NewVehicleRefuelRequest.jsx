@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import { Autocomplete, TextField, Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
+import { useEffect } from 'react';
 
 export default function NewVehicleRefuelRequest( {auth, vehicles} ) {
 
@@ -16,6 +17,13 @@ export default function NewVehicleRefuelRequest( {auth, vehicles} ) {
         fuel_type: '',
         vehicle_id: '',
     });
+
+    useEffect(() => {
+        if (data.cost_per_unit && data.quantity) {
+            const totalCost = (parseFloat(data.cost_per_unit) * parseFloat(data.quantity)).toFixed(2);
+            setData('total_cost', totalCost);
+        }
+    }, [data.cost_per_unit, data.quantity]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -148,13 +156,14 @@ export default function NewVehicleRefuelRequest( {auth, vehicles} ) {
                                             <Grid item xs={4}>
                                                 <TextField
                                                     fullWidth
+                                                    disabled
                                                     label="Custo total"
                                                     id="total_cost"
                                                     name="total_cost"
                                                     type="number"
                                                     step=".01"
                                                     placeholder="0.00"
-                                                    value={data.total_cost}
+                                                    value={(parseFloat(data.cost_per_unit) * parseFloat(data.quantity)).toFixed(2)}
                                                     onChange={(e) => setData('total_cost', e.target.value)}
                                                     error={Boolean(errors.total_cost)}
                                                     helperText={errors.total_cost && <InputError message={errors.total_cost} />}

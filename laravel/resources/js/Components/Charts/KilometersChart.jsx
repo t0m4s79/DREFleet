@@ -1,6 +1,5 @@
 import React from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
-import Tooltip from "@mui/material/Tooltip";
 import { Box, Typography } from "@mui/material";
 
 const KilometerBarChart = ({ kilometersReports }) => {
@@ -18,6 +17,8 @@ const KilometerBarChart = ({ kilometersReports }) => {
         return acc;
     }, {});
 
+    
+
     const data = Object.values(vehicleData).sort((a, b) => b.km - a.km);
 
     return (
@@ -28,18 +29,9 @@ const KilometerBarChart = ({ kilometersReports }) => {
 
             <BarChart
                 dataset={data}
-                xAxis={[{ scaleType: "linear" }]}
+                xAxis={[{ scaleType: "linear", label: "Km" }]}
                 yAxis={[{ scaleType: "band", dataKey: "name", tickLabelSpacing: 10 }]}
-                series={[
-                    {
-                        dataKey: "km",
-                        renderTooltip: (params) => (
-                            <Tooltip title={`Matrícula: ${params.data.name} - ${params.data.km} km`}>
-                                <span>{params.data.km} km</span>
-                            </Tooltip>
-                        ),
-                    },
-                ]}
+                series={[{ dataKey: "km" }]}
                 layout="horizontal"
                 width={500}
                 height={300}

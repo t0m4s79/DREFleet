@@ -51,7 +51,7 @@ const displayData = (data) => {
     );
 }
 
-export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash, permissions} ) {
+export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -259,7 +259,7 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash, p
                                 
                                     return '';
                                 }}
-                                permissions={permissions}
+                                user={auth.user}
                             />
                         </div>
                     </div>
@@ -288,7 +288,7 @@ export default function VehicleAccessoriesAndDocuments( {auth, vehicle, flash, p
                                 
                                     return '';
                                 }}
-                                permissions={permissions}
+                                user={auth.user}
                             />      
                         </div>
                     </div>

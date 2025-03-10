@@ -1,9 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Chip } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import VehicleWarnings from '@/Components/VehicleWarnings';
-import { parseVehicles, vehicleExpirations } from '@/utils/Dashboard/vehicles';
+import { Head } from '@inertiajs/react';
+import { Box } from '@mui/material';
+import { parseVehicles } from '@/utils/Dashboard/vehicles';
 import { parseOrders } from '@/utils/Dashboard/orders';
 import { Badge } from "@mui/material";
 import { driversExpirations, parseDrivers } from '@/utils/Dashboard/drivers';
@@ -19,67 +17,60 @@ import MaintenanceRequestsByMonthChart from '@/Components/Charts/MaintenanceRequ
 import KilometersChart from '@/Components/Charts/KilometersChart';
 import DriversExpirationsList from '@/Components/Dashboard/DriversExpirationsList';
 import VehicleExpirationsList from '@/Components/Dashboard/VehicleExpirationsList';
+import DriverModal from '@/Components/DriverModal';
+import TechnicianModal from '@/Components/TechnicianModal';
+import VehicleModal from '@/Components/VehicleModal';
+import OrderModal from '@/Components/OrderModal';
+import TopVehiclesRefuelRequests from '@/Components/Charts/TopVehiclesRefuelRequests';
+import TopVehiclesMaintenanceRequests from '@/Components/Charts/TopVehiclesMaintenanceRequest';
 
-const renderOrderStatus = (status) => {
-    const colors = {
-        'Finalizado': 'success',
-        'Aprovado': 'success',
-        'Em curso': 'info',
-        'Interrompido': 'warning',
-        'Cancelado/Não aprovado': 'error',
-        'Por aprovar': 'default',
-    };
-
-    return <Chip label={status} color={colors[status]} variant="outlined" size="medium" className='ml-2' />;
-}
-
-export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], refuelRequests = [], maintenanceRequests = [], kilometersReports = [], permissions }) {
-    const [expandedAccordion, setExpandedAccordion] = useState(null);
-    const [expandedAccordionType, setExpandedAccordionType] = useState(null);
+export default function Dashboard({ auth, drivers = [], technicians = [], vehicles = [], orders = [], refuelRequests = [], maintenanceRequests = [], kilometersReports = [] }) {
+    const [driverModal, setDriverModal] = useState(null);
+    const [technicianModal, setTechnicianModal] = useState(null);
+    const [vehiclesModal, setVehiclesModal] = useState(null);
+    const [ordersModal, setOrdersModal] = useState(null);
 
     const userType = auth.user.user_type;
+
+    const { inServiceDrivers, availableDrivers } = parseDrivers(drivers);
+    const { inServiceTechnicians, availableTechnicians } = parseTechnicians(technicians);
+    const { inServiceVehicles, availableVehicles, inMaintenanceVehicles } = parseVehicles(vehicles);
+    const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
 
     const handleSliceClick = (event, data, type, pieChartData) => {
         const sliceData = pieChartData[data.dataIndex];
 
-        let newAccordion = null;
-
-        switch (sliceData.label) {
-            case `Em Serviço (${sliceData.value})`:
-                newAccordion = "inService";
-                break;
-            case `Disponíveis (${sliceData.value})`:
-                newAccordion = "available";
-                break;
-            case `Em Manutenção (${sliceData.value})`:
-                newAccordion = "inMaintenance";
-                break;
-            case `Em Curso (${sliceData.value})`:
-                newAccordion = "ongoing";
-                break;
-            case `Agendados (${sliceData.value})`:
-                newAccordion = "approved";
-                break;
-            case `Por Aprovar (${sliceData.value})`:
-                newAccordion = "toApprove";
-                break;
-            default:
-                return;
-        }
-
-        if (expandedAccordion === newAccordion && expandedAccordionType === type) {
-            setExpandedAccordion(null);
-            setExpandedAccordionType(null);
-        } else {
-            setExpandedAccordion(newAccordion);
-            setExpandedAccordionType(type);
+        if (type === "driver") {
+            if (sliceData.label.includes("Em Serviço")) {
+                setDriverModal(inServiceDrivers);
+            } else if (sliceData.label.includes("Disponíveis")) {
+                setDriverModal(availableDrivers);
+            }
+        } else if (type === "technician") {
+            if (sliceData.label.includes("Em Serviço")) {
+                setTechnicianModal(inServiceTechnicians);
+            } else if (sliceData.label.includes("Disponíveis")) {
+                setTechnicianModal(availableTechnicians);
+            }
+        } else if (type === "vehicles") {
+            if (sliceData.label.includes("Em Serviço")) {
+                setVehiclesModal(inServiceVehicles);
+            } else if (sliceData.label.includes("Disponíveis")) {
+                setVehiclesModal(availableVehicles);
+            } else if (sliceData.label.includes("Em Manutenção")) {
+                setVehiclesModal(inMaintenanceVehicles);
+            }
+        } else if (type === "orders") {
+            if (sliceData.label.includes("Em Curso")) {
+                setOrdersModal(ongoingOrders);
+            } else if (sliceData.label.includes("Agendados")) {
+                setOrdersModal(approvedOrders);
+            } else if (sliceData.label.includes("Por Aprovar")) {
+                setOrdersModal(ordersToAprove);
+            }
         }
     };
 
-    const { inServiceVehicles, availableVehicles, inMaintenanceVehicles } = parseVehicles(vehicles);
-    const { ongoingOrders, approvedOrders, ordersToAprove } = parseOrders(orders);
-    const { inServiceDrivers, availableDrivers } = parseDrivers(drivers);
-    const { inServiceTechnicians, availableTechnicians } = parseTechnicians(technicians);
     const driversExpirationsMap = driversExpirations(drivers);
 
     const driversPieChartData = [
@@ -142,7 +133,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     </div>
                 </div>
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {(userType === "Administrador" || userType === "Gestor") &&
+                    {(userType === "Administrador" || userType === "Gestor") && driversPieChartData.some(driver => driver.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
                                 <Box>
@@ -162,64 +153,13 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     </PieChart>
                                 </Box>
 
-                                {expandedAccordion === "inService" && expandedAccordionType === "driver" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1-content"
-                                            id="panel1-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "inService" ? null : "inService")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {inServiceDrivers.length > 0 ? (
-                                                inServiceDrivers.map(driver => (
-                                                    <div key={`driver-${driver.id}`}>
-                                                        <a href={route('drivers.edit', driver.id)}>
-                                                            #{driver.id} - {driver.name} - {driver.driver.license_number}
-                                                        </a>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div>Nenhum condutor em serviço.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
 
-                                {expandedAccordion === "available" && expandedAccordionType === "driver" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "available" ? null : "available")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {availableDrivers.length > 0 ? (
-                                                availableDrivers.map(driver => (
-                                                    <div key={`driver-${driver.id}`}>
-                                                        <a href={route('drivers.edit', driver.id)}>
-                                                            #{driver.id} - {driver.name} - {driver.driver.license_number}
-                                                        </a>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div>Nenhum condutor disponível.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
+                                <DriverModal isOpen={driverModal !== null} onClose={() => setDriverModal(null)} driverModal={driverModal} />
                             </div>
                         </div>
                     }
 
-                    {(userType === "Administrador" || userType === "Gestor") &&
+                    {(userType === "Administrador" || userType === "Gestor") && techniciansPieChartData.some(technician => technician.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
                                 <Box>
@@ -239,64 +179,12 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     </PieChart>
                                 </Box>
 
-                                {expandedAccordion === "inService" && expandedAccordionType === "technician" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1-content"
-                                            id="panel1-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "inService" ? null : "inService")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {inServiceTechnicians.length > 0 ? (
-                                                inServiceTechnicians.map(technician => (
-                                                    <div>
-                                                        <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
-                                                            #{technician.id} - {technician.name}
-                                                        </a>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div>Nenhum técnico em serviço.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-
-                                {expandedAccordion === "available" && expandedAccordionType === "technician" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "available" ? null : "available")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {availableTechnicians.length > 0 ? (
-                                                availableTechnicians.map(technician => (
-                                                    <div>
-                                                        <a key={`technician-${technician.id}`} href={route('technicians.edit', technician)}>
-                                                            #{technician.id} - {technician.name}
-                                                        </a>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div>Nenhum técnico disponível.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
+                                <TechnicianModal isOpen={technicianModal !== null} onClose={() => setTechnicianModal(null)} technicianModal={technicianModal} />
                             </div>
                         </div>
                     }
 
-                    {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor") && vehicles.length > 0 &&
+                    {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor") && vehiclesPieChartData.some(vehicle => vehicle.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
                                 <Box>
@@ -316,109 +204,12 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     </PieChart>
                                 </Box>
 
-                                {expandedAccordion === "inService" && expandedAccordionType === "vehicles" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1-content"
-                                            id="panel1-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "inService" ? null : "inService")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {vehicles.filter(vehicle => vehicle.status === 'Em Serviço').length > 0 ? (
-                                                vehicles.filter(vehicle => vehicle.status === 'Em Serviço').map(vehicle => {
-                                                    const [expired, expiring] = vehicleExpirations(vehicle);
-
-                                                    return (
-                                                        <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                            <a href={route('vehicles.edit', vehicle)}>
-                                                                #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                            </a>
-
-                                                            <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} userType={userType} />
-                                                        </div>
-                                                    );
-                                                })
-                                            ) : (
-                                                <div>Nenhum veículo em serviço.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-
-                                {expandedAccordion === "available" && expandedAccordionType === "vehicles" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "available" ? null : "available")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {vehicles.filter(vehicle => vehicle.status === 'Disponível').length > 0 ? (
-                                                vehicles.filter(vehicle => vehicle.status === 'Disponível').map(vehicle => {
-                                                    const [expired, expiring] = vehicleExpirations(vehicle);
-
-                                                    return (
-                                                        <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                            <a href={route('vehicles.edit', vehicle)}>
-                                                                #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                            </a>
-
-                                                            <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} userType={userType} />
-                                                        </div>
-                                                    )
-                                                })
-                                            ) : (
-                                                <div>Nenhum veículo disponível.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-
-                                {expandedAccordion === "inMaintenance" && expandedAccordionType === "vehicles" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "inMaintenance" ? null : "inMaintenance")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {vehicles.filter(vehicle => vehicle.status === 'Em manutenção').length > 0 ? (
-                                                vehicles.filter(vehicle => vehicle.status === 'Em manutenção').map(vehicle => {
-                                                    const [expired, expiring] = vehicleExpirations(vehicle);
-
-                                                    return (
-                                                        <div key={`vehicle-${vehicle.id}`} className="flex items-center gap-3 pb-3">
-                                                            <a href={route('vehicles.edit', vehicle)}>
-                                                                #{vehicle.id} - {vehicle.make} {vehicle.model} - {vehicle.license_plate}
-                                                            </a>
-
-                                                            <VehicleWarnings expired={expired} expiring={expiring} vehicle={vehicle.id} userType={userType} />
-                                                        </div>
-                                                    )
-                                                })
-                                            ) : (
-                                                <div>Nenhum veículo em manutenção.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
+                                <VehicleModal isOpen={vehiclesModal !== null} onClose={() => setVehiclesModal(null)} vehicleModal={vehiclesModal} userType={auth.user.user_type} />
                             </div>
                         </div>
                     }
 
-                    {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor" || userType === "Técnico") && orders.length > 0 &&
+                    {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor" || userType === "Técnico") && ordersPieChartData.some(order => order.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
                             <div className="p-6 text-gray-900">
                                 <Box>
@@ -438,105 +229,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                                     </PieChart>
                                 </Box>
 
-                                {expandedAccordion === "ongoing" && expandedAccordionType === "orders" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1-content"
-                                            id="panel1-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "ongoing" ? null : "ongoing")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {ongoingOrders.length > 0 ? (
-                                                ongoingOrders.map(order => {
-                                                    const orderLink = (permissions.isTechnician || permissions.isDriver)
-                                                        ? order.status === "Em curso"
-                                                            ? route('orders.showStopOrder', order)
-                                                            : route('orders.showStartOrder', order)
-                                                        : route('orders.edit', order);
-
-                                                    return (
-                                                        <div key={`order-${order.id}`}>
-                                                            <a href={orderLink}>
-                                                                #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                                <span>{renderOrderStatus(order.status)}</span>
-                                                            </a>
-                                                        </div>
-                                                    );
-                                                })
-                                            ) : (
-                                                <div>Nenhum pedido em curso.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-
-                                {expandedAccordion === "approved" && expandedAccordionType === "orders" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2-content"
-                                            id="panel2-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "approved" ? null : "approved")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {approvedOrders.length > 0 ? (
-                                                approvedOrders.map(order => {
-                                                    const orderLink = (permissions.isTechnician || permissions.isDriver) ? route('orders.showStartOrder', order) : route('orders.edit', order);
-
-                                                    return (
-                                                        <div key={`order-${order.id}`}>
-                                                            <a href={orderLink}>
-                                                                #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                            </a>
-                                                        </div>
-                                                    )
-                                                })
-                                            ) : (
-                                                <div>Nenhum pedido agendado.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-
-                                {expandedAccordion === "toApprove" && expandedAccordionType === "orders" && (
-                                    <Accordion expanded style={{ boxShadow: 'none' }}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel3-content"
-                                            id="panel3-header"
-                                            className='hover:transition hover:text-gray-400 aria-expanded:text-sky-400 aria-expanded:font-bold'
-                                            onClick={() =>
-                                                setExpandedAccordion(expandedAccordion === "inMaintenance" ? null : "inMaintenance")
-                                            }
-                                        />
-                                        <AccordionDetails>
-                                            {ordersToAprove.length > 0 ? (
-                                                ordersToAprove.map(order => (
-                                                    <div>
-                                                        {(permissions.isTechnician || permissions.isDriver) ? (
-                                                            <a href={route('orders.showStartOrder', order)}>
-                                                                #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                            </a>
-                                                        ) : (
-                                                            <a key={`order-${order.id}`} href={route('orders.edit', order)}>
-                                                                #{order.id} - {order.order_type} - {order.expected_begin_date} a {order.expected_end_date}
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div>Nenhum pedido por aprovar.</div>
-                                            )}
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
+                                <OrderModal isOpen={ordersModal != null} onClose={() => setOrdersModal(null)} orderModal={ordersModal} auth={auth} />
                             </div>
                         </div>
                     }
@@ -548,16 +241,22 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                             <div className="text-2xl p-6 text-gray-900 font-bold">Registos dos Veículos</div>
                         </div>
 
-                        <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div className="max-w-7xl my-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <RefuelRequestsChart refuelRequests={refuelRequests} />
 
                             <MaintenanceRequestsChart maintenanceRequests={maintenanceRequests} />
 
+                            <TopVehiclesRefuelRequests refuelRequests={refuelRequests} />
+
+                            <TopVehiclesMaintenanceRequests maintenanceRequests={maintenanceRequests} />
+
+                            {/*
                             <RefuelRequestsByMonthChart refuelRequests={refuelRequests} />
 
                             <MaintenanceRequestsByMonthChart maintenanceRequests={maintenanceRequests} />
 
                             <KilometersChart kilometersReports={kilometersReports} />
+                            */}
                         </div>
                     </div>
                 </div>

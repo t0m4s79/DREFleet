@@ -358,6 +358,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Vehicle Refuel Requests
+        Gate::define('view-refuel-request', function (User $user) {
+            return $user->isAdmin() || $user->isManager()
+                ? Response::allow()
+                : Response::denyWithStatus(403);
+        });
+        
         Gate::define('view-vehicle-refuel-request', function (User $user) {
             return $user->isAdmin() || $user->isManager() || $user->isDriver()
                 ? Response::allow()

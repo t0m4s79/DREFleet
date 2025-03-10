@@ -52,7 +52,7 @@ const displayData = (data) => {
 }
 
 
-export default function AllVehicleDocuments( {auth, vehicleDocuments, flash, permissions}) {
+export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
@@ -200,14 +200,6 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash, per
                         </a>
                     </Button>
 
-                    {/* <Table
-                        data={vehicleDocumentInfo}
-                        columnsLabel={VehicleDocumentColumnLabels}
-                        editAction="vehicleDocuments.showEdit"
-                        deleteAction="vehicleDocuments.delete"
-                        dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                    /> */}
-
                     <CustomDataGrid
                         rows={vehicleDocumentInfo}
                         columns={vehicleDocsColumns}
@@ -223,7 +215,7 @@ export default function AllVehicleDocuments( {auth, vehicleDocuments, flash, per
                         
                             return '';
                         }}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

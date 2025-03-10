@@ -16,6 +16,7 @@ export default function OrderStop({ auth, order, kids, otherPlaces, orderRoutes,
                 otherPlaces={otherPlaces}
                 orderRoutes={orderRoutes}
                 onlyView={onlyView}
+                flash={flash}
             />
         </OrderProvider>
     );

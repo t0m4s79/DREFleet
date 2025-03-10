@@ -37,7 +37,7 @@ const isExpired = (date) => {
     }
 }
 
-export default function AllVehicleAccessories( {auth, vehicleAccessories, flash, permissions}) {
+export default function AllVehicleAccessories({ auth, vehicleAccessories, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -161,14 +161,6 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash,
                         </a>
                     </Button>
 
-                    {/* <Table
-                        data={vehicleAccessoryInfo}
-                        columnsLabel={VehicleAccessoryColumnLabels}
-                        editAction="vehicleAccessories.showEdit"
-                        deleteAction="vehicleAccessories.delete"
-                        dataId="id" // Ensure the correct field is passed for DataGrid's `id`
-                    /> */}
-
                     <CustomDataGrid
                         rows={vehicleAccessoryInfo}
                         columns={vehicleAccColumns}
@@ -184,7 +176,7 @@ export default function AllVehicleAccessories( {auth, vehicleAccessories, flash,
                         
                             return '';
                         }}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

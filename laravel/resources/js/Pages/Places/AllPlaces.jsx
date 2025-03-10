@@ -1,14 +1,13 @@
-import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Alert, Button, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
 import CustomDataGrid from '@/Components/CustomDataGrid';
+import { parsePlacesColumns } from '@/utils/Places/columns';
 
 
-export default function AllPlaces( {auth, places, flash, permissions} ) {
+export default function AllPlaces({ auth, places, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -21,13 +20,13 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
             setOpenSnackbar(true);                                          // show snackbar
         }
     }, [flash]);
-    
+
     // Deconstruct data to send to table component
     const placeInfo = places.map((place) => {
         const kidIds = place.kids.map((kid) => kid.id).join(', ');
 
         const coordinates = `lat: ${place.coordinates.coordinates[1]}, lng: ${place.coordinates.coordinates[0]}`
-      
+
         return {
             id: place.id,
             address: place.address,
@@ -39,93 +38,8 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
         }
     })
 
-    const placeColumnLabels = {
-        id: 'ID',
-        address: 'Morada',
-        known_as: 'Conhecido como',
-        place_type: 'Tipo',
-        coordinates: 'Coordenadas',
-        kids_count: 'Número de crianças',
-        kids_ids: 'Crianças',
-    };
+    const placeColumns = parsePlacesColumns(auth.user)
 
-    const placeColumns = [
-        {
-            field: 'id',
-            headerName: 'ID',
-            flex: 1,
-            maxWidth: 100,
-            hideable: false
-        },
-        {
-            field: 'address',
-            headerName: 'Morada',
-            flex: 1,
-        },
-        {
-            field: 'known_as',
-            headerName: 'Conhecido como',
-            flex: 1,
-            maxWidth: 200,
-        },
-        {
-            field: 'place_type',
-            headerName: 'Tipo',
-            flex: 1,
-            maxWidth: 120,
-        },
-        {
-            field: 'coordinates',
-            headerName: 'Coordenadas',
-            flex: 1,
-        },
-        {
-            field: 'kids_count',
-            headerName: 'Número de crianças',
-            flex: 1,
-            maxWidth: 150,
-            align: 'center',
-        },
-        {
-            field: 'kids_ids',
-            headerName: 'Crianças',
-            flex: 1,
-            sortComparator: (a, b) => {
-                const countA = a ? a.split(', ').length : 0;
-                const countB = b ? b.split(', ').length : 0;
-                return countA - countB;
-            },
-            renderCell: (params) => {
-                const ids = params.value;
-
-                if (ids.length > 0) {
-                    return (
-                        <div>
-                            {ids.split(', ').map((id) => (
-                                <Link key={id} href={route('kids.showEdit', { id })}>
-                                    <Button
-                                        variant="outlined"
-                                        sx={{
-                                            maxWidth: '30px',
-                                            maxHeight: '30px',
-                                            minWidth: '30px',
-                                            minHeight: '30px',
-                                            margin: '0px 4px'
-                                        }}
-                                    >
-                                        {id}
-                                    </Button>
-                                </Link>
-                            ))}
-                        </div>
-                    )
-                } else {
-                    return null;
-                }
-            }
-        },
-    ]
-    
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -133,32 +47,32 @@ export default function AllPlaces( {auth, places, flash, permissions} ) {
         >
 
             <Head title="Moradas" />
-        
+
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('places.showCreate')}>
-                        <AddIcon />
-                        <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Nova Morada
-                        </a>
-                    </Button>
+                    {auth.user.user_type !== "Condutor" &&
+                        <Button href={route('places.showCreate')}>
+                            <AddIcon />
+                            <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
+                                Nova Morada
+                            </a>
+                        </Button>
+                    }
 
-                    {/* <Table data={placeInfo} columnsLabel={placeColumnLabels} editAction="places.showEdit" deleteAction="places.delete" dataId="id"/> */}
-                
-                    <CustomDataGrid 
+                    <CustomDataGrid
                         rows={placeInfo}
                         columns={placeColumns}
                         editAction="places.showEdit"
                         deleteAction="places.delete"
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>
 
-            <Snackbar 
-                open={openSnackbar} 
+            <Snackbar
+                open={openSnackbar}
                 autoHideDuration={3000}
                 onClose={() => setOpenSnackbar(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}

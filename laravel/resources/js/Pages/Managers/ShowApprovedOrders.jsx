@@ -6,7 +6,7 @@ import CustomDataGrid from '@/Components/CustomDataGrid';
 import { parse } from 'date-fns';
 import { Button } from '@mui/material';
 
-export default function ShowApprovedOrders({ auth, orders, userId, userName, permissions }) {
+export default function ShowApprovedOrders({ auth, orders, userId, userName }) {
 
     // Deconstruct order to just show relevant information
     const managerOrderInfo = orders.map((order) => {
@@ -116,7 +116,7 @@ export default function ShowApprovedOrders({ auth, orders, userId, userName, per
                         rows={managerOrderInfo}
                         columns={ApprovedOrderColumns}
                         editAction={'orders.showEdit'}
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

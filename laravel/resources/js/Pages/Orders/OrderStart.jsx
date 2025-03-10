@@ -6,7 +6,7 @@ import { useState, useEffect, useContext } from "react";
 import WaypointManager from "./Partials/WaypointManager";
 import 'leaflet/dist/leaflet.css';
 
-export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash, permissions }) {
+export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
     return (
         <OrderProvider>
             <InnerOrderStart
@@ -16,14 +16,14 @@ export default function OrderStart({ auth, order, kids, otherPlaces, orderRoutes
                 otherPlaces={otherPlaces}
                 orderRoutes={orderRoutes}
                 onlyView={onlyView}
-                permissions={permissions}
+                flash={flash}
             />
         </OrderProvider>
     );
 }
 
 
-function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash, permissions }) {
+function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView, flash }) {
 
     const { updateWaypoints, updatePlaces, } = useContext(OrderContext);
 
@@ -34,12 +34,14 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');    // 'success' or 'error'
 
     useEffect(() => {
-        if (flash && (flash.message || flash.error)) {                                 // if there is a flash message/error
-            setSnackbarMessage(flash.message || flash.error);               // set the message
-            setSnackbarSeverity(flash.error ? 'error' : 'success');         // defines background color of snackbar
-            setOpenSnackbar(true);                                          // show snackbar
+        console.log("Flash Data: ", flash);
+        if (flash && (flash.message || flash.error)) { 
+            setSnackbarMessage(flash.message || flash.error);
+            setSnackbarSeverity(flash.error ? 'error' : 'success');
+            setOpenSnackbar(true);
         }
     }, [flash]);
+    
 
     const orderStops = order.order_stops.map((stop) => {
 
@@ -249,7 +251,7 @@ function InnerOrderStart({ auth, order, kids, otherPlaces, orderRoutes, onlyView
 
                                 </Grid>
 
-                                {!onlyView && !permissions.isDriver &&
+                                {!onlyView && auth.user.user_type !== "Condutor" &&
                                     <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={2} gap="10px">
                                         <Button
                                             variant="contained"

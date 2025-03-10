@@ -5,7 +5,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-export default function AllBackups({ auth, backups, flash, permissions }) {
+export default function AllBackups({ auth, backups, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -128,7 +128,7 @@ export default function AllBackups({ auth, backups, flash, permissions }) {
                             rows={backups}
                             columns={backupsColumns}
                             deleteAction="backups.delete"
-                            permissions={permissions}
+                            user={auth.user}
                         />
                     </div>
                 </div>

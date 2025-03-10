@@ -214,7 +214,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/vehicle/maintenanceReports/delete/{vehicleMaintenanceReport}', [VehicleMaintenanceReportController::class, 'deleteVehicleMaintenanceReport'])->name('vehicleMaintenanceReports.delete');
 
     //VEHICLES REFUEL REQUESTS
-    //TODO: index page for this?
+    Route::get('/vehicle/refuelRequests', [VehicleRefuelRequestController::class, 'index'])->name('vehicleRefuelRequests.index');
     Route::get('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'showCreateVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showCreate');
     Route::post('/vehicle/refuelRequests/create', [VehicleRefuelRequestController::class, 'createVehicleRefuelRequest'])->name('vehicleRefuelRequests.create');
     Route::get('/vehicle/refuelRequests/edit/{vehicleRefuelRequest}', [VehicleRefuelRequestController::class, 'showEditVehicleRefuelRequestForm'])->name('vehicleRefuelRequests.showEdit');

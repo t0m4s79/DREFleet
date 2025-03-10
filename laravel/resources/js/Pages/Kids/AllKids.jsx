@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
-export default function AllKids( {auth, kids, flash, permissions} ) {
+export default function AllKids({ auth, kids, flash }) {
 
     const [openSnackbar, setOpenSnackbar] = useState(false);                // defines if snackbar shows or not
     const [snackbarMessage, setSnackbarMessage] = useState('');             // defines the message to be shown in the snackbar
@@ -165,7 +165,7 @@ export default function AllKids( {auth, kids, flash, permissions} ) {
                         columns={kidColumns}
                         editAction="kids.showEdit"
                         deleteAction="kids.delete"
-                        permissions={permissions}
+                        user={auth.user}
                     />
                 </div>
             </div>

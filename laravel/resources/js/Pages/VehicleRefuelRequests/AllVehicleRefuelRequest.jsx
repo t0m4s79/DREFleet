@@ -1,4 +1,3 @@
-import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { Button, Alert, Snackbar } from '@mui/material';
@@ -10,22 +9,22 @@ import { WarningAmber } from '@mui/icons-material';
 import CustomDataGrid from '@/Components/CustomDataGrid';
 
 const isRequestExceptional = (n) => {
-    if(n > 6) {
+    if (n > 6) {
         return (
             <div style={{ color: '#E8B012' }}>
                 <WarningAmber />
                 {n}
             </div>
         )
-    } else{
+    } else {
         return n
     }
 }
 
-export default function VehicleRefuelReports({ auth, vehicle, flash }) {
+export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     useEffect(() => {
         if (flash.message || flash.error) {
@@ -35,40 +34,23 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
         }
     }, [flash]);
 
-    //Deconstruct props to send to Table
-    const vehicleRequests = vehicle.refuel_requests.map((request) => {
+    const dataRequests = requests.map((request) => {
         return {
             id: request.id,
             date: request.date,
+            vehicle_license_plate: request.vehicle.license_plate,
             kilometrage: request.kilometrage,
             quantity: request.quantity,
             cost_per_unit: request.cost_per_unit,
             total_cost: request.total_cost,
             fuel_type: request.fuel_type,
-            monthly_request_number: request.monthly_request_number,
-            request_type: request.request_type,
             vehicle_id: request.vehicle_id,
             created_at: request.created_at,
             updated_at: request.updated_at,
         }
     });
 
-    const vehicleRequestsColumnLabels = {
-        id: 'ID',
-        date: 'Data',
-        kilometrage: 'Kilometragem',
-        quantity: 'Quantidade depositada',
-        cost_per_unit: 'Custo por unidade',
-        total_cost: 'Custo total',
-        fuel_type: 'Tipo de combustível',
-        monthly_request_number: 'Pedido mensal número',
-        request_type: 'Tipo de pedido',
-        vehicle_id: 'Veículo',
-        created_at: 'Data de Criação',
-        updated_at: 'Data da Última Atualização',
-    };
-
-    const vehicleRefuelColumns = [
+    const requestsColumns = [
         {
             field: 'id',
             headerName: 'ID',
@@ -82,8 +64,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             type: 'date',
             flex: 1,
             valueGetter: (params) => {
-                // const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
-                const parsedDate = parse(params, 'yyyy-MM-dd', new Date());
+                const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
             },
             hideable: false
@@ -120,28 +101,16 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             sortable: false,
         },
         {
-            field: 'monthly_request_number',
-            headerName: 'Número de pedido mensal',
-            flex: 1,
-            renderCell: (params) => (
-                isRequestExceptional(params.value)
-            )
-        },
-        {
-            field: 'request_type',
-            headerName: 'Tipo de pedido',
-            flex: 1,
-        },
-        {
-            field: 'vehicle_id',
+            field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            flex: 1,
-            disableColumnMenu: true,
-            sortable: false,
             maxWidth: 100,
             renderCell: (params) => (
-                <Link href={route('vehicles.showEdit', params.value)}>
-                    <Button >{vehicle.license_plate}</Button>
+                <Link
+                    key={params.value}
+                    href={route('vehicles.showEdit', params.row.vehicle_id)}
+                    className='text-blue-500'
+                >
+                    {params.row.vehicle_license_plate}
                 </Link>
             )
         },
@@ -167,20 +136,20 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
                 return parsedDate
             },
         },
-        
+
     ]
-    
+
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Abastecimento do Veículo #{vehicle.id} - {vehicle.license_plate}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Registos de Abastecimento</h2>}
         >
 
             {<Head title='Registos de Abastecimento do Veículo' />}
 
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    
+
                     <div className="py-12 px-6">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
@@ -192,22 +161,19 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
                             </Button>
 
                             <CustomDataGrid
-                                rows={vehicleRequests}
-                                columns={vehicleRefuelColumns}
+                                rows={dataRequests}
+                                columns={requestsColumns}
                                 editAction="vehicleRefuelRequests.showEdit"
                                 deleteAction="vehicleRefuelRequests.delete"
-                                getRowClassName={(params) => {
-                                    return params.row.monthly_request_number > 6 ? 'warning-row' : '';
-                                }}
                                 user={auth.user}
                             />
                         </div>
                     </div>
                 </div>
             </div>
- 
-            <Snackbar 
-                open={openSnackbar} 
+
+            <Snackbar
+                open={openSnackbar}
                 autoHideDuration={3000}
                 onClose={() => setOpenSnackbar(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
@@ -218,6 +184,6 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             </Snackbar>
 
         </AuthenticatedLayout>
+    );
 
-    )
 }

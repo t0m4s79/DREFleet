@@ -88,8 +88,6 @@ export default function NewVehicleAccessory( {auth, vehicles} ) {
         post(route('vehicleDocuments.create'));
     };
     
-    console.log('data', data);
-
     return (
         <AuthenticatedLayout
             user={auth.user}

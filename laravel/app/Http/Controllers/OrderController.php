@@ -54,8 +54,6 @@ class OrderController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        //$orders = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician'])->get();
-
         $user = auth()->user();
 
         $ordersQuery = Order::with(['orderStops', 'occurrences', 'vehicle:id,license_plate', 'driver', 'technician']);
@@ -110,7 +108,7 @@ class OrderController extends Controller
             $query->whereNotIn('status', [UserStatus::HIDDEN->value, UserStatus::UNAVAILABLE->value]);
         })->get();
 
-        $vehicles = Vehicle::whereNotIn('status', [VehicleStatus::HIDDEN->value, VehicleStatus::UNAVAILABLE->value])->get();
+        $vehicles = Vehicle::whereNotIn('status', [VehicleStatus::HIDDEN->value, VehicleStatus::UNAVAILABLE->value, VehicleStatus::IN_MAINTENANCE->value])->get();
 
         $vehicleDocuments = VehicleDocument::with('vehicle')
             ->whereIn('vehicle_id', $vehicles->pluck('id'))
@@ -700,7 +698,7 @@ class OrderController extends Controller
         if (in_array($order->status, [OrderStatus::APPROVED->value, OrderStatus::INTERRUPTED->value])) {
             return Inertia::render('Orders/OrderStart', [
                 'flash' => [
-                    'message' => session('message'),
+                    'success' => session('success'),
                     'error' => session('error'),
                 ],
                 'order' => $order,
@@ -711,7 +709,7 @@ class OrderController extends Controller
         } else {
             return Inertia::render('Orders/OrderStart', [
                 'flash' => [
-                    'message' => session('message'),
+                    'success' => session('success'),
                     'error' => session('error'),
                 ],
                 'order' => $order,
@@ -740,14 +738,22 @@ class OrderController extends Controller
         $vehicle = Vehicle::where('id', $order->vehicle->id)->first();
 
         if (!$driver)
-            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Condutor não encontrado.');
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor não encontrado.');
         if (!$technician)
-            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Técnico não encontrado.');
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Técnico não encontrado.');
         if (!$vehicle)
-            return redirect()->route('orders.showStopOrder', $order)->with('error', 'Erro: Veículo não encontrado.');
+            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Veículo não encontrado.');
 
-        if ($order->status === OrderStatus::APPROVED->value && ($vehicle->status !== VehicleStatus::AVAILABLE->value || $driver->status !== UserStatus::AVAILABLE->value || $technician->status !== UserStatus::AVAILABLE->value)) {
-            return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor, Técnico ou Veículo não disponível.');
+        if ($order->status === OrderStatus::APPROVED->value) {
+            if ($vehicle->status !== VehicleStatus::AVAILABLE->value) {
+                return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Veículo não disponível.');
+
+            } else if ($driver->status !== UserStatus::AVAILABLE->value) {
+                return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Condutor não disponível.');
+
+            } else if ($vehicle->status !== UserStatus::AVAILABLE->value) {
+                return redirect()->route('orders.showStartOrder', $order)->with('error', 'Erro: Técnico não disponível.');
+            }
         }
 
         DB::beginTransaction();
@@ -801,7 +807,7 @@ class OrderController extends Controller
         if ($order->status === OrderStatus::IN_PROGRESS->value) {
             return Inertia::render('Orders/OrderStop', [
                 'flash' => [
-                    'message' => session('message'),
+                    'success' => session('success'),
                     'error' => session('error'),
                 ],
                 'order' => $order,
@@ -812,7 +818,7 @@ class OrderController extends Controller
         } else {
             return Inertia::render('Orders/OrderStop', [
                 'flash' => [
-                    'message' => session('message'),
+                    'success' => session('success'),
                     'error' => session('error'),
                 ],
                 'order' => $order,

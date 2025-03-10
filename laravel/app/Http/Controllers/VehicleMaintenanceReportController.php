@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\VehicleMaintenanceReportDataValidation;
 use Inertia\Inertia;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class VehicleMaintenanceReportController extends Controller
             'auth_user_id' => $this->loggedInUserId ?? null,
         ]);
 
-        $reports = VehicleMaintenanceReport::All();
+        $reports = VehicleMaintenanceReport::with('vehicle')->get();
 
         $reports->each(function ($report) {
             $report->begin_date = Carbon::parse($report->begin_date)->format('d-m-Y');
@@ -73,9 +74,13 @@ class VehicleMaintenanceReportController extends Controller
             'description' => ['required', 'string', 'max:500'],
             'kilometrage' => ['nullable', 'integer', 'min:0'],
             'total_cost' => ['nullable', 'decimal:0,2', 'min:0'],
-            'items_cost' => ['nullable', 'array'],
             'service_provider' => ['nullable', 'string'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
+            'items_cost' => [
+                'nullable',
+                'array',
+                new VehicleMaintenanceReportDataValidation(),
+            ],
         ], $customErrorMessages);
         
         try {
@@ -172,9 +177,13 @@ class VehicleMaintenanceReportController extends Controller
             'description' => ['required', 'string', 'max:500'],
             'kilometrage' => ['nullable', 'integer', 'min:0'],
             'total_cost' => ['nullable', 'decimal:0,2', 'min:0'],
-            'items_cost' => ['nullable', 'array'],
             'service_provider' => ['nullable', 'string', 'max:100'],
             'vehicle_id' => ['required', 'exists:vehicles,id'],
+            'items_cost' => [
+                'nullable',
+                'array',
+                new VehicleMaintenanceReportDataValidation(),
+            ],
         ], $customErrorMessages);
 
         try {
