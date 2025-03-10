@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,6 +34,31 @@ class UserController extends Controller
         });
 
         return Inertia::render('Users/AllUsers', [
+            'users' => $users,
+            'flash' => [
+                    'message' => session('message'),
+                    'error' => session('error'),
+                ],
+        ]);
+    }
+
+    public function indexNotAssigned()
+    {
+        if(! Gate::allows('view-user')) {
+            abort(403);
+        }
+
+        Log::channel('user')->info('User accessed users page', [
+            'auth_user_id' => $this->loggedInUserId ?? null,
+        ]);
+
+        $users = User::where('user_type', Roles::NONE->value)->get();
+
+        $users->each(function ($user) {
+            $user->phone = $user->phone ?? '-';
+        });
+
+        return Inertia::render('UsersNotAssigned/AllUsersNotAssigned', [
             'users' => $users,
             'flash' => [
                     'message' => session('message'),

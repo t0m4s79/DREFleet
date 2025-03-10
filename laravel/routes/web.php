@@ -162,6 +162,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/edit/{user}', [UserController::class, 'editUser'])->name('users.edit');
     Route::delete('/users/delete/{user}', [UserController::class, 'deleteUser'])->name('users.delete');
 
+    //USERS WITH NO TYPE
+    Route::get('/users/not-assigned', [UserController::class, 'indexNotAssigned'])->name('users.indexNotAssigned');
+
     //TECHNICIANS (USER MODEL WITH Técnico USER_TYPE)
     Route::get('/users/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
     Route::get('/users/technicians/create', [TechnicianController::class, 'showCreateTechnicianForm'])->name('technicians.showCreate');

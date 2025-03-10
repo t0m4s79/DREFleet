@@ -29,6 +29,7 @@ function ResponsiveDrawer({ user }) {
                 { label: 'Técnicos', href: route('technicians.index'), active: route().current('technicians.index') },
                 { label: 'Gestores', href: route('managers.index'), active: route().current('managers.index') },
                 { label: 'Administradores', href: route('admins.index'), active: route().current('admins.index') },
+                { label: 'Por Atribuir', href: route('users.indexNotAssigned'), active: route().current('users.indexNotAssigned') },                
             ],
         },
         { label: 'Crianças', href: route('kids.index'), active: route().current('kids.index') },
