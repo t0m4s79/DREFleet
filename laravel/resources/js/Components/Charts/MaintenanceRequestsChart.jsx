@@ -27,6 +27,11 @@ const MaintenanceRequestsChart = ({ maintenanceRequests }) => {
         const { x, y } = tooltipProps;
 
         const { dataIndex } = tooltipProps;
+
+        if (!maintenanceRequestsData[dataIndex]) {
+            return 
+        }
+
         const { vehicles } = maintenanceRequestsData[dataIndex];
         const data = Object.entries(vehicles);
 

@@ -44,6 +44,11 @@ const RefuelRequestsChart = ({ refuelRequests }) => {
         const { x, y } = tooltipProps;
 
         const { dataIndex } = tooltipProps;
+
+        if (!refuelRequestsData[dataIndex]) {
+            return 
+        }
+
         const { vehicles } = refuelRequestsData[dataIndex];
         const data = Object.entries(vehicles);
 

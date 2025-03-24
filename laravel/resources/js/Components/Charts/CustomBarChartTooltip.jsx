@@ -1,6 +1,11 @@
 import { Box, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 
-export default function CustomBarChartTooltip({ x, y, data }) {
+export default function CustomBarChartTooltip({ x, y, data }) {    
+    
+    if (!Array.isArray(data)) {
+        return
+    }
+
     const [license_plate, total_requests, total_value] = data;
 
     return (
