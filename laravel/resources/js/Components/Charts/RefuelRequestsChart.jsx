@@ -18,6 +18,7 @@ const Title = styled(Typography)(({ theme }) => ({
     color: theme.palette.text.primary,
     fontWeight: 600,
     marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
 }));
 
 const StyledLink = styled(Link)(({ theme }) => ({
@@ -61,7 +62,7 @@ const RefuelRequestsChart = ({ refuelRequests }) => {
                 Registos de Abastecimento
             </Title>
 
-            <LineChart
+            <LineChart className="max-w-fit"
                 xAxis={[{
                     scaleType: 'point',
                     data: refuelRequestsData.map(d => d.month),

@@ -16,6 +16,7 @@ const Title = styled(Typography)(({ theme }) => ({
     color: theme.palette.text.primary,
     fontWeight: 600,
     marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
 }));
 
 export default function TopVehiclesRefuelRequests({ refuelRequests }) {
@@ -36,7 +37,7 @@ export default function TopVehiclesRefuelRequests({ refuelRequests }) {
                 Veículos Abastecimento - Registos e Valor Gasto
             </Title>
 
-            <BarChart
+            <BarChart className="max-w-fit"
                 xAxis={[{ scaleType: "band", data: uniqueVehicles.map(v => v.license_plate), label: "Veículos" }]}
                 yAxis={[
                     { id: "leftAxis", scaleType: "linear", position: "left" },

@@ -17,6 +17,7 @@ const Title = styled(Typography)(({ theme }) => ({
     color: theme.palette.text.primary,
     fontWeight: 600,
     marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
 }));
 
 
@@ -44,7 +45,7 @@ const MaintenanceRequestsChart = ({ maintenanceRequests }) => {
                 Registos de Manutenção
             </Title>
 
-            <LineChart
+            <LineChart className="max-w-fit"
                 xAxis={[{
                     scaleType: 'point',
                     data: maintenanceRequestsData.map(d => d.month),

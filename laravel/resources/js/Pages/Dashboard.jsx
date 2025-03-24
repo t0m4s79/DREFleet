@@ -118,15 +118,19 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
         >
             <Head title="Painel de Controlo" />
 
-            {(userType === "Administrador" || userType === "Gestor") &&
+            <div className="max-w-7xl mx-auto my-0 sm:px-6 lg:px-8">
+
+              {(userType === "Administrador" || userType === "Gestor") &&
                 <VehicleExpirationsList vehicles={vehicles} userType={userType} />
-            }
+              }
 
-            {(userType === "Administrador" || userType === "Gestor") && (
+              {(userType === "Administrador" || userType === "Gestor") && (
                 <DriversExpirationsList driversExpirationsMap={driversExpirationsMap} />
-            )}
+              )}
 
-            <div className="pt-8">
+            </div>
+
+            <div className="pt-0">
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="text-2xl p-6 text-gray-900 font-bold">Informação Geral</div>
@@ -135,10 +139,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                 <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {(userType === "Administrador" || userType === "Gestor") && driversPieChartData.some(driver => driver.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                            <div className="p-6 text-gray-900">
+                            <div className="py-6 px-2 text-gray-900">
                                 <Box>
-                                    <PieChart
-                                        margin={{ right: 80 }}
+                                    <PieChart className="max-w-fit"
+                                        margin={{ right: 100 }}
                                         series={[
                                             {
                                                 data: driversPieChartData,
@@ -161,10 +165,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
 
                     {(userType === "Administrador" || userType === "Gestor") && techniciansPieChartData.some(technician => technician.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                            <div className="p-6 text-gray-900">
+                            <div className="py-6 px-2 text-gray-900">
                                 <Box>
-                                    <PieChart
-                                        margin={{ right: 80 }}
+                                    <PieChart className="max-w-fit"
+                                        margin={{ right: 100 }}
                                         series={[
                                             {
                                                 data: techniciansPieChartData,
@@ -186,10 +190,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
 
                     {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor") && vehiclesPieChartData.some(vehicle => vehicle.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                            <div className="p-6 text-gray-900">
+                            <div className="py-6 px-2 text-gray-900">
                                 <Box>
-                                    <PieChart
-                                        margin={{ right: 80 }}
+                                    <PieChart className="max-w-fit"
+                                        margin={{ right: 100 }}
                                         series={[
                                             {
                                                 data: vehiclesPieChartData,
@@ -211,10 +215,10 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
 
                     {(userType === "Administrador" || userType === "Gestor" || userType === "Condutor" || userType === "Técnico") && ordersPieChartData.some(order => order.value > 0) &&
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg border-l-8 border-sky-600">
-                            <div className="p-6 text-gray-900">
+                            <div className="py-6 px-2 text-gray-900">
                                 <Box>
-                                    <PieChart
-                                        margin={{ right: 80 }}
+                                    <PieChart className="max-w-fit"
+                                        margin={{ right: 100 }}
                                         series={[
                                             {
                                                 data: ordersPieChartData,
@@ -235,7 +239,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
                     }
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-8 pb-8">
                     <div className="max-w-7xl mx-auto my-4 sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div className="text-2xl p-6 text-gray-900 font-bold">Registos dos Veículos</div>

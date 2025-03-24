@@ -11,9 +11,9 @@ export default function VehicleExpirationsList({ vehicles, userType }) {
                 const [expired, expiring] = vehicleExpirations(vehicle);
                 return expired > 0 || expiring > 0;
             }) && (
-                    <div className="w-full max-w-7xl bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md mb-6">
+                    <div className="w-full max-w-7xl bg-red-100 border-l-8 border-red-500 text-red-700 p-4 rounded-lg shadow-md mb-6">
                         <div className="flex items-center mb-2">
-                            <span className="text-2xl mr-3">🚨</span>
+                            <span className="text-2xl mr-2">🚨</span>
                             <span className="text-lg font-semibold">
                                 Existem
                                 <Badge
@@ -22,7 +22,7 @@ export default function VehicleExpirationsList({ vehicles, userType }) {
                                         return expired > 0 || expiring > 0;
                                     }).length}
                                     color="error"
-                                    sx={{ mx: 1.5 }}
+                                    sx={{ mx: 1.8, mb:0.5 }}
                                 />
                                 veículos com problemas de documentos/acessórios.
                             </span>
