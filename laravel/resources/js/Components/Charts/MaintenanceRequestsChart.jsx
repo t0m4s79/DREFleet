@@ -6,9 +6,9 @@ import { parseMaintenanceRequests } from '@/utils/Dashboard/requests';
 import CustomLineChartTooltip from './CustomLineChartToolTip';
 
 const ChartContainer = styled(Box)(({ theme }) => ({
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[2],
+    boxShadow: theme.shadows[0.5],
     maxWidth: '100%',
     margin: 'auto',
 }));

@@ -5,9 +5,9 @@ import { parseTopRequestVehicles } from "@/utils/Dashboard/requests";
 import CustomBarChartTooltip from "./CustomBarChartTooltip";
 
 const ChartContainer = styled(Box)(({ theme }) => ({
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[2],
+    boxShadow: theme.shadows[0.5],
     maxWidth: '100%',
     margin: 'auto',
 }));
@@ -45,7 +45,7 @@ export default function TopVehiclesMaintenanceRequests({ maintenanceRequests }) 
                 ]}
                 series={[
                     { data: uniqueVehicles.map(v => v.total_requests), label: "Registos de Manutenção", color: "#0EA5E9", yAxisKey: "leftAxis" },
-                    { data: uniqueVehicles.map(v => v.total_value), label: "Valor Gasto (€)", color: "#FF5722", yAxisKey: "rightAxis" }
+                    { data: uniqueVehicles.map(v => v.total_value), label: "Valor Gasto (€)", color: "#FF7F2E", yAxisKey: "rightAxis" }
                 ]}
                 layout="vertical"
                 width={600}

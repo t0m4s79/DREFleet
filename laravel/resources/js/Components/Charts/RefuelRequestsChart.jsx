@@ -7,9 +7,9 @@ import CustomLineChartTooltip from './CustomLineChartToolTip';
 import { Link } from '@inertiajs/react';
 
 const ChartContainer = styled(Box)(({ theme }) => ({
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FFFFFF',
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[2],
+    boxShadow: theme.shadows[0.5],
     maxWidth: '100%',
     margin: 'auto',
 }));

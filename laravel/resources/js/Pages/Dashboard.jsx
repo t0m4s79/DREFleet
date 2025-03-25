@@ -100,6 +100,7 @@ export default function Dashboard({ auth, drivers = [], technicians = [], vehicl
         textAnchor: 'middle',
         dominantBaseline: 'central',
         fontSize: 18,
+        fontWeight: 'bold',
     }));
 
     function PieCenterLabel({ children }) {
