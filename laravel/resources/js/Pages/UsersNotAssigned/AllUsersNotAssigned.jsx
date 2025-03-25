@@ -47,26 +47,31 @@ export default function AllUsersNotAssigned({ auth, users, flash }) {
             field: 'name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'email',
             headerName: 'Email',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'phone',
             headerName: 'Número de Telefone',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'user_type',
             headerName: 'Tipo de utilizador',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'status',
             headerName: 'Estado',
             flex: 1,
+            minWidth: 120,
             renderCell: (params) => (renderStatus(params.value))
         },
     ]

@@ -65,8 +65,8 @@ const columns = [
     {
         field: 'driver_name',
         headerName: 'Condutor',
-        //flex: 1,
-        minWidth: 100,
+        flex: 1,
+        minWidth: 140,
         renderCell: (params) => (
             <Link
                 key={params.value}
@@ -80,8 +80,8 @@ const columns = [
     {
         field: 'technician_name',
         headerName: 'Técnico',
-        //flex: 1,
-        minWidth: 100,
+        flex: 1,
+        minWidth: 140,
         renderCell: (params) => (
             <Link
                 key={params.value}
@@ -124,6 +124,7 @@ const columns = [
         field: 'order_type',
         headerName: 'Tipo',
         //flex: 1,
+        minWidth: 200
     },
     {
         field: 'observations',
@@ -146,6 +147,7 @@ const columns = [
         field: 'stops',
         headerName: 'Paragens',
         //flex: 1,
+        minWidth: 160,
         renderCell: (params) => (
             <Link
                 key={params.value}
@@ -169,6 +171,7 @@ const columns = [
         headerName: 'Trajeto',
         disableExport: true,
         //flex: 1,
+        minWidth: 140,
         renderCell: (params) => (
             <MapModal trajectory={params.value} />
         )
@@ -182,11 +185,13 @@ const columns = [
         field: 'distance',
         headerName: 'Distância',
         type: 'number',
+        minWidth: 100,
         renderCell: (params) => `${(params.value / 1000).toFixed(3)} km`
     },
     {
         field: 'occurrences_count',
         headerName: 'Ocorrências',
+        minWidth: 180,
         sortComparator: (a, b) => a - b,
         renderCell: (params) => {
             const occurrences = params.row?.occurrences || [];
@@ -203,6 +208,7 @@ const columns = [
         headerName: 'Data de aprovação',
         type: 'dateTime',
         //flex: 1,
+        minWidth: 160,
         valueGetter: (params) => {
             if (params != '-') {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm', new Date());
@@ -238,7 +244,8 @@ const columns = [
     {
         field: 'status',
         headerName: 'Estado',
-        renderCell: (params) => (renderOrderStatus(params.value))
+        renderCell: (params) => (renderOrderStatus(params.value)),
+        minWidth: 140,
         //flex: 1,
     },
     {
@@ -247,6 +254,7 @@ const columns = [
         type: 'dateTime',
         //flex: 1,
         //maxWidth: 180,
+        minWidth: 160,
         valueGetter: (params) => {
             const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
             return parsedDate
@@ -258,6 +266,7 @@ const columns = [
         type: 'dateTime',
         //flex: 1,
         //maxWidth: 200,
+        minWidth: 160,
         valueGetter: (params) => {
             const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
             return parsedDate

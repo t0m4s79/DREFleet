@@ -55,22 +55,26 @@ export default function KidContacts({ auth, kid, flash }) {
         {
             field: 'email',
             headerName: 'Email',
+            minWidth: 160,
             flex: 1,
         },
         {
             field: 'owner_name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'relationship_to_kid',
             headerName: 'Parentesco',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'preference',
             headerName: 'Forma de Contacto',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'created_at',
@@ -78,6 +82,7 @@ export default function KidContacts({ auth, kid, flash }) {
             type: 'dateTime',
             flex: 1,
             //maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -87,7 +92,8 @@ export default function KidContacts({ auth, kid, flash }) {
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
-            flex: 1,
+            minWidth: 160,
+            //flex: 1,
             //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -131,21 +137,25 @@ export default function KidContacts({ auth, kid, flash }) {
             field: 'phone',
             headerName: 'Número de Telemóvel',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'owner_name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'relationship_to_kid',
             headerName: 'Parentesco',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'preference',
             headerName: 'Forma de Contacto',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'created_at',
@@ -153,6 +163,7 @@ export default function KidContacts({ auth, kid, flash }) {
             type: 'dateTime',
             flex: 1,
             //maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -164,6 +175,7 @@ export default function KidContacts({ auth, kid, flash }) {
             type: 'dateTime',
             flex: 1,
             //maxWidth: 200,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate

@@ -105,33 +105,38 @@ export default function AllDrivers({ auth, drivers, flash }) {
             field: 'name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'email',
             headerName: 'Email',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'phone',
             headerName: 'Número de Telefone',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'license_number',
             headerName: 'Nº da Carta de Condução',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'heavy_license',
             headerName: 'Carta de Pesados',
             flex: 1,
             //type: 'boolean',
-            maxWidth: 100,
+            minWidth: 100,
         },
         {
             field: 'heavy_license_type',
             headerName: 'Tipo de Carta de Pesados',
             flex: 1,
+            minWidth: 120,
             renderCell: (params)=> (
                 params.value != '-'? <Chip label={params.value} variant="outlined" size="small"/> : '-'
             ) 
@@ -141,6 +146,7 @@ export default function AllDrivers({ auth, drivers, flash }) {
             headerName: 'Data de Validade da Carta',
             type: 'date',
             flex: 1,
+            minWidth: 100,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
@@ -152,13 +158,14 @@ export default function AllDrivers({ auth, drivers, flash }) {
             headerName: 'TCC',
             flex: 1,
             //type: 'boolean',
-            maxWidth: 80,
+            minWidth: 80,
         },
         {
             field: 'tcc_expiration_date',
             headerName: 'Data de Validade da TCC',
             type: 'date',
             flex: 1,
+            minWidth: 130,
             valueGetter: (params) => {
                 if(params != '-') {
                     const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -171,6 +178,7 @@ export default function AllDrivers({ auth, drivers, flash }) {
             field: 'status',
             headerName: 'Estado',
             flex: 1,
+            minWidth: 120,
             renderCell: (params) => (renderStatus(params.value))
         },
     ]

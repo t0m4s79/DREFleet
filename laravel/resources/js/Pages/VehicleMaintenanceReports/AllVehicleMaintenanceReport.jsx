@@ -78,6 +78,7 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'begin_date',
             headerName: 'Data de Início',
             type: 'date',
+            minWidth: 120,
             flex: 1,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -88,6 +89,7 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'end_date',
             headerName: 'Data de Fim',
             type: 'date',
+            minWidth: 120,
             flex: 1,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -98,11 +100,13 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'type',
             headerName: 'Tipo',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'description',
             headerName: 'Descrição',
             flex: 1,
+            minWidth: 180,
             renderCell: (params) => (
                 <MouseHoverPopover data={params.value} />
             )
@@ -111,11 +115,13 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'kilometrage',
             headerName: 'Kilometragem',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'total_cost',
             headerName: 'Custo Total',
             flex: 1,
+            minWidth: 100,
             renderCell: (params) => {
                 // If maintenance report have a list of items with cost, total cost is calculated based on that
                 if (params.row.items_cost) {
@@ -139,7 +145,8 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
         {
             field: 'items_cost',
             headerName: 'Materiais',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
             renderCell: (params) => {
                 if (params.value) {
                     return (
@@ -156,11 +163,13 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             field: 'service_provider',
             headerName: 'Prestador de serviço',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'status',
             headerName: 'Estado',
             flex: 1,
+            minWidth: 100,
             renderCell: (params) => (renderMaintenanceStatus(params.value))
         },
         {
@@ -182,6 +191,7 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -193,6 +203,7 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());

@@ -60,6 +60,7 @@ export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
             headerName: 'Data',
             type: 'date',
             flex: 1,
+            minWidth: 100,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
@@ -70,16 +71,19 @@ export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
             field: 'begin_kilometrage',
             headerName: 'Kilometragem Inicial',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'end_kilometrage',
             headerName: 'Kilometragem Final',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'vehicle_id',
             headerName: 'Veículo',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
             sortable: false,
             maxWidth: 100,
@@ -93,6 +97,7 @@ export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
             field: 'driver_id',
             headerName: 'Condutor',
             flex: 1,
+            minWidth: 100,
             valueFormatter: (value) => value.name,
             renderCell: (params) => (
                 <Link
@@ -108,7 +113,7 @@ export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
-            maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -119,7 +124,7 @@ export default function VehicleKilometrageReports({ auth, vehicle, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
-            maxWidth: 200,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate

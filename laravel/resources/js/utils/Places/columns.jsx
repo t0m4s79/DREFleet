@@ -12,23 +12,28 @@ const columns = [
     {
         field: 'address',
         headerName: 'Morada',
+        minWidth: 140,
+        maxWidth: 240,
         flex: 1,
     },
     {
         field: 'known_as',
         headerName: 'Conhecido como',
         flex: 1,
-        maxWidth: 200,
+        minWidth: 140,
+        maxWidth: 240,
     },
     {
         field: 'place_type',
         headerName: 'Tipo',
         flex: 1,
-        maxWidth: 120,
+        minWidth: 140,
+        maxWidth: 240,
     },
     {
         field: 'coordinates',
         headerName: 'Coordenadas',
+        minWidth: 240,
         flex: 1,
     },
     {
@@ -41,6 +46,7 @@ const columns = [
     {
         field: 'kids_ids',
         headerName: 'Crianças',
+        minWidth: 150,
         flex: 1,
         sortComparator: (a, b) => {
             const countA = a ? a.split(', ').length : 0;

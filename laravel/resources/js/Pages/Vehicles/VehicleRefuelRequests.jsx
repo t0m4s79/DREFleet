@@ -80,6 +80,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             field: 'date',
             headerName: 'Data',
             type: 'date',
+            minWidth: 120,
             flex: 1,
             valueGetter: (params) => {
                 // const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -92,30 +93,35 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             field: 'kilometrage',
             headerName: 'Kilometragem',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'quantity',
             headerName: 'Quantidade depositada',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'cost_per_unit',
             headerName: 'Custo por unidade',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'total_cost',
             headerName: 'Custo total',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'fuel_type',
             headerName: 'Tipo de combustível',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
             sortable: false,
         },
@@ -123,6 +129,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             field: 'monthly_request_number',
             headerName: 'Número de pedido mensal',
             flex: 1,
+            minWidth: 100,
             renderCell: (params) => (
                 isRequestExceptional(params.value)
             )
@@ -131,6 +138,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             field: 'request_type',
             headerName: 'Tipo de pedido',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'vehicle_id',
@@ -150,7 +158,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
-            maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -161,7 +169,7 @@ export default function VehicleRefuelReports({ auth, vehicle, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
-            maxWidth: 200,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate

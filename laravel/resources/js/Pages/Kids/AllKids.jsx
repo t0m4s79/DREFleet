@@ -48,18 +48,20 @@ export default function AllKids({ auth, kids, flash }) {
             field: 'id',
             headerName: 'ID',
             flex: 1,
-            //maxWidth: 150,
+            maxWidth: 60,
             hideable: false
         },
         {
             field: 'name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 160,
         },
         {
             field: 'kid_contacts',
             headerName: 'Contactos',
             flex: 1,
+            minWidth: 160,
             disableColumnMenu: true,
             disableExport: true,
             sortable: false,
@@ -102,6 +104,7 @@ export default function AllKids({ auth, kids, flash }) {
             field: 'place_ids',
             headerName: 'Moradas',
             flex: 1,
+            minWidth: 160,
             disableColumnMenu: true,
             sortComparator: (a, b) => {
                 const countA = a ? a.split(', ').length : 0;

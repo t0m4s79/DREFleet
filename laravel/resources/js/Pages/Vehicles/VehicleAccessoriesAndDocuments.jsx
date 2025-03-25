@@ -94,13 +94,13 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
         {
             field: 'name',
             headerName: 'Nome',
-            //flex: 1,
+            flex: 1,
         },
         {
             field: 'issue_date',
             headerName: 'Data de Emissão',
             type: 'date',
-            //flex: 1,
+            flex: 1,
             minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -111,7 +111,7 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             field: 'expiration_date',
             headerName: 'Data de Validade',
             type: 'date',
-            //flex: 1,
+            flex: 1,
             minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -130,14 +130,16 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             headerName: 'Dados Adicionais',
             flex: 1,
             display: 'flex',
+            minWidth: 160,
             renderCell: (params) => (<MouseHoverPopover data={displayData(params)} />)
         },
         {
             field: 'created_at',
             headerName: 'Data de Criação',
             type: 'dateTime',
-            //flex: 1,
+            flex: 1,
             //maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -147,8 +149,9 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
-            //flex: 1,
+            flex: 1,
             //maxWidth: 200,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -179,11 +182,13 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             field: 'name',
             headerName: 'Nome',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'condition',
             headerName: 'Condição',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'expiration_date',
@@ -191,6 +196,7 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             type: 'date',
             flex: 1,
             //maxWidth: 140,
+            minWidth: 140,
             valueGetter: (params) => {
                 if(params != '-') {
                     const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -205,6 +211,7 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             type: 'dateTime',
             flex: 1,
             //maxWidth: 180,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -215,6 +222,7 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());

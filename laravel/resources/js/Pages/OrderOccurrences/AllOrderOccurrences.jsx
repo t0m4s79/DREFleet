@@ -64,7 +64,8 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
             field: 'date',
             headerName: 'Data',
             type: 'date',
-            flex: 1,
+            //flex: 1,
+            minWidth: 100,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
                 return parsedDate
@@ -74,7 +75,7 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
         {
             field: 'order_id',
             headerName: 'Pedido',
-            flex: 1,
+            //flex: 1,
             maxWidth: 100,
             renderCell: (params) => (
                 <Link
@@ -100,7 +101,7 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
             field: 'driver_name',
             headerName: 'Condutor',
             flex: 1,
-            maxWidth: 100,
+            minWidth: 100,
             renderCell: (params) => (
                 <Link
                     key={params.value}
@@ -130,17 +131,20 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
             field: 'type',
             headerName: 'Tipo',
             flex: 1,
+            minWidth: 110,
         },
         {
             field: 'vehicle_towed',
             headerName: 'Reboque Utilizado',
             type: 'boolean',
             flex: 1,
+            minWidth: 80
         },
         {
             field: 'description',
             headerName: 'Descrição',
             flex: 1,
+            minWidth: 100,
             renderCell: (params) => (
                 <MouseHoverPopover data={params.value} />
             )
@@ -150,6 +154,7 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             //maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -161,6 +166,7 @@ export default function AllOrderOccurences({ auth, occurrences, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());

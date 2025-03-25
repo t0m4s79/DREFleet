@@ -62,6 +62,7 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
             field: 'date',
             headerName: 'Data',
             type: 'date',
+            minWidth: 120,
             flex: 1,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -73,30 +74,35 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
             field: 'kilometrage',
             headerName: 'Kilometragem',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'quantity',
             headerName: 'Quantidade depositada',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'cost_per_unit',
             headerName: 'Custo por unidade',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'total_cost',
             headerName: 'Custo total',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
         },
         {
             field: 'fuel_type',
             headerName: 'Tipo de combustível',
             flex: 1,
+            minWidth: 100,
             disableColumnMenu: true,
             sortable: false,
         },
@@ -119,6 +125,7 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -130,6 +137,7 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());

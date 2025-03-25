@@ -106,13 +106,14 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
         {
             field: 'name',
             headerName: 'Nome',
-            //flex: 1,
+            flex: 1,
+            minWidth: 140,
         },
         {
             field: 'issue_date',
             headerName: 'Data de Emissão',
             type: 'date',
-            //flex: 1,
+            flex: 1,
             minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -123,7 +124,7 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
             field: 'expiration_date',
             headerName: 'Data de Validade',
             type: 'date',
-            //flex: 1,
+            flex: 1,
             minWidth: 140,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy', new Date());
@@ -140,7 +141,7 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
         {
             field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            //flex: 1,
+            flex: 1,
             maxWidth: 100,
             renderCell: (params) => (
                 <Link
@@ -156,6 +157,7 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
             field: 'additionalData',
             headerName: 'Dados Adicionais',
             flex: 1,
+            minWidth: 140,
             display: 'flex',
             renderCell: (params) => (<MouseHoverPopover data={displayData(params)} />)
         },
@@ -163,8 +165,9 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
             field: 'created_at',
             headerName: 'Data de Criação',
             type: 'dateTime',
-            //flex: 1,
+            flex: 1,
             //maxWidth: 180,
+            minWidth:160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate
@@ -174,8 +177,9 @@ export default function AllVehicleDocuments({ auth, vehicleDocuments, flash }) {
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
-            //flex: 1,
+            flex: 1,
             //maxWidth: 200,
+            minWidth:160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
                 return parsedDate

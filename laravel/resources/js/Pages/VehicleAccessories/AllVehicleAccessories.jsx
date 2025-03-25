@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { differenceInDays, isBefore, parse } from 'date-fns';
 import { DataGrid } from '@mui/x-data-grid';
 import CustomDataGrid from '@/Components/CustomDataGrid';
+import { max } from 'lodash';
 
 const isExpired = (date) => {
     const parsedDate = typeof date.value === 'string' 
@@ -76,26 +77,28 @@ export default function AllVehicleAccessories({ auth, vehicleAccessories, flash 
         {
             field: 'id',
             headerName: 'ID',
-            flex: 1,
+            //flex: 1,
             maxWidth: 60,
             hideable: false
         },
         {
             field: 'name',
             headerName: 'Nome',
+            minWidth: 140,
             flex: 1,
         },
         {
             field: 'condition',
             headerName: 'Condição',
             flex: 1,
+            minWidth: 100,
         },
         {
             field: 'expiration_date',
             headerName: 'Data de Validade',
             type: 'date',
+            minWidth: 140,
             flex: 1,
-            //maxWidth: 140,
             valueGetter: (params) => {
                 console.log(params)
                 if(params != '-') {
@@ -108,7 +111,7 @@ export default function AllVehicleAccessories({ auth, vehicleAccessories, flash 
         {
             field: 'vehicle_license_plate',
             headerName: 'Veículo',
-            //flex: 1,
+            flex: 1,
             maxWidth: 100,
             renderCell: (params) => (
                 <Link
@@ -124,6 +127,7 @@ export default function AllVehicleAccessories({ auth, vehicleAccessories, flash 
             field: 'created_at',
             headerName: 'Data de Criação',
             type: 'dateTime',
+            minWidth: 160,
             flex: 1,
             //maxWidth: 180,
             valueGetter: (params) => {
@@ -135,6 +139,7 @@ export default function AllVehicleAccessories({ auth, vehicleAccessories, flash 
             field: 'updated_at',
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
+            minWidth: 160,
             flex: 1,
             //maxWidth: 200,
             valueGetter: (params) => {

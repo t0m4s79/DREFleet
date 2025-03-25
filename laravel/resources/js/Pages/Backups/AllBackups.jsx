@@ -53,27 +53,33 @@ export default function AllBackups({ auth, backups, flash }) {
         {
             field: 'filename',
             headerName: 'Nome do Backup',
-            flex: 2
+            flex: 1,
+            minWidth: 160,
+            
         },
         {
             field: 'created_at',
             headerName: 'Data',
-            flex: 1
+            flex: 1,
+            minWidth: 160,
         },
         {
             field: 'size',
             headerName: 'Tamanho',
-            flex: 1
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'user',
             headerName: 'Criado Por',
-            flex: 1
+            flex: 1,
+            minWidth: 160,
         },
         {
             field: 'url',
             headerName: 'Download',
             flex: 1,
+            minWidth: 160,
             renderCell: (params) => {
                 return (
                     <Link href={params.value} className="text-blue-500 underline">
@@ -95,6 +101,7 @@ export default function AllBackups({ auth, backups, flash }) {
             field: 'restore',
             headerName: 'Restore',
             flex: 1,
+            minWidth: 160,
             renderCell: (params) => {
                 return (
                     <Button

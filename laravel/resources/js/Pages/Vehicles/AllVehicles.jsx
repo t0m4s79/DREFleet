@@ -96,33 +96,39 @@ export default function AllVehicles({ auth, vehicles, flash }) {
         {
             field: 'make',
             headerName: 'Marca',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'model',
             headerName: 'Modelo',
-            //flex: 1,
+            flex: 1,
+            minWidth: 160,
         },
         {
             field: 'license_plate',
             headerName: 'Matrícula',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'year',
             headerName: 'Ano',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'heavy_vehicle',
             headerName: 'Veículo Pesado',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
             type: 'boolean',
         },
         {
             field: 'heavy_type',
             headerName: 'Tipo de Pesado',
-            //flex: 1,
+            flex: 1,
+            minWidth: 120,
             renderCell: (params)=> (
                 params.value != '-'? <Chip label={params.value} variant="outlined" size="small"/> : '-'
             )
@@ -162,7 +168,8 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             headerName: 'TCC',
             //disableColumnMenu: true,
             sortable: false,
-            //flex: 1,
+            flex: 1,
+            minWidth: 80,
             type: 'boolean'
         },
         {
@@ -183,17 +190,19 @@ export default function AllVehicles({ auth, vehicles, flash }) {
         {
             field: 'capacity',
             headerName: 'Capacidade',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'fuel_consumption',
             headerName: 'Consumo (l/100km)',
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'status',
             headerName: 'Estado',
-            //flex: 1,
+            flex: 1,
             minWidth: 100,
             renderCell: (params) => renderStatus(params.value)
         },
@@ -201,15 +210,15 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             field: 'fuel_type',
             headerName: 'Tipo de combustível',
             description: 'Tipo de combustível',
-            //flex: 1,
+            flex: 1,
         },
         {
             field: 'current_month_fuel_requests',
             headerName: 'Registos Mensais de Abastecimento',
             description: 'Registos Mensais de Abastecimento',
             disableColumnMenu: true,
-            minWidth: 150,
-            //flex: 1,
+            minWidth: 160,
+            flex: 1,
             renderCell: (params) => (
                 <Link
                     href={route('vehicles.refuelRequests', params.row.id)}
@@ -232,7 +241,8 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             headerName: 'Kilometragem Atual',
             description: 'Kilometragem Atual',
             disableColumnMenu: true,
-            //flex: 1,
+            flex: 1,
+            minWidth: 100,
         },
         {
             field: 'vehicle_kilometrage_reports',
@@ -241,7 +251,7 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             sortable: false,
             disableColumnMenu: true,
             minWidth: 150,
-            //flex: 1,
+            flex: 1,
             renderCell: (params) => (
                 <Link
                     key={params.value}
@@ -267,7 +277,7 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             sortable: false,
             disableColumnMenu: true,
             minWidth: 150,
-            //flex: 1,
+            flex: 1,
             renderHeader: () => (
                 <Tooltip title='Registo de Manutenção'>
                     <Build/> Registo de Manutenção
@@ -298,7 +308,7 @@ export default function AllVehicles({ auth, vehicles, flash }) {
             sortable: false,
             disableColumnMenu: true,
             minWidth: 150,
-            //flex: 1,
+            flex: 1,
             renderCell: (params) => (
                 <Link
                     key={params.value}

@@ -40,6 +40,7 @@ export default function ShowApprovedOrders({ auth, orders, userId, userName }) {
             headerName: 'Data de início',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'yyyy-MM-dd HH:mm:ss', new Date());
                 return parsedDate
@@ -50,6 +51,7 @@ export default function ShowApprovedOrders({ auth, orders, userId, userName }) {
             headerName: 'Data de fim',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'yyyy-MM-dd HH:mm:ss', new Date());
                 return parsedDate
@@ -59,6 +61,7 @@ export default function ShowApprovedOrders({ auth, orders, userId, userName }) {
             field: 'approved_by',
             headerName: 'Aprovado por',
             flex: 1,
+            minWidth: 140,
             renderCell: (params) => {
                 if (params.value != '-') {
                     return (
@@ -88,6 +91,7 @@ export default function ShowApprovedOrders({ auth, orders, userId, userName }) {
             headerName: 'Data de aprovação',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             valueGetter: (params) => {
                 if (!params || params === '-') {
                     return null;

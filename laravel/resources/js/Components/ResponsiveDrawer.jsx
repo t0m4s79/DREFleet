@@ -44,6 +44,10 @@ function ResponsiveDrawer({ user }) {
         { label: 'Rotas', href: route('orderRoutes.index'), active: route().current('orderRoutes.index')},
     ];
 
+    if (user.user_type === "Administrador") {
+        NAV_LINKS.push({ label: 'Backups', href: route('backups.index'), active: route().current('backups.index') });
+    }
+
     // Toggle drawer
     const toggleDrawer = () => setDrawerOpen(!isDrawerOpen);
 
