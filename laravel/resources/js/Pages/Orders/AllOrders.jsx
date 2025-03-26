@@ -72,12 +72,14 @@ export default function AllOrders({ auth, orders, flash }) {
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                     {(auth.user.user_type === "Administrador" || auth.user.user_type === "Gestor") &&
-                        <Button href={route('orders.showCreate')}>
-                            <AddIcon />
-                            <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                Novo Pedido
-                            </a>
-                        </Button>
+                        <div className='bg-sky-600'>
+                            <Button href={route('orders.showCreate')}>
+                                <AddIcon className='text-white'/>
+                                <a className="font-medium text-white dark:text-white hover:underline">
+                                    Novo Pedido
+                                </a>
+                            </Button>
+                        </div>
                     }
 
                     <CustomDataGrid

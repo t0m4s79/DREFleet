@@ -155,30 +155,30 @@ export default function AllVehicleRefuelRequest({ auth, requests, flash }) {
 
             {<Head title='Registos de Abastecimento do Veículo' />}
 
+
+
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <div className="py-12 px-6">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                            <Button href={route('vehicleRefuelRequests.showCreate')}>
-                                <AddIcon />
-                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Registo de Abastecimento
-                                </a>
-                            </Button>
-
-                            <CustomDataGrid
-                                rows={dataRequests}
-                                columns={requestsColumns}
-                                editAction="vehicleRefuelRequests.showEdit"
-                                deleteAction="vehicleRefuelRequests.delete"
-                                user={auth.user}
-                            />
-                        </div>
+                    <div className='bg-sky-600'>
+                        <Button href={route('vehicleRefuelRequests.showCreate')}>
+                            <AddIcon className='text-white' />
+                            <a className="font-medium text-white dark:text-white hover:underline">
+                                Novo Registo de Abastecimento
+                            </a>
+                        </Button>
                     </div>
+
+                    <CustomDataGrid
+                        rows={dataRequests}
+                        columns={requestsColumns}
+                        editAction="vehicleRefuelRequests.showEdit"
+                        deleteAction="vehicleRefuelRequests.delete"
+                        user={auth.user}
+                    />
                 </div>
             </div>
+              
 
             <Snackbar
                 open={openSnackbar}

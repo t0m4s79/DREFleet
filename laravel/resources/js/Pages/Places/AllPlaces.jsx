@@ -53,12 +53,14 @@ export default function AllPlaces({ auth, places, flash }) {
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                     {auth.user.user_type !== "Condutor" &&
-                        <Button href={route('places.showCreate')}>
-                            <AddIcon />
-                            <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                Nova Morada
-                            </a>
-                        </Button>
+                        <div className='bg-sky-600'>
+                            <Button href={route('places.showCreate')}>
+                                <AddIcon className='text-white'/>
+                                <a className="font-medium text-white dark:text-white hover:underline">
+                                    Nova Morada
+                                </a>
+                            </Button>
+                        </div>
                     }
 
                     <CustomDataGrid

@@ -242,15 +242,17 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     
-                    <div className="py-12 px-6">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                            <Button href={route('vehicleDocuments.showCreate')}>
-                                <AddIcon />
-                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Documento
-                                </a>
-                            </Button>
+                    <div className="py-0 px-0">
+                        <div className="bg-white overflow-hidden shadow-sm">
+                            
+                            <div className='bg-sky-600'>
+                                <Button href={route('vehicleDocuments.showCreate')}>
+                                    <AddIcon className='text-white'/>
+                                    <a className="font-medium text-white dark:text-white hover:underline">
+                                        Novo Documento
+                                    </a>
+                                </Button>
+                            </div>
 
                             <CustomDataGrid
                                 columns={vehicleDocsColumns}
@@ -272,14 +274,17 @@ export default function VehicleAccessoriesAndDocuments({ auth, vehicle, flash })
                         </div>
                     </div>
 
-                    <div className="py-12 px-6">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <Button href={route('vehicleAccessories.showCreate')}>
-                                <AddIcon />
-                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Acessório
-                                </a>
-                            </Button>
+                    <div className="pt-0 px-0">
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-b-lg">
+                            
+                            <div className='bg-sky-600'>
+                                <Button href={route('vehicleAccessories.showCreate')}>
+                                    <AddIcon className='text-white' />
+                                    <a className="font-medium text-white dark:text-white hover:underline">
+                                        Novo Acessório
+                                    </a>
+                                </Button>
+                            </div>
 
                             <CustomDataGrid
                                 columns={vehicleAccColumns}

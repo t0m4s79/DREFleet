@@ -195,12 +195,14 @@ export default function AllDrivers({ auth, drivers, flash }) {
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <Button href={route('drivers.showCreate')}>
-                        <AddIcon />
-                        <a  className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                            Novo Condutor
-                        </a>
-                    </Button>
+                    <div className='bg-sky-600'>
+                        <Button href={route('drivers.showCreate')}>
+                            <AddIcon className='text-white'/>
+                            <a  className="font-medium text-white dark:text-white hover:underline">
+                                Novo Condutor
+                            </a>
+                        </Button>
+                    </div>
 
                     {/* <Table data={driverInfo} columnsLabel={driverColumnLabels} editAction="drivers.showEdit" deleteAction="drivers.delete" dataId="user_id"/> */}
                 

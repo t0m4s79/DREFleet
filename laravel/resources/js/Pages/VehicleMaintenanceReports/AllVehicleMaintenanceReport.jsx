@@ -220,30 +220,30 @@ export default function AllVehicleMaintenanceReport({ auth, reports, flash }) {
 
             {<Head title='Registos de Manutenção do Veículo' />}
 
+
+
             <div className="py-12 px-6">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <div className="py-12 px-6">
-                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-
-                            <Button href={route('vehicleMaintenanceReports.showCreate')}>
-                                <AddIcon />
-                                <a className="font-medium text-sky-600 dark:text-sky-500 hover:underline">
-                                    Novo Registo de Manutenção
-                                </a>
-                            </Button>
-
-                            <CustomDataGrid
-                                rows={dataReports}
-                                columns={maintenanceColumns}
-                                editAction="vehicleMaintenanceReports.showEdit"
-                                deleteAction="vehicleMaintenanceReports.delete"
-                                user={auth.user}
-                            />
-                        </div>
+                    <div className='bg-sky-600'>
+                        <Button href={route('vehicleMaintenanceReports.showCreate')}>
+                            <AddIcon className='text-white' />
+                            <a className="font-medium text-white dark:text-white hover:underline">
+                                Novo Registo de Manutenção
+                            </a>
+                        </Button>
                     </div>
+
+                    <CustomDataGrid
+                        rows={dataReports}
+                        columns={maintenanceColumns}
+                        editAction="vehicleMaintenanceReports.showEdit"
+                        deleteAction="vehicleMaintenanceReports.delete"
+                        user={auth.user}
+                    />
                 </div>
             </div>
+
 
             <Snackbar
                 open={openSnackbar}
