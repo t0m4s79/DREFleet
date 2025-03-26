@@ -243,7 +243,7 @@ export default function EditVehicleDocument({ auth, vehicleDocument, vehicles}) 
                                 />
 
                                 <FormControl fullWidth margin='normal'>
-                                    {documents.map((elem, index) => (
+                                    {documents.length > 0 && documents.map((elem, index) => (
                                         <Grid container spacing={2} key={index}>
                                             <Grid item xs={12}>
                                                 <Typography>

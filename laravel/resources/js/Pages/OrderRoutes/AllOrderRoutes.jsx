@@ -62,11 +62,13 @@ export default function AllOrderRoutes({ auth, orderRoutes, flash }) {
             field: 'name',
             headerName: 'Rota',
             flex: 1,
+            minWidth: 160
         },
         {
             field: 'drivers_ids',
             headerName: 'Condutor',
             flex: 1,
+            minWidth: 150,
             /*renderCell: (params) => (
                 <div>
                     {params.value.map((driver) => (
@@ -128,6 +130,7 @@ export default function AllOrderRoutes({ auth, orderRoutes, flash }) {
             field: 'technicians_ids',
             headerName: 'Técnico',
             flex: 1,
+            minWidth: 150,
             sortComparator: (a, b) => {
                 const countA = a ? a.split(', ').length : 0;
                 const countB = b ? b.split(', ').length : 0;
@@ -166,6 +169,7 @@ export default function AllOrderRoutes({ auth, orderRoutes, flash }) {
             field: 'orderArea',
             headerName: 'Área',
             flex: 1,
+            minWidth: 150,
             disableExport: true,
             renderCell: (params) => (
                 <MapModal route={params.value}/>
@@ -176,6 +180,7 @@ export default function AllOrderRoutes({ auth, orderRoutes, flash }) {
             headerName: 'Data de Criação',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             //maxWidth: 180,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
@@ -187,6 +192,7 @@ export default function AllOrderRoutes({ auth, orderRoutes, flash }) {
             headerName: 'Data da Última Atualização',
             type: 'dateTime',
             flex: 1,
+            minWidth: 160,
             //maxWidth: 200,
             valueGetter: (params) => {
                 const parsedDate = parse(params, 'dd-MM-yyyy HH:mm:ss', new Date());
